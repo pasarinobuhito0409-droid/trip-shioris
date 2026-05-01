@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>宮崎GWデート旅行 2026.05.02-04</title>
+<style>
+*{box-sizing:border-box;}
+body{font-family:"Hiragino Sans","Yu Gothic",-apple-system,sans-serif;margin:0;padding:0;background:#f5f5f0;color:#2c2c2c;line-height:1.7;}
+.wrap{max-width:800px;margin:0 auto;padding:20px;}
+header{background:linear-gradient(135deg,#3a7ca5,#e8a0bf,#5b9279);color:white;padding:40px 20px;border-radius:16px;text-align:center;margin-bottom:30px;box-shadow:0 4px 20px rgba(0,0,0,0.1);}
+header h1{margin:0 0 10px;font-size:28px;letter-spacing:2px;}
+header p{margin:0;opacity:.95;}
+.day{background:white;border-radius:16px;padding:30px 25px;margin-bottom:30px;box-shadow:0 2px 12px rgba(0,0,0,0.08);}
+.day-head{border-bottom:4px solid;padding-bottom:15px;margin-bottom:20px;}
+.day-head .num{font-size:14px;letter-spacing:4px;opacity:.7;}
+.day-head h2{margin:5px 0;font-size:24px;}
+.story{padding:15px;border-radius:8px;margin-bottom:20px;font-size:15px;line-height:1.8;}
+.item{display:flex;align-items:flex-start;padding:14px 12px;margin-bottom:8px;border-radius:10px;background:#fafafa;border-left:4px solid;cursor:pointer;user-select:none;transition:all .3s ease;position:relative;}
+.item:hover{background:#f0f0f0;transform:translateX(2px);}
+.item.done{opacity:.45;background:#e8e8e8;}
+.item.done .name,.item.done .desc{text-decoration:line-through;text-decoration-thickness:2px;}
+.item.done::after{content:"✓ DONE";position:absolute;top:8px;right:12px;color:#5b9279;font-weight:bold;font-size:12px;background:white;padding:2px 8px;border-radius:10px;border:1.5px solid #5b9279;}
+.item .time{font-weight:bold;font-size:16px;min-width:70px;color:#555;}
+.item .icon{font-size:22px;margin:0 12px;}
+.item .body{flex:1;}
+.item .body .name{font-weight:bold;font-size:16px;margin-bottom:3px;}
+.item .body .desc{font-size:13px;color:#555;}
+.item .body .links{margin-top:6px;font-size:12px;}
+.item .body .links a{margin-right:8px;color:#3a7ca5;text-decoration:none;border-bottom:1px dotted #3a7ca5;user-select:text;}
+.item.done .body .links a{text-decoration:line-through;}
+.map{margin-top:20px;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);}
+.map iframe{width:100%;height:350px;border:0;}
+.section{background:white;border-radius:16px;padding:25px;margin-bottom:30px;box-shadow:0 2px 12px rgba(0,0,0,0.08);}
+.section h3{margin:0 0 15px;padding-bottom:10px;border-bottom:2px solid #ddd;}
+ul.checks{list-style:none;padding:0;}
+ul.checks li{padding:10px;border-radius:6px;margin-bottom:6px;background:#fafafa;cursor:pointer;user-select:none;transition:all .3s ease;}
+ul.checks li:hover{background:#f0f0f0;}
+ul.checks li::before{content:"☐ ";font-weight:bold;color:#3a7ca5;margin-right:5px;}
+ul.checks li.done{opacity:.45;background:#e8e8e8;text-decoration:line-through;text-decoration-thickness:2px;}
+ul.checks li.done::before{content:"☑ ";color:#5b9279;}
+ul.checks li.done a{text-decoration:line-through;}
+.priority{display:inline-block;padding:2px 10px;background:#e8a0bf;color:white;border-radius:12px;font-size:11px;margin-right:8px;}
+.reset-btn{display:inline-block;margin-top:15px;padding:8px 16px;background:#888;color:white;border:0;border-radius:6px;cursor:pointer;font-size:13px;}
+.reset-btn:hover{background:#666;}
+.progress-bar{height:10px;background:#eee;border-radius:5px;overflow:hidden;margin-top:10px;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#3a7ca5,#e8a0bf,#5b9279);width:0%;transition:width .4s ease;}
+.footer{text-align:center;padding:30px 0;color:#888;font-size:13px;}
+@media(max-width:600px){.item{flex-direction:column;}.item .time{min-width:auto;}.item .icon{margin:4px 0;}}
+</style>
+</head><body>
+<div class="wrap">
+<header><h1>🌸 宮崎GWデート旅行 2026.05.02-04</h1><p>太宰府発 → 北郷温泉 → 宮崎市内 → 美郷町 → 太宰府着</p></header>
+
+<div class="section">
+  <h3>📊 進捗</h3>
+  <p style="margin:5px 0;">完了: <span id="progress-text">0/0</span></p>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  <button class="reset-btn" onclick="resetAll()">🔄 全部リセット</button>
+</div>
+
+<div class="section">
+  <h3>📋 出発前チェックリスト</h3>
+  <ul class="checks">
+    <li><span class="priority">最優先</span>mipig cafe イオンモール宮崎店 5/3 11:00枠を予約 <a href="https://mipig.cafe/locations/miyazaki/" target="_blank">→リンク</a></li>
+    <li><span class="priority">確認</span>おぐら本店 GW営業確認 TEL 0985-22-2296</li>
+    <li><span class="priority">確認</span>南郷旅館 チェックイン時刻確認 <a href="http://www.nango-ryokan.jp/" target="_blank">→リンク</a></li>
+    <li><span class="priority">確認</span>大御神社 参拝時間確認 TEL 0982-52-3406</li>
+    <li><span class="priority">当日朝</span>宮崎県道路情報システム <a href="https://roadi.pref.miyazaki.lg.jp/" target="_blank">→リンク</a></li>
+    <li><span class="priority">当日朝</span>NEXCO西日本 渋滞情報 <a href="https://www.w-nexco.co.jp/" target="_blank">→リンク</a></li>
+  </ul>
+</div>
+
+<div class="day">
+  <div class="day-head" style="border-color:#3a7ca5;">
+    <div class="num">Day 1</div>
+    <h2>5/2 (金) — 山の温泉とほろ酔い夕焼け</h2>
+  </div>
+  <div class="story" style="background:#e8f1f7;">長距離ドライブの後は北郷温泉で深呼吸。茶畑と夕焼けのコントラストが2人の旅の幕開け。</div>
+  <div class="timeline">
+    <div class="item" style="border-color:#3a7ca5;">
+      <div class="time">08:00</div><div class="icon">🚗</div>
+      <div class="body"><div class="name">太宰府IC 出発</div><div class="desc">九州道→宮崎道→東九州道。約310km・休憩込み4.5h</div><div class="links"><a href="https://www.google.com/maps/search/?api=1&query=%E5%A4%AA%E5%AE%B0%E5%BA%9CIC" target="_blank">📍地図</a><a href="https://www.google.com/search?tbm=isch&q=%E5%A4%AA%E5%AE%B0%E5%BA%9CIC" target="_blank">📷写真検索</a></div></div>
+    </div>
+    <div class="item" style="border-color:#3a7ca5;">
+      <div class="time">09:30</div><div class="icon">☕</div>
+      <div class="body"><div class="name">山川PA 休憩</div><div class="desc">10分のひと息</div><div class="links"><a href="https://www.google.com/maps/search/?api=1&query=%E5%B1%B1%E5%B7%9DPA" target="_blank">📍地図</a><a href="https://www.google.com/search?tbm=isch&q=%E5%B1%B1%E5%B7%9DPA" target="_blank">📷写真検索</a></div></div>
+    </div>
+    <div class="item" style="border-color:#3a7ca5;">
+      <div class="time">11:00</div><div class="icon">🏞</div>
+      <div class="body"><div class="name">えびのPA</div><div class="desc">霧島連山が見える絶景。20分</div><div class="links"><a href="https://www.google.com/maps/search/?api=1&query=%E3%81%88%E3%81%B3%E3%81%AEPA" target="_blank">📍地図</a><a href="https://www.google.com/search?tbm=isch&q=%E3%81%88%E3%81%B3%E3%81%AEPA" target="_blank">📷写真検索</a></div></div>
+    </div>
+    <div class="item" style="border-color:#3a7ca5;">
+      <div class="time">12:30</div><div class="icon">🍱</div>
+      <div class="body"><div class="name">ランチ（道中）</div><div class="desc">宮崎市内 or SAで軽めに</div></div>
+    </div>
+    <div class="item" style="border-color:#3a7ca5;">
+      <div class="time">15:30</div><div class="icon">🏨</div>
+      <div class="body"><div class="name">ホテル日南北郷リゾート IN</div><div class="desc">標高290mの森のリゾート</div><div class="links"><a href="https://www.google.com/maps/search/?api=1&query=%E3%83%9B%E3%83%86%E3%83%AB%E6%97%A5%E5%8D%97%E5%8C%97%E9%83%B7%E3%83%AA%E3%82%BE%E3%83%BC%E3%83%88" target="_blank">📍地図</a><a href="https://www.google.com/search?tbm=isch&q=%E3%83%9B%E3%83%86%E3%83%AB%E6%97%A5%E5%8D%97%E5%8C%97%E9%83%B7%E3%83%AA%E3%82%BE%E3%83%BC%E3%83%88" target="_blank">📷写真検索</a></div></div>
+    </div>
+    <div class="item" style="border-color:#3a7ca5;">
+      <div class="time">16:30</div><div class="icon">🍵</div>
+      <div class="body"><div class="name">井ヶ田製茶 北郷茶園</div><div class="desc">5/2は2026年八十八夜！新茶試飲・茶畑フォト</div><div class="links"><a href="https://www.google.com/maps/search/?api=1&query=%E4%BA%95%E3%83%B6%E7%94%B0%E8%A3%BD%E8%8C%B6%20%E5%8C%97%E9%83%B7%E8%8C%B6%E5%9C%92" target="_blank">📍地図</a><a href="https://www.google.com/search?tbm=isch&q=%E4%BA%95%E3%83%B6%E7%94%B0%E8%A3%BD%E8%8C%B6%20%E5%8C%97%E9%83%B7%E8%8C%B6%E5%9C%92" target="_blank">📷写真検索</a></div></div>
+    </div>
+    <div class="item" style="border-color:#3a7ca5;">
+      <div class="time">17:45</div><div class="icon">🌅</div>
+      <div class="body"><div class="name">花立公園 or 道の駅きたごう</div><div class="desc">標高489m・太平洋まで望むパノラマ夕焼け</div><div class="links"><a href="https://www.google.com/maps/search/?api=1&query=%E8%8A%B1%E7%AB%8B%E5%85%AC%E5%9C%92%20%E6%97%A5%E5%8D%97" target="_blank">📍地図</a><a href="https://www.google.com/search?tbm=isch&q=%E8%8A%B1%E7%AB%8B%E5%85%AC%E5%9C%92%20%E6%97%A5%E5%8D%97" target="_blank">📷写真検索</a></div></div>
+    </div>
+    <div class="item" style="border-color:#3a7ca5;">
+      <div class="time">19:00</div><div class="icon">🍽</div>
+      <div class="body"><div class="name">ホテル夕食バイキング</div><div class="desc">地鶏炭火焼・郷土料理</div></div>
+    </div>
+    <div class="item" style="border-color:#3a7ca5;">
+      <div class="time">21:00</div><div class="icon">♨️</div>
+      <div class="body"><div class="name">展望大浴場・星空</div><div class="desc">標高290m・満天の星空テラス</div></div>
+    </div>
+  </div>
+  <div class="map"><iframe src="https://maps.google.com/maps?q=%E5%A4%AA%E5%AE%B0%E5%BA%9CIC%20to%20%E3%83%9B%E3%83%86%E3%83%AB%E6%97%A5%E5%8D%97%E5%8C%97%E9%83%B7%E3%83%AA%E3%82%BE%E3%83%BC%E3%83%88&output=embed" loading="lazy"></iframe></div>
+  <p style="text-align:center;margin-top:10px;">
+    <a href="https://www.google.com/maps/dir/%E5%A4%AA%E5%AE%B0%E5%BA%9CIC/%E3%81%88%E3%81%B3%E3%81%AEPA/%E3%83%9B%E3%83%86%E3%83%AB%E6%97%A5%E5%8D%97%E5%8C%97%E9%83%B7%E3%83%AA%E3%82%BE%E3%83%BC%E3%83%88" target="_blank" style="display:inline-block;padding:10px 20px;background:#3a7ca5;color:white;border-radius:8px;text-decoration:none;font-weight:bold;">🗺️ Google Mapsでこの日のルートを開く</a>
+  </p>
+</div>
+
+<div class="day">
+  <div class="day-head" style="border-color:#e8a0bf;">
+    <div class="num">Day 2</div>
+    <h2>5/3 (土) — マイクロ豚と花とアートの一日</h2>
+  </div>
+  <div class="story" style="background:#fbeef3;">11時、マイクロ豚との出会いが旅のメイン。チキン南蛮で胃を満たし、夕方のバラ園で写真を撮ったら、北の山奥の旅館へ。</div>
+  <div class="timeline">
+    <div class="item" style="border-color:#e8a0bf;">
+      <div class="time">07:00</div><div class="icon">♨️</div>
+      <div class="body"><div class="name">朝風呂</div><div class="desc">目覚めの温泉</div></div>
+    </div>
+    <div class="item" style="border-color:#e8a0bf;">
+      <div class="time">08:00</div><div class="icon">🍳</div>
+      <div class="body"><div class="name">ホテル朝食</div><div class="desc">バイキング</div></div>
+    </div>
+    <div class="item" style="border-color:#e8a0bf;">
+      <div class="time">10:00</div><div class="icon">🚗</div>
+      <div class="body"><div class="name">ホテルOUT</div><div class="desc">宮崎市内へ約60分</div></div>
+    </div>
+    <div class="item" style="border-color:#e8a0bf;">
+      <div class="time">11:00</div><div class="icon">🐷</div>
+      <div class="body"><div class="name">mipig cafe イオンモール宮崎</div><div class="desc">★メインイベント・55分予約必須・サウスモール1F</div><div class="links"><a href="https://www.google.com/maps/search/?api=1&query=%E3%82%A4%E3%82%AA%E3%83%B3%E3%83%A2%E3%83%BC%E3%83%AB%E5%AE%AE%E5%B4%8E" target="_blank">📍地図</a><a href="https://www.google.com/search?tbm=isch&q=%E3%82%A4%E3%82%AA%E3%83%B3%E3%83%A2%E3%83%BC%E3%83%AB%E5%AE%AE%E5%B4%8E" target="_blank">📷写真検索</a></div></div>
+    </div>
+    <div class="item" style="border-color:#e8a0bf;">
+      <div class="time">12:30</div><div class="icon">🍗</div>
+      <div class="body"><div class="name">おぐら本店</div><div class="desc">チキン南蛮発祥の店</div><div class="links"><a href="https://www.google.com/maps/search/?api=1&query=%E3%81%8A%E3%81%90%E3%82%89%E6%9C%AC%E5%BA%97%20%E5%AE%AE%E5%B4%8E" target="_blank">📍地図</a><a href="https://www.google.com/search?tbm=isch&q=%E3%81%8A%E3%81%90%E3%82%89%E6%9C%AC%E5%BA%97%20%E5%AE%AE%E5%B4%8E" target="_blank">📷写真検索</a></div></div>
+    </div>
+    <div class="item" style="border-color:#e8a0bf;">
+      <div class="time">14:00</div><div class="icon">🎨</div>
+      <div class="body"><div class="name">宮崎県立美術館 or 総合博物館</div><div class="desc">「石村嘉成展」（〜5/10）</div><div class="links"><a href="https://www.google.com/maps/search/?api=1&query=%E5%AE%AE%E5%B4%8E%E7%9C%8C%E7%AB%8B%E7%BE%8E%E8%A1%93%E9%A4%A8" target="_blank">📍地図</a><a href="https://www.google.com/search?tbm=isch&q=%E5%AE%AE%E5%B4%8E%E7%9C%8C%E7%AB%8B%E7%BE%8E%E8%A1%93%E9%A4%A8" target="_blank">📷写真検索</a></div></div>
+    </div>
+    <div class="item" style="border-color:#e8a0bf;">
+      <div class="time">15:30</div><div class="icon">🌹</div>
+      <div class="body"><div class="name">フローランテ宮崎</div><div class="desc">ローズウィーク開催中・夕方の柔らかい光で撮影</div><div class="links"><a href="https://www.google.com/maps/search/?api=1&query=%E3%83%95%E3%83%AD%E3%83%BC%E3%83%A9%E3%83%B3%E3%83%86%E5%AE%AE%E5%B4%8E" target="_blank">📍地図</a><a href="https://www.google.com/search?tbm=isch&q=%E3%83%95%E3%83%AD%E3%83%BC%E3%83%A9%E3%83%B3%E3%83%86%E5%AE%AE%E5%B4%8E" target="_blank">📷写真検索</a></div></div>
+    </div>
+    <div class="item" style="border-color:#e8a0bf;">
+      <div class="time">16:45</div><div class="icon">🚗</div>
+      <div class="body"><div class="name">出発・北上</div><div class="desc">国道218号→327号で美郷町へ約2時間</div></div>
+    </div>
+    <div class="item" style="border-color:#e8a0bf;">
+      <div class="time">19:00</div><div class="icon">🏯</div>
+      <div class="body"><div class="name">南郷旅館 IN</div><div class="desc">美郷町南郷神門・夕食と温泉</div><div class="links"><a href="https://www.google.com/maps/search/?api=1&query=%E5%8D%97%E9%83%B7%E6%97%85%E9%A4%A8%20%E7%BE%8E%E9%83%B7%E7%94%BA" target="_blank">📍地図</a><a href="https://www.google.com/search?tbm=isch&q=%E5%8D%97%E9%83%B7%E6%97%85%E9%A4%A8%20%E7%BE%8E%E9%83%B7%E7%94%BA" target="_blank">📷写真検索</a></div></div>
+    </div>
+  </div>
+  <div class="map"><iframe src="https://maps.google.com/maps?q=%E3%83%9B%E3%83%86%E3%83%AB%E6%97%A5%E5%8D%97%E5%8C%97%E9%83%B7%E3%83%AA%E3%82%BE%E3%83%BC%E3%83%88%20to%20%E5%8D%97%E9%83%B7%E6%97%85%E9%A4%A8%20%E7%BE%8E%E9%83%B7%E7%94%BA&output=embed" loading="lazy"></iframe></div>
+  <p style="text-align:center;margin-top:10px;">
+    <a href="https://www.google.com/maps/dir/%E3%83%9B%E3%83%86%E3%83%AB%E6%97%A5%E5%8D%97%E5%8C%97%E9%83%B7%E3%83%AA%E3%82%BE%E3%83%BC%E3%83%88/%E3%82%A4%E3%82%AA%E3%83%B3%E3%83%A2%E3%83%BC%E3%83%AB%E5%AE%AE%E5%B4%8E/%E3%83%95%E3%83%AD%E3%83%BC%E3%83%A9%E3%83%B3%E3%83%86%E5%AE%AE%E5%B4%8E/%E5%8D%97%E9%83%B7%E6%97%85%E9%A4%A8%20%E7%BE%8E%E9%83%B7%E7%94%BA" target="_blank" style="display:inline-block;padding:10px 20px;background:#e8a0bf;color:white;border-radius:8px;text-decoration:none;font-weight:bold;">🗺️ Google Mapsでこの日のルートを開く</a>
+  </p>
+</div>
+
+<div class="day">
+  <div class="day-head" style="border-color:#5b9279;">
+    <div class="num">Day 3</div>
+    <h2>5/4 (日) — 神話の海から太宰府へ</h2>
+  </div>
+  <div class="story" style="background:#ebf3ee;">朝の道の駅でコーヒー、龍神の岩窟、断崖70mのスケルッチャ、叶の十文字岩。海鮮丼で締めて、別府湾の絶景を抜けて九州を北上。</div>
+  <div class="timeline">
+    <div class="item" style="border-color:#5b9279;">
+      <div class="time">07:30</div><div class="icon">♨️</div>
+      <div class="body"><div class="name">旅館で朝風呂</div><div class="desc">山の朝</div></div>
+    </div>
+    <div class="item" style="border-color:#5b9279;">
+      <div class="time">08:30</div><div class="icon">🍚</div>
+      <div class="body"><div class="name">旅館朝食</div><div class="desc"></div></div>
+    </div>
+    <div class="item" style="border-color:#5b9279;">
+      <div class="time">10:00</div><div class="icon">🚗</div>
+      <div class="body"><div class="name">南郷旅館OUT</div><div class="desc">国道327号で日向方面へ</div></div>
+    </div>
+    <div class="item" style="border-color:#5b9279;">
+      <div class="time">10:20</div><div class="icon">☕</div>
+      <div class="body"><div class="name">道の駅とうごう</div><div class="desc">牧水そば・コーヒー補給（20分）</div><div class="links"><a href="https://www.google.com/maps/search/?api=1&query=%E9%81%93%E3%81%AE%E9%A7%85%E3%81%A8%E3%81%86%E3%81%94%E3%81%86" target="_blank">📍地図</a><a href="https://www.google.com/search?tbm=isch&q=%E9%81%93%E3%81%AE%E9%A7%85%E3%81%A8%E3%81%86%E3%81%94%E3%81%86" target="_blank">📷写真検索</a></div></div>
+    </div>
+    <div class="item" style="border-color:#5b9279;">
+      <div class="time">11:30</div><div class="icon">⛩</div>
+      <div class="body"><div class="name">大御神社</div><div class="desc">「日向のお伊勢さま」龍神の霊・昇り龍の岩窟（40分）</div><div class="links"><a href="https://www.google.com/maps/search/?api=1&query=%E5%A4%A7%E5%BE%A1%E7%A5%9E%E7%A4%BE%20%E6%97%A5%E5%90%91%E5%B8%82" target="_blank">📍地図</a><a href="https://www.google.com/search?tbm=isch&q=%E5%A4%A7%E5%BE%A1%E7%A5%9E%E7%A4%BE%20%E6%97%A5%E5%90%91%E5%B8%82" target="_blank">📷写真検索</a></div></div>
+    </div>
+    <div class="item" style="border-color:#5b9279;">
+      <div class="time">12:20</div><div class="icon">🌊</div>
+      <div class="body"><div class="name">馬ヶ背・スケルッチャ＋クルスの海</div><div class="desc">断崖70mガラス床絶景・叶の十文字岩（50分）</div><div class="links"><a href="https://www.google.com/maps/search/?api=1&query=%E9%A6%AC%E3%83%B6%E8%83%8C%20%E6%97%A5%E5%90%91%E5%B8%82" target="_blank">📍地図</a><a href="https://www.google.com/search?tbm=isch&q=%E9%A6%AC%E3%83%B6%E8%83%8C%20%E6%97%A5%E5%90%91%E5%B8%82" target="_blank">📷写真検索</a></div></div>
+    </div>
+    <div class="item" style="border-color:#5b9279;">
+      <div class="time">13:20</div><div class="icon">🍣</div>
+      <div class="body"><div class="name">海の駅ほそしま</div><div class="desc">漁師の海鮮丼1,080円〜（60分）</div><div class="links"><a href="https://www.google.com/maps/search/?api=1&query=%E6%B5%B7%E3%81%AE%E9%A7%85%E3%81%BB%E3%81%9D%E3%81%97%E3%81%BE" target="_blank">📍地図</a><a href="https://www.google.com/search?tbm=isch&q=%E6%B5%B7%E3%81%AE%E9%A7%85%E3%81%BB%E3%81%9D%E3%81%97%E3%81%BE" target="_blank">📷写真検索</a></div></div>
+    </div>
+    <div class="item" style="border-color:#5b9279;">
+      <div class="time">14:30</div><div class="icon">🛣</div>
+      <div class="body"><div class="name">日向IC 高速乗車</div><div class="desc">東九州道→九州道</div><div class="links"><a href="https://www.google.com/maps/search/?api=1&query=%E6%97%A5%E5%90%91IC" target="_blank">📍地図</a><a href="https://www.google.com/search?tbm=isch&q=%E6%97%A5%E5%90%91IC" target="_blank">📷写真検索</a></div></div>
+    </div>
+    <div class="item" style="border-color:#5b9279;">
+      <div class="time">15:00</div><div class="icon">🍰</div>
+      <div class="body"><div class="name">道の駅 北川はゆま</div><div class="desc">延岡発祥チキン南蛮・のべがくプリン（20分）</div><div class="links"><a href="https://www.google.com/maps/search/?api=1&query=%E9%81%93%E3%81%AE%E9%A7%85%20%E5%8C%97%E5%B7%9D%E3%81%AF%E3%82%86%E3%81%BE" target="_blank">📍地図</a><a href="https://www.google.com/search?tbm=isch&q=%E9%81%93%E3%81%AE%E9%A7%85%20%E5%8C%97%E5%B7%9D%E3%81%AF%E3%82%86%E3%81%BE" target="_blank">📷写真検索</a></div></div>
+    </div>
+    <div class="item" style="border-color:#5b9279;">
+      <div class="time">16:30</div><div class="icon">🌅</div>
+      <div class="body"><div class="name">別府湾SA</div><div class="desc">標高380m絶景デッキ・りゅうきゅう丼（30分）</div><div class="links"><a href="https://www.google.com/maps/search/?api=1&query=%E5%88%A5%E5%BA%9C%E6%B9%BESA" target="_blank">📍地図</a><a href="https://www.google.com/search?tbm=isch&q=%E5%88%A5%E5%BA%9C%E6%B9%BESA" target="_blank">📷写真検索</a></div></div>
+    </div>
+    <div class="item" style="border-color:#5b9279;">
+      <div class="time">17:50</div><div class="icon">🛒</div>
+      <div class="body"><div class="name">山田SA</div><div class="desc">朝倉ほとめき食堂・お土産（20分）</div><div class="links"><a href="https://www.google.com/maps/search/?api=1&query=%E5%B1%B1%E7%94%B0SA" target="_blank">📍地図</a><a href="https://www.google.com/search?tbm=isch&q=%E5%B1%B1%E7%94%B0SA" target="_blank">📷写真検索</a></div></div>
+    </div>
+    <div class="item" style="border-color:#5b9279;">
+      <div class="time">18:30</div><div class="icon">🏠</div>
+      <div class="body"><div class="name">太宰府IC 帰着</div><div class="desc">おかえり</div><div class="links"><a href="https://www.google.com/maps/search/?api=1&query=%E5%A4%AA%E5%AE%B0%E5%BA%9CIC" target="_blank">📍地図</a><a href="https://www.google.com/search?tbm=isch&q=%E5%A4%AA%E5%AE%B0%E5%BA%9CIC" target="_blank">📷写真検索</a></div></div>
+    </div>
+  </div>
+  <div class="map"><iframe src="https://maps.google.com/maps?q=%E5%8D%97%E9%83%B7%E6%97%85%E9%A4%A8%20%E7%BE%8E%E9%83%B7%E7%94%BA%20to%20%E5%A4%AA%E5%AE%B0%E5%BA%9CIC&output=embed" loading="lazy"></iframe></div>
+  <p style="text-align:center;margin-top:10px;">
+    <a href="https://www.google.com/maps/dir/%E5%8D%97%E9%83%B7%E6%97%85%E9%A4%A8%20%E7%BE%8E%E9%83%B7%E7%94%BA/%E5%A4%A7%E5%BE%A1%E7%A5%9E%E7%A4%BE%20%E6%97%A5%E5%90%91%E5%B8%82/%E9%A6%AC%E3%83%B6%E8%83%8C%20%E6%97%A5%E5%90%91%E5%B8%82/%E5%88%A5%E5%BA%9C%E6%B9%BESA/%E5%B1%B1%E7%94%B0SA/%E5%A4%AA%E5%AE%B0%E5%BA%9CIC" target="_blank" style="display:inline-block;padding:10px 20px;background:#5b9279;color:white;border-radius:8px;text-decoration:none;font-weight:bold;">🗺️ Google Mapsでこの日のルートを開く</a>
+  </p>
+</div>
+
+<div class="section">
+  <h3>🎒 持ち物リスト</h3>
+  <ul class="checks">
+    <li>スニーカー（神社の階段・展望所の坂）</li>
+    <li>半袖＋薄手の上着（5月宮崎は20-26℃）</li>
+    <li>日焼け止め・帽子・サングラス</li>
+    <li>現金 各自¥10,000以上</li>
+    <li>ETCカード</li>
+    <li>スマホ充電器・モバイルバッテリ</li>
+    <li>カメラ・スマホ三脚</li>
+    <li>酔い止め（山道用）</li>
+    <li>車内に水・お菓子</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>💡 旅の目標</h3>
+  <ol style="padding-left:25px;line-height:2;">
+    <li>日常から離れて2人でリフレッシュ</li>
+    <li>関係を深める体験を作る</li>
+    <li>思い出に残る写真を撮る</li>
+    <li>安全運転で無事帰る</li>
+  </ol>
+</div>
+
+<div class="footer">Generated by Claude Code · 三輪允仁の相棒</div>
+</div>
+
+<script>
+(function(){
+  const KEY = 'miyazaki_trip_2026_state';
+  const all = document.querySelectorAll('.item, ul.checks li');
+  const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(e){return{};} };
+  const save = (s) => localStorage.setItem(KEY, JSON.stringify(s));
+  const update = () => {
+    const total = all.length;
+    const done = document.querySelectorAll('.item.done, ul.checks li.done').length;
+    const pct = total > 0 ? (done/total*100) : 0;
+    document.getElementById('progress-text').textContent = done + '/' + total;
+    document.getElementById('progress-fill').style.width = pct + '%';
+  };
+  const state = load();
+  all.forEach((el, idx) => {
+    const k = 'item_' + idx;
+    if (state[k]) el.classList.add('done');
+    el.addEventListener('click', (e) => {
+      if (e.target.tagName === 'A') return;
+      el.classList.toggle('done');
+      const s = load();
+      s[k] = el.classList.contains('done');
+      save(s);
+      update();
+    });
+  });
+  window.resetAll = function(){
+    if (!confirm('全部のチェックをリセットしますか？')) return;
+    localStorage.removeItem(KEY);
+    document.querySelectorAll('.done').forEach(el => el.classList.remove('done'));
+    update();
+  };
+  update();
+})();
+</script>
+</body></html>
