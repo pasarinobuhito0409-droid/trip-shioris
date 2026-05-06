@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#2b6cb0">
+<title>活動トラッカー 2026</title>
+<style>
+:root{
+  --c-normal:#cbe3ff;
+  --c-cheat:#ffccd1;
+  --c-special-top:#ccf4d2;
+  --c-special-bot:#fdeaae;
+  --c-morning:#5ab4ff;
+  --c-lunch:#a99cff;
+  --c-night-mma:#c850dc;
+  --c-night-wt:#e68c3c;
+  --c-night-hand:#64c8dc;
+  --c-daily:#34c759;
+  --c-special:#76b347;
+  --c-rest:#ff85a0;
+  --bg:#f5f5f7;
+  --card:#ffffff;
+  --line:#e3e3e8;
+  --text:#1d1d1f;
+  --muted:#6b6b73;
+  --done:#34c759;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,"Hiragino Sans","Yu Gothic UI","Segoe UI",sans-serif;font-size:15px;line-height:1.5}
+
+header{position:sticky;top:0;z-index:10;background:var(--bg);padding:10px 12px 4px;border-bottom:1px solid var(--line)}
+h1{margin:0 0 6px;font-size:17px;font-weight:700}
+.row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.month-tabs{display:flex;gap:5px;flex:1;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.month-tabs button,.view-toggle button{flex:0 0 auto;border:none;background:#fff;color:var(--text);font-size:13px;font-weight:600;padding:8px 14px;border-radius:999px;border:1px solid var(--line);cursor:pointer}
+.month-tabs button.active,.view-toggle button.active{background:var(--text);color:#fff;border-color:var(--text)}
+.view-toggle{display:flex;gap:5px;margin-left:auto}
+
+.summary{padding:8px 12px}
+.summary-card{background:var(--card);border-radius:12px;padding:12px 14px;border:1px solid var(--line)}
+.summary-card .label{font-size:11px;color:var(--muted);font-weight:500}
+.summary-card .big{font-size:26px;font-weight:800;line-height:1.1;margin-top:2px}
+.summary-card .big small{font-size:13px;font-weight:500;color:var(--muted)}
+.bar{margin-top:8px;height:8px;border-radius:999px;background:#eee;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#34c759,#0a84ff);transition:width .3s}
+.cat-bars{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:10px}
+.cat-bar{display:flex;align-items:center;gap:6px;font-size:11px}
+.cat-bar .lbl{flex:0 0 50px;color:var(--muted)}
+.cat-bar .b{flex:1;height:6px;background:#eee;border-radius:999px;overflow:hidden}
+.cat-bar .b i{display:block;height:100%;background:#34c759}
+.cat-bar .pct{font-weight:600;font-size:11px;flex:0 0 38px;text-align:right}
+
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:0 12px 10px}
+.chart-card{background:var(--card);border-radius:12px;padding:10px;border:1px solid var(--line)}
+.chart-card h3{margin:0 0 6px;font-size:11px;color:var(--muted);font-weight:600}
+.chart-card svg{width:100%;height:auto;display:block}
+.legend{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;font-size:10px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:3px}
+.legend i{width:9px;height:9px;border-radius:2px;display:inline-block}
+
+/* === LIST VIEW === */
+.list{padding:0 12px 24px}
+.list-day{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:7px;overflow:hidden;display:grid;grid-template-columns:56px 1fr;align-items:stretch}
+.list-day.today{border-color:#0a84ff;border-width:2px;box-shadow:0 0 0 3px rgba(10,132,255,.1)}
+.list-day .date-col{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;background:var(--bg)}
+.list-day .date-col.normal{background:var(--c-normal)}
+.list-day .date-col.cheat{background:var(--c-cheat)}
+.list-day .date-col.special{background:linear-gradient(180deg,var(--c-special-top) 0%,var(--c-special-top) 50%,var(--c-special-bot) 50%,var(--c-special-bot) 100%)}
+.list-day .num{font-size:22px;font-weight:800;line-height:1}
+.list-day .wd{font-size:11px;color:var(--muted);margin-top:2px}
+.list-day .wd.sat{color:#0a84ff}
+.list-day .wd.sun{color:#ff453a}
+.list-day .tag{font-size:9px;font-weight:700;color:var(--muted);margin-top:3px;letter-spacing:.05em}
+.list-day .tasks{padding:8px 10px;display:flex;flex-wrap:wrap;gap:5px;align-content:center}
+
+/* === TASK CHIP（タップで完了切替） === */
+.chip{appearance:none;border:none;font:inherit;font-size:12px;font-weight:600;background:#eef0f4;color:var(--text);padding:6px 11px;border-radius:8px;cursor:pointer;line-height:1.3;border:1.5px solid transparent;transition:all .15s;display:inline-flex;align-items:center;gap:3px;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip:active{transform:scale(.94)}
+.chip.cat-morning{background:#dceeff;color:#0a4a82}
+.chip.cat-lunch{background:#e6e2ff;color:#4a3ba8}
+.chip.cat-night{background:#fde2e7;color:#7a2d44}
+.chip.cat-night.ex-WT{background:#ffe4cf;color:#7a3e10}
+.chip.cat-night.ex-ハンド{background:#d4f0f5;color:#1c5664}
+.chip.cat-daily{background:#dff5e3;color:#1d6435}
+.chip.cat-special{background:#fff3cf;color:#6e4c0a}
+.chip.cat-rest{background:#ffd9df;color:#7a2d44}
+.chip.done{background:var(--done) !important;color:#fff !important;border-color:transparent}
+.chip.done .label{text-decoration:line-through;opacity:.85}
+.chip .check{font-weight:900;font-size:11px}
+
+/* === CALENDAR VIEW === */
+.cal{padding:0 8px 24px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-dow{font-size:10px;font-weight:700;color:var(--muted);text-align:center;padding:4px 0}
+.cal-dow.sat{color:#0a84ff}
+.cal-dow.sun{color:#ff453a}
+.cal-cell{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:4px;min-height:90px;display:flex;flex-direction:column;gap:2px;overflow:hidden}
+.cal-cell.empty{background:transparent;border:none}
+.cal-cell.normal{background:#eaf3ff}
+.cal-cell.cheat{background:#ffeef1}
+.cal-cell.special{background:linear-gradient(180deg,#e6f7ea 0%,#e6f7ea 50%,#fff5d4 50%,#fff5d4 100%)}
+.cal-cell.today{box-shadow:0 0 0 2px #0a84ff}
+.cal-cell .head{display:flex;align-items:baseline;gap:3px}
+.cal-cell .num{font-size:13px;font-weight:800}
+.cal-cell .num.sun{color:#ff453a}
+.cal-cell .num.sat{color:#0a84ff}
+.cal-cell .small-tag{font-size:8px;color:var(--muted);font-weight:700}
+.cal-cell .chips-mini{display:flex;flex-direction:column;gap:2px;flex:1}
+.cal-cell .chip-mini{appearance:none;border:none;font-size:10px;font-weight:600;padding:2px 5px;border-radius:5px;text-align:left;line-height:1.2;cursor:pointer;background:rgba(255,255,255,.7);color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:1px solid rgba(0,0,0,.05)}
+.cal-cell .chip-mini.done{background:var(--done);color:#fff;text-decoration:line-through}
+.cal-cell .chip-mini.cat-morning{border-left:3px solid var(--c-morning)}
+.cal-cell .chip-mini.cat-lunch{border-left:3px solid var(--c-lunch)}
+.cal-cell .chip-mini.cat-night{border-left:3px solid var(--c-night-mma)}
+.cal-cell .chip-mini.cat-night.ex-WT{border-left-color:var(--c-night-wt)}
+.cal-cell .chip-mini.cat-night.ex-ハンド{border-left-color:var(--c-night-hand)}
+.cal-cell .chip-mini.cat-daily{border-left:3px solid var(--c-daily)}
+.cal-cell .chip-mini.cat-special{border-left:3px solid var(--c-special)}
+.cal-cell .chip-mini.cat-rest{border-left:3px solid var(--c-rest)}
+
+.toolbar{display:flex;gap:7px;padding:6px 12px 18px;flex-wrap:wrap}
+.toolbar button{flex:1;min-width:100px;background:#fff;border:1px solid var(--line);padding:9px;border-radius:9px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer}
+.toolbar button.danger{color:#c43;border-color:#fbb}
+
+@media (min-width:720px){
+  .charts{grid-template-columns:repeat(4,1fr)}
+  .cat-bars{grid-template-columns:repeat(5,1fr)}
+  .cal-cell{min-height:130px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>2026 活動トラッカー</h1>
+  <div class="row">
+    <div class="month-tabs" id="monthTabs"></div>
+    <div class="view-toggle">
+      <button id="vList" class="active" onclick="setView('list')">リスト</button>
+      <button id="vCal" onclick="setView('cal')">カレンダー</button>
+    </div>
+  </div>
+</header>
+
+<div class="summary" id="summary"></div>
+
+<div class="charts" id="charts"></div>
+
+<div id="content"></div>
+
+<div class="toolbar">
+  <button onclick="exportJSON()">JSON書き出し</button>
+  <button onclick="importJSON()">JSON読み込み</button>
+  <button class="danger" onclick="resetMonth()">この月リセット</button>
+</div>
+
+<script>
+// ===== 予定（calendar_v43.py 同期） =====
+const PRESETS = {
+  4: {cheat:[5,12,13,19,26], special:{4:"筑前町",11:"筑前町",18:"筑前町",25:"柳川",29:"筑前町"}},
+  5: {cheat:[2,3,4,10,17,24,31], special:{5:"筑前町",6:"柳川",30:"筑前町"}},
+  6: {cheat:[7,14,21,28], special:{6:"柳川",13:"筑前町",20:"柳川",27:"筑前町"}},
+  7: {cheat:[5,12,19,26], special:{4:"柳川",11:"筑前町",18:"柳川",20:"筑前町",25:"柳川"}},
+};
+const THEMES = ["CAE","SW電","機械","板金","溶接","塗装","電気","SW"];
+const THEME_START = {4:0, 5:4, 6:1, 7:7}; // calendar_v43.py 値
+const WT_ROT = ["SW","BP","DR"];
+const WD_JP = ["日","月","火","水","木","金","土"];
+
+const CHART_COLORS = {
+  "普通":"#5ab4ff","チート":"#ffa0b4","特別":"#78d28c",
+  "WT":"#e68c3c","MMA":"#c850dc","ハンド":"#64c8dc"
+};
+
+// ===== ストレージ =====
+const KEY = "tracker2026_v2";
+function loadState(){ try{ return JSON.parse(localStorage.getItem(KEY)||"{}"); }catch(e){return {}} }
+function saveState(s){ localStorage.setItem(KEY, JSON.stringify(s)); }
+let state = loadState();
+function getDayState(m,d){
+  const k = `${m}-${d}`;
+  state[k] = state[k] || {};
+  return state[k];
+}
+
+// ===== 日生成 =====
+function daysInMonth(m){ return new Date(2026, m, 0).getDate(); }
+function dayType(m, d){
+  const p = PRESETS[m];
+  if(p.cheat.includes(d)) return "チート";
+  if(p.special[d]) return "特別";
+  return "普通";
+}
+function buildMonth(m){
+  const days = [];
+  const total = daysInMonth(m);
+  let normalIdx = 0, wtIdx = 0;
+  for(let d=1; d<=total; d++){
+    const t = dayType(m,d);
+    const wd = new Date(2026, m-1, d).getDay();
+    let theme=null, night=null, wtRot=null, isSpur=false, loc=null;
+    if(t === "普通"){
+      theme = THEMES[(THEME_START[m]+normalIdx) % 8];
+      normalIdx++;
+      // 0=日,1=月,2=火,3=水,4=木,5=金,6=土
+      if(wd===2) night="ハンド";
+      else if(wd===4 || wd===6){
+        night="WT";
+        wtRot = WT_ROT[wtIdx % 3];
+        wtIdx++;
+      }
+      else if(wd===5){ night="MMA"; isSpur=true; }
+      else night="MMA";
+    } else if(t === "特別"){
+      loc = PRESETS[m].special[d];
+    }
+    days.push({d, wd, type:t, theme, night, wtRot, isSpur, loc});
+  }
+  return days;
+}
+
+// ===== タスク生成 =====
+function tasksOf(day){
+  if(day.type === "チート"){
+    return [{id:"cheat", label:"チート(休養)", cat:"rest"}];
+  }
+  if(day.type === "特別"){
+    const locText = day.loc==="筑前町" ? "筑前町支部 9:00~16:30" : "柳川支部 10:00~20:00";
+    return [
+      {id:"loc", label:locText, cat:"special"},
+      {id:"sp1", label:"①発明工作", cat:"special"},
+      {id:"sp2", label:"②AI", cat:"special"},
+      {id:"sp3", label:"③算数", cat:"special"},
+      {id:"sp4", label:"④仕事復習", cat:"special"},
+      {id:"sp5", label:"⑤疑問", cat:"special"},
+      {id:"sp6", label:"⑥哲学", cat:"special"},
+      {id:"sp7", label:"⑦勉強効率化", cat:"special"},
+      {id:"sp8", label:"⑧ADHD研究", cat:"special"},
+    ];
+  }
+  // 普通
+  const tasks = [
+    {id:"morning", label:`朝:新聞+${day.theme}`, cat:"morning"},
+    {id:"lunch", label:"昼:科学雑誌+マクロ30", cat:"lunch"},
+  ];
+  let nLabel;
+  if(day.night==="WT") nLabel = `夜:WT(${day.wtRot})`;
+  else if(day.night==="MMA" && day.isSpur) nLabel = "夜:MMA(スパー)";
+  else if(day.night==="MMA") nLabel = "夜:MMA";
+  else nLabel = "夜:ハンドボール";
+  tasks.push({id:"night", label:nLabel, cat:"night", ex:day.night});
+  tasks.push({id:"daily", label:"算25+復習", cat:"daily"});
+  return tasks;
+}
+
+// ===== 集計 =====
+function tally(m){
+  const days = buildMonth(m);
+  // 予定 day-type / night
+  const planDay = {"普通":0,"チート":0,"特別":0};
+  const planNight = {"WT":0,"MMA":0,"ハンド":0};
+  // 実績 (タスクベース)
+  const cats = {morning:[0,0], lunch:[0,0], night:[0,0], daily:[0,0], special:[0,0], rest:[0,0]};
+  // 実績 day-type / night (達成日カウント)
+  const actDay = {"普通":0,"チート":0,"特別":0};
+  const actNight = {"WT":0,"MMA":0,"ハンド":0};
+  let totalPlan=0, totalDone=0;
+
+  days.forEach(x=>{
+    planDay[x.type]++;
+    if(x.night) planNight[x.night]++;
+    const tks = tasksOf(x);
+    const s = getDayState(m, x.d);
+    let dayDone = 0;
+    tks.forEach(tk=>{
+      cats[tk.cat][1]++;
+      totalPlan++;
+      if(s[tk.id]){
+        cats[tk.cat][0]++;
+        totalDone++;
+        dayDone++;
+      }
+    });
+    // その日の主タスクが1つ以上完了 → 実績日カウント
+    if(dayDone > 0){
+      actDay[x.type]++;
+      if(x.type==="普通" && x.night && s.night) actNight[x.night]++;
+    }
+  });
+  return {days, planDay, planNight, actDay, actNight, cats, totalPlan, totalDone};
+}
+
+// ===== UI =====
+let currentMonth = (function(){
+  const t = new Date();
+  if(t.getFullYear()===2026 && [4,5,6,7].includes(t.getMonth()+1)) return t.getMonth()+1;
+  return 5;
+})();
+let currentView = "list";
+
+function setView(v){
+  currentView = v;
+  document.getElementById("vList").classList.toggle("active", v==="list");
+  document.getElementById("vCal").classList.toggle("active", v==="cal");
+  renderContent();
+}
+
+function render(){
+  renderTabs();
+  renderSummary();
+  renderCharts();
+  renderContent();
+}
+
+function renderTabs(){
+  const el = document.getElementById("monthTabs");
+  el.innerHTML = "";
+  [4,5,6,7].forEach(m=>{
+    const b = document.createElement("button");
+    b.textContent = `${m}月`;
+    if(m===currentMonth) b.classList.add("active");
+    b.onclick = ()=>{ currentMonth=m; render(); };
+    el.appendChild(b);
+  });
+}
+
+function renderSummary(){
+  const t = tally(currentMonth);
+  const pct = t.totalPlan ? Math.round(100*t.totalDone/t.totalPlan) : 0;
+  const catLabels = {morning:"朝", lunch:"昼", night:"夜", daily:"毎日", special:"特別", rest:"休養"};
+  const catBars = ["morning","lunch","night","daily","special"].map(c=>{
+    const [done,plan] = t.cats[c];
+    const p = plan ? Math.round(100*done/plan) : 0;
+    return `<div class="cat-bar"><div class="lbl">${catLabels[c]}</div><div class="b"><i style="width:${p}%"></i></div><div class="pct">${done}/${plan}</div></div>`;
+  }).join("");
+  document.getElementById("summary").innerHTML = `
+    <div class="summary-card">
+      <div class="label">${currentMonth}月 達成率</div>
+      <div class="big">${pct}% <small>(${t.totalDone}/${t.totalPlan} タスク)</small></div>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      <div class="cat-bars">${catBars}</div>
+    </div>
+  `;
+}
+
+// ===== 円グラフ =====
+function pieSVG(segs, size=130){
+  const total = segs.reduce((a,b)=>a+b.val,0);
+  const r = size/2 - 4;
+  const cx=size/2, cy=size/2;
+  if(total===0) return `<svg viewBox="0 0 ${size} ${size}"><circle cx="${cx}" cy="${cy}" r="${r}" fill="#eee"/><text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="middle" fill="#999" font-size="11">未達成</text></svg>`;
+  let acc = -90;
+  let parts = "";
+  segs.forEach(s=>{
+    if(s.val===0) return;
+    const ang = 360*s.val/total;
+    const start = acc, end = acc+ang;
+    const x1 = cx + r*Math.cos(start*Math.PI/180);
+    const y1 = cy + r*Math.sin(start*Math.PI/180);
+    const x2 = cx + r*Math.cos(end*Math.PI/180);
+    const y2 = cy + r*Math.sin(end*Math.PI/180);
+    const large = ang>180?1:0;
+    if(ang>=359.99){
+      parts += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${s.color}"/>`;
+    } else {
+      parts += `<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${large} 1 ${x2},${y2} Z" fill="${s.color}" stroke="#fff" stroke-width="2"/>`;
+    }
+    const mid = (start+end)/2;
+    const lx = cx + r*0.6*Math.cos(mid*Math.PI/180);
+    const ly = cy + r*0.6*Math.sin(mid*Math.PI/180);
+    const pct = Math.round(100*s.val/total);
+    if(pct>=8){
+      parts += `<text x="${lx}" y="${ly}" fill="#fff" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="middle">${pct}%</text>`;
+    }
+    acc = end;
+  });
+  return `<svg viewBox="0 0 ${size} ${size}">${parts}</svg>`;
+}
+
+function legendHTML(segs){
+  return `<div class="legend">${segs.filter(s=>s.val>0).map(s=>`<span><i style="background:${s.color}"></i>${s.name} ${s.val}</span>`).join("")}</div>`;
+}
+
+function renderCharts(){
+  const t = tally(currentMonth);
+  const seg = (obj, keys) => keys.map(k=>({name:k, val:obj[k], color:CHART_COLORS[k]}));
+  const dayPlan = seg(t.planDay, ["普通","チート","特別"]);
+  const dayAct = seg(t.actDay, ["普通","チート","特別"]);
+  const nightPlan = seg(t.planNight, ["WT","MMA","ハンド"]);
+  const nightAct = seg(t.actNight, ["WT","MMA","ハンド"]);
+
+  document.getElementById("charts").innerHTML = `
+    <div class="chart-card"><h3>日タイプ（予定）</h3>${pieSVG(dayPlan)}${legendHTML(dayPlan)}</div>
+    <div class="chart-card"><h3>日タイプ（実績）</h3>${pieSVG(dayAct)}${legendHTML(dayAct)}</div>
+    <div class="chart-card"><h3>夜運動（予定）</h3>${pieSVG(nightPlan)}${legendHTML(nightPlan)}</div>
+    <div class="chart-card"><h3>夜運動（実績）</h3>${pieSVG(nightAct)}${legendHTML(nightAct)}</div>
+  `;
+}
+
+function renderContent(){
+  const el = document.getElementById("content");
+  el.innerHTML = currentView==="list" ? renderList() : renderCalendar();
+}
+
+// ===== リスト =====
+function renderList(){
+  const days = buildMonth(currentMonth);
+  const today = new Date();
+  const isToday = (d)=> today.getFullYear()===2026 && today.getMonth()+1===currentMonth && today.getDate()===d;
+  const html = days.map(x=>{
+    const tks = tasksOf(x);
+    const s = getDayState(currentMonth, x.d);
+    const wdCls = x.wd===6?"sat":(x.wd===0?"sun":"");
+    const typeCls = x.type==="普通"?"normal":(x.type==="チート"?"cheat":"special");
+    const todayCls = isToday(x.d)?"today":"";
+    const tagText = x.type==="普通"?"10分":(x.type==="チート"?"チート":"特別");
+    const chips = tks.map(tk=>{
+      const done = !!s[tk.id];
+      const exCls = tk.ex ? `ex-${tk.ex}` : "";
+      return `<button class="chip cat-${tk.cat} ${exCls} ${done?'done':''}" onclick="toggleTask(${currentMonth},${x.d},'${tk.id}')"><span class="check">${done?'✓':''}</span><span class="label">${tk.label}</span></button>`;
+    }).join("");
+    return `
+      <div class="list-day ${todayCls}">
+        <div class="date-col ${typeCls}">
+          <div class="num">${x.d}</div>
+          <div class="wd ${wdCls}">${WD_JP[x.wd]}</div>
+          <div class="tag">${tagText}</div>
+        </div>
+        <div class="tasks">${chips}</div>
+      </div>
+    `;
+  }).join("");
+  return `<div class="list">${html}</div>`;
+}
+
+// ===== カレンダー =====
+function renderCalendar(){
+  const days = buildMonth(currentMonth);
+  const today = new Date();
+  const isToday = (d)=> today.getFullYear()===2026 && today.getMonth()+1===currentMonth && today.getDate()===d;
+  const dayMap = {};
+  days.forEach(x=>dayMap[x.d]=x);
+
+  // 日曜起点グリッド
+  const first = new Date(2026, currentMonth-1, 1).getDay(); // 0=日
+  const total = daysInMonth(currentMonth);
+  const cells = [];
+  for(let i=0;i<first;i++) cells.push(null);
+  for(let d=1; d<=total; d++) cells.push(d);
+  while(cells.length % 7 !== 0) cells.push(null);
+
+  const dowHTML = ["日","月","火","水","木","金","土"].map((w,i)=>{
+    const cls = i===0?"sun":(i===6?"sat":"");
+    return `<div class="cal-dow ${cls}">${w}</div>`;
+  }).join("");
+
+  const cellsHTML = cells.map(d=>{
+    if(!d) return `<div class="cal-cell empty"></div>`;
+    const x = dayMap[d];
+    const tks = tasksOf(x);
+    const s = getDayState(currentMonth, d);
+    const typeCls = x.type==="普通"?"normal":(x.type==="チート"?"cheat":"special");
+    const todayCls = isToday(d)?"today":"";
+    const numCls = x.wd===0?"sun":(x.wd===6?"sat":"");
+    const tagShort = x.type==="チート"?"チート":(x.type==="特別"?"特別":"");
+    const chipsMini = tks.map(tk=>{
+      const done = !!s[tk.id];
+      const exCls = tk.ex ? `ex-${tk.ex}` : "";
+      return `<button class="chip-mini cat-${tk.cat} ${exCls} ${done?'done':''}" onclick="toggleTask(${currentMonth},${d},'${tk.id}')" title="${tk.label}">${tk.label}</button>`;
+    }).join("");
+    return `
+      <div class="cal-cell ${typeCls} ${todayCls}">
+        <div class="head">
+          <span class="num ${numCls}">${d}</span>
+          <span class="small-tag">${tagShort}</span>
+        </div>
+        <div class="chips-mini">${chipsMini}</div>
+      </div>
+    `;
+  }).join("");
+
+  return `<div class="cal"><div class="cal-grid">${dowHTML}${cellsHTML}</div></div>`;
+}
+
+// ===== 操作 =====
+function toggleTask(m,d,id){
+  const s = getDayState(m,d);
+  s[id] = !s[id];
+  if(!s[id]) delete s[id];
+  saveState(state);
+  render();
+}
+
+function resetMonth(){
+  if(!confirm(`${currentMonth}月の実績を全消去します。よろしい？`)) return;
+  const total = daysInMonth(currentMonth);
+  for(let d=1; d<=total; d++) delete state[`${currentMonth}-${d}`];
+  saveState(state);
+  render();
+}
+
+function exportJSON(){
+  const blob = new Blob([JSON.stringify(state,null,2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `tracker_2026_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importJSON(){
+  const inp = document.createElement("input");
+  inp.type = "file";
+  inp.accept = "application/json";
+  inp.onchange = e=>{
+    const f = e.target.files[0];
+    if(!f) return;
+    const r = new FileReader();
+    r.onload = ()=>{
+      try{
+        const data = JSON.parse(r.result);
+        if(confirm("既存データを上書きします。よろしい？")){
+          state = data;
+          saveState(state);
+          render();
+        }
+      }catch(err){ alert("JSON読込失敗: "+err.message); }
+    };
+    r.readAsText(f);
+  };
+  inp.click();
+}
+
+render();
+</script>
+</body>
+</html>
