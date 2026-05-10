@@ -127,6 +127,31 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
   .cat-bars{grid-template-columns:repeat(5,1fr)}
   .cal-cell{min-height:130px}
 }
+
+/* === 日記機能 === */
+.list-day .date-col{cursor:pointer;position:relative}
+.list-day .date-col:active{opacity:.7}
+.list-day .date-col .diary-mark{font-size:11px;margin-top:2px;color:#0a84ff}
+.cal-cell .diary-mark{position:absolute;top:2px;right:4px;font-size:9px;color:#0a84ff;font-weight:700}
+.diary-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;opacity:0;pointer-events:none;transition:opacity .25s;display:flex;align-items:flex-end;justify-content:center}
+.diary-modal-bg.show{opacity:1;pointer-events:auto}
+.diary-modal{background:#fff;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:18px 16px 30px;transform:translateY(100%);transition:transform .3s ease}
+.diary-modal-bg.show .diary-modal{transform:translateY(0)}
+.diary-modal .grip{width:42px;height:5px;background:#ddd;border-radius:999px;margin:0 auto 14px}
+.diary-modal h2{margin:0 0 8px;font-size:18px;font-weight:800}
+.diary-modal .sub{font-size:12px;color:var(--muted);margin-bottom:12px}
+.diary-modal textarea{width:100%;min-height:280px;border:2px solid var(--line);border-radius:12px;padding:12px;font:inherit;font-size:14px;resize:vertical}
+.diary-modal textarea:focus{border-color:#0a84ff;outline:none}
+.diary-modal .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.diary-modal .actions button{appearance:none;border:none;border-radius:10px;padding:12px;font:inherit;font-weight:800;font-size:13px;cursor:pointer}
+.diary-modal .b-close{background:#eee;color:#666}
+.diary-modal .b-clear{background:#ffd9df;color:#c43}
+.diary-toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(20px);background:rgba(20,200,90,.95);color:#fff;padding:10px 20px;border-radius:999px;font-weight:700;font-size:13px;opacity:0;pointer-events:none;transition:all .25s;z-index:200}
+.diary-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media (min-width:600px){
+  .diary-modal-bg{align-items:center}
+  .diary-modal{border-radius:20px;max-height:85vh}
+}
 </style>
 </head>
 <body>
@@ -153,6 +178,20 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
   <button onclick="importJSON()">JSON読み込み</button>
   <button class="danger" onclick="resetMonth()">この月リセット</button>
 </div>
+
+<div class="diary-modal-bg" id="diaryBg" onclick="if(event.target===this)closeDiary()">
+  <div class="diary-modal">
+    <div class="grip"></div>
+    <h2 id="diaryTitle">📝 日記</h2>
+    <div class="sub" id="diarySub">自動保存されます。閉じてOK。</div>
+    <textarea id="diaryBox" placeholder="今日あったこと・反省・気づきを自由に書く（音声入力もOK：マイク🎤）" oninput="onDiaryInput()"></textarea>
+    <div class="actions">
+      <button class="b-clear" onclick="clearDiary()">この日の日記を削除</button>
+      <button class="b-close" onclick="closeDiary()">閉じる</button>
+    </div>
+  </div>
+</div>
+<div class="diary-toast" id="diaryToast"></div>
 
 <script>
 // ===== 予定（calendar_v43.py 同期） =====
@@ -419,12 +458,14 @@ function renderList(){
       const exCls = tk.ex ? `ex-${tk.ex}` : "";
       return `<button class="chip cat-${tk.cat} ${exCls} ${done?'done':''}" onclick="toggleTask(${currentMonth},${x.d},'${tk.id}')"><span class="check">${done?'✓':''}</span><span class="label">${tk.label}</span></button>`;
     }).join("");
+    const diaryMark = hasDiary(currentMonth, x.d) ? `<div class="diary-mark">📝</div>` : `<div class="diary-mark" style="opacity:.25">📝</div>`;
     return `
       <div class="list-day ${todayCls}">
-        <div class="date-col ${typeCls}">
+        <div class="date-col ${typeCls}" onclick="openDiary(${currentMonth},${x.d})" title="タップで日記">
           <div class="num">${x.d}</div>
           <div class="wd ${wdCls}">${WD_JP[x.wd]}</div>
           <div class="tag">${tagText}</div>
+          ${diaryMark}
         </div>
         <div class="tasks">${chips}</div>
       </div>
@@ -468,12 +509,14 @@ function renderCalendar(){
       const exCls = tk.ex ? `ex-${tk.ex}` : "";
       return `<button class="chip-mini cat-${tk.cat} ${exCls} ${done?'done':''}" onclick="toggleTask(${currentMonth},${d},'${tk.id}')" title="${tk.label}">${tk.label}</button>`;
     }).join("");
+    const dMark = hasDiary(currentMonth, d) ? `<span class="diary-mark">📝</span>` : "";
     return `
-      <div class="cal-cell ${typeCls} ${todayCls}">
+      <div class="cal-cell ${typeCls} ${todayCls}" ondblclick="openDiary(${currentMonth},${d})">
         <div class="head">
-          <span class="num ${numCls}">${d}</span>
+          <span class="num ${numCls}" onclick="event.stopPropagation();openDiary(${currentMonth},${d})" style="cursor:pointer" title="タップで日記">${d}</span>
           <span class="small-tag">${tagShort}</span>
         </div>
+        ${dMark}
         <div class="chips-mini">${chipsMini}</div>
       </div>
     `;
@@ -507,6 +550,62 @@ function exportJSON(){
   a.download = `tracker_2026_${new Date().toISOString().slice(0,10)}.json`;
   a.click();
   URL.revokeObjectURL(url);
+}
+
+// ===== 日記機能 =====
+const DIARY_KEY = "__diary__";
+let openDiary_m = null, openDiary_d = null;
+let diaryToastTimer;
+
+function hasDiary(m,d){
+  const s = state[`${m}-${d}`];
+  return !!(s && s[DIARY_KEY] && s[DIARY_KEY].length);
+}
+
+function diaryToast(msg){
+  const el = document.getElementById("diaryToast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(diaryToastTimer);
+  diaryToastTimer = setTimeout(()=>el.classList.remove("show"), 1500);
+}
+
+function openDiary(m,d){
+  openDiary_m = m;
+  openDiary_d = d;
+  document.getElementById("diaryBg").classList.add("show");
+  const s = getDayState(m,d);
+  const wd = ["日","月","火","水","木","金","土"][new Date(2026, m-1, d).getDay()];
+  document.getElementById("diaryTitle").textContent = `📝 ${m}月${d}日（${wd}）の日記`;
+  document.getElementById("diaryBox").value = s[DIARY_KEY] || "";
+  setTimeout(()=>document.getElementById("diaryBox").focus(), 100);
+}
+
+function closeDiary(){
+  openDiary_m = null;
+  openDiary_d = null;
+  document.getElementById("diaryBg").classList.remove("show");
+  render();
+}
+
+function onDiaryInput(){
+  if(openDiary_m===null) return;
+  const txt = document.getElementById("diaryBox").value;
+  const s = getDayState(openDiary_m, openDiary_d);
+  if(txt) s[DIARY_KEY] = txt;
+  else delete s[DIARY_KEY];
+  saveState(state);
+  diaryToast("✓ 自動保存");
+}
+
+function clearDiary(){
+  if(openDiary_m===null) return;
+  if(!confirm("この日の日記を削除します。よろしい？")) return;
+  const s = getDayState(openDiary_m, openDiary_d);
+  delete s[DIARY_KEY];
+  saveState(state);
+  document.getElementById("diaryBox").value = "";
+  diaryToast("削除した");
 }
 
 function importJSON(){
