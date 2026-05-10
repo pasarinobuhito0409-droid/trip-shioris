@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#c850dc">
+<title>MMA練習ログ</title>
+<style>
+:root{
+  --c-strike:#ff6b6b;
+  --c-clinch:#f59e3c;
+  --c-ground:#c850dc;
+  --c-spar:#0a84ff;
+  --c-strategy:#1aa56a;
+  --c-memo:#6b6b73;
+  --bg:#f5f5f7;
+  --card:#ffffff;
+  --line:#e3e3e8;
+  --text:#1d1d1f;
+  --muted:#6b6b73;
+  --done:#34c759;
+  --gold:#ffb300;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,"Hiragino Sans","Yu Gothic UI","Segoe UI",sans-serif;font-size:15px;line-height:1.5}
+
+header{position:sticky;top:0;z-index:10;background:var(--bg);padding:12px 14px 6px;border-bottom:1px solid var(--line)}
+h1{margin:0 0 4px;font-size:18px;font-weight:800}
+.today{font-size:12px;color:var(--muted);font-weight:500}
+
+.today-part{margin:12px 14px;padding:16px;border-radius:16px;
+  background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#3a1c5a 100%);
+  color:#fff;box-shadow:0 4px 16px rgba(58,28,90,.3);position:relative;overflow:hidden}
+.today-part::before{content:"";position:absolute;top:-30px;right:-30px;width:100px;height:100px;
+  background:radial-gradient(circle,rgba(255,179,0,.3) 0%,transparent 70%)}
+.today-part .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:11px;font-weight:700;opacity:.85;letter-spacing:.05em}
+.today-part .pcount{background:rgba(255,255,255,.15);padding:3px 9px;border-radius:999px;font-size:10px}
+.today-part .cat-tag{display:inline-block;font-size:10px;font-weight:800;padding:3px 9px;border-radius:6px;color:#fff;margin-bottom:8px}
+.today-part .cat-tag.strike{background:var(--c-strike)}
+.today-part .cat-tag.clinch{background:var(--c-clinch)}
+.today-part .cat-tag.ground{background:var(--c-ground)}
+.today-part .cat-tag.strategy{background:var(--c-strategy)}
+.today-part .name{font-size:22px;font-weight:900;line-height:1.2;margin-bottom:4px;cursor:pointer;text-decoration:underline;text-decoration-color:rgba(255,179,0,.4);text-underline-offset:4px}
+.today-part .desc{font-size:13px;opacity:.85;line-height:1.5;margin-bottom:14px}
+.today-part .actions{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:6px}
+.today-part .actions button{
+  appearance:none;border:none;border-radius:10px;padding:11px 4px;
+  font:inherit;font-weight:800;font-size:12px;cursor:pointer;
+  transition:transform .1s
+}
+.today-part .actions button:active{transform:scale(.95)}
+.today-part .btn-detail{background:#fff;color:#1a1a2e}
+.today-part .btn-complete{background:var(--done);color:#fff}
+.today-part .btn-progress{background:var(--gold);color:#fff}
+.today-part .btn-skip{background:rgba(255,255,255,.18);color:#fff}
+.today-part.all-done{background:linear-gradient(135deg,#0a84ff 0%,#34c759 100%)}
+
+.guide{font-size:12px;color:#0a4a82;background:#dceeff;padding:8px 12px;border-radius:8px;margin:0 14px 10px;border-left:3px solid #0a84ff}
+
+.main-area{padding:0 14px 8px}
+.main-area textarea{
+  width:100%;min-height:65px;
+  border:2px solid var(--line);border-radius:12px;
+  padding:12px;font:inherit;font-size:15px;
+  background:#fff;resize:vertical;
+}
+.main-area textarea:focus{border-color:#0a84ff;outline:none}
+.hint{font-size:11px;color:var(--muted);margin:4px 2px}
+
+.btn-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:6px 14px 10px}
+.cat-btn{
+  appearance:none;border:none;border-radius:14px;
+  padding:18px 10px;font-size:16px;font-weight:800;color:#fff;
+  cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;
+  box-shadow:0 3px 8px rgba(0,0,0,.12);
+  transition:transform .1s, box-shadow .1s;
+}
+.cat-btn:active{transform:scale(.95);box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.cat-btn .icon{font-size:26px;line-height:1}
+.cat-btn .sub{font-size:10px;font-weight:600;opacity:.85}
+.cat-btn.strike{background:var(--c-strike)}
+.cat-btn.clinch{background:var(--c-clinch)}
+.cat-btn.ground{background:var(--c-ground)}
+.cat-btn.spar{background:var(--c-spar)}
+.cat-btn.memo{background:var(--c-memo);grid-column:span 2;padding:14px}
+
+.section-title{padding:10px 14px 6px;font-size:13px;font-weight:700;color:var(--muted);display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.section-title .count{font-size:11px;font-weight:600}
+.section-title .arrow{transition:transform .2s;font-size:10px;color:#aaa}
+.section-title.collapsed .arrow{transform:rotate(-90deg)}
+
+.log-list{padding:0 14px 12px;display:flex;flex-direction:column;gap:6px}
+.log-item{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:grid;grid-template-columns:50px 1fr auto;gap:8px;align-items:start;transition:all .3s}
+.log-item.flash{
+  background:#fff8d4;border-color:#ffd60a;
+  box-shadow:0 0 0 3px rgba(255,214,10,.3);
+  animation:flashHi 1.2s ease;
+}
+@keyframes flashHi{
+  0%{transform:scale(1.04);background:#fff5a8}
+  100%{transform:scale(1);background:#fff8d4}
+}
+.log-item .time{font-size:11px;color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums}
+.log-item .body .cat{display:inline-block;font-size:10px;font-weight:800;color:#fff;padding:2px 7px;border-radius:6px;margin-bottom:3px}
+.log-item .body .cat.strike{background:var(--c-strike)}
+.log-item .body .cat.clinch{background:var(--c-clinch)}
+.log-item .body .cat.ground{background:var(--c-ground)}
+.log-item .body .cat.spar{background:var(--c-spar)}
+.log-item .body .cat.strategy{background:var(--c-strategy)}
+.log-item .body .cat.memo{background:var(--c-memo)}
+.log-item .body .cat.part{background:var(--gold)}
+.log-item .body .text{font-size:13px;line-height:1.4;word-break:break-word;white-space:pre-wrap}
+.log-item .del{appearance:none;border:none;background:transparent;color:#ccc;font-size:18px;cursor:pointer;padding:0 4px}
+.log-item .del:active{color:#ff453a}
+
+.empty{padding:20px;text-align:center;color:var(--muted);font-size:13px;background:var(--card);border-radius:12px;border:1px dashed var(--line);margin:0 14px 12px}
+
+.date-tabs{display:flex;gap:6px;padding:0 14px 8px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.date-tabs button{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--text);font-size:12px;font-weight:600;padding:6px 12px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.date-tabs button.active{background:var(--text);color:#fff;border-color:var(--text)}
+
+.parts-wrap{padding:0 14px 12px}
+.parts-block{margin-bottom:10px}
+.parts-block h4{margin:0 0 6px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.parts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px}
+.part-cell{
+  background:#fff;border:1.5px solid var(--line);border-radius:8px;
+  padding:8px 10px;font-size:12px;line-height:1.3;display:flex;align-items:center;gap:6px;
+  cursor:pointer;transition:all .15s;
+}
+.part-cell:active{transform:scale(.97)}
+.part-cell .pname{flex:1;font-weight:700}
+.part-cell .pmark{font-size:14px;flex:0 0 auto}
+.part-cell.s-未着手{color:#999}
+.part-cell.s-未着手 .pmark{color:#ccc}
+.part-cell.s-練習中{background:#fff8e1;border-color:var(--gold);color:#7a4f00}
+.part-cell.s-練習中 .pmark{color:var(--gold)}
+.part-cell.s-組み上がった{background:#dcf5e3;border-color:var(--done);color:#1d6435}
+.part-cell.s-組み上がった .pmark{color:var(--done)}
+
+.parts-summary{display:flex;gap:10px;margin-bottom:8px;font-size:11px;flex-wrap:wrap}
+.parts-summary span{display:inline-flex;align-items:center;gap:4px;color:var(--muted)}
+.parts-summary i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.progress-bar{height:8px;background:#eee;border-radius:999px;overflow:hidden;margin-bottom:10px}
+.progress-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--done));transition:width .3s}
+
+.chart-wrap{padding:8px 14px 12px}
+.chart-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.chart-card h3{margin:0 0 8px;font-size:12px;color:var(--muted);font-weight:700}
+.chart-card svg{width:100%;max-width:200px;height:auto;display:block;margin:0 auto}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;font-size:11px;justify-content:center}
+.legend span{display:inline-flex;align-items:center;gap:4px;color:var(--muted)}
+.legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
+
+.toolbar{display:flex;gap:8px;padding:8px 14px 24px;flex-wrap:wrap}
+.toolbar button{flex:1;min-width:100px;background:#fff;border:1px solid var(--line);padding:10px;border-radius:10px;font-size:12px;font-weight:700;color:var(--text);cursor:pointer}
+.toolbar button.danger{color:#c43;border-color:#fbb}
+.toolbar button.primary{background:var(--text);color:#fff;border-color:var(--text)}
+
+.toast{
+  position:fixed;left:50%;top:60px;transform:translateX(-50%) translateY(-30px);
+  background:rgba(20,200,90,.95);color:#fff;
+  padding:14px 24px;border-radius:999px;font-weight:800;font-size:15px;
+  opacity:0;pointer-events:none;transition:all .3s;z-index:200;
+  box-shadow:0 4px 16px rgba(0,0,0,.2);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.collapsible{max-height:8000px;overflow:hidden;transition:max-height .3s ease}
+.collapsible.hidden{max-height:0}
+
+/* === モーダル（ボトムシート風） === */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150;opacity:0;pointer-events:none;transition:opacity .25s;display:flex;align-items:flex-end;justify-content:center}
+.modal-bg.show{opacity:1;pointer-events:auto}
+.modal{background:#fff;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:18px 16px 30px;transform:translateY(100%);transition:transform .3s ease}
+.modal-bg.show .modal{transform:translateY(0)}
+.modal .grip{width:42px;height:5px;background:#ddd;border-radius:999px;margin:0 auto 14px}
+.modal .m-cat{display:inline-block;font-size:10px;font-weight:800;padding:3px 9px;border-radius:6px;color:#fff;margin-bottom:6px}
+.modal .m-cat.strike{background:var(--c-strike)}
+.modal .m-cat.clinch{background:var(--c-clinch)}
+.modal .m-cat.ground{background:var(--c-ground)}
+.modal .m-cat.strategy{background:var(--c-strategy)}
+.modal .m-name{font-size:24px;font-weight:900;line-height:1.2;margin-bottom:6px}
+.modal .m-status{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;display:inline-block;margin-bottom:10px}
+.modal .m-status.s-未着手{background:#eee;color:#999}
+.modal .m-status.s-練習中{background:#fff3c4;color:#7a4f00}
+.modal .m-status.s-組み上がった{background:#dcf5e3;color:#1d6435}
+.modal .m-desc{font-size:14px;color:var(--muted);margin-bottom:16px;line-height:1.5}
+.modal h3{font-size:13px;font-weight:800;color:#444;margin:18px 0 8px;display:flex;align-items:center;gap:5px}
+.modal .checklist{display:flex;flex-direction:column;gap:6px}
+.modal .checkitem{display:flex;align-items:flex-start;gap:10px;padding:10px;background:#f8f8fa;border-radius:10px;border:1px solid var(--line);cursor:pointer;transition:all .15s}
+.modal .checkitem:active{transform:scale(.98)}
+.modal .checkitem.done{background:#dcf5e3;border-color:var(--done)}
+.modal .checkitem .box{width:22px;height:22px;border-radius:6px;border:2px solid #ccc;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:14px;color:transparent;font-weight:900;background:#fff}
+.modal .checkitem.done .box{background:var(--done);border-color:var(--done);color:#fff}
+.modal .checkitem .text{flex:1;font-size:13px;line-height:1.4}
+.modal .checkitem.done .text{text-decoration:line-through;opacity:.7}
+.modal textarea{width:100%;min-height:90px;border:2px solid var(--line);border-radius:10px;padding:10px;font:inherit;font-size:14px;resize:vertical}
+.modal textarea:focus{border-color:#0a84ff;outline:none}
+.modal .m-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:18px}
+.modal .m-actions button{appearance:none;border:none;border-radius:10px;padding:14px;font:inherit;font-weight:800;font-size:14px;cursor:pointer}
+.modal .m-actions .b-consult{background:#1a1a2e;color:#fff;grid-column:span 2}
+.modal .m-actions .b-complete{background:var(--done);color:#fff}
+.modal .m-actions .b-progress{background:var(--gold);color:#fff}
+.modal .m-actions .b-reset{background:#eee;color:#666}
+.modal .m-actions .b-close{background:transparent;color:#666;border:1px solid #ccc;grid-column:span 2}
+.modal .m-history{max-height:200px;overflow-y:auto;border:1px solid var(--line);border-radius:10px;padding:8px;font-size:12px;background:#fafafa}
+.modal .m-history .item{padding:6px 0;border-bottom:1px dashed #e5e5e5}
+.modal .m-history .item:last-child{border-bottom:none}
+.modal .m-history .item .t{font-size:10px;color:#999}
+
+@media (min-width:600px){
+  .btn-grid{grid-template-columns:repeat(4,1fr)}
+  .cat-btn.memo{grid-column:span 4}
+  .modal-bg{align-items:center}
+  .modal{border-radius:20px;max-height:85vh}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🥊 MMA練習ログ</h1>
+  <div class="today" id="todayLabel"></div>
+</header>
+
+<div class="today-part" id="todayPartCard"></div>
+
+<div class="guide">
+  📌 「今日の1個」の名前をタップ → 詳細＆チェックリスト＆メモ＆Claude相談が開く
+</div>
+
+<div class="main-area">
+  <textarea id="memoBox" placeholder="任意：何があった？（音声入力もOK）"></textarea>
+  <div class="hint">↓ ボタンでカテゴリ別に即記録</div>
+</div>
+
+<div class="btn-grid">
+  <button class="cat-btn strike" onclick="quickSave('strike')">
+    <span class="icon">👊</span><span>打撃</span><span class="sub">タップで記録</span>
+  </button>
+  <button class="cat-btn clinch" onclick="quickSave('clinch')">
+    <span class="icon">🤼</span><span>組み技</span><span class="sub">タップで記録</span>
+  </button>
+  <button class="cat-btn ground" onclick="quickSave('ground')">
+    <span class="icon">🌀</span><span>寝技</span><span class="sub">タップで記録</span>
+  </button>
+  <button class="cat-btn spar" onclick="quickSave('spar')">
+    <span class="icon">🥊</span><span>スパー</span><span class="sub">タップで記録</span>
+  </button>
+  <button class="cat-btn memo" onclick="quickSave('memo')">
+    <span class="icon">📝</span><span>メモとして保存</span>
+  </button>
+</div>
+
+<div class="section-title" onclick="toggleSection('logsContainer', this)">
+  <span id="logsTitle">📋 今日のログ（新しい順）</span>
+  <span><span class="count" id="logsCount"></span> <span class="arrow">▼</span></span>
+</div>
+<div id="logsContainer" class="collapsible"></div>
+
+<div class="section-title">
+  <span>📅 日付切替</span>
+</div>
+<div class="date-tabs" id="dateTabs"></div>
+
+<div class="section-title" onclick="toggleSection('partsContainer', this)">
+  <span>📦 完成パーツ表（タップで詳細）</span>
+  <span><span class="count" id="partsCount"></span> <span class="arrow">▼</span></span>
+</div>
+<div id="partsContainer" class="collapsible"></div>
+
+<div class="section-title" onclick="toggleSection('chartContainer', this)">
+  <span>📊 月次比率</span>
+  <span><span class="count" id="monthLabel"></span> <span class="arrow">▼</span></span>
+</div>
+<div id="chartContainer" class="collapsible">
+  <div class="chart-wrap">
+    <div class="chart-card">
+      <h3>カテゴリ比率（今月）</h3>
+      <div id="chartArea"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toolbar">
+  <button class="primary" onclick="copyToday()">📋 今日のログをコピー</button>
+  <button onclick="exportJSON()">JSON書き出し</button>
+  <button onclick="importJSON()">JSON読み込み</button>
+  <button class="danger" onclick="resetAll()">全消去</button>
+</div>
+
+<!-- モーダル -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+console.log("MMA Tracker v5 - パーツ詳細＆Claude相談");
+
+// ===== パーツ定義（チェックリスト付き） =====
+const PARTS = [
+  {id:1, cat:"strike", name:"ジャブ", desc:"前手の刺し。距離測りの基本",
+    checks:["肩から真っ直ぐ突く（肩より外に流れない）","出したら即引く（戻しが速い）","当てるより距離測りに多用","頭の位置をズラしながら出す","ジャブから2への繋ぎ"]},
+  {id:2, cat:"strike", name:"ストレート", desc:"後手の直線。パワーの中核",
+    checks:["後ろ足のひねりで打つ","体重移動：後→前","顎を引いて打つ","距離はジャブの届く所","返しのリスク管理"]},
+  {id:3, cat:"strike", name:"1-2（ジャブ→ストレート）", desc:"基本コンビ",
+    checks:["1で止めず2まで連続","1の戻りで2を打つ","1で頭の位置変える","2の後の戻り姿勢","距離の合わせ方"]},
+  {id:4, cat:"strike", name:"フック", desc:"横の弧。近距離",
+    checks:["肘を肩の高さに固定","体のひねりで打つ","拳より肘が先行","近距離で使う","フォロースルーしすぎない"]},
+  {id:5, cat:"strike", name:"アッパー", desc:"下から。ガード割り",
+    checks:["膝の屈伸を使う","ガードの隙間を狙う","顎を引いて打つ","短い距離","クリンチ前の崩し"]},
+  {id:6, cat:"strike", name:"ロー", desc:"脛蹴り低段。足削り",
+    checks:["脛で打つ（足甲じゃない）","軸足を踏み込む","腰のひねり","戻しが速い","内側／外側の打ち分け"]},
+  {id:7, cat:"strike", name:"ミドル", desc:"脛蹴り腹。スタミナ削る",
+    checks:["軌道は45度","腹／肝臓を狙う","軸足の踏み込み","キャッチされない速度","フォロースルー"]},
+  {id:8, cat:"strike", name:"ハイ", desc:"脛蹴り頭。一撃必殺",
+    checks:["軌道：直線→弧","蹴り足の引き上げ高さ","軸足の柔軟性","フェイントから出す","当たらない時のリスク"]},
+  {id:9, cat:"strike", name:"前蹴り", desc:"距離切り。ストッパー",
+    checks:["膝を上げて爪先を返す","押し出すような蹴り","距離を作る用途","足裏で押す","カウンターに注意"]},
+  {id:10, cat:"strike", name:"ヒザ", desc:"クリンチ時の武器",
+    checks:["クリンチで首を落とす","膝先で当てる","腰で押し込む","連打可能","スタミナ食う技"]},
+  {id:11, cat:"strike", name:"肘", desc:"接近時の切り札",
+    checks:["短い距離専用","切る意識","クリンチからの突き上げ／振り下ろし","スタミナ少なく済む","ルール確認（流派による）"]},
+  {id:12, cat:"clinch", name:"クリンチ姿勢", desc:"首相撲の基本",
+    checks:["重心を低く","額を相手胸に","手首じゃなく腕全体で","足は相手の足の外側","呼吸を保つ"]},
+  {id:13, cat:"clinch", name:"アンダーフック", desc:"脇下を制する",
+    checks:["肘を絞る","肩を相手の脇下に","自分の腰を低く","引き上げる方向の力","テイクダウンへの繋ぎ"]},
+  {id:14, cat:"clinch", name:"ダブルレッグ", desc:"両足タックル",
+    checks:["ヒザ→腰の順で落とす","頭を相手の腰外側に","両手で膝裏を抱える","一気に距離を詰める","持ち上げ→倒すの2段階"]},
+  {id:15, cat:"clinch", name:"シングルレッグ", desc:"片足タックル",
+    checks:["片足を抱える","頭の位置：内側／外側で展開違う","軸足を刈る or 持ち上げる","相手の手の処理","スプロール返しに注意"]},
+  {id:16, cat:"clinch", name:"スプロール", desc:"タックル切り",
+    checks:["両足を後ろに開く","腰を前に落とす","相手の頭を押さえる","体重で潰す","立ち上がる連動"]},
+  {id:17, cat:"clinch", name:"TD防御基礎", desc:"テイクダウン防ぐ姿勢",
+    checks:["距離管理","フレーム（腕の壁）","スプロール準備姿勢","グラウンドに行かせない","押し返しのタイミング"]},
+  {id:18, cat:"ground", name:"クローズドガード", desc:"足で胴体を絡める",
+    checks:["足首をクロス","相手の腰を絞る","上体を引き寄せる","手の処理（ピストルグリップ等）","攻撃／復帰のスイッチ"]},
+  {id:19, cat:"ground", name:"オープンガード", desc:"足を開いた多彩な攻防",
+    checks:["足を相手のヒップに","距離管理が命","スイープ準備姿勢","パスされないフレーム","蜘蛛・ラッソー等の選択"]},
+  {id:20, cat:"ground", name:"ハーフガード", desc:"片足だけ絡める",
+    checks:["片足を相手の足に絡める","アンダーフック取る","横向き姿勢","スイープ／復帰","パスされる前の手"]},
+  {id:21, cat:"ground", name:"パスガード基本", desc:"ガードを越える",
+    checks:["相手の足を制する","重心を相手に乗せる","立ちパス／座りパス","横を取る動き","サイドへの移行"]},
+  {id:22, cat:"ground", name:"マウント維持", desc:"上に乗った安定",
+    checks:["重心を低く","グレープバイン（足を絡める）","ハイマウント／ローマウント","エビ返しへの対応","攻撃の選択肢"]},
+  {id:23, cat:"ground", name:"サイドコントロール", desc:"横抑え込み",
+    checks:["体重を相手胸に","頭の位置（首を抑える）","腰を低く","エビへの対応","ニーオンベリー／マウント移行"]},
+  {id:24, cat:"ground", name:"バックコントロール", desc:"背中取り。最強",
+    checks:["フックを足に","シートベルトグリップ","上の手で首を制する","体を密着","チョークへの繋ぎ"]},
+  {id:25, cat:"ground", name:"腕十字", desc:"肘関節極め",
+    checks:["相手の腕を伸ばし切る","自分の足を相手胸／顔に","親指を上に向けて極める","腰を上げて押し込む","抜けられる前のスピード"]},
+  {id:26, cat:"ground", name:"三角絞め", desc:"足で首と腕を絞める",
+    checks:["片腕を入れて片腕を出す形","自分の足首を膝裏に固定","腰を引いて角度作る","相手の頭を引きつける","完全に首動脈を絞める"]},
+  {id:27, cat:"ground", name:"リアネイキッドチョーク", desc:"裸絞め",
+    checks:["腕を相手の首回りに","反対の手で後頭部を押す","肘を顎下に","体を絞る","フックでバック維持"]},
+  {id:28, cat:"ground", name:"ギロチンチョーク", desc:"立ち→寝での首絞め",
+    checks:["立ちでもグラウンドでも","拳を上に向ける","相手の脇をブロック","背中を丸める（手前に引く）","クローズドガード絞めも"]},
+  {id:29, cat:"strategy", name:"距離管理", desc:"自分の距離で戦う",
+    checks:["自分の得意距離を知る","相手の届かない距離","ステップワーク","圧力／間合い切り","試合中の距離調整"]},
+  {id:30, cat:"strategy", name:"スタミナ配分", desc:"3R通して使い切らない",
+    checks:["1Rは様子見","2Rで仕掛け","3Rで決め切る or 守る","呼吸を切らさない","力みを抜く"]},
+];
+
+// ===== ストレージ =====
+const KEY = "mma_log_v1";
+function loadState(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(raw){
+      const s = JSON.parse(raw);
+      if(!s.logs) s.logs = [];
+      if(!s.parts) s.parts = {};
+      return s;
+    }
+  }catch(e){ console.warn("loadState fail", e); }
+  return {logs:[], parts:{}};
+}
+function saveState(s){
+  try{ localStorage.setItem(KEY, JSON.stringify(s)); }
+  catch(e){ console.warn("saveState fail", e); }
+}
+let state = loadState();
+
+function todayStr(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+let viewDate = todayStr();
+let lastSavedTs = null;
+let openPartId = null;
+
+const CATS = {
+  strike: {name:"打撃", color:"#ff6b6b", emoji:"👊"},
+  clinch: {name:"組み技", color:"#f59e3c", emoji:"🤼"},
+  ground: {name:"寝技", color:"#c850dc", emoji:"🌀"},
+  spar:   {name:"スパー", color:"#0a84ff", emoji:"🥊"},
+  strategy:{name:"戦略", color:"#1aa56a", emoji:"🧠"},
+  memo:   {name:"メモ", color:"#6b6b73", emoji:"📝"},
+  part:   {name:"パーツ", color:"#ffb300", emoji:"📦"}
+};
+
+let toastTimer;
+function toast(msg){
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove("show"), 2000);
+}
+
+// ===== パーツ操作 =====
+function getPart(id){ return state.parts[id] || {status:"未着手", notes:"", checks:{}}; }
+function getPartStatus(id){ return getPart(id).status; }
+function ensurePart(id){
+  if(!state.parts[id]) state.parts[id] = {status:"未着手", notes:"", checks:{}};
+  if(!state.parts[id].checks) state.parts[id].checks = {};
+  if(state.parts[id].notes===undefined) state.parts[id].notes = "";
+  return state.parts[id];
+}
+function setPartStatus(id, status){
+  ensurePart(id);
+  state.parts[id].status = status;
+  state.parts[id].updated = new Date().toISOString();
+  saveState(state);
+}
+function pickTodayPart(){
+  const inProg = PARTS.filter(p => getPartStatus(p.id)==="練習中")
+    .sort((a,b)=>(state.parts[a.id].updated||"").localeCompare(state.parts[b.id].updated||""));
+  if(inProg.length) return inProg[0];
+  const ns = PARTS.find(p => getPartStatus(p.id)==="未着手");
+  if(ns) return ns;
+  return null;
+}
+function partComplete(id){
+  const p = PARTS.find(x=>x.id===id);
+  if(!p) return;
+  setPartStatus(id, "組み上がった");
+  pushPartLog(p, "組み上がった");
+  toast(`✅ パーツ完成：${p.name}`);
+  closeModal();
+  render();
+}
+function partInProgress(id){
+  const p = PARTS.find(x=>x.id===id);
+  if(!p) return;
+  setPartStatus(id, "練習中");
+  pushPartLog(p, "練習中");
+  toast(`🔄 練習中：${p.name}`);
+  render();
+  if(openPartId===id) renderModal();
+}
+function partReset(id){
+  delete state.parts[id];
+  saveState(state);
+  toast(`未着手に戻した`);
+  render();
+  if(openPartId===id) renderModal();
+}
+function partSkip(id){
+  delete state.parts[id];
+  saveState(state);
+  toast(`⏭ パスした`);
+  render();
+}
+function pushPartLog(part, status){
+  const log = {
+    ts: new Date().toISOString(),
+    date: todayStr(),
+    cat: "part",
+    text: `[${status}] ${part.name}（${CATS[part.cat].name}）`,
+    partId: part.id
+  };
+  state.logs.push(log);
+  saveState(state);
+  lastSavedTs = log.ts;
+}
+function toggleCheck(id, ix){
+  const p = ensurePart(id);
+  p.checks[ix] = !p.checks[ix];
+  if(!p.checks[ix]) delete p.checks[ix];
+  saveState(state);
+  if(openPartId===id) renderModal();
+}
+function saveNotes(id, text){
+  const p = ensurePart(id);
+  p.notes = text;
+  saveState(state);
+}
+
+// ===== モーダル =====
+function openPartModal(id){
+  openPartId = id;
+  document.getElementById("modalBg").classList.add("show");
+  renderModal();
+}
+function closeModal(){
+  openPartId = null;
+  document.getElementById("modalBg").classList.remove("show");
+}
+
+function renderModal(){
+  if(openPartId===null) return;
+  const p = PARTS.find(x=>x.id===openPartId);
+  if(!p){ closeModal(); return; }
+  const ps = ensurePart(p.id);
+  const checksHtml = p.checks.map((c,ix)=>{
+    const done = !!ps.checks[ix];
+    const safeC = c.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    return `<div class="checkitem ${done?'done':''}" onclick="toggleCheck(${p.id},${ix})">
+      <div class="box">${done?'✓':''}</div>
+      <div class="text">${safeC}</div>
+    </div>`;
+  }).join("");
+  // 履歴
+  const histLogs = state.logs.filter(l=>l.partId===p.id).slice(-10).reverse();
+  const histHtml = histLogs.length ? histLogs.map(l=>{
+    const t = new Date(l.ts);
+    const tt = `${l.date} ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+    const safeText = l.text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    return `<div class="item"><div class="t">${tt}</div><div>${safeText}</div></div>`;
+  }).join("") : `<div style="color:#999;font-size:12px">まだ履歴なし</div>`;
+
+  const safeNotes = (ps.notes||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+  document.getElementById("modalContent").innerHTML = `
+    <div class="grip"></div>
+    <span class="m-cat ${p.cat}">${CATS[p.cat].emoji} ${CATS[p.cat].name}</span>
+    <div class="m-name">${p.name}</div>
+    <span class="m-status s-${ps.status}">${ps.status}</span>
+    <div class="m-desc">${p.desc}</div>
+
+    <h3>✅ チェックリスト（意識すること）</h3>
+    <div class="checklist">${checksHtml}</div>
+
+    <h3>📝 自分のメモ（コツ・気づき・失敗）</h3>
+    <textarea id="notesBox" placeholder="例：左肩が上がる癖がある。鏡見ながらやると意識できる" oninput="saveNotes(${p.id}, this.value)">${safeNotes}</textarea>
+    <div class="hint">↑ 自動で保存される</div>
+
+    <h3>💬 Claudeに相談</h3>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:8px">下のボタンを押すと、このパーツの状況をまとめた相談文がコピーされる。Claude（俺）に貼って質問追加して送って。</div>
+
+    <div class="m-actions">
+      <button class="b-consult" onclick="copyConsult(${p.id})">💬 Claudeに相談する文を作ってコピー</button>
+      <button class="b-complete" onclick="partComplete(${p.id})">✅ 組み上がった</button>
+      <button class="b-progress" onclick="partInProgress(${p.id})">🔄 練習中にする</button>
+      ${ps.status!=="未着手" ? `<button class="b-reset" onclick="partReset(${p.id})">↺ 未着手に戻す</button><button class="b-close" onclick="closeModal()">閉じる</button>` : `<button class="b-close" onclick="closeModal()">閉じる</button>`}
+    </div>
+
+    <h3>📅 このパーツの履歴</h3>
+    <div class="m-history">${histHtml}</div>
+  `;
+}
+
+function copyConsult(id){
+  const p = PARTS.find(x=>x.id===id);
+  if(!p) return;
+  const ps = ensurePart(p.id);
+  const checksDone = p.checks.map((c,ix)=>({c, done: !!ps.checks[ix]}));
+  const doneList = checksDone.filter(x=>x.done).map(x=>`✓ ${x.c}`).join("\n");
+  const ndList = checksDone.filter(x=>!x.done).map(x=>`✗ ${x.c}`).join("\n");
+  const histLogs = state.logs.filter(l=>l.partId===p.id);
+  const text =
+`【MMA練習相談】（mma-tracker.html から）
+
+■ パーツ
+- 名前: ${p.name}
+- カテゴリ: ${CATS[p.cat].name}
+- 説明: ${p.desc}
+- 状態: ${ps.status}
+- 関連ログ累計: ${histLogs.length}件
+
+■ チェックリスト（できてること）
+${doneList || "（まだなし）"}
+
+■ チェックリスト（未達）
+${ndList || "（全部できてる）"}
+
+■ 自分のメモ
+${ps.notes || "（まだ書いてない）"}
+
+■ 質問・相談したいこと
+（ここに書いてください）
+
+→ 設計脳・板金例えも交えて、このパーツを組み上げるコツを教えて。`;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>{
+      toast("📋 相談文コピー完了");
+    }).catch(()=>fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+// ===== クイック保存 =====
+function quickSave(cat){
+  const box = document.getElementById("memoBox");
+  const txt = (box.value || "").trim();
+  const finalText = txt || `${CATS[cat].name}をやった`;
+  const log = {
+    ts: new Date().toISOString(),
+    date: todayStr(),
+    cat: cat,
+    text: finalText
+  };
+  state.logs.push(log);
+  saveState(state);
+  box.value = "";
+  viewDate = todayStr();
+  lastSavedTs = log.ts;
+  toast(`✓ ${CATS[cat].emoji} ${CATS[cat].name} を保存`);
+  render();
+  setTimeout(()=>{
+    const flashed = document.querySelector(".log-item.flash");
+    if(flashed) flashed.scrollIntoView({behavior:"smooth", block:"center"});
+  }, 100);
+}
+
+function delLog(ts){
+  state.logs = state.logs.filter(l=>l.ts!==ts);
+  saveState(state);
+  toast("削除した");
+  render();
+}
+
+function resetAll(){
+  if(!confirm("全ログ＆パーツ進捗を消去します。よろしい？")) return;
+  state = {logs:[], parts:{}};
+  saveState(state);
+  render();
+}
+
+function copyToday(){
+  const todays = state.logs.filter(l=>l.date===viewDate);
+  if(!todays.length){ toast("ログなし"); return; }
+  const text = todays.map(l=>{
+    const t = new Date(l.ts);
+    const tt = `${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+    return `[${tt}] ${CATS[l.cat].name}: ${l.text}`;
+  }).join("\n");
+  const head = `=== MMA練習ログ ${viewDate} ===\n`;
+  const full = head+text;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(full).then(()=>toast("コピーした")).catch(()=>fallbackCopy(full));
+  } else {
+    fallbackCopy(full);
+  }
+}
+
+function fallbackCopy(text){
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position="fixed";ta.style.opacity="0";
+  document.body.appendChild(ta);
+  ta.select();
+  try{ document.execCommand("copy"); toast("コピーした"); }
+  catch(e){ alert(text); }
+  document.body.removeChild(ta);
+}
+
+function exportJSON(){
+  const blob = new Blob([JSON.stringify(state,null,2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `mma_log_${todayStr()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importJSON(){
+  const inp = document.createElement("input");
+  inp.type = "file";
+  inp.accept = "application/json";
+  inp.onchange = e=>{
+    const f = e.target.files[0];
+    if(!f) return;
+    const r = new FileReader();
+    r.onload = ()=>{
+      try{
+        const data = JSON.parse(r.result);
+        if(!data.logs) throw new Error("logs フィールドなし");
+        if(!data.parts) data.parts = {};
+        if(confirm(`既存${state.logs.length}件 → 読込${data.logs.length}件で上書き。OK？`)){
+          state = data;
+          saveState(state);
+          render();
+        }
+      }catch(err){ alert("JSON読込失敗: "+err.message); }
+    };
+    r.readAsText(f);
+  };
+  inp.click();
+}
+
+function toggleSection(id, titleEl){
+  const el = document.getElementById(id);
+  el.classList.toggle("hidden");
+  titleEl.classList.toggle("collapsed");
+}
+
+// ===== 描画 =====
+function render(){
+  const t = new Date();
+  const wd = ["日","月","火","水","木","金","土"][t.getDay()];
+  const completed = PARTS.filter(p => getPartStatus(p.id)==="組み上がった").length;
+  document.getElementById("todayLabel").textContent =
+    `${todayStr()}（${wd}）/ ログ${state.logs.length}件 / パーツ ${completed}/${PARTS.length}`;
+
+  renderTodayPart();
+  renderDateTabs();
+  renderLogs();
+  renderParts();
+  renderChart();
+}
+
+function renderTodayPart(){
+  const card = document.getElementById("todayPartCard");
+  const p = pickTodayPart();
+  const completed = PARTS.filter(x=>getPartStatus(x.id)==="組み上がった").length;
+  if(!p){
+    card.classList.add("all-done");
+    card.innerHTML = `
+      <div class="header"><span>🏆 完成</span><span class="pcount">${completed}/${PARTS.length}</span></div>
+      <div class="name" style="cursor:default;text-decoration:none">全パーツ組み上がった！</div>
+      <div class="desc">次のレベルのパーツを追加するか、リセットして再挑戦できる。</div>
+      <div class="actions">
+        <button class="btn-detail" onclick="alert('次レベルのパーツ追加は俺と相談してね')">✨ 次へ</button>
+        <button class="btn-skip" onclick="if(confirm('パーツ進捗だけリセット？')){state.parts={};saveState(state);render();}">🔄 リセット</button>
+        <button class="btn-skip" onclick="document.getElementById('partsContainer').scrollIntoView({behavior:'smooth'})">📦 表へ</button>
+        <button class="btn-skip" style="grid-column:span 1" onclick="alert('お疲れさん！')">🎉</button>
+      </div>
+    `;
+    return;
+  }
+  card.classList.remove("all-done");
+  const status = getPartStatus(p.id);
+  const statusLabel = status==="練習中" ? "🔄 練習中" : "🎯 今日の1個";
+  card.innerHTML = `
+    <div class="header"><span>${statusLabel}</span><span class="pcount">${completed}/${PARTS.length} 完成</span></div>
+    <span class="cat-tag ${p.cat}">${CATS[p.cat].emoji} ${CATS[p.cat].name}</span>
+    <div class="name" onclick="openPartModal(${p.id})" title="タップで詳細">${p.name} <span style="font-size:14px;opacity:.7">▶</span></div>
+    <div class="desc">${p.desc}</div>
+    <div class="actions">
+      <button class="btn-detail" onclick="openPartModal(${p.id})">📋 詳細</button>
+      <button class="btn-complete" onclick="partComplete(${p.id})">✅ 完成</button>
+      <button class="btn-progress" onclick="partInProgress(${p.id})">🔄 練習</button>
+      <button class="btn-skip" onclick="partSkip(${p.id})">⏭ パス</button>
+    </div>
+  `;
+}
+
+function renderDateTabs(){
+  const dates = new Set();
+  for(let i=0; i<7; i++){
+    const d = new Date();
+    d.setDate(d.getDate()-i);
+    const s = d.toISOString().slice(0,10);
+    dates.add(s);
+  }
+  state.logs.forEach(l=>dates.add(l.date));
+  const sorted = Array.from(dates).sort().reverse();
+  const el = document.getElementById("dateTabs");
+  el.innerHTML = sorted.map(d=>{
+    const cls = d===viewDate ? "active" : "";
+    const cnt = state.logs.filter(l=>l.date===d).length;
+    const label = d===todayStr() ? `今日 (${cnt})` : `${d.slice(5)} (${cnt})`;
+    return `<button class="${cls}" onclick="setView('${d}')">${label}</button>`;
+  }).join("");
+}
+
+function setView(d){ viewDate = d; render(); }
+
+function renderLogs(){
+  const logs = state.logs.filter(l=>l.date===viewDate)
+    .sort((a,b)=>b.ts.localeCompare(a.ts));
+  document.getElementById("logsTitle").textContent =
+    viewDate===todayStr() ? "📋 今日のログ（新しい順）" : `📋 ${viewDate} のログ`;
+  document.getElementById("logsCount").textContent = `${logs.length}件`;
+
+  const cont = document.getElementById("logsContainer");
+  if(!logs.length){
+    cont.innerHTML = `<div class="empty">この日はまだログなし</div>`;
+    return;
+  }
+  cont.innerHTML = `<div class="log-list">${logs.map(l=>{
+    const t = new Date(l.ts);
+    const tt = `${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+    const c = CATS[l.cat] || CATS.memo;
+    const safeText = l.text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const flashCls = l.ts===lastSavedTs ? "flash" : "";
+    return `<div class="log-item ${flashCls}">
+      <div class="time">${tt}</div>
+      <div class="body">
+        <span class="cat ${l.cat}">${c.name}</span>
+        <div class="text">${safeText}</div>
+      </div>
+      <button class="del" onclick="delLog('${l.ts}')" title="削除">×</button>
+    </div>`;
+  }).join("")}</div>`;
+}
+
+function renderParts(){
+  const cont = document.getElementById("partsContainer");
+  const completed = PARTS.filter(p=>getPartStatus(p.id)==="組み上がった").length;
+  const inProgress = PARTS.filter(p=>getPartStatus(p.id)==="練習中").length;
+  const notStarted = PARTS.length - completed - inProgress;
+  document.getElementById("partsCount").textContent = `${completed}/${PARTS.length} 完成`;
+  const pct = Math.round(100*completed/PARTS.length);
+
+  const blocks = [
+    {cat:"strike", title:"👊 打撃"},
+    {cat:"clinch", title:"🤼 組み技"},
+    {cat:"ground", title:"🌀 寝技"},
+    {cat:"strategy", title:"🧠 戦略"},
+  ];
+  let html = `
+    <div class="parts-wrap">
+      <div class="parts-summary">
+        <span><i style="background:#ccc"></i>未着手 ${notStarted}</span>
+        <span><i style="background:var(--gold)"></i>練習中 ${inProgress}</span>
+        <span><i style="background:var(--done)"></i>完成 ${completed}</span>
+      </div>
+      <div class="progress-bar"><i style="width:${pct}%"></i></div>
+  `;
+  blocks.forEach(b=>{
+    const items = PARTS.filter(p=>p.cat===b.cat);
+    const cells = items.map(p=>{
+      const st = getPartStatus(p.id);
+      const mark = st==="組み上がった"?"✓":(st==="練習中"?"●":"○");
+      return `<div class="part-cell s-${st}" onclick="openPartModal(${p.id})" title="${p.desc}">
+        <span class="pmark">${mark}</span>
+        <span class="pname">${p.name}</span>
+      </div>`;
+    }).join("");
+    html += `<div class="parts-block"><h4>${b.title}（${items.length}個）</h4><div class="parts-grid">${cells}</div></div>`;
+  });
+  html += `</div>`;
+  cont.innerHTML = html;
+}
+
+function pieSVG(segs, size=180){
+  const total = segs.reduce((a,b)=>a+b.val,0);
+  const r = size/2 - 4;
+  const cx=size/2, cy=size/2;
+  if(total===0){
+    return `<svg viewBox="0 0 ${size} ${size}"><circle cx="${cx}" cy="${cy}" r="${r}" fill="#eee"/><text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="middle" fill="#999" font-size="13">今月まだ</text></svg>`;
+  }
+  let acc = -90;
+  let parts = "";
+  segs.forEach(s=>{
+    if(s.val===0) return;
+    const ang = 360*s.val/total;
+    const start = acc, end = acc+ang;
+    const x1 = cx + r*Math.cos(start*Math.PI/180);
+    const y1 = cy + r*Math.sin(start*Math.PI/180);
+    const x2 = cx + r*Math.cos(end*Math.PI/180);
+    const y2 = cy + r*Math.sin(end*Math.PI/180);
+    const large = ang>180?1:0;
+    if(ang>=359.99){
+      parts += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${s.color}"/>`;
+    } else {
+      parts += `<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${large} 1 ${x2},${y2} Z" fill="${s.color}" stroke="#fff" stroke-width="2"/>`;
+    }
+    const mid = (start+end)/2;
+    const lx = cx + r*0.62*Math.cos(mid*Math.PI/180);
+    const ly = cy + r*0.62*Math.sin(mid*Math.PI/180);
+    const pct = Math.round(100*s.val/total);
+    if(pct>=8){
+      parts += `<text x="${lx}" y="${ly}" fill="#fff" font-size="13" font-weight="800" text-anchor="middle" dominant-baseline="middle">${pct}%</text>`;
+    }
+    acc = end;
+  });
+  return `<svg viewBox="0 0 ${size} ${size}">${parts}</svg>`;
+}
+
+function renderChart(){
+  const ym = todayStr().slice(0,7);
+  document.getElementById("monthLabel").textContent = ym;
+  const monthLogs = state.logs.filter(l=>l.date.startsWith(ym));
+  const counts = {strike:0, clinch:0, ground:0, spar:0, strategy:0, part:0, memo:0};
+  monthLogs.forEach(l=>{ if(counts[l.cat]!==undefined) counts[l.cat]++; });
+  const segs = Object.keys(counts).map(k=>({
+    name: CATS[k].name,
+    val: counts[k],
+    color: CATS[k].color
+  }));
+  const legend = `<div class="legend">${segs.filter(s=>s.val>0).map(s=>
+    `<span><i style="background:${s.color}"></i>${s.name} ${s.val}</span>`
+  ).join("")}</div>`;
+  document.getElementById("chartArea").innerHTML = pieSVG(segs) + (segs.some(s=>s.val>0) ? legend : "");
+}
+
+render();
+console.log("MMA Tracker v5 描画完了");
+</script>
+</body>
+</html>
