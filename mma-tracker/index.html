@@ -285,9 +285,24 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 
 <div class="toolbar">
   <button class="primary" onclick="copyToday()">📋 今日のログをコピー</button>
+  <button onclick="importText()">📥 テキストから読込</button>
   <button onclick="exportJSON()">JSON書き出し</button>
-  <button onclick="importJSON()">JSON読み込み</button>
+  <button onclick="importJSON()">ファイル読込</button>
   <button class="danger" onclick="resetAll()">全消去</button>
+</div>
+
+<!-- ペースト読込モーダル -->
+<div class="modal-bg" id="pasteBg" onclick="if(event.target===this)closePaste()">
+  <div class="modal">
+    <div class="grip"></div>
+    <div style="font-size:18px;font-weight:800;margin-bottom:6px">📥 テキストから読み込み</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px">下のエリアにJSON文字列を貼り付けて「読み込む」を押す。既存データは上書きされる。</div>
+    <textarea id="pasteBox" style="width:100%;min-height:200px;border:2px solid var(--line);border-radius:10px;padding:10px;font:inherit;font-size:12px;font-family:ui-monospace,Menlo,Consolas,monospace;resize:vertical" placeholder='{"logs":[...], "parts":{...}}'></textarea>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px">
+      <button onclick="doImportText()" style="appearance:none;border:none;border-radius:10px;padding:14px;font:inherit;font-weight:800;font-size:14px;cursor:pointer;background:#34c759;color:#fff">✓ 読み込む</button>
+      <button onclick="closePaste()" style="appearance:none;border:none;border-radius:10px;padding:14px;font:inherit;font-weight:800;font-size:14px;cursor:pointer;background:#eee;color:#666">キャンセル</button>
+    </div>
+  </div>
 </div>
 
 <!-- モーダル -->
@@ -668,6 +683,32 @@ function exportJSON(){
   a.download = `mma_log_${todayStr()}.json`;
   a.click();
   URL.revokeObjectURL(url);
+}
+
+function importText(){
+  document.getElementById("pasteBg").classList.add("show");
+  document.getElementById("pasteBox").value = "";
+  setTimeout(()=>document.getElementById("pasteBox").focus(), 100);
+}
+function closePaste(){
+  document.getElementById("pasteBg").classList.remove("show");
+}
+function doImportText(){
+  const txt = document.getElementById("pasteBox").value.trim();
+  if(!txt){ toast("テキスト貼って"); return; }
+  try {
+    const data = JSON.parse(txt);
+    if(!data.logs) throw new Error("logs フィールドなし");
+    if(!data.parts) data.parts = {};
+    if(!confirm(`既存${state.logs.length}件 → 読込${data.logs.length}件で上書き。OK？`)) return;
+    state = data;
+    saveState(state);
+    closePaste();
+    toast("✓ 読込完了");
+    render();
+  } catch(e) {
+    alert("JSON解析失敗: " + e.message);
+  }
 }
 
 function importJSON(){
