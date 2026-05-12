@@ -55,6 +55,23 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 .today-part .btn-skip{background:rgba(255,255,255,.18);color:#fff}
 .today-part.all-done{background:linear-gradient(135deg,#0a84ff 0%,#34c759 100%)}
 
+/* === Claudeコーチ観察ノート === */
+.coach-note{margin:12px 14px;padding:14px;border-radius:14px;background:linear-gradient(135deg,#1a3a52 0%,#264e6e 100%);color:#fff;box-shadow:0 4px 12px rgba(26,58,82,.25)}
+.coach-note .coach-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:12px;font-weight:800}
+.coach-note .updated{font-size:10px;opacity:.7;background:rgba(255,255,255,.15);padding:2px 8px;border-radius:999px}
+.coach-note details{margin-bottom:6px;background:rgba(0,0,0,.18);border-radius:10px;overflow:hidden}
+.coach-note details[open]{background:rgba(0,0,0,.25)}
+.coach-note summary{padding:10px 12px;font-size:13px;font-weight:700;cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px}
+.coach-note summary::-webkit-details-marker{display:none}
+.coach-note summary::before{content:"▶";font-size:9px;transition:transform .2s}
+.coach-note details[open] summary::before{transform:rotate(90deg)}
+.coach-note .body{padding:2px 14px 12px;font-size:13px;line-height:1.6;opacity:.95}
+.coach-note .body ul{margin:6px 0;padding-left:18px}
+.coach-note .body li{margin:3px 0}
+.coach-note .body .pos{color:#7ee8a4}
+.coach-note .body .neg{color:#ffb3b3}
+.coach-note .body .focus{color:#ffd966}
+
 .guide{font-size:12px;color:#0a4a82;background:#dceeff;padding:8px 12px;border-radius:8px;margin:0 14px 10px;border-left:3px solid #0a84ff}
 
 .main-area{padding:0 14px 8px}
@@ -225,6 +242,66 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 </header>
 
 <div class="today-part" id="todayPartCard"></div>
+
+<div class="coach-note">
+  <div class="coach-head">
+    <span>💬 Claudeコーチの観察ノート</span>
+    <span class="updated">最終更新 2026-05-12</span>
+  </div>
+
+  <details open>
+    <summary>🎯 次の練習で意識すること</summary>
+    <div class="body">
+      <ul>
+        <li><span class="focus">①</span> スパー中は「<b>視野を広く・首振り</b>」を入れる（5/12 ハンドボールからの転移）</li>
+        <li><span class="focus">②</span> 強い相手 = 技術検証の<b>負荷試験機</b>。勝ち負け置いて1パーツに絞る</li>
+        <li><span class="focus">③</span> ジャブ：未達チェック「距離測りに多用／2への繋ぎ」を意識</li>
+        <li><span class="focus">④</span> バックコントロール：相手が立つ瞬間 → 背中つけてフック</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary>📅 5/12 ハンドボール → MMA転移</summary>
+    <div class="body">
+      ハンドボールで「視野を広く・首振り」を発見。MMA/BJJ上級者の基本に<b>別ルートで到達</b>。<br><br>
+      設計脳の<b>アセンブリビュー</b>（全体俯瞰→個別部品→公差確認）が無意識にスポーツに転移してる。
+    </div>
+  </details>
+
+  <details>
+    <summary>📅 5/11 MMA 練習</summary>
+    <div class="body">
+      ジャブ「出したら即引く／頭ずらす」が実戦で意識できた（チェック3/5達成）。<br>
+      タックル絡みからのバックコントロール初挑戦。<br><br>
+      <b>気づき：</b>強い相手だと力に逃げる癖。試合出てる人の技に余裕。<br>
+      <b>転換：</b>「勝つ→技術磨く」へマインドセット切替。
+    </div>
+  </details>
+
+  <details>
+    <summary>🟢 三輪さんの強み（俺の観察）</summary>
+    <div class="body">
+      <ul>
+        <li><span class="pos">✅</span> 客観視できる（「勘違いかも」と疑える）</li>
+        <li><span class="pos">✅</span> マインドセット転換が早い</li>
+        <li><span class="pos">✅</span> チェックリスト型学習が刺さる（設計脳）</li>
+        <li><span class="pos">✅</span> 別領域からの転移学習が早い</li>
+        <li><span class="pos">✅</span> 設計脳のスポーツ転移</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary>🔴 課題（直したい癖）</summary>
+    <div class="body">
+      <ul>
+        <li><span class="neg">⚠</span> <b>強い相手だと力に逃げる</b>（初観測 5/11・継続観察中）<br>
+        → 対処：強い相手こそ「1パーツに絞った技術検証」に使う</li>
+      </ul>
+    </div>
+  </details>
+</div>
 
 <div class="guide">
   📌 「今日の1個」の名前をタップ → 詳細＆チェックリスト＆メモ＆Claude相談が開く
