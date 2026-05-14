@@ -345,6 +345,13 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
   <button class="cat-btn idea" onclick="quickSaveIdea()"><span class="icon">💡</span><span>アイデア</span><span class="sub">タップで発酵タンクへ</span></button>
   <button class="cat-btn memo" onclick="quickSave('memo')"><span class="icon">📝</span><span>メモとして保存</span></button>
 </div>
+
+<!-- 案件・納期（コンパクト版・直近5件） -->
+<div class="section-title">
+  <span>📅 進行中の案件（直近5件・タップで編集）</span>
+  <span class="count" id="projectsCountInput"></span>
+</div>
+<div class="projects-wrap" id="projectsWrapInput" style="padding:0 14px 12px"></div>
 </div><!-- /page input -->
 
 <div class="page" data-page="now">
@@ -1158,33 +1165,72 @@ function renderTodayPart(){
   `;
 }
 
-function renderProjects(){
-  const wrap = document.getElementById("projectsWrap");
-  document.getElementById("projectsCount").textContent = `${state.projects.length}件`;
-  if(!state.projects.length){
-    wrap.innerHTML = `<div class="empty" style="margin:0">案件まだなし。下から追加</div>`;
-    return;
+function daysToMonthsDays(days){
+  if(days < 0){
+    const abs = Math.abs(days);
+    if(abs < 30) return `${abs}日超過`;
+    const m = Math.floor(abs/30);
+    const d = abs % 30;
+    return d===0 ? `${m}ヶ月超過` : `${m}ヶ月${d}日超過`;
   }
+  if(days === 0) return "今日";
+  if(days < 30) return `${days}日後`;
+  const m = Math.floor(days/30);
+  const d = days % 30;
+  return d===0 ? `${m}ヶ月後` : `${m}ヶ月${d}日後`;
+}
+
+function buildProjectCard(p, ix, compact){
   const today = new Date();
   today.setHours(0,0,0,0);
-  wrap.innerHTML = state.projects.map((p,ix)=>{
-    const dl = new Date(p.deadline);
-    const days = Math.round((dl-today)/(1000*60*60*24));
-    const cls = days<=3 ? "urgent" : (days<=7 ? "soon" : "");
-    const dayLabel = days<0 ? `${Math.abs(days)}日超過` : (days===0 ? "今日" : `${days}日後`);
-    const safe = p.name.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-    return `<div class="project-card ${cls}">
+  const dl = new Date(p.deadline);
+  const days = Math.round((dl-today)/(1000*60*60*24));
+  const cls = days<=3 ? "urgent" : (days<=7 ? "soon" : "");
+  const label = daysToMonthsDays(days);
+  const numTop = days<0 ? `-${Math.abs(days)}` : `${days}`;
+  const safe = p.name.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  if(compact){
+    return `<div class="project-card ${cls}" onclick="switchPage('archive')" style="cursor:pointer">
       <div>
         <div class="pname">${safe}</div>
         <div class="pmemo">納期 ${p.deadline}</div>
       </div>
-      <div class="pdays"><span class="num">${days}</span>${dayLabel}</div>
-      <div class="pbtns">
-        <button onclick="completeProject(${ix})">✓</button>
-        <button class="del" onclick="delProject(${ix})">×</button>
-      </div>
+      <div class="pdays"><span class="num">${numTop}</span>${label}</div>
+      <div class="pbtns"><span style="font-size:10px;color:var(--muted)">編集→</span></div>
     </div>`;
-  }).join("");
+  }
+  return `<div class="project-card ${cls}">
+    <div>
+      <div class="pname">${safe}</div>
+      <div class="pmemo">納期 ${p.deadline}</div>
+    </div>
+    <div class="pdays"><span class="num">${numTop}</span>${label}</div>
+    <div class="pbtns">
+      <button onclick="completeProject(${ix})">✓</button>
+      <button class="del" onclick="delProject(${ix})">×</button>
+    </div>
+  </div>`;
+}
+
+function renderProjects(){
+  const wrap = document.getElementById("projectsWrap");
+  const wrapInput = document.getElementById("projectsWrapInput");
+  document.getElementById("projectsCount").textContent = `${state.projects.length}件`;
+  const inputCountEl = document.getElementById("projectsCountInput");
+  if(inputCountEl) inputCountEl.textContent = `${state.projects.length}件`;
+
+  if(!state.projects.length){
+    const emptyHtml = `<div class="empty" style="margin:0">案件まだなし。「記録」タブから追加</div>`;
+    wrap.innerHTML = emptyHtml;
+    if(wrapInput) wrapInput.innerHTML = emptyHtml;
+    return;
+  }
+  // archive: 全件
+  wrap.innerHTML = state.projects.map((p,ix)=>buildProjectCard(p, ix, false)).join("");
+  // input: 直近5件（コンパクト・タップで記録へ）
+  if(wrapInput){
+    wrapInput.innerHTML = state.projects.slice(0,5).map((p,ix)=>buildProjectCard(p, ix, true)).join("");
+  }
 }
 
 function renderDateTabs(){
