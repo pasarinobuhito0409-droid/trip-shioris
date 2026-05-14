@@ -51,6 +51,26 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
 .zone-header{margin:0 0 4px;padding:10px 16px;background:linear-gradient(90deg,#1a3a52 0%,#264e6e 100%);color:#fff;font-weight:900;font-size:13px;display:flex;align-items:center;gap:8px;border-left:4px solid #ffb300;letter-spacing:.03em}
 .zone-header .sub{font-size:11px;opacity:.7;font-weight:600;margin-left:auto}
 
+/* === 復習問題タンク === */
+.quiz-add{padding:0 14px 10px}
+.quiz-add .qfield{background:#f8f5ff;border:1.5px solid #c850dc;border-radius:12px;padding:12px}
+.quiz-add label{display:block;font-size:11px;font-weight:700;color:#6a2078;margin:0 0 4px}
+.quiz-add textarea{width:100%;min-height:50px;border:1.5px solid var(--line);border-radius:8px;padding:8px;font:inherit;font-size:13px;resize:vertical;margin-bottom:8px}
+.quiz-add textarea:focus{outline:none;border-color:#c850dc}
+.quiz-add button{background:#c850dc;color:#fff;border:none;padding:10px 16px;border-radius:8px;font:inherit;font-weight:800;cursor:pointer;width:100%}
+.quiz-tank{padding:0 14px 12px;display:flex;flex-direction:column;gap:8px}
+.quiz-card{background:#fff;border:1.5px solid #c850dc;border-radius:12px;padding:12px}
+.quiz-card .qhead{display:flex;justify-content:space-between;font-size:11px;color:#6a2078;font-weight:700;margin-bottom:8px}
+.quiz-card .quiz-q{font-size:14px;font-weight:700;color:#3a1050;margin-bottom:8px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.quiz-card .quiz-a{padding:10px;background:#f0e4ff;border-radius:8px;font-size:13px;line-height:1.5;color:#3a1050;margin-bottom:8px;animation:slideDown .25s;white-space:pre-wrap;word-break:break-word}
+@keyframes slideDown{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.quiz-card .show-btn{background:#c850dc;color:#fff;border:none;padding:10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;width:100%}
+.quiz-card .qbtns{display:flex;gap:6px;margin-top:8px}
+.quiz-card .qbtns button{flex:1;background:#eee;border:none;padding:10px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer}
+.quiz-card .qbtns button.correct{background:#34c759;color:#fff}
+.quiz-card .qbtns button.wrong{background:#ff6b6b;color:#fff}
+.quiz-card .qbtns button.del{flex:0 0 44px;color:#c43;background:#fff;border:1px solid #fbb}
+
 /* === タブバー（3ページ切替） === */
 .tabbar{position:sticky;top:46px;z-index:9;background:rgba(245,245,247,.95);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:8px 12px;border-bottom:1px solid var(--line);display:flex;gap:6px}
 .tab{flex:1;background:#fff;border:1.5px solid var(--line);color:var(--muted);padding:8px 4px;border-radius:10px;font:inherit;font-weight:800;font-size:12px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:2px}
@@ -449,6 +469,24 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
   <div class="inquiry-tank" id="inquiryTank"></div>
 </div>
 
+<!-- 復習問題タンク -->
+<div class="section-title" onclick="toggleSection('quizContainer', this)">
+  <span>📚 復習問題タンク（学びを思い出すクイズ）</span>
+  <span><span class="count" id="quizCount"></span> <span class="arrow">▼</span></span>
+</div>
+<div id="quizContainer" class="collapsible">
+  <div class="quiz-add">
+    <div class="qfield">
+      <label>Q（問題）</label>
+      <textarea id="quizQ" placeholder="例：JIS Z 3021 の溶接記号で「△」は何？"></textarea>
+      <label>A（答え）</label>
+      <textarea id="quizA" placeholder="例：すみ肉溶接の基本記号"></textarea>
+      <button onclick="saveQuiz()">📚 問題を追加</button>
+    </div>
+  </div>
+  <div class="quiz-tank" id="quizTank"></div>
+</div>
+
 <div class="zone-header">📦 スキル積み上げ<span class="sub">製缶30パーツ・発明家への土台</span></div>
 
 <!-- 製缶30パーツ -->
@@ -616,10 +654,11 @@ function loadState(){
       if(!s.projects) s.projects = [];
       if(!s.ideas) s.ideas = [];
       if(!s.inquiries) s.inquiries = [];
+      if(!s.quizzes) s.quizzes = [];
       return s;
     }
   }catch(e){ console.warn("loadState fail", e); }
-  return {logs:[], parts:{}, daily:{}, projects:[], ideas:[], inquiries:[]};
+  return {logs:[], parts:{}, daily:{}, projects:[], ideas:[], inquiries:[], quizzes:[]};
 }
 function saveState(s){
   try{ localStorage.setItem(KEY, JSON.stringify(s)); }
@@ -800,6 +839,91 @@ function delInquiry(ix){
   state.inquiries.splice(ix, 1);
   saveState(state);
   renderInquiries();
+}
+
+// ===== 復習問題タンク =====
+function saveQuiz(){
+  const qEl = document.getElementById("quizQ");
+  const aEl = document.getElementById("quizA");
+  const q = qEl.value.trim();
+  const a = aEl.value.trim();
+  if(!q || !a){ toast("Q と A 両方入力して"); return; }
+  if(!state.quizzes) state.quizzes = [];
+  state.quizzes.unshift({
+    id: Date.now(),
+    q: q,
+    a: a,
+    created: todayStr(),
+    correct: 0,
+    wrong: 0,
+    revealed: false
+  });
+  saveState(state);
+  qEl.value = "";
+  aEl.value = "";
+  toast("📚 問題追加");
+  renderQuizzes();
+}
+function toggleAnswer(id){
+  const q = state.quizzes.find(x=>x.id===id);
+  if(!q) return;
+  q.revealed = !q.revealed;
+  renderQuizzes();
+}
+function markCorrect(id){
+  const q = state.quizzes.find(x=>x.id===id);
+  if(!q) return;
+  q.correct++;
+  q.revealed = false;
+  saveState(state);
+  toast("✓ 正解！");
+  renderQuizzes();
+}
+function markWrong(id){
+  const q = state.quizzes.find(x=>x.id===id);
+  if(!q) return;
+  q.wrong++;
+  q.revealed = false;
+  saveState(state);
+  toast("✗ もう一度復習");
+  renderQuizzes();
+}
+function delQuiz(id){
+  if(!confirm("この問題を削除？")) return;
+  state.quizzes = state.quizzes.filter(x=>x.id!==id);
+  saveState(state);
+  renderQuizzes();
+}
+function renderQuizzes(){
+  if(!state.quizzes) state.quizzes = [];
+  const tank = document.getElementById("quizTank");
+  document.getElementById("quizCount").textContent = `${state.quizzes.length}問`;
+  if(!state.quizzes.length){
+    tank.innerHTML = `<div class="empty" style="margin:0">問題まだなし。上から追加してね</div>`;
+    return;
+  }
+  tank.innerHTML = state.quizzes.map(q=>{
+    const safeQ = q.q.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const safeA = q.a.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const total = q.correct + q.wrong;
+    const rate = total ? Math.round(100*q.correct/total) : 0;
+    return `<div class="quiz-card">
+      <div class="qhead">
+        <span>📚 ${q.created}</span>
+        <span class="qstat">正${q.correct} / 誤${q.wrong} ${total ? `(${rate}%)` : ''}</span>
+      </div>
+      <div class="quiz-q">Q: ${safeQ}</div>
+      ${q.revealed
+        ? `<div class="quiz-a">A: ${safeA}</div>
+           <div class="qbtns">
+             <button class="correct" onclick="markCorrect(${q.id})">✓ できた</button>
+             <button class="wrong" onclick="markWrong(${q.id})">✗ できなかった</button>
+             <button class="del" onclick="delQuiz(${q.id})">×</button>
+           </div>`
+        : `<button class="show-btn" onclick="toggleAnswer(${q.id})">👁 答えを見る</button>`
+      }
+    </div>`;
+  }).join("");
 }
 
 // ===== パーツ操作 =====
@@ -1109,6 +1233,7 @@ function render(){
   renderLogs();
   renderIdeas();
   renderInquiries();
+  renderQuizzes();
   renderParts();
   renderReview();
   renderChart();
