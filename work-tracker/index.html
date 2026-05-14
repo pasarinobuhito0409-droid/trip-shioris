@@ -360,13 +360,13 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
     <span class="updated">初期版 2026-05-12</span>
   </div>
   <details open>
-    <summary>🎯 使い方の流れ（俺の提案）</summary>
+    <summary>🎯 使い方の流れ（朝ルーティン型）</summary>
     <div class="body">
       <ol>
-        <li><span class="focus">朝</span>：今日の目標を1〜3個書く（具体的に）</li>
+        <li><span class="focus">朝（早起き）</span>：①前日の振り返りを書く ②今日の目標を1〜3個書く</li>
         <li><span class="focus">日中</span>：設計／加工／検図／打合せ／疑問／アイデア を即タップ記録</li>
-        <li><span class="focus">夜</span>：今日の復習に振り返り＆気づきを書く</li>
-        <li><span class="focus">週次</span>：金曜にClaudeに「今週のログ送る」で観察＆暗黙知更新</li>
+        <li><span class="focus">夜</span>：軽く翌朝への持ち越しメモだけ（無くてOK）</li>
+        <li><span class="focus">週次</span>：金曜or週末にClaudeに「今週のログ送る」で観察＆暗黙知更新</li>
       </ol>
     </div>
   </details>
@@ -451,19 +451,19 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
 </div>
 <div id="partsContainer" class="collapsible"></div>
 
-<div class="zone-header">🌙 1日の締め＆統計<span class="sub">復習・月次グラフ</span></div>
+<div class="zone-header">☀️ 朝ルーティン＆統計<span class="sub">前日の振り返り・月次グラフ</span></div>
 
-<!-- 今日の復習 -->
+<!-- 朝の振り返り -->
 <div class="section-title">
-  <span>🌙 今日の復習（夜書く）</span>
+  <span>☀️ 朝の振り返り（前日を振り返る）</span>
 </div>
 <div class="review-card">
   <div class="head">
-    <span>📔 今日の学び・気づき・反省</span>
+    <span>📔 前日の学び・気づき・反省</span>
     <span class="badge" id="reviewDate"></span>
   </div>
-  <textarea id="reviewBox" placeholder="例：今日のSM490の溶接で歪みが出た理由は…／JIS Z 3021 を確認した／○○さんに聞いた…"></textarea>
-  <div class="meta" id="reviewMeta">自動保存されます</div>
+  <textarea id="reviewBox" placeholder="例：昨日のSM490の溶接で歪みが出た理由は…／JIS Z 3021 を確認した／○○さんに聞いた…"></textarea>
+  <div class="meta" id="reviewMeta">自動保存されます（今日の枠に保存）</div>
 </div>
 
 <!-- 月次比率 -->
