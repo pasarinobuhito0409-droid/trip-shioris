@@ -351,6 +351,13 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
   </div>
 </div>
 
+<!-- 案件・納期（コンパクト版・直近5件・目標の直下＝連動視覚化） -->
+<div class="section-title">
+  <span>📅 進行中の案件（直近5件・タップで編集）</span>
+  <span class="count" id="projectsCountInput"></span>
+</div>
+<div class="projects-wrap" id="projectsWrapInput" style="padding:0 14px 12px"></div>
+
 <div class="main-area">
   <textarea id="memoBox" placeholder="任意：何があった？（音声入力もOK）"></textarea>
   <div class="hint">↓ ボタンでカテゴリ別に即記録</div>
@@ -365,13 +372,6 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
   <button class="cat-btn idea" onclick="quickSaveIdea()"><span class="icon">💡</span><span>アイデア</span><span class="sub">タップで発酵タンクへ</span></button>
   <button class="cat-btn memo" onclick="quickSave('memo')"><span class="icon">📝</span><span>メモとして保存</span></button>
 </div>
-
-<!-- 案件・納期（コンパクト版・直近5件） -->
-<div class="section-title">
-  <span>📅 進行中の案件（直近5件・タップで編集）</span>
-  <span class="count" id="projectsCountInput"></span>
-</div>
-<div class="projects-wrap" id="projectsWrapInput" style="padding:0 14px 12px"></div>
 </div><!-- /page input -->
 
 <div class="page" data-page="now">
