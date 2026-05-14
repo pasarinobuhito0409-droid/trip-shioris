@@ -85,9 +85,15 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
 .chip.cat-daily{background:#dff5e3;color:#1d6435}
 .chip.cat-special{background:#fff3cf;color:#6e4c0a}
 .chip.cat-rest{background:#ffd9df;color:#7a2d44}
+.chip.cat-custom{background:#ede0ff;color:#5a2d8a;border-color:#c850dc}
+.chip.cat-custom.done{background:var(--done) !important;color:#fff !important}
+.chip.chip-add{background:#fff;border:1.5px dashed #c850dc;color:#c850dc;font-weight:800}
 .chip.done{background:var(--done) !important;color:#fff !important;border-color:transparent}
 .chip.done .label{text-decoration:line-through;opacity:.85}
 .chip .check{font-weight:900;font-size:11px}
+.chip .chip-act{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:rgba(0,0,0,.15);color:#fff;font-size:10px;margin-left:3px;cursor:pointer;font-weight:700}
+.chip .chip-act:active{transform:scale(.85)}
+.chip.done .chip-act{background:rgba(255,255,255,.35);color:#fff}
 
 /* === CALENDAR VIEW === */
 .cal{padding:0 8px 24px}
@@ -117,6 +123,9 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
 .cal-cell .chip-mini.cat-daily{border-left:3px solid var(--c-daily)}
 .cal-cell .chip-mini.cat-special{border-left:3px solid var(--c-special)}
 .cal-cell .chip-mini.cat-rest{border-left:3px solid var(--c-rest)}
+.cal-cell .chip-mini.cat-custom{border-left:3px solid #c850dc;background:#f5edff}
+.cal-cell .chip-mini.cat-custom.done{background:var(--done);color:#fff}
+.cal-cell .chip-mini.chip-add{background:#fff;border:1px dashed #c850dc;color:#c850dc;text-align:center;font-weight:800}
 
 .toolbar{display:flex;gap:7px;padding:6px 12px 18px;flex-wrap:wrap}
 .toolbar button{flex:1;min-width:100px;background:#fff;border:1px solid var(--line);padding:9px;border-radius:9px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer}
@@ -299,7 +308,7 @@ function tally(m){
   const planDay = {"普通":0,"チート":0,"特別":0};
   const planNight = {"WT":0,"MMA":0,"ハンド":0};
   // 実績 (タスクベース)
-  const cats = {morning:[0,0], lunch:[0,0], night:[0,0], daily:[0,0], special:[0,0], rest:[0,0]};
+  const cats = {morning:[0,0], lunch:[0,0], night:[0,0], daily:[0,0], special:[0,0], rest:[0,0], custom:[0,0]};
   // 実績 day-type / night (達成日カウント)
   const actDay = {"普通":0,"チート":0,"特別":0};
   const actNight = {"WT":0,"MMA":0,"ハンド":0};
@@ -320,6 +329,18 @@ function tally(m){
         dayDone++;
       }
     });
+    // カスタムタスクも集計
+    if(s.__custom__ && s.__custom__.length){
+      s.__custom__.forEach(t=>{
+        cats.custom[1]++;
+        totalPlan++;
+        if(s[t.id]){
+          cats.custom[0]++;
+          totalDone++;
+          dayDone++;
+        }
+      });
+    }
     // その日の主タスクが1つ以上完了 → 実績日カウント
     if(dayDone > 0){
       actDay[x.type]++;
@@ -366,8 +387,8 @@ function renderTabs(){
 function renderSummary(){
   const t = tally(currentMonth);
   const pct = t.totalPlan ? Math.round(100*t.totalDone/t.totalPlan) : 0;
-  const catLabels = {morning:"朝", lunch:"昼", night:"夜", daily:"毎日", special:"特別", rest:"休養"};
-  const catBars = ["morning","lunch","night","daily","special"].map(c=>{
+  const catLabels = {morning:"朝", lunch:"昼", night:"夜", daily:"毎日", special:"特別", rest:"休養", custom:"自分"};
+  const catBars = ["morning","lunch","night","daily","special","custom"].map(c=>{
     const [done,plan] = t.cats[c];
     const p = plan ? Math.round(100*done/plan) : 0;
     return `<div class="cat-bar"><div class="lbl">${catLabels[c]}</div><div class="b"><i style="width:${p}%"></i></div><div class="pct">${done}/${plan}</div></div>`;
@@ -453,11 +474,21 @@ function renderList(){
     const typeCls = x.type==="普通"?"normal":(x.type==="チート"?"cheat":"special");
     const todayCls = isToday(x.d)?"today":"";
     const tagText = x.type==="普通"?"10分":(x.type==="チート"?"チート":"特別");
-    const chips = tks.map(tk=>{
+    let chips = tks.map(tk=>{
       const done = !!s[tk.id];
       const exCls = tk.ex ? `ex-${tk.ex}` : "";
       return `<button class="chip cat-${tk.cat} ${exCls} ${done?'done':''}" onclick="toggleTask(${currentMonth},${x.d},'${tk.id}')"><span class="check">${done?'✓':''}</span><span class="label">${tk.label}</span></button>`;
     }).join("");
+    // カスタムタスク
+    if(s.__custom__ && s.__custom__.length){
+      chips += s.__custom__.map(t=>{
+        const done = !!s[t.id];
+        const safeLabel = t.label.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+        return `<button class="chip cat-custom ${done?'done':''}" onclick="toggleTask(${currentMonth},${x.d},'${t.id}')"><span class="check">${done?'✓':''}</span><span class="label">${safeLabel}</span><span class="chip-act" onclick="event.stopPropagation();editCustomTask(${currentMonth},${x.d},'${t.id}')" title="編集">✏</span><span class="chip-act" onclick="event.stopPropagation();delCustomTask(${currentMonth},${x.d},'${t.id}')" title="削除">×</span></button>`;
+      }).join("");
+    }
+    // 追加ボタン
+    chips += `<button class="chip chip-add" onclick="addCustomTask(${currentMonth},${x.d})" title="タスク追加">+ 追加</button>`;
     const diaryMark = hasDiary(currentMonth, x.d) ? `<div class="diary-mark">📝</div>` : `<div class="diary-mark" style="opacity:.25">📝</div>`;
     return `
       <div class="list-day ${todayCls}">
@@ -504,11 +535,19 @@ function renderCalendar(){
     const todayCls = isToday(d)?"today":"";
     const numCls = x.wd===0?"sun":(x.wd===6?"sat":"");
     const tagShort = x.type==="チート"?"チート":(x.type==="特別"?"特別":"");
-    const chipsMini = tks.map(tk=>{
+    let chipsMini = tks.map(tk=>{
       const done = !!s[tk.id];
       const exCls = tk.ex ? `ex-${tk.ex}` : "";
       return `<button class="chip-mini cat-${tk.cat} ${exCls} ${done?'done':''}" onclick="toggleTask(${currentMonth},${d},'${tk.id}')" title="${tk.label}">${tk.label}</button>`;
     }).join("");
+    if(s.__custom__ && s.__custom__.length){
+      chipsMini += s.__custom__.map(t=>{
+        const done = !!s[t.id];
+        const safeLabel = t.label.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+        return `<button class="chip-mini cat-custom ${done?'done':''}" onclick="toggleTask(${currentMonth},${d},'${t.id}')" title="${safeLabel}">${safeLabel}</button>`;
+      }).join("");
+    }
+    chipsMini += `<button class="chip-mini chip-add" onclick="addCustomTask(${currentMonth},${d})" title="タスク追加">+</button>`;
     const dMark = hasDiary(currentMonth, d) ? `<span class="diary-mark">📝</span>` : "";
     return `
       <div class="cal-cell ${typeCls} ${todayCls}" ondblclick="openDiary(${currentMonth},${d})">
@@ -530,6 +569,45 @@ function toggleTask(m,d,id){
   const s = getDayState(m,d);
   s[id] = !s[id];
   if(!s[id]) delete s[id];
+  saveState(state);
+  render();
+}
+
+// ===== カスタムタスク（追加・編集・削除） =====
+function addCustomTask(m,d){
+  const label = prompt("追加するタスク名（例：歯医者・コンビニ・読書）", "");
+  if(!label || !label.trim()) return;
+  const s = getDayState(m,d);
+  if(!s.__custom__) s.__custom__ = [];
+  s.__custom__.push({
+    id: `c_${Date.now()}`,
+    label: label.trim(),
+    cat: "custom"
+  });
+  saveState(state);
+  render();
+}
+
+function editCustomTask(m,d,id){
+  const s = getDayState(m,d);
+  if(!s.__custom__) return;
+  const task = s.__custom__.find(t=>t.id===id);
+  if(!task) return;
+  const newLabel = prompt("新しい名前", task.label);
+  if(!newLabel || !newLabel.trim()) return;
+  task.label = newLabel.trim();
+  saveState(state);
+  render();
+}
+
+function delCustomTask(m,d,id){
+  const s = getDayState(m,d);
+  if(!s.__custom__) return;
+  const task = s.__custom__.find(t=>t.id===id);
+  if(!task) return;
+  if(!confirm(`「${task.label}」を削除？`)) return;
+  s.__custom__ = s.__custom__.filter(t=>t.id!==id);
+  delete s[id];
   saveState(state);
   render();
 }
