@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#1a3a52">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>俺だけのCAD — Work Tracker</title>
+<style>
+:root{
+  --c-design:#0a84ff;
+  --c-process:#f59e3c;
+  --c-check:#c850dc;
+  --c-meet:#1aa56a;
+  --c-inquiry:#ff6b6b;
+  --c-idea:#ffb300;
+  --c-memo:#6b6b73;
+  --bg:#f5f5f7;
+  --card:#ffffff;
+  --line:#e3e3e8;
+  --text:#1d1d1f;
+  --muted:#6b6b73;
+  --done:#34c759;
+  --gold:#ffb300;
+  --steel:#1a3a52;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,"Hiragino Sans","Yu Gothic UI","Segoe UI",sans-serif;font-size:15px;line-height:1.5}
+
+header{position:sticky;top:0;z-index:10;background:var(--bg);padding:12px 14px 6px;border-bottom:1px solid var(--line)}
+h1{margin:0 0 4px;font-size:18px;font-weight:800}
+h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
+.today{font-size:12px;color:var(--muted);font-weight:500}
+
+/* === 今日の目標カード === */
+.goals-card{margin:12px 14px;padding:14px;border-radius:14px;background:linear-gradient(135deg,#ffb300 0%,#ff8a00 100%);color:#fff;box-shadow:0 4px 12px rgba(255,138,0,.3)}
+.goals-card .head{font-size:12px;font-weight:800;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.goals-card .glist{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.goals-card .goal-item{background:rgba(255,255,255,.18);padding:10px 12px;border-radius:10px;display:flex;align-items:center;gap:10px;cursor:pointer}
+.goals-card .goal-item .gbox{width:22px;height:22px;border-radius:6px;border:2px solid rgba(255,255,255,.7);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-weight:900;color:transparent;background:transparent}
+.goals-card .goal-item.done .gbox{background:#fff;color:#ff8a00;border-color:#fff}
+.goals-card .goal-item .gtext{flex:1;font-size:14px;font-weight:700;word-break:break-word}
+.goals-card .goal-item.done .gtext{text-decoration:line-through;opacity:.8}
+.goals-card .goal-item .gdel{font-size:18px;color:rgba(255,255,255,.6);cursor:pointer;padding:0 4px}
+.goals-card .add-row{display:flex;gap:6px}
+.goals-card .add-row input{flex:1;border:none;background:rgba(255,255,255,.2);color:#fff;padding:10px;border-radius:8px;font:inherit;font-size:14px}
+.goals-card .add-row input::placeholder{color:rgba(255,255,255,.7)}
+.goals-card .add-row input:focus{outline:none;background:rgba(255,255,255,.3)}
+.goals-card .add-row button{background:#fff;color:#ff8a00;border:none;padding:10px 14px;border-radius:8px;font:inherit;font-weight:800;cursor:pointer}
+.goals-card.empty .glist{display:none}
+
+/* === 今日の1個（パーツ） === */
+.today-part{margin:12px 14px;padding:16px;border-radius:16px;background:linear-gradient(135deg,#1a3a52 0%,#264e6e 50%,#1a4a3a 100%);color:#fff;box-shadow:0 4px 16px rgba(26,58,82,.3);position:relative;overflow:hidden}
+.today-part::before{content:"";position:absolute;top:-30px;right:-30px;width:100px;height:100px;background:radial-gradient(circle,rgba(255,179,0,.25) 0%,transparent 70%)}
+.today-part .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:11px;font-weight:700;opacity:.85;letter-spacing:.05em}
+.today-part .pcount{background:rgba(255,255,255,.15);padding:3px 9px;border-radius:999px;font-size:10px}
+.today-part .cat-tag{display:inline-block;font-size:10px;font-weight:800;padding:3px 9px;border-radius:6px;color:#fff;margin-bottom:8px}
+.today-part .cat-tag.material{background:#5a7a8a}
+.today-part .cat-tag.weld{background:#e64545}
+.today-part .cat-tag.machine{background:#0a84ff}
+.today-part .cat-tag.coating{background:#1aa56a}
+.today-part .cat-tag.verify{background:#c850dc}
+.today-part .cat-tag.manufacture{background:#f59e3c}
+.today-part .name{font-size:22px;font-weight:900;line-height:1.2;margin-bottom:4px;cursor:pointer;text-decoration:underline;text-decoration-color:rgba(255,179,0,.4);text-underline-offset:4px}
+.today-part .desc{font-size:13px;opacity:.85;line-height:1.5;margin-bottom:14px}
+.today-part .actions{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:6px}
+.today-part .actions button{appearance:none;border:none;border-radius:10px;padding:11px 4px;font:inherit;font-weight:800;font-size:12px;cursor:pointer;transition:transform .1s}
+.today-part .actions button:active{transform:scale(.95)}
+.today-part .btn-detail{background:#fff;color:#1a3a52}
+.today-part .btn-complete{background:var(--done);color:#fff}
+.today-part .btn-progress{background:var(--gold);color:#fff}
+.today-part .btn-skip{background:rgba(255,255,255,.18);color:#fff}
+.today-part.all-done{background:linear-gradient(135deg,#0a84ff 0%,#34c759 100%)}
+
+/* === Claudeコーチ観察ノート === */
+.coach-note{margin:12px 14px;padding:14px;border-radius:14px;background:linear-gradient(135deg,#2a4a6a 0%,#3a5a7e 100%);color:#fff;box-shadow:0 4px 12px rgba(42,74,106,.25)}
+.coach-note .coach-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:12px;font-weight:800}
+.coach-note .updated{font-size:10px;opacity:.7;background:rgba(255,255,255,.15);padding:2px 8px;border-radius:999px}
+.coach-note details{margin-bottom:6px;background:rgba(0,0,0,.18);border-radius:10px;overflow:hidden}
+.coach-note details[open]{background:rgba(0,0,0,.25)}
+.coach-note summary{padding:10px 12px;font-size:13px;font-weight:700;cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px}
+.coach-note summary::-webkit-details-marker{display:none}
+.coach-note summary::before{content:"▶";font-size:9px;transition:transform .2s}
+.coach-note details[open] summary::before{transform:rotate(90deg)}
+.coach-note .body{padding:2px 14px 12px;font-size:13px;line-height:1.6;opacity:.95}
+.coach-note .body ul{margin:6px 0;padding-left:18px}
+.coach-note .body li{margin:3px 0}
+.coach-note .body .pos{color:#7ee8a4}
+.coach-note .body .focus{color:#ffd966}
+
+.guide{font-size:12px;color:#0a4a82;background:#dceeff;padding:8px 12px;border-radius:8px;margin:0 14px 10px;border-left:3px solid #0a84ff}
+
+/* === メモ＋ボタン === */
+.main-area{padding:0 14px 8px}
+.main-area textarea{width:100%;min-height:65px;border:2px solid var(--line);border-radius:12px;padding:12px;font:inherit;font-size:15px;background:#fff;resize:vertical}
+.main-area textarea:focus{border-color:#0a84ff;outline:none}
+.hint{font-size:11px;color:var(--muted);margin:4px 2px}
+
+.btn-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:6px 14px 10px}
+.cat-btn{appearance:none;border:none;border-radius:14px;padding:16px 8px;font-size:14px;font-weight:800;color:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:0 3px 8px rgba(0,0,0,.12);transition:transform .1s, box-shadow .1s}
+.cat-btn:active{transform:scale(.95);box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.cat-btn .icon{font-size:22px;line-height:1}
+.cat-btn .sub{font-size:10px;font-weight:600;opacity:.85}
+.cat-btn.design{background:var(--c-design)}
+.cat-btn.process{background:var(--c-process)}
+.cat-btn.check{background:var(--c-check)}
+.cat-btn.meet{background:var(--c-meet)}
+.cat-btn.inquiry{background:var(--c-inquiry)}
+.cat-btn.idea{background:var(--c-idea)}
+.cat-btn.memo{background:var(--c-memo);grid-column:span 2;padding:13px}
+
+/* === セクション === */
+.section-title{padding:12px 14px 6px;font-size:13px;font-weight:700;color:var(--muted);display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.section-title .count{font-size:11px;font-weight:600}
+.section-title .arrow{transition:transform .2s;font-size:10px;color:#aaa}
+.section-title.collapsed .arrow{transform:rotate(-90deg)}
+
+/* === 案件・納期 === */
+.projects-wrap{padding:0 14px 12px;display:flex;flex-direction:column;gap:8px}
+.project-card{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px;display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center}
+.project-card.urgent{border-color:#ff453a;background:linear-gradient(135deg,#fff5f5 0%,#fff 100%)}
+.project-card.soon{border-color:var(--gold);background:linear-gradient(135deg,#fffbf0 0%,#fff 100%)}
+.project-card .pname{font-weight:800;font-size:14px}
+.project-card .pmemo{font-size:11px;color:var(--muted);margin-top:2px}
+.project-card .pdays{font-size:11px;color:var(--muted);font-weight:600;text-align:right;line-height:1.3}
+.project-card .pdays .num{font-size:18px;font-weight:900;color:var(--text);display:block}
+.project-card.urgent .pdays .num{color:#ff453a}
+.project-card.soon .pdays .num{color:var(--gold)}
+.project-card .pbtns{display:flex;gap:4px}
+.project-card .pbtns button{appearance:none;border:none;background:#eee;color:#666;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer}
+.project-card .pbtns button.del{color:#c43}
+.project-add{display:grid;grid-template-columns:2fr 1fr auto;gap:6px;padding:8px;background:var(--card);border:1.5px dashed var(--line);border-radius:12px}
+.project-add input{border:1px solid var(--line);padding:8px;border-radius:8px;font:inherit;font-size:13px}
+.project-add input:focus{outline:none;border-color:#0a84ff}
+.project-add button{background:var(--steel);color:#fff;border:none;padding:8px 14px;border-radius:8px;font:inherit;font-weight:800;cursor:pointer}
+
+/* === ログ === */
+.log-list{padding:0 14px 12px;display:flex;flex-direction:column;gap:6px}
+.log-item{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:grid;grid-template-columns:50px 1fr auto;gap:8px;align-items:start;transition:all .3s}
+.log-item.flash{background:#fff8d4;border-color:#ffd60a;box-shadow:0 0 0 3px rgba(255,214,10,.3);animation:flashHi 1.2s ease}
+@keyframes flashHi{0%{transform:scale(1.04);background:#fff5a8}100%{transform:scale(1);background:#fff8d4}}
+.log-item .time{font-size:11px;color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums}
+.log-item .body .cat{display:inline-block;font-size:10px;font-weight:800;color:#fff;padding:2px 7px;border-radius:6px;margin-bottom:3px}
+.log-item .body .cat.design{background:var(--c-design)}
+.log-item .body .cat.process{background:var(--c-process)}
+.log-item .body .cat.check{background:var(--c-check)}
+.log-item .body .cat.meet{background:var(--c-meet)}
+.log-item .body .cat.inquiry{background:var(--c-inquiry)}
+.log-item .body .cat.idea{background:var(--c-idea)}
+.log-item .body .cat.memo{background:var(--c-memo)}
+.log-item .body .cat.part{background:var(--steel)}
+.log-item .body .text{font-size:13px;line-height:1.4;word-break:break-word;white-space:pre-wrap}
+.log-item .del{appearance:none;border:none;background:transparent;color:#ccc;font-size:18px;cursor:pointer;padding:0 4px}
+.log-item .del:active{color:#ff453a}
+
+.empty{padding:20px;text-align:center;color:var(--muted);font-size:13px;background:var(--card);border-radius:12px;border:1px dashed var(--line);margin:0 14px 12px}
+
+.date-tabs{display:flex;gap:6px;padding:0 14px 8px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.date-tabs button{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--text);font-size:12px;font-weight:600;padding:6px 12px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.date-tabs button.active{background:var(--text);color:#fff;border-color:var(--text)}
+
+/* === アイデア発酵タンク === */
+.idea-tank{padding:0 14px 12px}
+.idea-bottle{background:linear-gradient(135deg,#fffbed 0%,#fff8d4 100%);border:1.5px solid var(--gold);border-radius:12px;padding:12px;margin-bottom:8px}
+.idea-bottle .iheader{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#8a6a00;font-weight:700;margin-bottom:6px}
+.idea-bottle .itext{font-size:13px;line-height:1.4;color:#5a4500;white-space:pre-wrap;word-break:break-word}
+.idea-bottle .istatus{font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px}
+.idea-bottle .istatus.発酵中{background:var(--gold);color:#fff}
+.idea-bottle .istatus.具体化{background:#0a84ff;color:#fff}
+.idea-bottle .istatus.実装{background:var(--done);color:#fff}
+.idea-bottle .istatus.出願{background:#c850dc;color:#fff}
+.idea-bottle .ibtns{display:flex;gap:4px;margin-top:8px}
+.idea-bottle .ibtns button{appearance:none;border:none;background:rgba(0,0,0,.05);color:#5a4500;padding:5px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer}
+.idea-bottle .ibtns button.del{color:#c43}
+
+/* === 疑問タンク === */
+.inquiry-tank{padding:0 14px 12px}
+.inquiry-card{background:linear-gradient(135deg,#fff5f5 0%,#fff 100%);border:1.5px solid var(--c-inquiry);border-radius:12px;padding:12px;margin-bottom:8px}
+.inquiry-card .qhead{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#9a2424;font-weight:700;margin-bottom:6px}
+.inquiry-card .qtext{font-size:13px;line-height:1.4;color:#5a2020;white-space:pre-wrap;word-break:break-word}
+.inquiry-card.solved{background:#dcf5e3;border-color:var(--done)}
+.inquiry-card.solved .qtext{text-decoration:line-through;opacity:.7}
+.inquiry-card .qbtns{display:flex;gap:4px;margin-top:8px}
+.inquiry-card .qbtns button{appearance:none;border:none;background:rgba(0,0,0,.05);padding:5px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer}
+.inquiry-card .qbtns button.del{color:#c43}
+
+/* === 今日の復習カード === */
+.review-card{margin:0 14px 12px;padding:16px;border-radius:14px;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);color:#fff;box-shadow:0 4px 16px rgba(26,26,46,.25)}
+.review-card .head{font-size:12px;font-weight:800;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.review-card .head .badge{background:rgba(255,255,255,.15);padding:2px 8px;border-radius:999px;font-size:10px}
+.review-card textarea{width:100%;min-height:100px;border:none;background:rgba(255,255,255,.1);color:#fff;border-radius:10px;padding:12px;font:inherit;font-size:14px;line-height:1.5;resize:vertical}
+.review-card textarea::placeholder{color:rgba(255,255,255,.5)}
+.review-card textarea:focus{outline:none;background:rgba(255,255,255,.15)}
+.review-card .meta{margin-top:8px;font-size:11px;opacity:.7}
+
+/* === パーツ表 === */
+.parts-wrap{padding:0 14px 12px}
+.parts-block{margin-bottom:10px}
+.parts-block h4{margin:0 0 6px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.parts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px}
+.part-cell{background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12px;line-height:1.3;display:flex;align-items:center;gap:6px;cursor:pointer;transition:all .15s}
+.part-cell:active{transform:scale(.97)}
+.part-cell .pname{flex:1;font-weight:700}
+.part-cell .pmark{font-size:14px;flex:0 0 auto}
+.part-cell.s-未着手{color:#999}
+.part-cell.s-未着手 .pmark{color:#ccc}
+.part-cell.s-練習中{background:#fff8e1;border-color:var(--gold);color:#7a4f00}
+.part-cell.s-練習中 .pmark{color:var(--gold)}
+.part-cell.s-組み上がった{background:#dcf5e3;border-color:var(--done);color:#1d6435}
+.part-cell.s-組み上がった .pmark{color:var(--done)}
+
+.parts-summary{display:flex;gap:10px;margin-bottom:8px;font-size:11px;flex-wrap:wrap}
+.parts-summary span{display:inline-flex;align-items:center;gap:4px;color:var(--muted)}
+.parts-summary i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.progress-bar{height:8px;background:#eee;border-radius:999px;overflow:hidden;margin-bottom:10px}
+.progress-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--done));transition:width .3s}
+
+/* === 円グラフ === */
+.chart-wrap{padding:8px 14px 12px}
+.chart-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.chart-card h3{margin:0 0 8px;font-size:12px;color:var(--muted);font-weight:700}
+.chart-card svg{width:100%;max-width:200px;height:auto;display:block;margin:0 auto}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;font-size:11px;justify-content:center}
+.legend span{display:inline-flex;align-items:center;gap:4px;color:var(--muted)}
+.legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
+
+/* === ツールバー === */
+.toolbar{display:flex;gap:8px;padding:8px 14px 24px;flex-wrap:wrap}
+.toolbar button{flex:1;min-width:100px;background:#fff;border:1px solid var(--line);padding:10px;border-radius:10px;font-size:12px;font-weight:700;color:var(--text);cursor:pointer}
+.toolbar button.danger{color:#c43;border-color:#fbb}
+.toolbar button.primary{background:var(--text);color:#fff;border-color:var(--text)}
+
+/* === トースト === */
+.toast{position:fixed;left:50%;top:60px;transform:translateX(-50%) translateY(-30px);background:rgba(20,200,90,.95);color:#fff;padding:14px 24px;border-radius:999px;font-weight:800;font-size:15px;opacity:0;pointer-events:none;transition:all .3s;z-index:200;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.collapsible{max-height:8000px;overflow:hidden;transition:max-height .3s ease}
+.collapsible.hidden{max-height:0}
+
+/* === モーダル === */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150;opacity:0;pointer-events:none;transition:opacity .25s;display:flex;align-items:flex-end;justify-content:center}
+.modal-bg.show{opacity:1;pointer-events:auto}
+.modal{background:#fff;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:18px 16px 30px;transform:translateY(100%);transition:transform .3s ease}
+.modal-bg.show .modal{transform:translateY(0)}
+.modal .grip{width:42px;height:5px;background:#ddd;border-radius:999px;margin:0 auto 14px}
+.modal .m-cat{display:inline-block;font-size:10px;font-weight:800;padding:3px 9px;border-radius:6px;color:#fff;margin-bottom:6px}
+.modal .m-cat.material{background:#5a7a8a}
+.modal .m-cat.weld{background:#e64545}
+.modal .m-cat.machine{background:#0a84ff}
+.modal .m-cat.coating{background:#1aa56a}
+.modal .m-cat.verify{background:#c850dc}
+.modal .m-cat.manufacture{background:#f59e3c}
+.modal .m-name{font-size:24px;font-weight:900;line-height:1.2;margin-bottom:6px}
+.modal .m-status{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;display:inline-block;margin-bottom:10px}
+.modal .m-status.s-未着手{background:#eee;color:#999}
+.modal .m-status.s-練習中{background:#fff3c4;color:#7a4f00}
+.modal .m-status.s-組み上がった{background:#dcf5e3;color:#1d6435}
+.modal .m-desc{font-size:14px;color:var(--muted);margin-bottom:16px;line-height:1.5}
+.modal h3{font-size:13px;font-weight:800;color:#444;margin:18px 0 8px}
+.modal .checklist{display:flex;flex-direction:column;gap:6px}
+.modal .checkitem{display:flex;align-items:flex-start;gap:10px;padding:10px;background:#f8f8fa;border-radius:10px;border:1px solid var(--line);cursor:pointer;transition:all .15s}
+.modal .checkitem:active{transform:scale(.98)}
+.modal .checkitem.done{background:#dcf5e3;border-color:var(--done)}
+.modal .checkitem .box{width:22px;height:22px;border-radius:6px;border:2px solid #ccc;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:14px;color:transparent;font-weight:900;background:#fff}
+.modal .checkitem.done .box{background:var(--done);border-color:var(--done);color:#fff}
+.modal .checkitem .text{flex:1;font-size:13px;line-height:1.4}
+.modal .checkitem.done .text{text-decoration:line-through;opacity:.7}
+.modal textarea{width:100%;min-height:90px;border:2px solid var(--line);border-radius:10px;padding:10px;font:inherit;font-size:14px;resize:vertical}
+.modal textarea:focus{border-color:#0a84ff;outline:none}
+.modal .m-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:18px}
+.modal .m-actions button{appearance:none;border:none;border-radius:10px;padding:14px;font:inherit;font-weight:800;font-size:14px;cursor:pointer}
+.modal .m-actions .b-consult{background:#1a3a52;color:#fff;grid-column:span 2}
+.modal .m-actions .b-complete{background:var(--done);color:#fff}
+.modal .m-actions .b-progress{background:var(--gold);color:#fff}
+.modal .m-actions .b-reset{background:#eee;color:#666}
+.modal .m-actions .b-close{background:transparent;color:#666;border:1px solid #ccc;grid-column:span 2}
+
+@media (min-width:600px){
+  .btn-grid{grid-template-columns:repeat(3,1fr)}
+  .cat-btn.memo{grid-column:span 3}
+  .modal-bg{align-items:center}
+  .modal{border-radius:20px;max-height:85vh}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🔧 俺だけのCAD <span class="sub">Work Tracker</span></h1>
+  <div class="today" id="todayLabel"></div>
+</header>
+
+<!-- ★ 今日の目標 ★ -->
+<div class="goals-card" id="goalsCard">
+  <div class="head">
+    <span>🎯 今日の目標</span>
+    <span id="goalsCount" style="font-size:10px;opacity:.85"></span>
+  </div>
+  <div class="glist" id="goalsList"></div>
+  <div class="add-row">
+    <input id="goalInput" type="text" placeholder="今日の目標を入力（Enter or 追加）" onkeydown="if(event.key==='Enter')addGoal()">
+    <button onclick="addGoal()">追加</button>
+  </div>
+</div>
+
+<!-- ★ 今日の1個（製缶パーツ）★ -->
+<div class="today-part" id="todayPartCard"></div>
+
+<!-- ★ Claudeコーチ観察ノート ★ -->
+<div class="coach-note">
+  <div class="coach-head">
+    <span>💬 Claudeコーチの観察ノート</span>
+    <span class="updated">初期版 2026-05-12</span>
+  </div>
+  <details open>
+    <summary>🎯 使い方の流れ（俺の提案）</summary>
+    <div class="body">
+      <ol>
+        <li><span class="focus">朝</span>：今日の目標を1〜3個書く（具体的に）</li>
+        <li><span class="focus">日中</span>：設計／加工／検図／打合せ／疑問／アイデア を即タップ記録</li>
+        <li><span class="focus">夜</span>：今日の復習に振り返り＆気づきを書く</li>
+        <li><span class="focus">週次</span>：金曜にClaudeに「今週のログ送る」で観察＆暗黙知更新</li>
+      </ol>
+    </div>
+  </details>
+  <details>
+    <summary>📦 製缶30パーツの考え方</summary>
+    <div class="body">
+      <ul>
+        <li><span class="pos">✅</span> 各パーツに5項目チェックリスト</li>
+        <li><span class="pos">✅</span> 自分のメモ・気づきを蓄積</li>
+        <li><span class="pos">✅</span> 1日1パーツ意識して完成度を上げる</li>
+        <li><span class="pos">✅</span> 全部組み上がったら「製缶設計マスター」</li>
+      </ul>
+    </div>
+  </details>
+  <details>
+    <summary>🚀 ビジョン：偉大な発明家への道</summary>
+    <div class="body">
+      製缶設計マスター → 機械要素・流体・電気を横断 → <b>既存パーツの新組合せ=発明</b><br><br>
+      部品10個知ってる人より、部品100個知ってる人の方が組合せは <b>2^100倍</b>。<br>
+      土台を深く・広くするのが発明家への最短ルート。
+    </div>
+  </details>
+</div>
+
+<div class="guide">
+  📌 「設計／加工／検図／打合せ／疑問／アイデア」をタップで即記録。詳細は各セクションへ。
+</div>
+
+<div class="main-area">
+  <textarea id="memoBox" placeholder="任意：何があった？（音声入力もOK）"></textarea>
+  <div class="hint">↓ ボタンでカテゴリ別に即記録</div>
+</div>
+
+<div class="btn-grid">
+  <button class="cat-btn design" onclick="quickSave('design')"><span class="icon">📐</span><span>設計</span><span class="sub">タップで記録</span></button>
+  <button class="cat-btn process" onclick="quickSave('process')"><span class="icon">🔨</span><span>加工/製造</span><span class="sub">タップで記録</span></button>
+  <button class="cat-btn check" onclick="quickSave('check')"><span class="icon">🔍</span><span>検図</span><span class="sub">タップで記録</span></button>
+  <button class="cat-btn meet" onclick="quickSave('meet')"><span class="icon">💼</span><span>打合せ</span><span class="sub">タップで記録</span></button>
+  <button class="cat-btn inquiry" onclick="quickSaveInquiry()"><span class="icon">❓</span><span>疑問</span><span class="sub">タップで疑問タンクへ</span></button>
+  <button class="cat-btn idea" onclick="quickSaveIdea()"><span class="icon">💡</span><span>アイデア</span><span class="sub">タップで発酵タンクへ</span></button>
+  <button class="cat-btn memo" onclick="quickSave('memo')"><span class="icon">📝</span><span>メモとして保存</span></button>
+</div>
+
+<!-- 案件・納期 -->
+<div class="section-title" onclick="toggleSection('projectsContainer', this)">
+  <span>📅 案件・納期</span>
+  <span><span class="count" id="projectsCount"></span> <span class="arrow">▼</span></span>
+</div>
+<div id="projectsContainer" class="collapsible">
+  <div class="projects-wrap" id="projectsWrap"></div>
+  <div style="padding:0 14px 12px">
+    <div class="project-add">
+      <input id="projName" type="text" placeholder="案件名">
+      <input id="projDate" type="date">
+      <button onclick="addProject()">追加</button>
+    </div>
+  </div>
+</div>
+
+<!-- 今日のログ -->
+<div class="section-title" onclick="toggleSection('logsContainer', this)">
+  <span id="logsTitle">📋 今日のログ</span>
+  <span><span class="count" id="logsCount"></span> <span class="arrow">▼</span></span>
+</div>
+<div id="logsContainer" class="collapsible"></div>
+
+<div class="section-title">
+  <span>📆 日付切替</span>
+</div>
+<div class="date-tabs" id="dateTabs"></div>
+
+<!-- アイデア発酵タンク -->
+<div class="section-title" onclick="toggleSection('ideasContainer', this)">
+  <span>💡 アイデア発酵タンク</span>
+  <span><span class="count" id="ideasCount"></span> <span class="arrow">▼</span></span>
+</div>
+<div id="ideasContainer" class="collapsible">
+  <div class="idea-tank" id="ideaTank"></div>
+</div>
+
+<!-- 疑問タンク -->
+<div class="section-title" onclick="toggleSection('inquiriesContainer', this)">
+  <span>❓ 疑問タンク（平日溜め→休日潰す）</span>
+  <span><span class="count" id="inquiriesCount"></span> <span class="arrow">▼</span></span>
+</div>
+<div id="inquiriesContainer" class="collapsible">
+  <div class="inquiry-tank" id="inquiryTank"></div>
+</div>
+
+<!-- 製缶30パーツ -->
+<div class="section-title" onclick="toggleSection('partsContainer', this)">
+  <span>📦 製缶30パーツ（タップで詳細）</span>
+  <span><span class="count" id="partsCount"></span> <span class="arrow">▼</span></span>
+</div>
+<div id="partsContainer" class="collapsible"></div>
+
+<!-- 今日の復習 -->
+<div class="section-title">
+  <span>🌙 今日の復習（夜書く）</span>
+</div>
+<div class="review-card">
+  <div class="head">
+    <span>📔 今日の学び・気づき・反省</span>
+    <span class="badge" id="reviewDate"></span>
+  </div>
+  <textarea id="reviewBox" placeholder="例：今日のSM490の溶接で歪みが出た理由は…／JIS Z 3021 を確認した／○○さんに聞いた…"></textarea>
+  <div class="meta" id="reviewMeta">自動保存されます</div>
+</div>
+
+<!-- 月次比率 -->
+<div class="section-title" onclick="toggleSection('chartContainer', this)">
+  <span>📊 月次比率</span>
+  <span><span class="count" id="monthLabel"></span> <span class="arrow">▼</span></span>
+</div>
+<div id="chartContainer" class="collapsible">
+  <div class="chart-wrap">
+    <div class="chart-card">
+      <h3>カテゴリ比率（今月）</h3>
+      <div id="chartArea"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ツール -->
+<div class="toolbar">
+  <button class="primary" onclick="copyToday()">📋 今日のログをコピー</button>
+  <button onclick="importText()">📥 テキストから読込</button>
+  <button onclick="exportJSON()">JSON書き出し</button>
+  <button class="danger" onclick="resetAll()">全消去</button>
+</div>
+
+<!-- パーツ詳細モーダル -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<!-- ペースト読込モーダル -->
+<div class="modal-bg" id="pasteBg" onclick="if(event.target===this)closePaste()">
+  <div class="modal">
+    <div class="grip"></div>
+    <div style="font-size:18px;font-weight:800;margin-bottom:6px">📥 テキストから読み込み</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px">JSON文字列を貼り付けて「読み込む」。既存データは上書きされる。</div>
+    <textarea id="pasteBox" style="width:100%;min-height:200px;border:2px solid var(--line);border-radius:10px;padding:10px;font:inherit;font-size:12px;font-family:ui-monospace,Menlo,Consolas,monospace;resize:vertical" placeholder='{"logs":[...]}'></textarea>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px">
+      <button onclick="doImportText()" style="appearance:none;border:none;border-radius:10px;padding:14px;font:inherit;font-weight:800;font-size:14px;cursor:pointer;background:#34c759;color:#fff">✓ 読み込む</button>
+      <button onclick="closePaste()" style="appearance:none;border:none;border-radius:10px;padding:14px;font:inherit;font-weight:800;font-size:14px;cursor:pointer;background:#eee;color:#666">キャンセル</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+console.log("俺だけのCAD v1 起動");
+
+// ===== パーツ定義（製缶30個・5項目チェックリスト付き） =====
+const PARTS = [
+  // 材料・素材 (6)
+  {id:1, cat:"material", name:"鋼種選定", desc:"SS400/SM490/SUS304等の使い分け",
+    checks:["SS400=一般構造（強度低）","SM490=溶接構造用（強度UP）","SUS304=耐食性必要時","規格表で機械的性質を確認","価格差・調達性も考慮"]},
+  {id:2, cat:"material", name:"板厚選定", desc:"6/9/12/16/19/22/25mm",
+    checks:["応力計算から最小板厚","規格在庫サイズで決定","重量と強度のバランス","加工性（曲げ/溶接）","コスト最適"]},
+  {id:3, cat:"material", name:"鋼材形状の選択", desc:"プレート/型鋼/パイプ/角パイプ",
+    checks:["剛性が必要→型鋼/パイプ","軽量化→角パイプ","加工容易→プレート","JIS規格寸法を優先","継手数を最小化"]},
+  {id:4, cat:"material", name:"切断方法", desc:"レーザー/プラズマ/ガス/シャー",
+    checks:["精度要求→レーザー","厚物高速→プラズマ","現場修正→ガス","直線大量→シャー","切断面の酸化処理"]},
+  {id:5, cat:"material", name:"開先加工", desc:"V/X/レ/レ平等",
+    checks:["板厚＞6mm でV開先必須","両面溶接可→X開先","片面のみ→レ型","ルート間隔の指定","角度（30°/35°/45°）"]},
+  {id:6, cat:"material", name:"材料表記（JIS）", desc:"図面上の材料指示",
+    checks:["JIS規格名で記載","板厚×幅×長さ","「t10」「PL-10」表記","材質記号 SS400 等","部品表との整合"]},
+  // 溶接 (8)
+  {id:7, cat:"weld", name:"JIS溶接記号", desc:"JIS Z 3021",
+    checks:["基本記号（突合せ/すみ肉/プラグ）","補助記号（凸/凹/平/全周）","脚長・厚さ表記","現場/工場の区別","記号の向きと位置"]},
+  {id:8, cat:"weld", name:"突合せ溶接", desc:"母材を突き合わせる方式",
+    checks:["完全溶込み（CJP）か部分か","開先形状の選定","裏波の指示","非破壊検査（UT/RT）要求","強度＝母材並み"]},
+  {id:9, cat:"weld", name:"すみ肉溶接", desc:"母材直角の溶接",
+    checks:["脚長指示（s6/s8等）","連続/断続の選択","脚長過大は熱影響大","JIS Z 3312 確認","強度計算と脚長"]},
+  {id:10, cat:"weld", name:"溶接歪み対策", desc:"順序/対称/拘束/水冷",
+    checks:["対称順序で溶接","拘束治具で固定","水冷で熱影響低減","事前変形をつける","熱量最小化"]},
+  {id:11, cat:"weld", name:"溶接強度計算", desc:"脚長×長さ×許容応力",
+    checks:["有効断面積を計算","許容応力（SS400なら140N/mm²）","せん断計算","疲労考慮","安全率2以上"]},
+  {id:12, cat:"weld", name:"仮付け（タック）設計", desc:"組立順序の前提",
+    checks:["位置決め重視","本溶接で消える前提","数とピッチ","抜けないように","作業性考慮"]},
+  {id:13, cat:"weld", name:"溶接姿勢配慮", desc:"下向き/横向き/上向き/立向き",
+    checks:["下向きが最速・最良","上向きは可能な限り避ける","作業者目線で図面チェック","治具で回転可能か","姿勢で記号変える"]},
+  {id:14, cat:"weld", name:"後処理", desc:"グラインダー/熱処理",
+    checks:["スパッタ除去","ビード仕上げ要求","応力除去焼鈍（PWHT）","硬化部分の除去","塗装下地への影響"]},
+  // 機械加工・組立 (6)
+  {id:15, cat:"machine", name:"機械加工面の指示", desc:"F1/F3/F5（仕上げ程度）",
+    checks:["F1=鋳肌のまま","F3=機械加工標準","F5=精密仕上げ","加工代の指示（3〜5mm）","加工後の歪み考慮"]},
+  {id:16, cat:"machine", name:"表面粗さ", desc:"Ra/Rz",
+    checks:["Ra=算術平均粗さ","Rz=最大高さ","摺動面 Ra1.6","シール面 Ra0.8","コスト＝粗さ細かいほど高い"]},
+  {id:17, cat:"machine", name:"はめあい公差", desc:"H7/h6 等",
+    checks:["軸穴記号の読み方","すきま/中間/しまり","H7（穴基準）汎用","h6（軸基準）","回転体は中間以上"]},
+  {id:18, cat:"machine", name:"幾何公差", desc:"平面度/直角度/同軸度",
+    checks:["データム指定","形状/姿勢/位置/振れ","汎用機械で守れる値","検査方法も意識","記号と数値のセット"]},
+  {id:19, cat:"machine", name:"寸法公差", desc:"一般公差（JIS B 0405）/精密",
+    checks:["一般公差表を覚える","重要寸法のみ個別指定","±でも+0/-0.1でも可","累積誤差","測定方法"]},
+  {id:20, cat:"machine", name:"ボルト・ナット選定", desc:"強度区分8.8/10.9等",
+    checks:["強度区分の意味","M10で締結トルク50N·m目安","ステンレスはかじり","ゆるみ止め（ワッシャー/ロック）","JIS規格品優先"]},
+  // 塗装・表面処理 (3)
+  {id:21, cat:"coating", name:"下地処理", desc:"ブラスト/SA2.5/SA1",
+    checks:["SA2.5=ほぼ白色","SA2=軽い赤錆残り","ショットブラスト/サンドブラスト","下地の粗さ","塗装後の密着性"]},
+  {id:22, cat:"coating", name:"塗装系", desc:"エポキシ/アクリル/フッ素",
+    checks:["エポキシ=耐食性","アクリル=屋内・耐候","フッ素=最強耐候","下塗り/中塗り/上塗り","膜厚指定（μm）"]},
+  {id:23, cat:"coating", name:"メッキ・表面処理", desc:"HDZ/亜鉛/クロメート",
+    checks:["HDZ=溶融亜鉛メッキ","電気亜鉛は薄い","クロメート=六価/三価","付きまわり性","水素脆性に注意"]},
+  // 設計検証 (4)
+  {id:24, cat:"verify", name:"強度計算", desc:"曲げ/せん断/座屈",
+    checks:["応力σ=M/Z","せん断τ=F/A","座屈はオイラー式","安全率（一般3、人命5以上）","FEM解析と手計算照合"]},
+  {id:25, cat:"verify", name:"重量計算と重心", desc:"クレーン/搬送に必要",
+    checks:["密度7.85 t/m³（鋼）","部品ごとに重量算出","重心位置（CAD出力）","吊点を重心直上","アンバランス対策"]},
+  {id:26, cat:"verify", name:"搬送性", desc:"クレーン吊点/分割設計",
+    checks:["クレーン能力以下","吊穴/吊金具の位置","トラック寸法（2.5mW×3.8mH）","現場分割の継手設計","運搬時の歪み防止"]},
+  {id:27, cat:"verify", name:"メンテナンス性", desc:"点検口/分解可能",
+    checks:["定期点検口の位置","ボルト締結を分解可能に","消耗部品の交換性","メンテ動線","工具入るスペース"]},
+  // 製造性 (3)
+  {id:28, cat:"manufacture", name:"加工順序", desc:"組立工程の組み立て",
+    checks:["大物→小物","内側→外側","溶接→機械加工の順","熱影響を後工程に持ち越さない","検査ポイント設定"]},
+  {id:29, cat:"manufacture", name:"治具設計の判断", desc:"必要 vs 不要",
+    checks:["数量×コストで判断","精度要求から必要性","位置決め/拘束/反転","汎用治具で済むか","現場の意見聞く"]},
+  {id:30, cat:"manufacture", name:"部品点数最小化", desc:"設計の鉄則",
+    checks:["1部品で済むか考える","曲げ/溶接で一体化","ボルト数削減","共通部品化","管理工数も削減"]},
+];
+
+// ===== ストレージ =====
+const KEY = "work_tracker_v1";
+function loadState(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(raw){
+      const s = JSON.parse(raw);
+      if(!s.logs) s.logs = [];
+      if(!s.parts) s.parts = {};
+      if(!s.daily) s.daily = {};
+      if(!s.projects) s.projects = [];
+      if(!s.ideas) s.ideas = [];
+      if(!s.inquiries) s.inquiries = [];
+      return s;
+    }
+  }catch(e){ console.warn("loadState fail", e); }
+  return {logs:[], parts:{}, daily:{}, projects:[], ideas:[], inquiries:[]};
+}
+function saveState(s){
+  try{ localStorage.setItem(KEY, JSON.stringify(s)); }
+  catch(e){ console.warn("saveState fail", e); }
+}
+let state = loadState();
+
+function todayStr(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+let viewDate = todayStr();
+let lastSavedTs = null;
+let openPartId = null;
+
+const CATS = {
+  design:{name:"設計", color:"#0a84ff", emoji:"📐"},
+  process:{name:"加工/製造", color:"#f59e3c", emoji:"🔨"},
+  check:{name:"検図", color:"#c850dc", emoji:"🔍"},
+  meet:{name:"打合せ", color:"#1aa56a", emoji:"💼"},
+  inquiry:{name:"疑問", color:"#ff6b6b", emoji:"❓"},
+  idea:{name:"アイデア", color:"#ffb300", emoji:"💡"},
+  memo:{name:"メモ", color:"#6b6b73", emoji:"📝"},
+  part:{name:"パーツ", color:"#1a3a52", emoji:"📦"}
+};
+const PART_CATS = {
+  material:{name:"材料", color:"#5a7a8a"},
+  weld:{name:"溶接", color:"#e64545"},
+  machine:{name:"機械加工", color:"#0a84ff"},
+  coating:{name:"塗装", color:"#1aa56a"},
+  verify:{name:"検証", color:"#c850dc"},
+  manufacture:{name:"製造性", color:"#f59e3c"}
+};
+
+let toastTimer;
+function toast(msg){
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove("show"), 1800);
+}
+
+// ===== 今日の目標 =====
+function getDaily(d){
+  if(!state.daily[d]) state.daily[d] = {goals:[], review:""};
+  if(!state.daily[d].goals) state.daily[d].goals = [];
+  if(state.daily[d].review===undefined) state.daily[d].review = "";
+  return state.daily[d];
+}
+function addGoal(){
+  const inp = document.getElementById("goalInput");
+  const txt = inp.value.trim();
+  if(!txt){ inp.focus(); return; }
+  const d = getDaily(todayStr());
+  if(d.goals.length>=5){ toast("目標は5個まで"); return; }
+  d.goals.push({text:txt, done:false, ts:new Date().toISOString()});
+  saveState(state);
+  inp.value = "";
+  toast("✓ 目標追加");
+  renderGoals();
+}
+function toggleGoal(ix){
+  const d = getDaily(todayStr());
+  d.goals[ix].done = !d.goals[ix].done;
+  saveState(state);
+  renderGoals();
+}
+function delGoal(ix){
+  const d = getDaily(todayStr());
+  d.goals.splice(ix, 1);
+  saveState(state);
+  renderGoals();
+}
+
+// ===== 今日の復習 =====
+function onReviewInput(){
+  const txt = document.getElementById("reviewBox").value;
+  const d = getDaily(todayStr());
+  d.review = txt;
+  saveState(state);
+  document.getElementById("reviewMeta").textContent = `✓ 自動保存 ${new Date().toLocaleTimeString('ja-JP')}`;
+}
+
+// ===== 案件・納期 =====
+function addProject(){
+  const name = document.getElementById("projName").value.trim();
+  const date = document.getElementById("projDate").value;
+  if(!name || !date){ toast("案件名と納期入力して"); return; }
+  state.projects.push({name, deadline:date, ts:new Date().toISOString()});
+  state.projects.sort((a,b)=>a.deadline.localeCompare(b.deadline));
+  saveState(state);
+  document.getElementById("projName").value = "";
+  document.getElementById("projDate").value = "";
+  toast("✓ 案件追加");
+  renderProjects();
+}
+function delProject(ix){
+  state.projects.splice(ix, 1);
+  saveState(state);
+  toast("削除した");
+  renderProjects();
+}
+function completeProject(ix){
+  state.projects.splice(ix, 1);
+  saveState(state);
+  toast("✓ 案件完了！");
+  renderProjects();
+}
+
+// ===== アイデア発酵タンク =====
+function quickSaveIdea(){
+  const box = document.getElementById("memoBox");
+  const txt = (box.value || "").trim();
+  if(!txt){
+    const def = prompt("アイデア内容（短くてOK）", "");
+    if(!def) return;
+    addIdea(def);
+    return;
+  }
+  addIdea(txt);
+  box.value = "";
+}
+function addIdea(txt){
+  state.ideas.unshift({
+    ts: new Date().toISOString(),
+    text: txt,
+    status: "発酵中"
+  });
+  saveState(state);
+  toast("💡 アイデア発酵タンクへ");
+  render();
+}
+function cycleIdeaStatus(ix){
+  const order = ["発酵中","具体化","実装","出願"];
+  const cur = state.ideas[ix].status;
+  state.ideas[ix].status = order[(order.indexOf(cur)+1) % order.length];
+  saveState(state);
+  toast(`→ ${state.ideas[ix].status}`);
+  renderIdeas();
+}
+function delIdea(ix){
+  state.ideas.splice(ix, 1);
+  saveState(state);
+  renderIdeas();
+}
+
+// ===== 疑問タンク =====
+function quickSaveInquiry(){
+  const box = document.getElementById("memoBox");
+  const txt = (box.value || "").trim();
+  if(!txt){
+    const def = prompt("疑問の内容（1行でOK）", "");
+    if(!def) return;
+    addInquiry(def);
+    return;
+  }
+  addInquiry(txt);
+  box.value = "";
+}
+function addInquiry(txt){
+  state.inquiries.unshift({
+    ts: new Date().toISOString(),
+    text: txt,
+    solved: false
+  });
+  saveState(state);
+  toast("❓ 疑問タンクへ");
+  render();
+}
+function toggleInquiry(ix){
+  state.inquiries[ix].solved = !state.inquiries[ix].solved;
+  saveState(state);
+  toast(state.inquiries[ix].solved ? "✓ 解決" : "再オープン");
+  renderInquiries();
+}
+function delInquiry(ix){
+  state.inquiries.splice(ix, 1);
+  saveState(state);
+  renderInquiries();
+}
+
+// ===== パーツ操作 =====
+function getPart(id){ return state.parts[id] || {status:"未着手", notes:"", checks:{}}; }
+function getPartStatus(id){ return getPart(id).status; }
+function ensurePart(id){
+  if(!state.parts[id]) state.parts[id] = {status:"未着手", notes:"", checks:{}};
+  if(!state.parts[id].checks) state.parts[id].checks = {};
+  if(state.parts[id].notes===undefined) state.parts[id].notes = "";
+  return state.parts[id];
+}
+function setPartStatus(id, status){
+  ensurePart(id);
+  state.parts[id].status = status;
+  state.parts[id].updated = new Date().toISOString();
+  saveState(state);
+}
+function pickTodayPart(){
+  const inProg = PARTS.filter(p => getPartStatus(p.id)==="練習中")
+    .sort((a,b)=>(state.parts[a.id].updated||"").localeCompare(state.parts[b.id].updated||""));
+  if(inProg.length) return inProg[0];
+  const ns = PARTS.find(p => getPartStatus(p.id)==="未着手");
+  if(ns) return ns;
+  return null;
+}
+function partComplete(id){
+  const p = PARTS.find(x=>x.id===id);
+  if(!p) return;
+  setPartStatus(id, "組み上がった");
+  pushPartLog(p, "組み上がった");
+  toast(`✅ パーツ完成：${p.name}`);
+  closeModal();
+  render();
+}
+function partInProgress(id){
+  const p = PARTS.find(x=>x.id===id);
+  if(!p) return;
+  setPartStatus(id, "練習中");
+  pushPartLog(p, "練習中");
+  toast(`🔄 練習中：${p.name}`);
+  render();
+  if(openPartId===id) renderModal();
+}
+function partReset(id){
+  delete state.parts[id];
+  saveState(state);
+  toast(`未着手に戻した`);
+  render();
+  if(openPartId===id) renderModal();
+}
+function partSkip(id){
+  delete state.parts[id];
+  saveState(state);
+  toast(`⏭ パスした`);
+  render();
+}
+function pushPartLog(part, status){
+  const log = {
+    ts: new Date().toISOString(),
+    date: todayStr(),
+    cat: "part",
+    text: `[${status}] ${part.name}（${PART_CATS[part.cat].name}）`,
+    partId: part.id
+  };
+  state.logs.push(log);
+  saveState(state);
+  lastSavedTs = log.ts;
+}
+function toggleCheck(id, ix){
+  const p = ensurePart(id);
+  p.checks[ix] = !p.checks[ix];
+  if(!p.checks[ix]) delete p.checks[ix];
+  saveState(state);
+  if(openPartId===id) renderModal();
+}
+function saveNotes(id, text){
+  const p = ensurePart(id);
+  p.notes = text;
+  saveState(state);
+}
+
+// ===== モーダル =====
+function openPartModal(id){
+  openPartId = id;
+  document.getElementById("modalBg").classList.add("show");
+  renderModal();
+}
+function closeModal(){
+  openPartId = null;
+  document.getElementById("modalBg").classList.remove("show");
+}
+function renderModal(){
+  if(openPartId===null) return;
+  const p = PARTS.find(x=>x.id===openPartId);
+  if(!p){ closeModal(); return; }
+  const ps = ensurePart(p.id);
+  const checksHtml = p.checks.map((c,ix)=>{
+    const done = !!ps.checks[ix];
+    const safeC = c.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    return `<div class="checkitem ${done?'done':''}" onclick="toggleCheck(${p.id},${ix})">
+      <div class="box">${done?'✓':''}</div>
+      <div class="text">${safeC}</div>
+    </div>`;
+  }).join("");
+  const histLogs = state.logs.filter(l=>l.partId===p.id).slice(-10).reverse();
+  const histHtml = histLogs.length ? histLogs.map(l=>{
+    const t = new Date(l.ts);
+    const tt = `${l.date} ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+    const safeText = l.text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    return `<div style="padding:6px 0;border-bottom:1px dashed #e5e5e5;font-size:12px"><div style="font-size:10px;color:#999">${tt}</div><div>${safeText}</div></div>`;
+  }).join("") : `<div style="color:#999;font-size:12px">まだ履歴なし</div>`;
+  const safeNotes = (ps.notes||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+  document.getElementById("modalContent").innerHTML = `
+    <div class="grip"></div>
+    <span class="m-cat ${p.cat}">${PART_CATS[p.cat].name}</span>
+    <div class="m-name">${p.name}</div>
+    <span class="m-status s-${ps.status}">${ps.status}</span>
+    <div class="m-desc">${p.desc}</div>
+
+    <h3>✅ チェックリスト（意識すること）</h3>
+    <div class="checklist">${checksHtml}</div>
+
+    <h3>📝 自分のメモ（コツ・気づき・失敗）</h3>
+    <textarea id="notesBox" placeholder="例：SS400をSM490と間違えた。注文時に必ず材料証明書を確認する" oninput="saveNotes(${p.id}, this.value)">${safeNotes}</textarea>
+
+    <h3>💬 Claudeに相談</h3>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:8px">下のボタンで、このパーツの状況をまとめた相談文をコピー。Claudeに貼って質問追加して送って。</div>
+
+    <div class="m-actions">
+      <button class="b-consult" onclick="copyConsult(${p.id})">💬 Claudeに相談する文を作ってコピー</button>
+      <button class="b-complete" onclick="partComplete(${p.id})">✅ 組み上がった</button>
+      <button class="b-progress" onclick="partInProgress(${p.id})">🔄 練習中にする</button>
+      ${ps.status!=="未着手" ? `<button class="b-reset" onclick="partReset(${p.id})">↺ 未着手に戻す</button><button class="b-close" onclick="closeModal()">閉じる</button>` : `<button class="b-close" onclick="closeModal()">閉じる</button>`}
+    </div>
+
+    <h3>📅 このパーツの履歴</h3>
+    <div style="max-height:200px;overflow-y:auto;border:1px solid var(--line);border-radius:10px;padding:8px;background:#fafafa">${histHtml}</div>
+  `;
+}
+
+function copyConsult(id){
+  const p = PARTS.find(x=>x.id===id);
+  if(!p) return;
+  const ps = ensurePart(p.id);
+  const checksDone = p.checks.map((c,ix)=>({c, done: !!ps.checks[ix]}));
+  const doneList = checksDone.filter(x=>x.done).map(x=>`✓ ${x.c}`).join("\n");
+  const ndList = checksDone.filter(x=>!x.done).map(x=>`✗ ${x.c}`).join("\n");
+  const text =
+`【製缶設計 相談】（俺だけのCAD から）
+
+■ パーツ
+- 名前: ${p.name}
+- カテゴリ: ${PART_CATS[p.cat].name}
+- 説明: ${p.desc}
+- 状態: ${ps.status}
+
+■ チェックリスト（できてる）
+${doneList || "（まだなし）"}
+
+■ チェックリスト（未達）
+${ndList || "（全部できてる）"}
+
+■ 自分のメモ
+${ps.notes || "（まだ書いてない）"}
+
+■ 質問・相談したいこと
+（ここに書く）
+
+→ 設計クロード視点で、板金/製缶経験前提・実加工性も含めて教えて。`;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>toast("📋 相談文コピー")).catch(()=>fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+// ===== クイック保存 =====
+function quickSave(cat){
+  const box = document.getElementById("memoBox");
+  const txt = (box.value || "").trim();
+  const finalText = txt || `${CATS[cat].name}をやった`;
+  const log = {
+    ts: new Date().toISOString(),
+    date: todayStr(),
+    cat: cat,
+    text: finalText
+  };
+  state.logs.push(log);
+  saveState(state);
+  box.value = "";
+  viewDate = todayStr();
+  lastSavedTs = log.ts;
+  toast(`✓ ${CATS[cat].emoji} ${CATS[cat].name} を保存`);
+  render();
+  setTimeout(()=>{
+    const flashed = document.querySelector(".log-item.flash");
+    if(flashed) flashed.scrollIntoView({behavior:"smooth", block:"center"});
+  }, 100);
+}
+
+function delLog(ts){
+  state.logs = state.logs.filter(l=>l.ts!==ts);
+  saveState(state);
+  toast("削除した");
+  render();
+}
+
+function resetAll(){
+  if(!confirm("全データ消去します。よろしい？")) return;
+  state = {logs:[], parts:{}, daily:{}, projects:[], ideas:[], inquiries:[]};
+  saveState(state);
+  render();
+}
+
+function copyToday(){
+  const d = todayStr();
+  const todays = state.logs.filter(l=>l.date===viewDate);
+  const dayData = state.daily[viewDate] || {goals:[], review:""};
+  let text = `=== 俺だけのCAD ${viewDate} ===\n`;
+  if(dayData.goals && dayData.goals.length){
+    text += `\n【今日の目標】\n` + dayData.goals.map(g=>`${g.done?'✓':'☐'} ${g.text}`).join("\n");
+  }
+  if(todays.length){
+    text += `\n\n【ログ】\n` + todays.map(l=>{
+      const t = new Date(l.ts);
+      const tt = `${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+      return `[${tt}] ${CATS[l.cat].name}: ${l.text}`;
+    }).join("\n");
+  }
+  if(dayData.review){
+    text += `\n\n【今日の復習】\n${dayData.review}`;
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>toast("コピーした")).catch(()=>fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text){
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position="fixed";ta.style.opacity="0";
+  document.body.appendChild(ta);
+  ta.select();
+  try{ document.execCommand("copy"); toast("コピーした"); }
+  catch(e){ alert(text); }
+  document.body.removeChild(ta);
+}
+
+function exportJSON(){
+  const blob = new Blob([JSON.stringify(state,null,2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `work_tracker_${todayStr()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importText(){
+  document.getElementById("pasteBg").classList.add("show");
+  document.getElementById("pasteBox").value = "";
+}
+function closePaste(){ document.getElementById("pasteBg").classList.remove("show"); }
+function doImportText(){
+  const txt = document.getElementById("pasteBox").value.trim();
+  if(!txt){ toast("テキスト貼って"); return; }
+  try {
+    const data = JSON.parse(txt);
+    if(!data.logs) data.logs = [];
+    if(!data.parts) data.parts = {};
+    if(!data.daily) data.daily = {};
+    if(!data.projects) data.projects = [];
+    if(!data.ideas) data.ideas = [];
+    if(!data.inquiries) data.inquiries = [];
+    if(!confirm(`既存${state.logs.length}件 → 読込${data.logs.length}件で上書き。OK？`)) return;
+    state = data;
+    saveState(state);
+    closePaste();
+    toast("✓ 読込完了");
+    render();
+  } catch(e) {
+    alert("JSON解析失敗: " + e.message);
+  }
+}
+
+function toggleSection(id, titleEl){
+  const el = document.getElementById(id);
+  el.classList.toggle("hidden");
+  titleEl.classList.toggle("collapsed");
+}
+
+// ===== 描画 =====
+function render(){
+  const t = new Date();
+  const wd = ["日","月","火","水","木","金","土"][t.getDay()];
+  const completed = PARTS.filter(p => getPartStatus(p.id)==="組み上がった").length;
+  document.getElementById("todayLabel").textContent =
+    `${todayStr()}（${wd}）／ パーツ ${completed}/${PARTS.length} ／ ログ${state.logs.length}件`;
+
+  renderGoals();
+  renderTodayPart();
+  renderProjects();
+  renderDateTabs();
+  renderLogs();
+  renderIdeas();
+  renderInquiries();
+  renderParts();
+  renderReview();
+  renderChart();
+}
+
+function renderGoals(){
+  const d = getDaily(todayStr());
+  const list = document.getElementById("goalsList");
+  document.getElementById("goalsCount").textContent = d.goals.length ? `${d.goals.filter(g=>g.done).length}/${d.goals.length} 達成` : "未設定";
+  if(!d.goals.length){
+    document.getElementById("goalsCard").classList.add("empty");
+    list.innerHTML = "";
+    return;
+  }
+  document.getElementById("goalsCard").classList.remove("empty");
+  list.innerHTML = d.goals.map((g,ix)=>{
+    const safe = g.text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    return `<div class="goal-item ${g.done?'done':''}" onclick="toggleGoal(${ix})">
+      <div class="gbox">${g.done?'✓':''}</div>
+      <div class="gtext">${safe}</div>
+      <div class="gdel" onclick="event.stopPropagation();delGoal(${ix})">×</div>
+    </div>`;
+  }).join("");
+}
+
+function renderTodayPart(){
+  const card = document.getElementById("todayPartCard");
+  const p = pickTodayPart();
+  const completed = PARTS.filter(x=>getPartStatus(x.id)==="組み上がった").length;
+  if(!p){
+    card.classList.add("all-done");
+    card.innerHTML = `
+      <div class="header"><span>🏆 完成</span><span class="pcount">${completed}/${PARTS.length}</span></div>
+      <div class="name" style="cursor:default;text-decoration:none">全パーツ組み上がった！</div>
+      <div class="desc">次のレベルへ。機械要素／流体／電気を追加していこう。</div>
+      <div class="actions"><button class="btn-detail" onclick="alert('Claudeに「次のパーツリスト追加して」と相談してね')">✨ 次へ</button></div>
+    `;
+    return;
+  }
+  card.classList.remove("all-done");
+  const status = getPartStatus(p.id);
+  const statusLabel = status==="練習中" ? "🔄 練習中のパーツ" : "🎯 今日の1個パーツ";
+  card.innerHTML = `
+    <div class="header"><span>${statusLabel}</span><span class="pcount">${completed}/${PARTS.length} 完成</span></div>
+    <span class="cat-tag ${p.cat}">${PART_CATS[p.cat].name}</span>
+    <div class="name" onclick="openPartModal(${p.id})" title="タップで詳細">${p.name} <span style="font-size:14px;opacity:.7">▶</span></div>
+    <div class="desc">${p.desc}</div>
+    <div class="actions">
+      <button class="btn-detail" onclick="openPartModal(${p.id})">📋 詳細</button>
+      <button class="btn-complete" onclick="partComplete(${p.id})">✅ 完成</button>
+      <button class="btn-progress" onclick="partInProgress(${p.id})">🔄 練習</button>
+      <button class="btn-skip" onclick="partSkip(${p.id})">⏭ パス</button>
+    </div>
+  `;
+}
+
+function renderProjects(){
+  const wrap = document.getElementById("projectsWrap");
+  document.getElementById("projectsCount").textContent = `${state.projects.length}件`;
+  if(!state.projects.length){
+    wrap.innerHTML = `<div class="empty" style="margin:0">案件まだなし。下から追加</div>`;
+    return;
+  }
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  wrap.innerHTML = state.projects.map((p,ix)=>{
+    const dl = new Date(p.deadline);
+    const days = Math.round((dl-today)/(1000*60*60*24));
+    const cls = days<=3 ? "urgent" : (days<=7 ? "soon" : "");
+    const dayLabel = days<0 ? `${Math.abs(days)}日超過` : (days===0 ? "今日" : `${days}日後`);
+    const safe = p.name.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    return `<div class="project-card ${cls}">
+      <div>
+        <div class="pname">${safe}</div>
+        <div class="pmemo">納期 ${p.deadline}</div>
+      </div>
+      <div class="pdays"><span class="num">${days}</span>${dayLabel}</div>
+      <div class="pbtns">
+        <button onclick="completeProject(${ix})">✓</button>
+        <button class="del" onclick="delProject(${ix})">×</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function renderDateTabs(){
+  const dates = new Set();
+  for(let i=0; i<7; i++){
+    const d = new Date();
+    d.setDate(d.getDate()-i);
+    const s = d.toISOString().slice(0,10);
+    dates.add(s);
+  }
+  state.logs.forEach(l=>dates.add(l.date));
+  const sorted = Array.from(dates).sort().reverse();
+  const el = document.getElementById("dateTabs");
+  el.innerHTML = sorted.map(d=>{
+    const cls = d===viewDate ? "active" : "";
+    const cnt = state.logs.filter(l=>l.date===d).length;
+    const label = d===todayStr() ? `今日 (${cnt})` : `${d.slice(5)} (${cnt})`;
+    return `<button class="${cls}" onclick="setView('${d}')">${label}</button>`;
+  }).join("");
+}
+function setView(d){ viewDate = d; render(); }
+
+function renderLogs(){
+  const logs = state.logs.filter(l=>l.date===viewDate).sort((a,b)=>b.ts.localeCompare(a.ts));
+  document.getElementById("logsTitle").textContent =
+    viewDate===todayStr() ? "📋 今日のログ（新しい順）" : `📋 ${viewDate} のログ`;
+  document.getElementById("logsCount").textContent = `${logs.length}件`;
+  const cont = document.getElementById("logsContainer");
+  if(!logs.length){
+    cont.innerHTML = `<div class="empty">この日はまだログなし</div>`;
+    return;
+  }
+  cont.innerHTML = `<div class="log-list">${logs.map(l=>{
+    const t = new Date(l.ts);
+    const tt = `${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+    const c = CATS[l.cat] || CATS.memo;
+    const safeText = l.text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const flashCls = l.ts===lastSavedTs ? "flash" : "";
+    return `<div class="log-item ${flashCls}">
+      <div class="time">${tt}</div>
+      <div class="body"><span class="cat ${l.cat}">${c.name}</span><div class="text">${safeText}</div></div>
+      <button class="del" onclick="delLog('${l.ts}')" title="削除">×</button>
+    </div>`;
+  }).join("")}</div>`;
+}
+
+function renderIdeas(){
+  const tank = document.getElementById("ideaTank");
+  document.getElementById("ideasCount").textContent = `${state.ideas.length}件`;
+  if(!state.ideas.length){
+    tank.innerHTML = `<div class="empty" style="margin:0">アイデアまだなし。💡ボタンで投入</div>`;
+    return;
+  }
+  tank.innerHTML = state.ideas.map((idea,ix)=>{
+    const t = new Date(idea.ts);
+    const tt = `${idea.ts.slice(5,10)} ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+    const safe = idea.text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    return `<div class="idea-bottle">
+      <div class="iheader"><span>💡 ${tt}</span><span class="istatus ${idea.status}">${idea.status}</span></div>
+      <div class="itext">${safe}</div>
+      <div class="ibtns">
+        <button onclick="cycleIdeaStatus(${ix})">→ 次の段階</button>
+        <button class="del" onclick="delIdea(${ix})">×</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function renderInquiries(){
+  const tank = document.getElementById("inquiryTank");
+  const open = state.inquiries.filter(i=>!i.solved).length;
+  document.getElementById("inquiriesCount").textContent = `未解決 ${open}/${state.inquiries.length}`;
+  if(!state.inquiries.length){
+    tank.innerHTML = `<div class="empty" style="margin:0">疑問まだなし。❓ボタンで投入</div>`;
+    return;
+  }
+  tank.innerHTML = state.inquiries.map((q,ix)=>{
+    const t = new Date(q.ts);
+    const tt = `${q.ts.slice(5,10)} ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+    const safe = q.text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    return `<div class="inquiry-card ${q.solved?'solved':''}">
+      <div class="qhead"><span>❓ ${tt}</span><span>${q.solved?'✅ 解決':'⏳ 未解決'}</span></div>
+      <div class="qtext">${safe}</div>
+      <div class="qbtns">
+        <button onclick="toggleInquiry(${ix})">${q.solved?'再オープン':'✓ 解決にする'}</button>
+        <button class="del" onclick="delInquiry(${ix})">×</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function renderParts(){
+  const cont = document.getElementById("partsContainer");
+  const completed = PARTS.filter(p=>getPartStatus(p.id)==="組み上がった").length;
+  const inProgress = PARTS.filter(p=>getPartStatus(p.id)==="練習中").length;
+  const notStarted = PARTS.length - completed - inProgress;
+  document.getElementById("partsCount").textContent = `${completed}/${PARTS.length} 完成`;
+  const pct = Math.round(100*completed/PARTS.length);
+
+  const blocks = [
+    {cat:"material", title:"🪨 材料・素材"},
+    {cat:"weld", title:"🔥 溶接"},
+    {cat:"machine", title:"⚙ 機械加工・組立"},
+    {cat:"coating", title:"🎨 塗装・表面処理"},
+    {cat:"verify", title:"📐 設計検証"},
+    {cat:"manufacture", title:"🏭 製造性"},
+  ];
+  let html = `<div class="parts-wrap">
+    <div class="parts-summary">
+      <span><i style="background:#ccc"></i>未着手 ${notStarted}</span>
+      <span><i style="background:var(--gold)"></i>練習中 ${inProgress}</span>
+      <span><i style="background:var(--done)"></i>完成 ${completed}</span>
+    </div>
+    <div class="progress-bar"><i style="width:${pct}%"></i></div>`;
+  blocks.forEach(b=>{
+    const items = PARTS.filter(p=>p.cat===b.cat);
+    const cells = items.map(p=>{
+      const st = getPartStatus(p.id);
+      const mark = st==="組み上がった"?"✓":(st==="練習中"?"●":"○");
+      return `<div class="part-cell s-${st}" onclick="openPartModal(${p.id})" title="${p.desc}">
+        <span class="pmark">${mark}</span><span class="pname">${p.name}</span>
+      </div>`;
+    }).join("");
+    html += `<div class="parts-block"><h4>${b.title}（${items.length}個）</h4><div class="parts-grid">${cells}</div></div>`;
+  });
+  html += `</div>`;
+  cont.innerHTML = html;
+}
+
+function renderReview(){
+  const d = getDaily(todayStr());
+  document.getElementById("reviewDate").textContent = todayStr();
+  const box = document.getElementById("reviewBox");
+  if(document.activeElement !== box){
+    box.value = d.review || "";
+  }
+  box.oninput = onReviewInput;
+}
+
+function pieSVG(segs, size=180){
+  const total = segs.reduce((a,b)=>a+b.val,0);
+  const r = size/2 - 4;
+  const cx=size/2, cy=size/2;
+  if(total===0){
+    return `<svg viewBox="0 0 ${size} ${size}"><circle cx="${cx}" cy="${cy}" r="${r}" fill="#eee"/><text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="middle" fill="#999" font-size="13">今月まだ</text></svg>`;
+  }
+  let acc = -90;
+  let parts = "";
+  segs.forEach(s=>{
+    if(s.val===0) return;
+    const ang = 360*s.val/total;
+    const start = acc, end = acc+ang;
+    const x1 = cx + r*Math.cos(start*Math.PI/180);
+    const y1 = cy + r*Math.sin(start*Math.PI/180);
+    const x2 = cx + r*Math.cos(end*Math.PI/180);
+    const y2 = cy + r*Math.sin(end*Math.PI/180);
+    const large = ang>180?1:0;
+    if(ang>=359.99){
+      parts += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${s.color}"/>`;
+    } else {
+      parts += `<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${large} 1 ${x2},${y2} Z" fill="${s.color}" stroke="#fff" stroke-width="2"/>`;
+    }
+    const mid = (start+end)/2;
+    const lx = cx + r*0.62*Math.cos(mid*Math.PI/180);
+    const ly = cy + r*0.62*Math.sin(mid*Math.PI/180);
+    const pct = Math.round(100*s.val/total);
+    if(pct>=8){
+      parts += `<text x="${lx}" y="${ly}" fill="#fff" font-size="13" font-weight="800" text-anchor="middle" dominant-baseline="middle">${pct}%</text>`;
+    }
+    acc = end;
+  });
+  return `<svg viewBox="0 0 ${size} ${size}">${parts}</svg>`;
+}
+
+function renderChart(){
+  const ym = todayStr().slice(0,7);
+  document.getElementById("monthLabel").textContent = ym;
+  const monthLogs = state.logs.filter(l=>l.date.startsWith(ym));
+  const counts = {design:0, process:0, check:0, meet:0, inquiry:0, idea:0, memo:0, part:0};
+  monthLogs.forEach(l=>{ if(counts[l.cat]!==undefined) counts[l.cat]++; });
+  const segs = Object.keys(counts).map(k=>({
+    name: CATS[k].name,
+    val: counts[k],
+    color: CATS[k].color
+  }));
+  const legend = `<div class="legend">${segs.filter(s=>s.val>0).map(s=>
+    `<span><i style="background:${s.color}"></i>${s.name} ${s.val}</span>`
+  ).join("")}</div>`;
+  document.getElementById("chartArea").innerHTML = pieSVG(segs) + (segs.some(s=>s.val>0) ? legend : "");
+}
+
+render();
+console.log("俺だけのCAD v1 描画完了");
+</script>
+</body>
+</html>
