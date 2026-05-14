@@ -328,7 +328,7 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
     <span class="tab-icon">📝</span><span>今日やる</span>
   </button>
   <button class="tab" data-page="now" onclick="switchPage('now')">
-    <span class="tab-icon">🎯</span><span>現在地</span>
+    <span class="tab-icon">📦</span><span>スキル積み上げ</span>
   </button>
   <button class="tab" data-page="archive" onclick="switchPage('archive')">
     <span class="tab-icon">📋</span><span>記録</span>
@@ -375,7 +375,7 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
 </div><!-- /page input -->
 
 <div class="page" data-page="now">
-<div class="zone-header">🎯 現在地（今やってる／見るべき）<span class="sub">今日の1個・コーチノート</span></div>
+<div class="zone-header">📦 スキル積み上げ<span class="sub">今日の1個・コーチノート・製缶30パーツ</span></div>
 
 <!-- ★ 今日の1個（製缶パーツ）★ -->
 <div class="today-part" id="todayPartCard"></div>
@@ -418,10 +418,17 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
   </details>
 </div>
 
+<!-- 製缶30パーツ -->
+<div class="section-title" onclick="toggleSection('partsContainer', this)">
+  <span>📦 製缶30パーツ（タップで詳細）</span>
+  <span><span class="count" id="partsCount"></span> <span class="arrow">▼</span></span>
+</div>
+<div id="partsContainer" class="collapsible"></div>
+
 </div><!-- /page now -->
 
 <div class="page" data-page="archive">
-<div class="zone-header">📋 蓄積した記録（見るゾーン）<span class="sub">案件・ログ・アイデア・疑問・パーツ・復習</span></div>
+<div class="zone-header">📋 蓄積した記録（見るゾーン）<span class="sub">案件・ログ・アイデア・疑問・復習問題・朝振り返り</span></div>
 
 <!-- 案件・納期 -->
 <div class="section-title" onclick="toggleSection('projectsContainer', this)">
@@ -486,15 +493,6 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
   </div>
   <div class="quiz-tank" id="quizTank"></div>
 </div>
-
-<div class="zone-header">📦 スキル積み上げ<span class="sub">製缶30パーツ・発明家への土台</span></div>
-
-<!-- 製缶30パーツ -->
-<div class="section-title" onclick="toggleSection('partsContainer', this)">
-  <span>📦 製缶30パーツ（タップで詳細）</span>
-  <span><span class="count" id="partsCount"></span> <span class="arrow">▼</span></span>
-</div>
-<div id="partsContainer" class="collapsible"></div>
 
 <div class="zone-header">☀️ 朝ルーティン＆統計<span class="sub">前日の振り返り・月次グラフ</span></div>
 
