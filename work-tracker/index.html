@@ -48,8 +48,17 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
 .goals-card .add-row input:focus{outline:none;background:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.5)}
 
 /* === ゾーン境界バナー === */
-.zone-header{margin:18px 0 4px;padding:10px 16px;background:linear-gradient(90deg,#1a3a52 0%,#264e6e 100%);color:#fff;font-weight:900;font-size:13px;display:flex;align-items:center;gap:8px;border-left:4px solid #ffb300;letter-spacing:.03em}
+.zone-header{margin:0 0 4px;padding:10px 16px;background:linear-gradient(90deg,#1a3a52 0%,#264e6e 100%);color:#fff;font-weight:900;font-size:13px;display:flex;align-items:center;gap:8px;border-left:4px solid #ffb300;letter-spacing:.03em}
 .zone-header .sub{font-size:11px;opacity:.7;font-weight:600;margin-left:auto}
+
+/* === タブバー（3ページ切替） === */
+.tabbar{position:sticky;top:46px;z-index:9;background:rgba(245,245,247,.95);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:8px 12px;border-bottom:1px solid var(--line);display:flex;gap:6px}
+.tab{flex:1;background:#fff;border:1.5px solid var(--line);color:var(--muted);padding:8px 4px;border-radius:10px;font:inherit;font-weight:800;font-size:12px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:2px}
+.tab .tab-icon{font-size:18px;line-height:1}
+.tab.active{background:var(--steel);color:#fff;border-color:var(--steel);box-shadow:0 2px 8px rgba(26,58,82,.3)}
+.page{display:none;animation:pageIn .25s ease}
+.page.active{display:block}
+@keyframes pageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .goals-card .add-row button{background:#fff;color:#ff8a00;border:none;padding:10px 14px;border-radius:8px;font:inherit;font-weight:800;cursor:pointer}
 .goals-card.empty .glist{display:none}
 
@@ -294,6 +303,19 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
   <div class="today" id="todayLabel"></div>
 </header>
 
+<nav class="tabbar">
+  <button class="tab active" data-page="input" onclick="switchPage('input')">
+    <span class="tab-icon">📝</span><span>今日やる</span>
+  </button>
+  <button class="tab" data-page="now" onclick="switchPage('now')">
+    <span class="tab-icon">🎯</span><span>現在地</span>
+  </button>
+  <button class="tab" data-page="archive" onclick="switchPage('archive')">
+    <span class="tab-icon">📋</span><span>記録</span>
+  </button>
+</nav>
+
+<div class="page active" data-page="input">
 <div class="zone-header">📝 今日やる（入力ゾーン）<span class="sub">目標／メモ／カテゴリ記録</span></div>
 
 <!-- ★ 今日の目標 ★ -->
@@ -323,7 +345,9 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
   <button class="cat-btn idea" onclick="quickSaveIdea()"><span class="icon">💡</span><span>アイデア</span><span class="sub">タップで発酵タンクへ</span></button>
   <button class="cat-btn memo" onclick="quickSave('memo')"><span class="icon">📝</span><span>メモとして保存</span></button>
 </div>
+</div><!-- /page input -->
 
+<div class="page" data-page="now">
 <div class="zone-header">🎯 現在地（今やってる／見るべき）<span class="sub">今日の1個・コーチノート</span></div>
 
 <!-- ★ 今日の1個（製缶パーツ）★ -->
@@ -367,7 +391,10 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
   </details>
 </div>
 
-<div class="zone-header">📋 蓄積した記録（見るゾーン）<span class="sub">案件・ログ・アイデア・疑問</span></div>
+</div><!-- /page now -->
+
+<div class="page" data-page="archive">
+<div class="zone-header">📋 蓄積した記録（見るゾーン）<span class="sub">案件・ログ・アイデア・疑問・パーツ・復習</span></div>
 
 <!-- 案件・納期 -->
 <div class="section-title" onclick="toggleSection('projectsContainer', this)">
@@ -453,6 +480,8 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
   </div>
 </div>
 
+</div><!-- /page archive -->
+
 <!-- ツール -->
 <div class="toolbar">
   <button class="primary" onclick="copyToday()">📋 今日のログをコピー</button>
@@ -483,7 +512,19 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
 <div class="toast" id="toast"></div>
 
 <script>
-console.log("俺だけのCAD v1 起動");
+console.log("俺だけのCAD v2 起動（3ページ式）");
+
+// ===== ページ切替 =====
+function switchPage(name){
+  document.querySelectorAll('.page').forEach(p=>{
+    p.classList.toggle('active', p.dataset.page===name);
+  });
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.classList.toggle('active', t.dataset.page===name);
+  });
+  try{ localStorage.setItem('wt_page', name); }catch(e){}
+  window.scrollTo({top:0, behavior:'smooth'});
+}
 
 // ===== パーツ定義（製缶30個・5項目チェックリスト付き） =====
 const PARTS = [
@@ -1336,7 +1377,14 @@ function renderChart(){
 }
 
 render();
-console.log("俺だけのCAD v1 描画完了");
+
+// 前回ページ復元
+try{
+  const lastPage = localStorage.getItem('wt_page');
+  if(lastPage && ['input','now','archive'].includes(lastPage)) switchPage(lastPage);
+}catch(e){}
+
+console.log("俺だけのCAD v2 描画完了");
 </script>
 </body>
 </html>
