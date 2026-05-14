@@ -43,9 +43,13 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
 .goals-card .goal-item.done .gtext{text-decoration:line-through;opacity:.8}
 .goals-card .goal-item .gdel{font-size:18px;color:rgba(255,255,255,.6);cursor:pointer;padding:0 4px}
 .goals-card .add-row{display:flex;gap:6px}
-.goals-card .add-row input{flex:1;border:none;background:rgba(255,255,255,.2);color:#fff;padding:10px;border-radius:8px;font:inherit;font-size:14px}
-.goals-card .add-row input::placeholder{color:rgba(255,255,255,.7)}
-.goals-card .add-row input:focus{outline:none;background:rgba(255,255,255,.3)}
+.goals-card .add-row input{flex:1;border:none;background:#fff;color:#5a2d00;padding:10px;border-radius:8px;font:inherit;font-size:14px;font-weight:600}
+.goals-card .add-row input::placeholder{color:rgba(90,45,0,.5);font-weight:500}
+.goals-card .add-row input:focus{outline:none;background:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.5)}
+
+/* === ゾーン境界バナー === */
+.zone-header{margin:18px 0 4px;padding:10px 16px;background:linear-gradient(90deg,#1a3a52 0%,#264e6e 100%);color:#fff;font-weight:900;font-size:13px;display:flex;align-items:center;gap:8px;border-left:4px solid #ffb300;letter-spacing:.03em}
+.zone-header .sub{font-size:11px;opacity:.7;font-weight:600;margin-left:auto}
 .goals-card .add-row button{background:#fff;color:#ff8a00;border:none;padding:10px 14px;border-radius:8px;font:inherit;font-weight:800;cursor:pointer}
 .goals-card.empty .glist{display:none}
 
@@ -290,6 +294,8 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
   <div class="today" id="todayLabel"></div>
 </header>
 
+<div class="zone-header">📝 今日やる（入力ゾーン）<span class="sub">目標／メモ／カテゴリ記録</span></div>
+
 <!-- ★ 今日の目標 ★ -->
 <div class="goals-card" id="goalsCard">
   <div class="head">
@@ -302,6 +308,23 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
     <button onclick="addGoal()">追加</button>
   </div>
 </div>
+
+<div class="main-area">
+  <textarea id="memoBox" placeholder="任意：何があった？（音声入力もOK）"></textarea>
+  <div class="hint">↓ ボタンでカテゴリ別に即記録</div>
+</div>
+
+<div class="btn-grid">
+  <button class="cat-btn design" onclick="quickSave('design')"><span class="icon">📐</span><span>設計</span><span class="sub">タップで記録</span></button>
+  <button class="cat-btn process" onclick="quickSave('process')"><span class="icon">🔨</span><span>加工/製造</span><span class="sub">タップで記録</span></button>
+  <button class="cat-btn check" onclick="quickSave('check')"><span class="icon">🔍</span><span>検図</span><span class="sub">タップで記録</span></button>
+  <button class="cat-btn meet" onclick="quickSave('meet')"><span class="icon">💼</span><span>打合せ</span><span class="sub">タップで記録</span></button>
+  <button class="cat-btn inquiry" onclick="quickSaveInquiry()"><span class="icon">❓</span><span>疑問</span><span class="sub">タップで疑問タンクへ</span></button>
+  <button class="cat-btn idea" onclick="quickSaveIdea()"><span class="icon">💡</span><span>アイデア</span><span class="sub">タップで発酵タンクへ</span></button>
+  <button class="cat-btn memo" onclick="quickSave('memo')"><span class="icon">📝</span><span>メモとして保存</span></button>
+</div>
+
+<div class="zone-header">🎯 現在地（今やってる／見るべき）<span class="sub">今日の1個・コーチノート</span></div>
 
 <!-- ★ 今日の1個（製缶パーツ）★ -->
 <div class="today-part" id="todayPartCard"></div>
@@ -344,24 +367,7 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
   </details>
 </div>
 
-<div class="guide">
-  📌 「設計／加工／検図／打合せ／疑問／アイデア」をタップで即記録。詳細は各セクションへ。
-</div>
-
-<div class="main-area">
-  <textarea id="memoBox" placeholder="任意：何があった？（音声入力もOK）"></textarea>
-  <div class="hint">↓ ボタンでカテゴリ別に即記録</div>
-</div>
-
-<div class="btn-grid">
-  <button class="cat-btn design" onclick="quickSave('design')"><span class="icon">📐</span><span>設計</span><span class="sub">タップで記録</span></button>
-  <button class="cat-btn process" onclick="quickSave('process')"><span class="icon">🔨</span><span>加工/製造</span><span class="sub">タップで記録</span></button>
-  <button class="cat-btn check" onclick="quickSave('check')"><span class="icon">🔍</span><span>検図</span><span class="sub">タップで記録</span></button>
-  <button class="cat-btn meet" onclick="quickSave('meet')"><span class="icon">💼</span><span>打合せ</span><span class="sub">タップで記録</span></button>
-  <button class="cat-btn inquiry" onclick="quickSaveInquiry()"><span class="icon">❓</span><span>疑問</span><span class="sub">タップで疑問タンクへ</span></button>
-  <button class="cat-btn idea" onclick="quickSaveIdea()"><span class="icon">💡</span><span>アイデア</span><span class="sub">タップで発酵タンクへ</span></button>
-  <button class="cat-btn memo" onclick="quickSave('memo')"><span class="icon">📝</span><span>メモとして保存</span></button>
-</div>
+<div class="zone-header">📋 蓄積した記録（見るゾーン）<span class="sub">案件・ログ・アイデア・疑問</span></div>
 
 <!-- 案件・納期 -->
 <div class="section-title" onclick="toggleSection('projectsContainer', this)">
@@ -409,12 +415,16 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
   <div class="inquiry-tank" id="inquiryTank"></div>
 </div>
 
+<div class="zone-header">📦 スキル積み上げ<span class="sub">製缶30パーツ・発明家への土台</span></div>
+
 <!-- 製缶30パーツ -->
 <div class="section-title" onclick="toggleSection('partsContainer', this)">
   <span>📦 製缶30パーツ（タップで詳細）</span>
   <span><span class="count" id="partsCount"></span> <span class="arrow">▼</span></span>
 </div>
 <div id="partsContainer" class="collapsible"></div>
+
+<div class="zone-header">🌙 1日の締め＆統計<span class="sub">復習・月次グラフ</span></div>
 
 <!-- 今日の復習 -->
 <div class="section-title">
