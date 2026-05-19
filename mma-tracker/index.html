@@ -287,6 +287,21 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 .focus-card .suggest-inline .sitem:active{background:#fff;transform:scale(.99)}
 .focus-card .suggest-inline .sitem:last-child{margin-bottom:0}
 
+/* === 前回のコーチノート（今日やる用・コンパクト版） === */
+.prev-coach{margin:0 14px 12px;padding:12px 14px;border-radius:12px;background:linear-gradient(135deg,#2a4a6a 0%,#3a5a7e 100%);color:#fff;box-shadow:0 3px 10px rgba(42,74,106,.2)}
+.prev-coach .pchead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:12px;font-weight:800;opacity:.95}
+.prev-coach .pcdate{font-size:10px;background:rgba(255,255,255,.18);padding:2px 8px;border-radius:999px;font-weight:700}
+.prev-coach .pcbody{font-size:13px;line-height:1.6;opacity:.95}
+.prev-coach .pcbody b{color:#ffd966}
+.prev-coach .pcbody ul{margin:6px 0;padding-left:18px}
+.prev-coach .pcbody li{margin:3px 0}
+
+/* === day-card内のコーチ観察セクション === */
+.day-card .dcoach{background:linear-gradient(135deg,#2a4a6a 0%,#3a5a7e 100%);color:#fff;padding:10px 12px;border-radius:8px;font-size:12px;line-height:1.5}
+.day-card .dcoach b{color:#ffd966}
+.day-card .dcoach ul{margin:4px 0;padding-left:16px}
+.day-card .dcoach li{margin:2px 0}
+
 /* === 入力欄一括クリアボタン === */
 .ta-wrap{position:relative}
 .ta-wrap > .clear-x{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.25);color:#fff;border:none;width:24px;height:24px;border-radius:50%;font-size:14px;font-weight:900;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;z-index:5;padding:0;box-shadow:0 1px 3px rgba(0,0,0,.2)}
@@ -408,6 +423,9 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
   </div>
 </div>
 
+<!-- 💬 前回の練習のコーチノート（朝・練習前に確認） -->
+<div class="prev-coach" id="prevCoach"></div>
+
 <!-- 📝 練習記録カード（意識ポイントとは別役割：何があったか） -->
 <div class="memo-section">
   <div class="memo-header">
@@ -447,7 +465,8 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 
 <div class="today-part" id="todayPartCard"></div>
 
-<div class="coach-note">
+<!-- coach-note は「今日やる」と「記録」に移動済（同ジャンル原則）。スキルはパーツ表だけ -->
+<div class="coach-note" style="display:none">
   <div class="coach-head">
     <span>💬 Claudeコーチの観察ノート</span>
     <span class="updated">最終更新 2026-05-19</span>
@@ -640,7 +659,56 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 <div class="toast" id="toast"></div>
 
 <script>
-console.log("MMA Tracker v7 - 更新ボタン＆Pull-to-refresh搭載");
+console.log("MMA Tracker v8 - Claudeコーチノート日別化");
+
+// ===== Claudeコーチ観察ノート（日別データ） =====
+const COACH_NOTES = {
+  "2026-05-18": `<b>📅 5/18 MMA（実戦機能化・楽しめる状態到達）</b><br><br>
+    <b>打撃：</b>ジャブの距離意識で打撃が楽になった→ストレート当たる→<b>タックル/散らしの攻防が楽しめる</b>状態へ。<br>
+    <b>寝技：</b>腕十字＋派生（三角・木村・脇締め）。1つにこだわらず全体感で。<br>
+    <b>自主練計画：</b>フィリップさんと前回種目復習／<b>月水スパー時間で基礎練</b>（壁タックル・フォーム確認・技基礎）。<br><br>
+    <b>俺の観察：</b>5/15提案「距離測りに多用」が<b>3日でパーツメモに反映＋実戦実装</b>。意識→身体化が超短い。<br>
+    コーチ依存から脱して<b>自分で月水基礎練を組んだ</b>＝発明家マインドの萌芽。`,
+  "2026-05-15": `<b>📅 5/15 MMA（質的飛躍：技術構造の言語化）</b><br><br>
+    ジャブ「出したら下げる」を実戦で意識。<b>コーチしゅんさんから「パンチの位置が近い」</b>と指摘＝暗黙知「距離測りに多用」と完全一致。<br><br>
+    <b>自分の言葉で構造化：</b>「ジャブで距離測り→ストレートで当てる→距離制覇→タックルも入りやすくなる」<br><br>
+    <b>気づき：</b>技術はない、運動能力でカバーしてるだけ。<br>
+    <b>転換：</b>5/11「フィジカル余裕」→5/15「運動能力依存の自覚」へ正しい自己評価に。<br>
+    <b>課題再観測：</b>スパーで「ビビリ」（=5/11「力に逃げる」と同根）。`,
+  "2026-05-12": `<b>📅 5/12 ハンドボール → MMA転移</b><br><br>
+    ハンドボールで「視野を広く・首振り」を発見。MMA/BJJ上級者の基本に<b>別ルートで到達</b>。<br><br>
+    設計脳の<b>アセンブリビュー</b>（全体俯瞰→個別部品→公差確認）が無意識にスポーツに転移してる。`,
+  "2026-05-11": `<b>📅 5/11 MMA 練習（初本格ログ）</b><br><br>
+    ジャブ「出したら即引く／頭ずらす」が実戦で意識できた（チェック3/5達成）。<br>
+    タックル絡みからのバックコントロール初挑戦。<br><br>
+    <b>気づき：</b>強い相手だと力に逃げる癖。試合出てる人の技に余裕。<br>
+    <b>転換：</b>「勝つ→技術磨く」へマインドセット切替。`
+};
+
+function getLatestCoachNoteDate(){
+  const dates = Object.keys(COACH_NOTES).sort().reverse();
+  return dates[0] || null;
+}
+
+function renderPrevCoach(){
+  const cont = document.getElementById("prevCoach");
+  if(!cont) return;
+  const latestDate = getLatestCoachNoteDate();
+  if(!latestDate){
+    cont.style.display = "none";
+    return;
+  }
+  cont.style.display = "block";
+  cont.innerHTML = `
+    <div class="pchead">
+      <span>💬 前回の練習・俺の観察</span>
+      <span class="pcdate">${latestDate}</span>
+    </div>
+    <div class="pcbody">${COACH_NOTES[latestDate]}</div>
+  `;
+}
+
+// ===== 更新ボタン＆Pull-to-refresh =====
 
 // ===== テキストエリア一括クリア =====
 function clearTextarea(id, callbackName){
@@ -1035,6 +1103,10 @@ function renderDaySummary(){
       <button class="del" onclick="delLog('${l.ts}')" title="削除">×</button>
     </div>`;
   }).join("") : `<div class="dvalue empty">この日はログなし</div>`;
+  const coachHtml = COACH_NOTES[d] ? `<div class="dsection">
+    <div class="dlabel">💬 Claudeコーチの観察</div>
+    <div class="dcoach">${COACH_NOTES[d]}</div>
+  </div>` : '';
   cont.innerHTML = `
     <div class="dheader">
       <span class="ddate">${dateLabel}</span>
@@ -1048,6 +1120,7 @@ function renderDaySummary(){
       <div class="dlabel">📝 振り返りメモ</div>
       <div class="dvalue">${safeNote}</div>
     </div>` : ''}
+    ${coachHtml}
     <div class="dsection">
       <div class="dlabel">📋 ログ（${dayLogs.length}件）</div>
       <div class="dlogs">${logsHtml}</div>
@@ -1446,6 +1519,7 @@ function render(){
     `${todayStr()}（${wd}）/ ログ${state.logs.length}件 / パーツ ${completed}/${PARTS.length}`;
 
   renderFocus();
+  renderPrevCoach();
   renderTodayFocusReview();
   renderReviewYesterday();
   renderFocusHistory();
