@@ -39,6 +39,27 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
 .jump-today{background:#0a84ff;color:#fff;border:none;font-size:12px;font-weight:800;padding:8px 12px;border-radius:999px;cursor:pointer;box-shadow:0 2px 6px rgba(10,132,255,.3);transition:transform .1s;display:flex;align-items:center;gap:3px;white-space:nowrap}
 .jump-today:active{transform:scale(.94)}
 
+/* === 記録ビュー === */
+.record-view{padding:0 12px 24px}
+.record-summary{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}
+.record-summary h3{margin:0 0 10px;font-size:13px;color:var(--muted);font-weight:700}
+.record-summary .pct{font-size:36px;font-weight:900;line-height:1}
+.record-summary .pct small{font-size:13px;font-weight:500;color:var(--muted);margin-left:6px}
+.record-summary .bar{height:8px;background:#eee;border-radius:999px;overflow:hidden;margin:10px 0}
+.record-summary .bar i{display:block;height:100%;background:linear-gradient(90deg,#34c759,#0a84ff);transition:width .3s}
+.record-summary .meta{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;font-size:11px;color:var(--muted)}
+.record-summary .meta div{text-align:center;padding:8px 4px;background:#f5f5f7;border-radius:8px}
+.record-summary .meta div b{display:block;font-size:18px;font-weight:900;color:var(--text);margin-bottom:2px}
+
+.record-diary{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+.record-diary:active{transform:scale(.99);background:#f8f8fa}
+.record-diary .rd-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.record-diary .rd-date{font-size:14px;font-weight:900;color:var(--text)}
+.record-diary .rd-tag{font-size:10px;color:var(--muted);background:#f5f5f7;padding:3px 8px;border-radius:999px;font-weight:700}
+.record-diary .rd-body{font-size:13px;line-height:1.5;color:var(--text);white-space:pre-wrap;word-break:break-word;max-height:120px;overflow:hidden;position:relative}
+.record-diary .rd-body.long::after{content:"";position:absolute;bottom:0;left:0;right:0;height:30px;background:linear-gradient(transparent,#fff)}
+.record-section-title{font-size:13px;color:var(--muted);margin:14px 0 6px;font-weight:700}
+
 .summary{padding:8px 12px}
 .summary-card{background:var(--card);border-radius:12px;padding:12px 14px;border:1px solid var(--line)}
 .summary-card .label{font-size:11px;color:var(--muted);font-weight:500}
@@ -186,7 +207,7 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
     <div class="month-tabs" id="monthTabs"></div>
     <div class="view-toggle">
       <button id="vList" class="active" onclick="setView('list')">リスト</button>
-      <button id="vCal" onclick="setView('cal')">カレンダー</button>
+      <button id="vRecord" onclick="setView('record')">📋 記録</button>
       <button class="jump-today" onclick="jumpToToday()" title="今日のタスクへジャンプ">📅 今日</button>
     </div>
   </div>
@@ -380,7 +401,7 @@ let currentView = "list";
 function setView(v){
   currentView = v;
   document.getElementById("vList").classList.toggle("active", v==="list");
-  document.getElementById("vCal").classList.toggle("active", v==="cal");
+  document.getElementById("vRecord").classList.toggle("active", v==="record");
   renderContent();
 }
 
@@ -478,7 +499,8 @@ function renderCharts(){
 
 function renderContent(){
   const el = document.getElementById("content");
-  el.innerHTML = currentView==="list" ? renderList() : renderCalendar();
+  if(currentView==="record") el.innerHTML = renderRecord();
+  else el.innerHTML = renderList();
 }
 
 // ===== リスト =====
@@ -534,7 +556,42 @@ function renderList(){
   return `<div class="list">${html}</div>`;
 }
 
-// ===== カレンダー =====
+// ===== 記録ビュー =====
+function renderRecord(){
+  const t = tally(currentMonth);
+  const pct = t.totalPlan ? Math.round(100*t.totalDone/t.totalPlan) : 0;
+  const summary = `<div class="record-summary">
+    <h3>📊 ${currentMonth}月 サマリー</h3>
+    <div class="pct">${pct}%<small>(${t.totalDone}/${t.totalPlan})</small></div>
+    <div class="bar"><i style="width:${pct}%"></i></div>
+    <div class="meta">
+      <div><b>${t.actDay["普通"]}/${t.planDay["普通"]}</b>普通日</div>
+      <div><b>${t.actDay["特別"]}/${t.planDay["特別"]}</b>特別日</div>
+      <div><b>${t.planDay["チート"]}</b>チート日</div>
+    </div>
+  </div>`;
+
+  const days = buildMonth(currentMonth);
+  const diaryDays = days.filter(d=>hasDiary(currentMonth, d.d)).sort((a,b)=>b.d-a.d);
+  const diaryHtml = diaryDays.length ? diaryDays.map(d=>{
+    const s = getDayState(currentMonth, d.d);
+    const diary = (s[DIARY_KEY]||"").trim();
+    const wd = WD_JP[d.wd];
+    const safe = diary.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const longCls = diary.length > 160 ? "long" : "";
+    return `<div class="record-diary" onclick="openDiary(${currentMonth},${d.d})">
+      <div class="rd-head">
+        <span class="rd-date">${currentMonth}/${d.d}（${wd}）</span>
+        <span class="rd-tag">タップで編集</span>
+      </div>
+      <div class="rd-body ${longCls}">${safe}</div>
+    </div>`;
+  }).join("") : `<div class="empty" style="background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:30px;text-align:center;color:var(--muted);font-size:13px">この月はまだ日記なし<br><small>リストビューで日付タップして書ける</small></div>`;
+
+  return `<div class="record-view">${summary}<div class="record-section-title">📝 日記（新しい順）</div>${diaryHtml}</div>`;
+}
+
+// ===== カレンダー（未使用・残置） =====
 function renderCalendar(){
   const days = buildMonth(currentMonth);
   const today = new Date();
@@ -748,16 +805,20 @@ function jumpToToday(){
     alert("今日は対応月（2026/4〜7）外です");
     return;
   }
+  // 記録ビューにいたらリストに切替
+  if(currentView !== "list"){
+    setView("list");
+  }
   if(currentMonth !== m){
     currentMonth = m;
     render();
   }
   setTimeout(()=>{
-    const todayEl = document.querySelector('.list-day.today, .cal-cell.today');
+    const todayEl = document.querySelector('.list-day.today');
     if(todayEl){
       todayEl.scrollIntoView({behavior:'smooth', block:'center'});
     }
-  }, 120);
+  }, 150);
 }
 
 // ===== 更新ボタン＆Pull-to-refresh =====
