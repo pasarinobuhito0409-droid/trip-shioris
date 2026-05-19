@@ -288,8 +288,9 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 .suggest-card .sitem:last-child{margin-bottom:0}
 
 /* === 更新ボタン＆Pull-to-refresh === */
-.refresh-btn{position:fixed;top:10px;right:10px;z-index:11;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1.5px solid var(--line);width:40px;height:40px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.12);transition:transform .15s}
-.refresh-btn:active{transform:rotate(180deg) scale(.9)}
+.refresh-btn{position:fixed;top:10px;right:10px;z-index:100;background:#0a84ff;color:#fff;border:none;height:36px;padding:0 14px;border-radius:18px;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:5px;box-shadow:0 3px 10px rgba(10,132,255,.4);transition:transform .15s}
+.refresh-btn:active{transform:scale(.92)}
+.refresh-btn .ricon{font-size:15px}
 .ptr-indicator{position:fixed;top:0;left:50%;transform:translateX(-50%) translateY(-60px);width:48px;height:48px;border-radius:50%;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.2);z-index:1000;display:flex;align-items:center;justify-content:center;font-size:22px;color:#1a3a52;pointer-events:none;transition:transform .25s ease-out;font-weight:900}
 .ptr-indicator.show{transform:translateX(-50%) translateY(20px)}
 .ptr-indicator.ready{background:#34c759;color:#fff}
@@ -320,7 +321,7 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
   <div class="today" id="todayLabel"></div>
 </header>
 
-<button class="refresh-btn" onclick="forceReload()" title="最新を取得（キャッシュ無視）">🔄</button>
+<button class="refresh-btn" onclick="forceReload()" title="最新を取得（キャッシュ無視）"><span class="ricon">🔄</span><span>更新</span></button>
 <div class="ptr-indicator" id="ptrIndicator">↓</div>
 
 <nav class="tabbar">
