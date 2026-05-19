@@ -287,6 +287,13 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 .suggest-card .sitem:active{background:#ddd0ff;transform:scale(.99)}
 .suggest-card .sitem:last-child{margin-bottom:0}
 
+/* === メモ＋カテゴリのカード化 === */
+.memo-section{margin:0 14px 14px;padding:14px;border-radius:14px;background:#fff;border:2px solid #d4dbe5;box-shadow:0 3px 10px rgba(26,58,82,.08)}
+.memo-section .memo-header{font-size:13px;font-weight:800;color:#1a3a52;margin-bottom:10px;display:flex;align-items:center;gap:6px;padding-bottom:8px;border-bottom:1px dashed #d4dbe5}
+.memo-section .memo-header .sub{font-size:10px;color:var(--muted);font-weight:600;margin-left:auto}
+.memo-section .main-area{padding:0 0 8px}
+.memo-section .btn-grid{padding:0;gap:8px}
+
 /* === 更新ボタン＆Pull-to-refresh === */
 .refresh-btn{position:fixed;top:10px;right:10px;z-index:100;background:#0a84ff;color:#fff;border:none;height:36px;padding:0 14px;border-radius:18px;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:5px;box-shadow:0 3px 10px rgba(10,132,255,.4);transition:transform .15s}
 .refresh-btn:active{transform:scale(.92)}
@@ -362,27 +369,33 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
   <button class="sitem" onclick="copyToFocus('視野を広く・首振り（ハンドボール由来）も継続意識')">⑥ 視野を広く・首振り</button>
 </div>
 
-<div class="main-area">
-  <textarea id="memoBox" placeholder="任意：何があった？（音声入力もOK）"></textarea>
-  <div class="hint">↓ ボタンでカテゴリ別に即記録</div>
-</div>
-
-<div class="btn-grid">
-  <button class="cat-btn strike" onclick="quickSave('strike')">
-    <span class="icon">👊</span><span>打撃</span><span class="sub">タップで記録</span>
-  </button>
-  <button class="cat-btn clinch" onclick="quickSave('clinch')">
-    <span class="icon">🤼</span><span>組み技</span><span class="sub">タップで記録</span>
-  </button>
-  <button class="cat-btn ground" onclick="quickSave('ground')">
-    <span class="icon">🌀</span><span>寝技</span><span class="sub">タップで記録</span>
-  </button>
-  <button class="cat-btn spar" onclick="quickSave('spar')">
-    <span class="icon">🥊</span><span>スパー</span><span class="sub">タップで記録</span>
-  </button>
-  <button class="cat-btn memo" onclick="quickSave('memo')">
-    <span class="icon">📝</span><span>メモとして保存</span>
-  </button>
+<!-- 📝 練習記録カード（意識ポイントとは別役割：何があったか） -->
+<div class="memo-section">
+  <div class="memo-header">
+    <span>📝 今日の練習記録</span>
+    <span class="sub">何があった？</span>
+  </div>
+  <div class="main-area">
+    <textarea id="memoBox" placeholder="何があった？（音声入力もOK・任意）"></textarea>
+    <div class="hint">↓ カテゴリボタンで記録（メモ＋カテゴリでログに保存）</div>
+  </div>
+  <div class="btn-grid">
+    <button class="cat-btn strike" onclick="quickSave('strike')">
+      <span class="icon">👊</span><span>打撃</span><span class="sub">タップで記録</span>
+    </button>
+    <button class="cat-btn clinch" onclick="quickSave('clinch')">
+      <span class="icon">🤼</span><span>組み技</span><span class="sub">タップで記録</span>
+    </button>
+    <button class="cat-btn ground" onclick="quickSave('ground')">
+      <span class="icon">🌀</span><span>寝技</span><span class="sub">タップで記録</span>
+    </button>
+    <button class="cat-btn spar" onclick="quickSave('spar')">
+      <span class="icon">🥊</span><span>スパー</span><span class="sub">タップで記録</span>
+    </button>
+    <button class="cat-btn memo" onclick="quickSave('memo')">
+      <span class="icon">📝</span><span>メモとして保存</span>
+    </button>
+  </div>
 </div>
 
 </div><!-- /page input -->
