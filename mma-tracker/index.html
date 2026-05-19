@@ -280,12 +280,12 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 .focus-card .focus-review textarea{width:100%;min-height:45px;background:#fff;color:#5a2d00;font-size:13px;border-radius:8px;border:none;padding:8px 10px;font:inherit;resize:vertical;font-weight:600}
 .focus-card .focus-review textarea:focus{outline:none;box-shadow:0 0 0 2px rgba(255,255,255,.5)}
 
-/* === Claude推奨（タップでコピー） === */
-.suggest-card{margin:0 14px 12px;padding:12px;border-radius:12px;background:#fff;border:1.5px solid var(--line)}
-.suggest-card .shead{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px}
-.suggest-card .sitem{display:block;width:100%;background:#f5f0ff;border:1.5px solid #d4c5f0;color:#3a1860;padding:11px 12px;border-radius:10px;margin-bottom:6px;text-align:left;font:inherit;font-size:13px;line-height:1.4;cursor:pointer;font-weight:600;transition:all .15s}
-.suggest-card .sitem:active{background:#ddd0ff;transform:scale(.99)}
-.suggest-card .sitem:last-child{margin-bottom:0}
+/* === Claude推奨（オレンジカード内に統合） === */
+.focus-card .suggest-inline{margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.4)}
+.focus-card .suggest-inline .shead{font-size:11px;font-weight:800;opacity:.95;margin-bottom:8px}
+.focus-card .suggest-inline .sitem{display:block;width:100%;background:rgba(255,255,255,.95);border:none;color:#5a2d00;padding:10px 12px;border-radius:10px;margin-bottom:6px;text-align:left;font:inherit;font-size:13px;line-height:1.4;cursor:pointer;font-weight:600;transition:all .15s}
+.focus-card .suggest-inline .sitem:active{background:#fff;transform:scale(.99)}
+.focus-card .suggest-inline .sitem:last-child{margin-bottom:0}
 
 /* === 記録タブの日付1カード集約 === */
 .day-card{margin:0 14px 12px;padding:14px;background:#fff;border:2px solid #d4dbe5;border-radius:14px;box-shadow:0 3px 10px rgba(26,58,82,.08)}
@@ -378,24 +378,25 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 <!-- 🔍 昨日の振り返り（focusあれば自動表示） -->
 <div class="review-yesterday" id="reviewYesterday" style="display:none"></div>
 
-<!-- 🎯 今日の意識ポイント（1発で見える主役） -->
+<!-- 🎯 今日の意識ポイント（1発で見える主役＋Claude推奨を同カード内に統合） -->
 <div class="focus-card">
   <div class="fhead"><span>🎯 今日の練習で意識する1点</span><span class="badge" id="focusDate"></span></div>
   <textarea id="focusBox" placeholder="例：ジャブの距離測りを徹底／ビビらず1パーツに絞る／視野を広く首振り" oninput="onFocusInput()"></textarea>
   <div class="fmeta" id="focusMeta">朝書く・自動保存される</div>
+
   <!-- 同日内振り返り（focus書いたら出る） -->
   <div class="focus-review" id="todayFocusReview" style="display:none"></div>
-</div>
 
-<!-- 💡 Claude推奨（タップで意識ポイントにコピー） -->
-<div class="suggest-card">
-  <div class="shead">💡 Claude推奨（タップで上にコピー・5/18踏まえ）</div>
-  <button class="sitem" onclick="copyToFocus('ジャブ：「楽しめる」状態を再現できるか観察（5/18で初到達）')">① ジャブ：「楽しめる」状態を再現できるか観察</button>
-  <button class="sitem" onclick="copyToFocus('ジャブのチェック5「2への繋ぎ」を意識')">② ジャブの「2への繋ぎ」を意識</button>
-  <button class="sitem" onclick="copyToFocus('月水基礎練（壁タックル・フォーム確認・技基礎）')">③ 月水基礎練（壁タックル・フォーム・技基礎）</button>
-  <button class="sitem" onclick="copyToFocus('寝技：腕十字＋派生（三角・木村・脇締め）を1セットとして捉える')">④ 寝技：腕十字Assyとして捉える</button>
-  <button class="sitem" onclick="copyToFocus('スパー中「ビビリ」が出たら→1パーツに絞る実験に切替')">⑤ ビビリ出たら1パーツ実験に切替</button>
-  <button class="sitem" onclick="copyToFocus('視野を広く・首振り（ハンドボール由来）も継続意識')">⑥ 視野を広く・首振り</button>
+  <!-- 💡 Claude推奨（タップで意識ポイントにコピー）：同カード内統合 -->
+  <div class="suggest-inline">
+    <div class="shead">💡 Claude推奨（タップで上にコピー・5/18踏まえ）</div>
+    <button class="sitem" onclick="copyToFocus('ジャブ：「楽しめる」状態を再現できるか観察（5/18で初到達）')">① ジャブ：「楽しめる」状態を再現できるか観察</button>
+    <button class="sitem" onclick="copyToFocus('ジャブのチェック5「2への繋ぎ」を意識')">② ジャブの「2への繋ぎ」を意識</button>
+    <button class="sitem" onclick="copyToFocus('月水基礎練（壁タックル・フォーム確認・技基礎）')">③ 月水基礎練（壁タックル・フォーム・技基礎）</button>
+    <button class="sitem" onclick="copyToFocus('寝技：腕十字＋派生（三角・木村・脇締め）を1セットとして捉える')">④ 寝技：腕十字Assyとして捉える</button>
+    <button class="sitem" onclick="copyToFocus('スパー中「ビビリ」が出たら→1パーツに絞る実験に切替')">⑤ ビビリ出たら1パーツ実験に切替</button>
+    <button class="sitem" onclick="copyToFocus('視野を広く・首振り（ハンドボール由来）も継続意識')">⑥ 視野を広く・首振り</button>
+  </div>
 </div>
 
 <!-- 📝 練習記録カード（意識ポイントとは別役割：何があったか） -->
