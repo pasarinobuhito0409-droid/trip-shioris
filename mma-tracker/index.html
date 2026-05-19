@@ -226,6 +226,40 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 .modal .m-history .item:last-child{border-bottom:none}
 .modal .m-history .item .t{font-size:10px;color:#999}
 
+/* === 昨日の振り返り（5段階評価） === */
+.review-yesterday{margin:14px 14px 10px;padding:14px;border-radius:14px;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.review-yesterday .rhead{font-size:12px;font-weight:800;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;opacity:.85}
+.review-yesterday .rfocus{font-size:14px;font-weight:700;padding:10px 12px;background:rgba(255,255,255,.1);border-radius:8px;margin-bottom:10px;line-height:1.4}
+.review-yesterday .scores{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:10px}
+.review-yesterday .scores button{background:rgba(255,255,255,.1);color:#fff;border:1.5px solid rgba(255,255,255,.25);padding:12px 4px;border-radius:8px;font:inherit;font-weight:800;font-size:16px;cursor:pointer;transition:all .15s}
+.review-yesterday .scores button.s1.selected{background:#ff5050;border-color:#ff5050;transform:scale(1.05)}
+.review-yesterday .scores button.s2.selected{background:#ff8c3c;border-color:#ff8c3c;transform:scale(1.05)}
+.review-yesterday .scores button.s3.selected{background:#ffc850;border-color:#ffc850;transform:scale(1.05);color:#5a4500}
+.review-yesterday .scores button.s4.selected{background:#8cdc64;border-color:#8cdc64;transform:scale(1.05);color:#1a4a20}
+.review-yesterday .scores button.s5.selected{background:#50c878;border-color:#50c878;transform:scale(1.05)}
+.review-yesterday textarea{width:100%;min-height:50px;border:none;background:rgba(255,255,255,.1);color:#fff;border-radius:8px;padding:10px;font:inherit;font-size:13px;resize:vertical}
+.review-yesterday textarea::placeholder{color:rgba(255,255,255,.5)}
+.review-yesterday textarea:focus{outline:none;background:rgba(255,255,255,.18)}
+
+/* === 履歴・達成率（記録タブ） === */
+.focus-stats{margin:0 14px 12px;padding:14px;background:#fff;border:1px solid var(--line);border-radius:12px}
+.focus-stats .fstitle{font-size:12px;color:var(--muted);font-weight:700;margin-bottom:8px}
+.focus-stats .fsavg{font-size:32px;font-weight:900;line-height:1}
+.focus-stats .fsbar{height:10px;background:#eee;border-radius:999px;overflow:hidden}
+.focus-stats .fsbar i{display:block;height:100%;background:linear-gradient(90deg,#ff5050 0%,#ffc850 50%,#50c878 100%);transition:width .3s}
+.focus-history{padding:0 14px 12px;display:flex;flex-direction:column;gap:6px}
+.focus-history-item{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:grid;grid-template-columns:54px 1fr 44px;gap:10px;align-items:center}
+.focus-history-item .fhdate{font-size:11px;color:var(--muted);font-weight:800;text-align:center}
+.focus-history-item .fhtext{font-size:13px;line-height:1.4;font-weight:600;word-break:break-word}
+.focus-history-item .fhnote{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.3;word-break:break-word}
+.focus-history-item .fhscore{font-size:20px;font-weight:900;text-align:center;border-radius:8px;padding:8px 0;color:#fff}
+.focus-history-item .fhscore.s1{background:#ff5050}
+.focus-history-item .fhscore.s2{background:#ff8c3c}
+.focus-history-item .fhscore.s3{background:#ffc850;color:#5a4500}
+.focus-history-item .fhscore.s4{background:#8cdc64;color:#1a4a20}
+.focus-history-item .fhscore.s5{background:#50c878}
+.focus-history-item .fhscore.empty{background:#eee;color:#999}
+
 /* === 今日の意識ポイント（朝書く・1発で見える） === */
 .focus-card{margin:14px 14px 10px;padding:16px;border-radius:14px;background:linear-gradient(135deg,#ffb300 0%,#ff6b00 100%);color:#fff;box-shadow:0 4px 14px rgba(255,107,0,.3)}
 .focus-card .fhead{font-size:12px;font-weight:800;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
@@ -280,6 +314,9 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 
 <!-- ========== ページ📝 今日やる ========== -->
 <div class="page active" data-page="input">
+
+<!-- 🔍 昨日の振り返り（focusあれば自動表示） -->
+<div class="review-yesterday" id="reviewYesterday" style="display:none"></div>
 
 <!-- 🎯 今日の意識ポイント（1発で見える主役） -->
 <div class="focus-card">
@@ -454,6 +491,16 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 
 <!-- ========== ページ📋 記録 ========== -->
 <div class="page" data-page="archive">
+
+<!-- 🎯 意識ポイント履歴＆達成率 -->
+<div class="section-title" onclick="toggleSection('focusStatsContainer', this)">
+  <span>🎯 意識ポイント履歴＆達成率</span>
+  <span class="arrow">▼</span>
+</div>
+<div id="focusStatsContainer" class="collapsible">
+  <div class="focus-stats" id="focusStats"></div>
+  <div class="focus-history" id="focusHistoryList"></div>
+</div>
 
 <div class="section-title" onclick="toggleSection('logsContainer', this)">
   <span id="logsTitle">📋 今日のログ（新しい順）</span>
@@ -637,6 +684,121 @@ function renderFocus(){
   }
   const dateEl = document.getElementById("focusDate");
   if(dateEl) dateEl.textContent = todayStr();
+}
+
+// ===== 昨日の振り返り =====
+function getYesterdayStr(){
+  const d = new Date();
+  d.setDate(d.getDate()-1);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function setFocusScore(score){
+  const y = getYesterdayStr();
+  if(!state.daily) state.daily = {};
+  if(!state.daily[y]) state.daily[y] = {};
+  state.daily[y].focusScore = score;
+  saveState(state);
+  toast(`✓ ${score}点で評価`);
+  renderReviewYesterday();
+  renderFocusHistory();
+  renderFocusStats();
+}
+function onFocusNoteInput(){
+  const y = getYesterdayStr();
+  if(!state.daily) state.daily = {};
+  if(!state.daily[y]) state.daily[y] = {};
+  state.daily[y].focusNote = document.getElementById("focusNote").value;
+  saveState(state);
+}
+function renderReviewYesterday(){
+  const card = document.getElementById("reviewYesterday");
+  if(!card) return;
+  const y = getYesterdayStr();
+  const data = (state.daily && state.daily[y]) || {};
+  if(!data.focus){
+    card.style.display = "none";
+    return;
+  }
+  card.style.display = "block";
+  const score = data.focusScore || 0;
+  const note = data.focusNote || "";
+  const safeFocus = data.focus.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const safeNote = note.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  card.innerHTML = `
+    <div class="rhead"><span>🔍 昨日の意識を振り返り（5段階評価）</span><span>${y}</span></div>
+    <div class="rfocus">${safeFocus}</div>
+    <div class="scores">
+      <button class="s1 ${score===1?'selected':''}" onclick="setFocusScore(1)">1</button>
+      <button class="s2 ${score===2?'selected':''}" onclick="setFocusScore(2)">2</button>
+      <button class="s3 ${score===3?'selected':''}" onclick="setFocusScore(3)">3</button>
+      <button class="s4 ${score===4?'selected':''}" onclick="setFocusScore(4)">4</button>
+      <button class="s5 ${score===5?'selected':''}" onclick="setFocusScore(5)">5</button>
+    </div>
+    <textarea id="focusNote" placeholder="一言メモ（例：スパーでは意識できた、打ち込みで忘れた）" oninput="onFocusNoteInput()">${safeNote}</textarea>
+  `;
+}
+
+// ===== 履歴＆達成率 =====
+function renderFocusHistory(){
+  const cont = document.getElementById("focusHistoryList");
+  if(!cont) return;
+  const hist = [];
+  if(state.daily){
+    Object.keys(state.daily).sort().reverse().forEach(d=>{
+      const data = state.daily[d];
+      if(data.focus){
+        hist.push({date: d, focus: data.focus, score: data.focusScore || 0, note: data.focusNote || ""});
+      }
+    });
+  }
+  if(!hist.length){
+    cont.innerHTML = `<div class="empty" style="margin:0">まだ意識ポイントなし</div>`;
+    return;
+  }
+  cont.innerHTML = hist.map(h=>{
+    const safeText = h.focus.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const safeNote = h.note.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const scoreCls = h.score ? `s${h.score}` : 'empty';
+    const scoreText = h.score ? h.score : '-';
+    return `<div class="focus-history-item">
+      <div class="fhdate">${h.date.slice(5)}</div>
+      <div>
+        <div class="fhtext">${safeText}</div>
+        ${h.note ? `<div class="fhnote">📝 ${safeNote}</div>` : ''}
+      </div>
+      <div class="fhscore ${scoreCls}">${scoreText}</div>
+    </div>`;
+  }).join("");
+}
+function renderFocusStats(){
+  const cont = document.getElementById("focusStats");
+  if(!cont) return;
+  let total=0, sum=0, count=0;
+  const ym = todayStr().slice(0,7);
+  if(state.daily){
+    Object.keys(state.daily).filter(d=>d.startsWith(ym)).forEach(d=>{
+      const data = state.daily[d];
+      if(data.focus){
+        total++;
+        if(data.focusScore){
+          sum += data.focusScore;
+          count++;
+        }
+      }
+    });
+  }
+  const avg = count ? (sum/count).toFixed(1) : "-";
+  const pct = count ? (sum/count)*20 : 0;
+  cont.innerHTML = `
+    <div class="fstitle">📊 今月（${ym}）の意識ポイント達成率</div>
+    <div style="display:flex;gap:14px;align-items:center;margin-bottom:8px">
+      <div class="fsavg">${avg}<span style="font-size:14px;color:#999">/5点</span></div>
+      <div style="flex:1">
+        <div class="fsbar"><i style="width:${pct}%"></i></div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">評価済 ${count} / 総数 ${total} 日</div>
+      </div>
+    </div>
+  `;
 }
 function saveState(s){
   try{ localStorage.setItem(KEY, JSON.stringify(s)); }
@@ -996,6 +1158,9 @@ function render(){
     `${todayStr()}（${wd}）/ ログ${state.logs.length}件 / パーツ ${completed}/${PARTS.length}`;
 
   renderFocus();
+  renderReviewYesterday();
+  renderFocusHistory();
+  renderFocusStats();
   renderTodayPart();
   renderDateTabs();
   renderLogs();
