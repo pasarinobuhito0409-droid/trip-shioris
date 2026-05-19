@@ -706,9 +706,25 @@ function setTodayFocusScore(score){
   const t = todayStr();
   if(!state.daily) state.daily = {};
   if(!state.daily[t]) state.daily[t] = {};
-  state.daily[t].focusScore = score;
+  if(state.daily[t].focusScore === score){
+    // 同じ点数タップ→取消
+    delete state.daily[t].focusScore;
+    saveState(state);
+    toast("✓ 今日の評価を取消");
+  } else {
+    state.daily[t].focusScore = score;
+    saveState(state);
+    toast(`✓ 今日 ${score}点で評価`);
+  }
+  renderTodayFocusReview();
+  renderFocusHistory();
+  renderFocusStats();
+}
+function clearTodayFocusScore(){
+  const t = todayStr();
+  if(state.daily && state.daily[t]) delete state.daily[t].focusScore;
   saveState(state);
-  toast(`✓ 今日 ${score}点で評価`);
+  toast("✓ 今日の評価を取消");
   renderTodayFocusReview();
   renderFocusHistory();
   renderFocusStats();
@@ -732,8 +748,11 @@ function renderTodayFocusReview(){
   const score = data.focusScore || 0;
   const note = data.focusNote || "";
   const safeNote = note.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const cancelLink = score > 0
+    ? `<div style="text-align:right;margin:-2px 0 6px"><button onclick="clearTodayFocusScore()" style="background:transparent;border:none;color:rgba(255,255,255,.85);font-size:11px;cursor:pointer;text-decoration:underline;padding:2px 6px;font-weight:700">✗ 評価を取消</button></div>`
+    : '';
   cont.innerHTML = `
-    <div class="frhead">📊 今日の達成度（練習後 or 夜にタップ）</div>
+    <div class="frhead">📊 今日の達成度（練習後 or 夜にタップ／同じ点を再タップで取消）</div>
     <div class="scores">
       <button class="s1 ${score===1?'selected':''}" onclick="setTodayFocusScore(1)">1</button>
       <button class="s2 ${score===2?'selected':''}" onclick="setTodayFocusScore(2)">2</button>
@@ -741,6 +760,7 @@ function renderTodayFocusReview(){
       <button class="s4 ${score===4?'selected':''}" onclick="setTodayFocusScore(4)">4</button>
       <button class="s5 ${score===5?'selected':''}" onclick="setTodayFocusScore(5)">5</button>
     </div>
+    ${cancelLink}
     <textarea id="todayNote" placeholder="一言メモ（例：できた／忘れた／半分意識）" oninput="onTodayNoteInput()">${safeNote}</textarea>
   `;
 }
@@ -755,9 +775,24 @@ function setFocusScore(score){
   const y = getYesterdayStr();
   if(!state.daily) state.daily = {};
   if(!state.daily[y]) state.daily[y] = {};
-  state.daily[y].focusScore = score;
+  if(state.daily[y].focusScore === score){
+    delete state.daily[y].focusScore;
+    saveState(state);
+    toast("✓ 昨日の評価を取消");
+  } else {
+    state.daily[y].focusScore = score;
+    saveState(state);
+    toast(`✓ ${score}点で評価`);
+  }
+  renderReviewYesterday();
+  renderFocusHistory();
+  renderFocusStats();
+}
+function clearFocusScore(){
+  const y = getYesterdayStr();
+  if(state.daily && state.daily[y]) delete state.daily[y].focusScore;
   saveState(state);
-  toast(`✓ ${score}点で評価`);
+  toast("✓ 昨日の評価を取消");
   renderReviewYesterday();
   renderFocusHistory();
   renderFocusStats();
@@ -783,8 +818,11 @@ function renderReviewYesterday(){
   const note = data.focusNote || "";
   const safeFocus = data.focus.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   const safeNote = note.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const cancelLink = score > 0
+    ? `<div style="text-align:right;margin:-2px 0 6px"><button onclick="clearFocusScore()" style="background:transparent;border:none;color:rgba(255,255,255,.85);font-size:11px;cursor:pointer;text-decoration:underline;padding:2px 6px;font-weight:700">✗ 評価を取消</button></div>`
+    : '';
   card.innerHTML = `
-    <div class="rhead"><span>🔍 昨日の意識を振り返り（5段階評価）</span><span>${y}</span></div>
+    <div class="rhead"><span>🔍 昨日の意識を振り返り（5段階評価／同じ点を再タップで取消）</span><span>${y}</span></div>
     <div class="rfocus">${safeFocus}</div>
     <div class="scores">
       <button class="s1 ${score===1?'selected':''}" onclick="setFocusScore(1)">1</button>
@@ -793,6 +831,7 @@ function renderReviewYesterday(){
       <button class="s4 ${score===4?'selected':''}" onclick="setFocusScore(4)">4</button>
       <button class="s5 ${score===5?'selected':''}" onclick="setFocusScore(5)">5</button>
     </div>
+    ${cancelLink}
     <textarea id="focusNote" placeholder="一言メモ（例：スパーでは意識できた、打ち込みで忘れた）" oninput="onFocusNoteInput()">${safeNote}</textarea>
   `;
 }
