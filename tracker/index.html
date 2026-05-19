@@ -131,6 +131,15 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
 .toolbar button{flex:1;min-width:100px;background:#fff;border:1px solid var(--line);padding:9px;border-radius:9px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer}
 .toolbar button.danger{color:#c43;border-color:#fbb}
 
+/* === 更新ボタン＆Pull-to-refresh === */
+.refresh-btn{position:fixed;top:10px;right:10px;z-index:11;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1.5px solid var(--line);width:40px;height:40px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.12);transition:transform .15s}
+.refresh-btn:active{transform:rotate(180deg) scale(.9)}
+.ptr-indicator{position:fixed;top:0;left:50%;transform:translateX(-50%) translateY(-60px);width:48px;height:48px;border-radius:50%;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.2);z-index:1000;display:flex;align-items:center;justify-content:center;font-size:22px;color:#1a3a52;pointer-events:none;transition:transform .25s ease-out;font-weight:900}
+.ptr-indicator.show{transform:translateX(-50%) translateY(20px)}
+.ptr-indicator.ready{background:#34c759;color:#fff}
+.ptr-indicator.refreshing{animation:ptrSpin .8s linear infinite;background:#0a84ff;color:#fff}
+@keyframes ptrSpin{from{transform:translateX(-50%) translateY(20px) rotate(0)}to{transform:translateX(-50%) translateY(20px) rotate(360deg)}}
+
 @media (min-width:720px){
   .charts{grid-template-columns:repeat(4,1fr)}
   .cat-bars{grid-template-columns:repeat(5,1fr)}
@@ -175,6 +184,9 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
     </div>
   </div>
 </header>
+
+<button class="refresh-btn" onclick="forceReload()" title="最新を取得（キャッシュ無視）">🔄</button>
+<div class="ptr-indicator" id="ptrIndicator">↓</div>
 
 <div class="summary" id="summary"></div>
 
@@ -708,6 +720,58 @@ function importJSON(){
   };
   inp.click();
 }
+
+// ===== 更新ボタン＆Pull-to-refresh =====
+function forceReload(){
+  const url = new URL(location.href);
+  url.searchParams.set('_t', Date.now());
+  location.href = url.toString();
+}
+(function setupPullToRefresh(){
+  let startY = 0, currentY = 0, pulling = false;
+  const threshold = 80;
+  function getIndicator(){ return document.getElementById('ptrIndicator'); }
+  window.addEventListener('touchstart', e => {
+    if(window.scrollY === 0 && e.touches.length === 1){
+      startY = e.touches[0].clientY;
+      currentY = startY;
+      pulling = true;
+    }
+  }, {passive: true});
+  window.addEventListener('touchmove', e => {
+    if(!pulling) return;
+    currentY = e.touches[0].clientY;
+    const dist = currentY - startY;
+    const ind = getIndicator();
+    if(dist > 10){
+      if(ind){
+        ind.classList.add('show');
+        ind.classList.toggle('ready', dist > threshold);
+        ind.textContent = dist > threshold ? '✓' : '↓';
+      }
+    }
+  }, {passive: true});
+  window.addEventListener('touchend', () => {
+    if(!pulling) return;
+    const dist = currentY - startY;
+    const ind = getIndicator();
+    if(dist > threshold){
+      if(ind){
+        ind.classList.add('refreshing');
+        ind.textContent = '🔄';
+      }
+      setTimeout(forceReload, 200);
+    } else {
+      if(ind){
+        ind.classList.remove('show','ready');
+        ind.textContent = '↓';
+      }
+    }
+    pulling = false;
+    startY = 0;
+    currentY = 0;
+  }, {passive: true});
+})();
 
 render();
 </script>

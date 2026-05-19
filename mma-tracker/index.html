@@ -287,6 +287,15 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 .suggest-card .sitem:active{background:#ddd0ff;transform:scale(.99)}
 .suggest-card .sitem:last-child{margin-bottom:0}
 
+/* === 更新ボタン＆Pull-to-refresh === */
+.refresh-btn{position:fixed;top:10px;right:10px;z-index:11;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1.5px solid var(--line);width:40px;height:40px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.12);transition:transform .15s}
+.refresh-btn:active{transform:rotate(180deg) scale(.9)}
+.ptr-indicator{position:fixed;top:0;left:50%;transform:translateX(-50%) translateY(-60px);width:48px;height:48px;border-radius:50%;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.2);z-index:1000;display:flex;align-items:center;justify-content:center;font-size:22px;color:#1a3a52;pointer-events:none;transition:transform .25s ease-out;font-weight:900}
+.ptr-indicator.show{transform:translateX(-50%) translateY(20px)}
+.ptr-indicator.ready{background:#34c759;color:#fff}
+.ptr-indicator.refreshing{animation:ptrSpin .8s linear infinite;background:#0a84ff;color:#fff}
+@keyframes ptrSpin{from{transform:translateX(-50%) translateY(20px) rotate(0)}to{transform:translateX(-50%) translateY(20px) rotate(360deg)}}
+
 /* === タブバー（3ページ切替） === */
 .tabbar{position:sticky;top:46px;z-index:9;background:rgba(245,245,247,.95);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:8px 12px;border-bottom:1px solid var(--line);display:flex;gap:6px}
 .tab{flex:1;background:#fff;border:1.5px solid var(--line);color:var(--muted);padding:8px 4px;border-radius:10px;font:inherit;font-weight:800;font-size:12px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:2px}
@@ -310,6 +319,9 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
   <h1>🥊 MMA練習ログ</h1>
   <div class="today" id="todayLabel"></div>
 </header>
+
+<button class="refresh-btn" onclick="forceReload()" title="最新を取得（キャッシュ無視）">🔄</button>
+<div class="ptr-indicator" id="ptrIndicator">↓</div>
 
 <nav class="tabbar">
   <button class="tab active" data-page="input" onclick="switchPage('input')">
@@ -571,7 +583,59 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 <div class="toast" id="toast"></div>
 
 <script>
-console.log("MMA Tracker v6 - 3ページ式タブ切替");
+console.log("MMA Tracker v7 - 更新ボタン＆Pull-to-refresh搭載");
+
+// ===== 更新ボタン＆Pull-to-refresh =====
+function forceReload(){
+  const url = new URL(location.href);
+  url.searchParams.set('_t', Date.now());
+  location.href = url.toString();
+}
+(function setupPullToRefresh(){
+  let startY = 0, currentY = 0, pulling = false;
+  const threshold = 80;
+  function getIndicator(){ return document.getElementById('ptrIndicator'); }
+  window.addEventListener('touchstart', e => {
+    if(window.scrollY === 0 && e.touches.length === 1){
+      startY = e.touches[0].clientY;
+      currentY = startY;
+      pulling = true;
+    }
+  }, {passive: true});
+  window.addEventListener('touchmove', e => {
+    if(!pulling) return;
+    currentY = e.touches[0].clientY;
+    const dist = currentY - startY;
+    const ind = getIndicator();
+    if(dist > 10){
+      if(ind){
+        ind.classList.add('show');
+        ind.classList.toggle('ready', dist > threshold);
+        ind.textContent = dist > threshold ? '✓' : '↓';
+      }
+    }
+  }, {passive: true});
+  window.addEventListener('touchend', () => {
+    if(!pulling) return;
+    const dist = currentY - startY;
+    const ind = getIndicator();
+    if(dist > threshold){
+      if(ind){
+        ind.classList.add('refreshing');
+        ind.textContent = '🔄';
+      }
+      setTimeout(forceReload, 200);
+    } else {
+      if(ind){
+        ind.classList.remove('show','ready');
+        ind.textContent = '↓';
+      }
+    }
+    pulling = false;
+    startY = 0;
+    currentY = 0;
+  }, {passive: true});
+})();
 
 // ===== ページ切替 =====
 function switchPage(name){
