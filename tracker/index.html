@@ -36,6 +36,8 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
 .month-tabs button,.view-toggle button{flex:0 0 auto;border:none;background:#fff;color:var(--text);font-size:13px;font-weight:600;padding:8px 14px;border-radius:999px;border:1px solid var(--line);cursor:pointer}
 .month-tabs button.active,.view-toggle button.active{background:var(--text);color:#fff;border-color:var(--text)}
 .view-toggle{display:flex;gap:5px;margin-left:auto}
+.jump-today{background:#0a84ff;color:#fff;border:none;font-size:12px;font-weight:800;padding:8px 12px;border-radius:999px;cursor:pointer;box-shadow:0 2px 6px rgba(10,132,255,.3);transition:transform .1s;display:flex;align-items:center;gap:3px;white-space:nowrap}
+.jump-today:active{transform:scale(.94)}
 
 .summary{padding:8px 12px}
 .summary-card{background:var(--card);border-radius:12px;padding:12px 14px;border:1px solid var(--line)}
@@ -181,6 +183,7 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
     <div class="view-toggle">
       <button id="vList" class="active" onclick="setView('list')">リスト</button>
       <button id="vCal" onclick="setView('cal')">カレンダー</button>
+      <button class="jump-today" onclick="jumpToToday()" title="今日のタスクへジャンプ">📅 今日</button>
     </div>
   </div>
 </header>
@@ -719,6 +722,27 @@ function importJSON(){
     r.readAsText(f);
   };
   inp.click();
+}
+
+// ===== 今日ボタン =====
+function jumpToToday(){
+  const today = new Date();
+  const y = today.getFullYear();
+  const m = today.getMonth()+1;
+  if(y !== 2026 || ![4,5,6,7].includes(m)){
+    alert("今日は対応月（2026/4〜7）外です");
+    return;
+  }
+  if(currentMonth !== m){
+    currentMonth = m;
+    render();
+  }
+  setTimeout(()=>{
+    const todayEl = document.querySelector('.list-day.today, .cal-cell.today');
+    if(todayEl){
+      todayEl.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+  }, 120);
 }
 
 // ===== 更新ボタン＆Pull-to-refresh =====
