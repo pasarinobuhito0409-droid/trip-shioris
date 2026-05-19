@@ -268,6 +268,17 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 .focus-card textarea::placeholder{color:rgba(90,45,0,.4);font-weight:500}
 .focus-card textarea:focus{outline:none;box-shadow:0 0 0 3px rgba(255,255,255,.4)}
 .focus-card .fmeta{font-size:11px;opacity:.85;margin-top:8px}
+.focus-card .focus-review{margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.4)}
+.focus-card .focus-review .frhead{font-size:11px;font-weight:800;opacity:.95;margin-bottom:8px}
+.focus-card .focus-review .scores{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:8px}
+.focus-card .focus-review .scores button{background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.4);padding:10px 4px;border-radius:8px;font:inherit;font-weight:800;font-size:14px;cursor:pointer;transition:all .15s}
+.focus-card .focus-review .scores button.s1.selected{background:#ff5050;border-color:#fff;transform:scale(1.05)}
+.focus-card .focus-review .scores button.s2.selected{background:#ff8c3c;border-color:#fff;transform:scale(1.05)}
+.focus-card .focus-review .scores button.s3.selected{background:#ffc850;border-color:#fff;color:#5a4500;transform:scale(1.05)}
+.focus-card .focus-review .scores button.s4.selected{background:#8cdc64;border-color:#fff;color:#1a4a20;transform:scale(1.05)}
+.focus-card .focus-review .scores button.s5.selected{background:#50c878;border-color:#fff;transform:scale(1.05)}
+.focus-card .focus-review textarea{width:100%;min-height:45px;background:#fff;color:#5a2d00;font-size:13px;border-radius:8px;border:none;padding:8px 10px;font:inherit;resize:vertical;font-weight:600}
+.focus-card .focus-review textarea:focus{outline:none;box-shadow:0 0 0 2px rgba(255,255,255,.5)}
 
 /* === Claude推奨（タップでコピー） === */
 .suggest-card{margin:0 14px 12px;padding:12px;border-radius:12px;background:#fff;border:1.5px solid var(--line)}
@@ -323,6 +334,8 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
   <div class="fhead"><span>🎯 今日の練習で意識する1点</span><span class="badge" id="focusDate"></span></div>
   <textarea id="focusBox" placeholder="例：ジャブの距離測りを徹底／ビビらず1パーツに絞る／視野を広く首振り" oninput="onFocusInput()"></textarea>
   <div class="fmeta" id="focusMeta">朝書く・自動保存される</div>
+  <!-- 同日内振り返り（focus書いたら出る） -->
+  <div class="focus-review" id="todayFocusReview" style="display:none"></div>
 </div>
 
 <!-- 💡 Claude推奨（タップで意識ポイントにコピー） -->
@@ -665,6 +678,7 @@ function onFocusInput(){
   data.focus = txt;
   saveState(state);
   document.getElementById("focusMeta").textContent = `✓ 自動保存 ${new Date().toLocaleTimeString('ja-JP')}`;
+  renderTodayFocusReview();
 }
 function copyToFocus(text){
   const box = document.getElementById("focusBox");
@@ -675,6 +689,7 @@ function copyToFocus(text){
   saveState(state);
   document.getElementById("focusMeta").textContent = `✓ コピーした ${new Date().toLocaleTimeString('ja-JP')}`;
   toast("✓ 意識ポイントにコピー");
+  renderTodayFocusReview();
 }
 function renderFocus(){
   const data = getTodayDaily();
@@ -684,6 +699,50 @@ function renderFocus(){
   }
   const dateEl = document.getElementById("focusDate");
   if(dateEl) dateEl.textContent = todayStr();
+}
+
+// ===== 今日の振り返り（同日内評価） =====
+function setTodayFocusScore(score){
+  const t = todayStr();
+  if(!state.daily) state.daily = {};
+  if(!state.daily[t]) state.daily[t] = {};
+  state.daily[t].focusScore = score;
+  saveState(state);
+  toast(`✓ 今日 ${score}点で評価`);
+  renderTodayFocusReview();
+  renderFocusHistory();
+  renderFocusStats();
+}
+function onTodayNoteInput(){
+  const t = todayStr();
+  if(!state.daily) state.daily = {};
+  if(!state.daily[t]) state.daily[t] = {};
+  state.daily[t].focusNote = document.getElementById("todayNote").value;
+  saveState(state);
+}
+function renderTodayFocusReview(){
+  const cont = document.getElementById("todayFocusReview");
+  if(!cont) return;
+  const data = getTodayDaily();
+  if(!data.focus){
+    cont.style.display = "none";
+    return;
+  }
+  cont.style.display = "block";
+  const score = data.focusScore || 0;
+  const note = data.focusNote || "";
+  const safeNote = note.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  cont.innerHTML = `
+    <div class="frhead">📊 今日の達成度（練習後 or 夜にタップ）</div>
+    <div class="scores">
+      <button class="s1 ${score===1?'selected':''}" onclick="setTodayFocusScore(1)">1</button>
+      <button class="s2 ${score===2?'selected':''}" onclick="setTodayFocusScore(2)">2</button>
+      <button class="s3 ${score===3?'selected':''}" onclick="setTodayFocusScore(3)">3</button>
+      <button class="s4 ${score===4?'selected':''}" onclick="setTodayFocusScore(4)">4</button>
+      <button class="s5 ${score===5?'selected':''}" onclick="setTodayFocusScore(5)">5</button>
+    </div>
+    <textarea id="todayNote" placeholder="一言メモ（例：できた／忘れた／半分意識）" oninput="onTodayNoteInput()">${safeNote}</textarea>
+  `;
 }
 
 // ===== 昨日の振り返り =====
@@ -1158,6 +1217,7 @@ function render(){
     `${todayStr()}（${wd}）/ ログ${state.logs.length}件 / パーツ ${completed}/${PARTS.length}`;
 
   renderFocus();
+  renderTodayFocusReview();
   renderReviewYesterday();
   renderFocusHistory();
   renderFocusStats();
