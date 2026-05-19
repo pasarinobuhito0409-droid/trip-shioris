@@ -313,6 +313,18 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 .focus-card .suggest-inline .sitem:active{background:#fff;transform:scale(.99)}
 .focus-card .suggest-inline .sitem:last-child{margin-bottom:0}
 
+/* === 今意識してる項目（スキルパーツのチェック項目から） === */
+.focus-items{margin:0 14px 12px;padding:14px;border-radius:14px;background:linear-gradient(135deg,#1a3a52 0%,#2a5070 100%);color:#fff;box-shadow:0 3px 10px rgba(26,58,82,.25)}
+.focus-items .fihead{font-size:12px;font-weight:800;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.focus-items .ficount{background:rgba(255,179,0,.85);color:#fff;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:800}
+.focus-items .fiitem{background:rgba(255,255,255,.95);color:#1a3a52;padding:10px 12px;border-radius:10px;margin-bottom:6px;cursor:pointer;transition:all .15s}
+.focus-items .fiitem:active{transform:scale(.99)}
+.focus-items .fiitem:last-child{margin-bottom:0}
+.focus-items .fiitem .fipart{font-size:10px;font-weight:800;color:#5a7a8a;margin-bottom:3px;letter-spacing:.05em}
+.focus-items .fiitem .fitext{font-size:13px;font-weight:800;line-height:1.4;color:#1a3a52}
+.focus-items .fiitem .fimeta{font-size:10px;color:#5a7a8a;margin-top:4px;font-weight:600;display:flex;justify-content:space-between}
+.focus-items .empty{background:rgba(255,255,255,.12);padding:14px;border-radius:10px;font-size:12px;text-align:center;opacity:.9}
+
 /* === 前回のコーチノート（今日やる用・コンパクト版） === */
 .prev-coach{margin:0 14px 12px;padding:12px 14px;border-radius:12px;background:linear-gradient(135deg,#2a4a6a 0%,#3a5a7e 100%);color:#fff;box-shadow:0 3px 10px rgba(42,74,106,.2)}
 .prev-coach .pchead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:12px;font-weight:800;opacity:.95}
@@ -451,6 +463,9 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 
 <!-- 💬 前回の練習のコーチノート（朝・練習前に確認） -->
 <div class="prev-coach" id="prevCoach"></div>
+
+<!-- 🎯 今意識してる項目（スキル積み上げのチェック項目連動） -->
+<div class="focus-items" id="focusItemsList"></div>
 
 <!-- 📝 練習記録カード（意識ポイントとは別役割：何があったか） -->
 <div class="memo-section">
@@ -714,6 +729,66 @@ const COACH_NOTES = {
 function getLatestCoachNoteDate(){
   const dates = Object.keys(COACH_NOTES).sort().reverse();
   return dates[0] || null;
+}
+
+// ===== 今意識中の項目一覧（今日やるタブ用） =====
+function renderFocusInProgress(){
+  const cont = document.getElementById("focusItemsList");
+  if(!cont) return;
+  const items = [];
+  PARTS.forEach(part=>{
+    const ps = state.parts[part.id];
+    if(!ps || !ps.checks) return;
+    part.checks.forEach((checkText, ix)=>{
+      const c = ps.checks[ix];
+      if(c && c.status === "意識中"){
+        const since = c.since ? new Date(c.since) : null;
+        const days = since ? Math.floor((new Date() - since)/(1000*60*60*24)) : 0;
+        items.push({partId: part.id, partName: part.name, partCat: part.cat, ix, checkText, days});
+      }
+    });
+  });
+  if(!items.length){
+    cont.innerHTML = `<div class="fihead">🎯 今意識してる項目<span class="ficount">0個</span></div>
+      <div class="empty">📦 スキル積み上げタブで「意識する」項目を選んでね</div>`;
+    return;
+  }
+  cont.innerHTML = `<div class="fihead">🎯 今意識してる項目（タップで詳細）<span class="ficount">${items.length}個</span></div>
+    ${items.map(it=>{
+      const safeText = it.checkText.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+      const catName = (CATS[it.partCat]||{}).name || it.partCat;
+      const catEmoji = (CATS[it.partCat]||{}).emoji || "";
+      return `<div class="fiitem" onclick="openPartModal(${it.partId})">
+        <div class="fipart">${catEmoji} ${catName} ／ ${it.partName}</div>
+        <div class="fitext">${safeText}</div>
+        <div class="fimeta"><span>📅 ${it.days}日経過</span><span>▶ 詳細</span></div>
+      </div>`;
+    }).join("")}`;
+}
+
+// ===== ある日に意識中だったかを判定（記録day-card用） =====
+function wasFocusOnDate(check, dateStr){
+  if(!check || !check.since) return false;
+  const sinceDate = check.since.slice(0,10);
+  if(sinceDate > dateStr) return false;
+  if(check.resolvedAt){
+    const resolvedDate = check.resolvedAt.slice(0,10);
+    if(resolvedDate <= dateStr) return false;
+  }
+  return true;
+}
+function getFocusItemsForDate(dateStr){
+  const items = [];
+  PARTS.forEach(part=>{
+    const ps = state.parts[part.id];
+    if(!ps || !ps.checks) return;
+    part.checks.forEach((checkText, ix)=>{
+      if(wasFocusOnDate(ps.checks[ix], dateStr)){
+        items.push({partName: part.name, partCat: part.cat, checkText});
+      }
+    });
+  });
+  return items;
 }
 
 function renderPrevCoach(){
@@ -1133,6 +1208,15 @@ function renderDaySummary(){
     <div class="dlabel">💬 Claudeコーチの観察</div>
     <div class="dcoach">${COACH_NOTES[d]}</div>
   </div>` : '';
+  const focusItems = getFocusItemsForDate(d);
+  const focusItemsHtml = focusItems.length ? `<div class="dsection">
+    <div class="dlabel">🎯 この日の意識中項目（パーツ）</div>
+    <div class="dvalue">${focusItems.map(f=>{
+      const safeT = f.checkText.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+      const catEmoji = (CATS[f.partCat]||{}).emoji || "";
+      return `<div>• ${catEmoji} <b>${f.partName}</b>: ${safeT}</div>`;
+    }).join("")}</div>
+  </div>` : '';
   cont.innerHTML = `
     <div class="dheader">
       <span class="ddate">${dateLabel}</span>
@@ -1146,6 +1230,7 @@ function renderDaySummary(){
       <div class="dlabel">📝 振り返りメモ</div>
       <div class="dvalue">${safeNote}</div>
     </div>` : ''}
+    ${focusItemsHtml}
     ${coachHtml}
     <div class="dsection">
       <div class="dlabel">📋 ログ（${dayLogs.length}件）</div>
@@ -1323,8 +1408,11 @@ function cycleCheckStatus(partId, ix){
 
   if(nextStatus === "未着手"){
     delete p.checks[ix];
-  } else {
-    p.checks[ix] = {status: nextStatus, since: new Date().toISOString()};
+  } else if(nextStatus === "意識中"){
+    p.checks[ix] = {status: "意識中", since: new Date().toISOString()};
+  } else { // 習得済
+    const oldSince = (p.checks[ix] && p.checks[ix].since) || new Date().toISOString();
+    p.checks[ix] = {status: "習得済", since: oldSince, resolvedAt: new Date().toISOString()};
   }
   saveState(state);
   const label = part.checks[ix];
@@ -1635,6 +1723,7 @@ function render(){
 
   renderFocus();
   renderPrevCoach();
+  renderFocusInProgress();
   renderTodayFocusReview();
   check30DaySuggest();
   renderReviewYesterday();
