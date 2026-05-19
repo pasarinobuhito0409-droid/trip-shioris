@@ -226,6 +226,15 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 .modal .m-history .item:last-child{border-bottom:none}
 .modal .m-history .item .t{font-size:10px;color:#999}
 
+/* === タブバー（3ページ切替） === */
+.tabbar{position:sticky;top:46px;z-index:9;background:rgba(245,245,247,.95);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:8px 12px;border-bottom:1px solid var(--line);display:flex;gap:6px}
+.tab{flex:1;background:#fff;border:1.5px solid var(--line);color:var(--muted);padding:8px 4px;border-radius:10px;font:inherit;font-weight:800;font-size:12px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:2px}
+.tab .tab-icon{font-size:18px;line-height:1}
+.tab.active{background:#1a1a2e;color:#fff;border-color:#1a1a2e;box-shadow:0 2px 8px rgba(26,26,46,.3)}
+.page{display:none;animation:pageIn .25s ease}
+.page.active{display:block}
+@keyframes pageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
 @media (min-width:600px){
   .btn-grid{grid-template-columns:repeat(4,1fr)}
   .cat-btn.memo{grid-column:span 4}
@@ -240,6 +249,49 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
   <h1>🥊 MMA練習ログ</h1>
   <div class="today" id="todayLabel"></div>
 </header>
+
+<nav class="tabbar">
+  <button class="tab active" data-page="input" onclick="switchPage('input')">
+    <span class="tab-icon">📝</span><span>今日やる</span>
+  </button>
+  <button class="tab" data-page="now" onclick="switchPage('now')">
+    <span class="tab-icon">📦</span><span>スキル積み上げ</span>
+  </button>
+  <button class="tab" data-page="archive" onclick="switchPage('archive')">
+    <span class="tab-icon">📋</span><span>記録</span>
+  </button>
+</nav>
+
+<!-- ========== ページ📝 今日やる ========== -->
+<div class="page active" data-page="input">
+
+<div class="main-area" style="padding-top:14px">
+  <textarea id="memoBox" placeholder="任意：何があった？（音声入力もOK）"></textarea>
+  <div class="hint">↓ ボタンでカテゴリ別に即記録</div>
+</div>
+
+<div class="btn-grid">
+  <button class="cat-btn strike" onclick="quickSave('strike')">
+    <span class="icon">👊</span><span>打撃</span><span class="sub">タップで記録</span>
+  </button>
+  <button class="cat-btn clinch" onclick="quickSave('clinch')">
+    <span class="icon">🤼</span><span>組み技</span><span class="sub">タップで記録</span>
+  </button>
+  <button class="cat-btn ground" onclick="quickSave('ground')">
+    <span class="icon">🌀</span><span>寝技</span><span class="sub">タップで記録</span>
+  </button>
+  <button class="cat-btn spar" onclick="quickSave('spar')">
+    <span class="icon">🥊</span><span>スパー</span><span class="sub">タップで記録</span>
+  </button>
+  <button class="cat-btn memo" onclick="quickSave('memo')">
+    <span class="icon">📝</span><span>メモとして保存</span>
+  </button>
+</div>
+
+</div><!-- /page input -->
+
+<!-- ========== ページ📦 スキル積み上げ ========== -->
+<div class="page" data-page="now">
 
 <div class="today-part" id="todayPartCard"></div>
 
@@ -355,28 +407,16 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
   📌 「今日の1個」の名前をタップ → 詳細＆チェックリスト＆メモ＆Claude相談が開く
 </div>
 
-<div class="main-area">
-  <textarea id="memoBox" placeholder="任意：何があった？（音声入力もOK）"></textarea>
-  <div class="hint">↓ ボタンでカテゴリ別に即記録</div>
+<div class="section-title" onclick="toggleSection('partsContainer', this)">
+  <span>📦 完成パーツ表（タップで詳細）</span>
+  <span><span class="count" id="partsCount"></span> <span class="arrow">▼</span></span>
 </div>
+<div id="partsContainer" class="collapsible"></div>
 
-<div class="btn-grid">
-  <button class="cat-btn strike" onclick="quickSave('strike')">
-    <span class="icon">👊</span><span>打撃</span><span class="sub">タップで記録</span>
-  </button>
-  <button class="cat-btn clinch" onclick="quickSave('clinch')">
-    <span class="icon">🤼</span><span>組み技</span><span class="sub">タップで記録</span>
-  </button>
-  <button class="cat-btn ground" onclick="quickSave('ground')">
-    <span class="icon">🌀</span><span>寝技</span><span class="sub">タップで記録</span>
-  </button>
-  <button class="cat-btn spar" onclick="quickSave('spar')">
-    <span class="icon">🥊</span><span>スパー</span><span class="sub">タップで記録</span>
-  </button>
-  <button class="cat-btn memo" onclick="quickSave('memo')">
-    <span class="icon">📝</span><span>メモとして保存</span>
-  </button>
-</div>
+</div><!-- /page now -->
+
+<!-- ========== ページ📋 記録 ========== -->
+<div class="page" data-page="archive">
 
 <div class="section-title" onclick="toggleSection('logsContainer', this)">
   <span id="logsTitle">📋 今日のログ（新しい順）</span>
@@ -388,12 +428,6 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
   <span>📅 日付切替</span>
 </div>
 <div class="date-tabs" id="dateTabs"></div>
-
-<div class="section-title" onclick="toggleSection('partsContainer', this)">
-  <span>📦 完成パーツ表（タップで詳細）</span>
-  <span><span class="count" id="partsCount"></span> <span class="arrow">▼</span></span>
-</div>
-<div id="partsContainer" class="collapsible"></div>
 
 <div class="section-title" onclick="toggleSection('chartContainer', this)">
   <span>📊 月次比率</span>
@@ -415,6 +449,8 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
   <button onclick="importJSON()">ファイル読込</button>
   <button class="danger" onclick="resetAll()">全消去</button>
 </div>
+
+</div><!-- /page archive -->
 
 <!-- ペースト読込モーダル -->
 <div class="modal-bg" id="pasteBg" onclick="if(event.target===this)closePaste()">
@@ -438,7 +474,19 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 <div class="toast" id="toast"></div>
 
 <script>
-console.log("MMA Tracker v5 - パーツ詳細＆Claude相談");
+console.log("MMA Tracker v6 - 3ページ式タブ切替");
+
+// ===== ページ切替 =====
+function switchPage(name){
+  document.querySelectorAll('.page').forEach(p=>{
+    p.classList.toggle('active', p.dataset.page===name);
+  });
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.classList.toggle('active', t.dataset.page===name);
+  });
+  try{ localStorage.setItem('mma_page', name); }catch(e){}
+  window.scrollTo({top:0, behavior:'smooth'});
+}
 
 // ===== パーツ定義（チェックリスト付き） =====
 const PARTS = [
@@ -1060,7 +1108,13 @@ function renderChart(){
 }
 
 render();
-console.log("MMA Tracker v5 描画完了");
+// 前回ページ復元
+try{
+  const lastPage = localStorage.getItem('mma_page');
+  if(lastPage && ['input','now','archive'].includes(lastPage)) switchPage(lastPage);
+}catch(e){}
+
+console.log("MMA Tracker v6 描画完了（3ページ式）");
 </script>
 </body>
 </html>
