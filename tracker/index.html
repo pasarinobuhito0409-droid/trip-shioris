@@ -65,6 +65,8 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
 .list{padding:0 12px 24px}
 .list-day{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:7px;overflow:hidden;display:grid;grid-template-columns:56px 1fr;align-items:stretch}
 .list-day.today{border-color:#0a84ff;border-width:2px;box-shadow:0 0 0 3px rgba(10,132,255,.1)}
+.list-day.past{opacity:.55;filter:saturate(.6)}
+.list-day.past:hover{opacity:.85}
 .list-day .date-col{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;background:var(--bg)}
 .list-day .date-col.normal{background:var(--c-normal)}
 .list-day .date-col.cheat{background:var(--c-cheat)}
@@ -109,6 +111,8 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
 .cal-cell.cheat{background:#ffeef1}
 .cal-cell.special{background:linear-gradient(180deg,#e6f7ea 0%,#e6f7ea 50%,#fff5d4 50%,#fff5d4 100%)}
 .cal-cell.today{box-shadow:0 0 0 2px #0a84ff}
+.cal-cell.past{opacity:.55;filter:saturate(.6)}
+.cal-cell.past:hover{opacity:.85}
 .cal-cell .head{display:flex;align-items:baseline;gap:3px}
 .cal-cell .num{font-size:13px;font-weight:800}
 .cal-cell .num.sun{color:#ff453a}
@@ -478,6 +482,15 @@ function renderContent(){
 }
 
 // ===== リスト =====
+function isPastDay(m, d){
+  const today = new Date();
+  if(today.getFullYear() !== 2026) return today.getFullYear() > 2026;
+  const tm = today.getMonth()+1, td = today.getDate();
+  if(m < tm) return true;
+  if(m > tm) return false;
+  return d < td;
+}
+
 function renderList(){
   const days = buildMonth(currentMonth);
   const today = new Date();
@@ -505,8 +518,9 @@ function renderList(){
     // 追加ボタン
     chips += `<button class="chip chip-add" onclick="addCustomTask(${currentMonth},${x.d})" title="タスク追加">+ 追加</button>`;
     const diaryMark = hasDiary(currentMonth, x.d) ? `<div class="diary-mark">📝</div>` : `<div class="diary-mark" style="opacity:.25">📝</div>`;
+    const pastCls = isPastDay(currentMonth, x.d) ? "past" : "";
     return `
-      <div class="list-day ${todayCls}">
+      <div class="list-day ${todayCls} ${pastCls}">
         <div class="date-col ${typeCls}" onclick="openDiary(${currentMonth},${x.d})" title="タップで日記">
           <div class="num">${x.d}</div>
           <div class="wd ${wdCls}">${WD_JP[x.wd]}</div>
@@ -564,8 +578,9 @@ function renderCalendar(){
     }
     chipsMini += `<button class="chip-mini chip-add" onclick="addCustomTask(${currentMonth},${d})" title="タスク追加">+</button>`;
     const dMark = hasDiary(currentMonth, d) ? `<span class="diary-mark">📝</span>` : "";
+    const pastCls = isPastDay(currentMonth, d) ? "past" : "";
     return `
-      <div class="cal-cell ${typeCls} ${todayCls}" ondblclick="openDiary(${currentMonth},${d})">
+      <div class="cal-cell ${typeCls} ${todayCls} ${pastCls}" ondblclick="openDiary(${currentMonth},${d})">
         <div class="head">
           <span class="num ${numCls}" onclick="event.stopPropagation();openDiary(${currentMonth},${d})" style="cursor:pointer" title="タップで日記">${d}</span>
           <span class="small-tag">${tagShort}</span>
