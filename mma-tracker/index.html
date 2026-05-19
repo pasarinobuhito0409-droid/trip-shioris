@@ -55,6 +55,18 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 .today-part .btn-skip{background:rgba(255,255,255,.18);color:#fff}
 .today-part.all-done{background:linear-gradient(135deg,#0a84ff 0%,#34c759 100%)}
 
+/* === 今日の1個カード内のチェックリスト（朝1発で意識） === */
+.today-part .inline-checks{margin:14px 0 4px;padding-top:14px;border-top:1px dashed rgba(255,255,255,.25)}
+.today-part .inline-checks .ichead{font-size:11px;font-weight:800;opacity:.9;margin-bottom:8px;letter-spacing:.03em}
+.today-part .inline-checks .icitem{display:flex;align-items:flex-start;gap:10px;padding:9px 10px;background:rgba(255,255,255,.08);border-radius:8px;border:1px solid rgba(255,255,255,.15);cursor:pointer;margin-bottom:5px;transition:all .15s}
+.today-part .inline-checks .icitem:active{transform:scale(.98)}
+.today-part .inline-checks .icitem.done{background:rgba(52,199,89,.25);border-color:rgba(52,199,89,.6)}
+.today-part .inline-checks .icitem:last-child{margin-bottom:0}
+.today-part .inline-checks .icitem .icbox{width:20px;height:20px;border-radius:5px;border:2px solid rgba(255,255,255,.5);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:transparent;background:transparent}
+.today-part .inline-checks .icitem.done .icbox{background:#34c759;border-color:#34c759;color:#fff}
+.today-part .inline-checks .icitem .ictext{flex:1;font-size:13px;line-height:1.4;color:#fff;font-weight:600}
+.today-part .inline-checks .icitem.done .ictext{opacity:.75;text-decoration:line-through}
+
 /* === Claudeコーチ観察ノート === */
 .coach-note{margin:12px 14px;padding:14px;border-radius:14px;background:linear-gradient(135deg,#1a3a52 0%,#264e6e 100%);color:#fff;box-shadow:0 4px 12px rgba(26,58,82,.25)}
 .coach-note .coach-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:12px;font-weight:800}
@@ -1554,12 +1566,25 @@ function renderTodayPart(){
     isAllDone = false;
     const status = getPartStatus(p.id);
     const statusLabel = status==="練習中" ? "🔄 練習中" : "🎯 今日の1個";
+    const ps = ensurePart(p.id);
+    const checksHtml = p.checks.map((c,ix)=>{
+      const done = !!ps.checks[ix];
+      const safeC = c.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+      return `<div class="icitem ${done?'done':''}" onclick="event.stopPropagation();toggleCheck(${p.id},${ix})">
+        <div class="icbox">${done?'✓':''}</div>
+        <div class="ictext">${safeC}</div>
+      </div>`;
+    }).join("");
     html = `
       <div class="header"><span>${statusLabel}</span><span class="pcount">${completed}/${PARTS.length} 完成</span></div>
       <span class="cat-tag ${p.cat}">${CATS[p.cat].emoji} ${CATS[p.cat].name}</span>
       <div class="name" onclick="openPartModal(${p.id})" title="タップで詳細">${p.name} <span style="font-size:14px;opacity:.7">▶</span></div>
       <div class="desc">${p.desc}</div>
-      <div class="actions">
+      <div class="inline-checks">
+        <div class="ichead">✅ 意識すること（タップでチェック）</div>
+        ${checksHtml}
+      </div>
+      <div class="actions" style="margin-top:12px">
         <button class="btn-detail" onclick="openPartModal(${p.id})">📋 詳細</button>
         <button class="btn-complete" onclick="partComplete(${p.id})">✅ 完成</button>
         <button class="btn-progress" onclick="partInProgress(${p.id})">🔄 練習</button>
