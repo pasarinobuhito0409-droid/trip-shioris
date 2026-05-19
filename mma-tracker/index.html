@@ -62,9 +62,17 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 .today-part .inline-checks .icitem:active{transform:scale(.98)}
 .today-part .inline-checks .icitem.done{background:rgba(52,199,89,.25);border-color:rgba(52,199,89,.6)}
 .today-part .inline-checks .icitem:last-child{margin-bottom:0}
-.today-part .inline-checks .icitem .icbox{width:20px;height:20px;border-radius:5px;border:2px solid rgba(255,255,255,.5);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:transparent;background:transparent}
-.today-part .inline-checks .icitem.done .icbox{background:#34c759;border-color:#34c759;color:#fff}
+.today-part .inline-checks .icitem .icbox{width:22px;height:22px;border-radius:5px;border:2px solid rgba(255,255,255,.5);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:transparent;background:transparent}
 .today-part .inline-checks .icitem .ictext{flex:1;font-size:13px;line-height:1.4;color:#fff;font-weight:600}
+/* 3状態：未着手／意識中（黄）／習得済（緑） */
+.today-part .inline-checks .icitem.s-意識中{background:rgba(255,179,0,.3);border-color:rgba(255,179,0,.8);box-shadow:0 0 0 1px rgba(255,179,0,.4)}
+.today-part .inline-checks .icitem.s-意識中 .icbox{background:#ffb300;border-color:#ffb300;color:#fff}
+.today-part .inline-checks .icitem.s-意識中 .ictext{font-weight:800}
+.today-part .inline-checks .icitem.s-習得済{background:rgba(52,199,89,.22);border-color:rgba(52,199,89,.6)}
+.today-part .inline-checks .icitem.s-習得済 .icbox{background:#34c759;border-color:#34c759;color:#fff}
+.today-part .inline-checks .icitem.s-習得済 .ictext{opacity:.7;text-decoration:line-through}
+/* 旧 .done 互換 */
+.today-part .inline-checks .icitem.done .icbox{background:#34c759;border-color:#34c759;color:#fff}
 .today-part .inline-checks .icitem.done .ictext{opacity:.75;text-decoration:line-through}
 
 /* === Claudeコーチ観察ノート === */
@@ -220,6 +228,12 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 .modal .checkitem{display:flex;align-items:flex-start;gap:10px;padding:10px;background:#f8f8fa;border-radius:10px;border:1px solid var(--line);cursor:pointer;transition:all .15s}
 .modal .checkitem:active{transform:scale(.98)}
 .modal .checkitem.done{background:#dcf5e3;border-color:var(--done)}
+.modal .checkitem.s-意識中{background:#fff3c4;border-color:#ffb300}
+.modal .checkitem.s-意識中 .box{background:#ffb300;border-color:#ffb300;color:#fff}
+.modal .checkitem.s-意識中 .text{font-weight:800;color:#7a4f00}
+.modal .checkitem.s-習得済{background:#dcf5e3;border-color:#34c759}
+.modal .checkitem.s-習得済 .box{background:#34c759;border-color:#34c759;color:#fff}
+.modal .checkitem.s-習得済 .text{opacity:.7;text-decoration:line-through}
 .modal .checkitem .box{width:22px;height:22px;border-radius:6px;border:2px solid #ccc;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:14px;color:transparent;font-weight:900;background:#fff}
 .modal .checkitem.done .box{background:var(--done);border-color:var(--done);color:#fff}
 .modal .checkitem .text{flex:1;font-size:13px;line-height:1.4}
@@ -1175,6 +1189,8 @@ function saveState(s){
   catch(e){ console.warn("saveState fail", e); }
 }
 let state = loadState();
+// チェックリストv2移行（既存のチェックを未着手にリセット・1回だけ実行される）
+(function(){ if(state.checkVersion !== 2){ Object.keys(state.parts||{}).forEach(pid=>{ if(state.parts[pid] && state.parts[pid].checks) state.parts[pid].checks={}; }); state.checkVersion=2; try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} } })();
 
 function todayStr(){
   const d = new Date();
@@ -1270,11 +1286,97 @@ function pushPartLog(part, status){
   lastSavedTs = log.ts;
 }
 function toggleCheck(id, ix){
-  const p = ensurePart(id);
-  p.checks[ix] = !p.checks[ix];
-  if(!p.checks[ix]) delete p.checks[ix];
+  // 旧API互換用に残してあるが、新ルートは cycleCheckStatus
+  cycleCheckStatus(id, ix);
+}
+
+// ===== チェック項目を3状態でサイクル（未着手→意識中→習得済→未着手） =====
+function getCheckStatus(partId, ix){
+  const p = state.parts[partId];
+  if(!p || !p.checks || !p.checks[ix]) return "未着手";
+  const v = p.checks[ix];
+  // 旧データ互換：true は習得済として扱う（migrateで消える予定）
+  if(v === true) return "習得済";
+  return (v && v.status) || "未着手";
+}
+
+function cycleCheckStatus(partId, ix){
+  const p = ensurePart(partId);
+  if(!p.checks) p.checks = {};
+  const part = PARTS.find(x=>x.id === partId);
+  if(!part) return;
+  const curStatus = getCheckStatus(partId, ix);
+  let nextStatus;
+  if(curStatus === "未着手") nextStatus = "意識中";
+  else if(curStatus === "意識中") nextStatus = "習得済";
+  else nextStatus = "未着手";
+
+  // 1個だけルール：「意識中」にする時、同パーツ内の他の意識中を「未着手」に戻す
+  if(nextStatus === "意識中"){
+    Object.keys(p.checks).forEach(k=>{
+      if(parseInt(k) === ix) return;
+      const cv = p.checks[k];
+      const cs = (cv && cv.status) || (cv === true ? "習得済" : "未着手");
+      if(cs === "意識中") delete p.checks[k];
+    });
+  }
+
+  if(nextStatus === "未着手"){
+    delete p.checks[ix];
+  } else {
+    p.checks[ix] = {status: nextStatus, since: new Date().toISOString()};
+  }
   saveState(state);
-  if(openPartId===id) renderModal();
+  const label = part.checks[ix];
+  const shortLabel = label.length > 18 ? label.slice(0,18)+"..." : label;
+  toast(`"${shortLabel}" → ${nextStatus}`);
+  if(openPartId === partId) renderModal();
+  renderTodayPart();
+}
+
+// ===== 30日経過サジェスト =====
+function check30DaySuggest(){
+  const today = todayStr();
+  let lastShown = "";
+  try{ lastShown = localStorage.getItem('mma_30day_toast') || ""; }catch(e){}
+  if(lastShown === today) return;
+  let candidate = null;
+  Object.keys(state.parts || {}).forEach(pid=>{
+    const p = state.parts[pid];
+    if(!p || !p.checks) return;
+    Object.keys(p.checks).forEach(ix=>{
+      const c = p.checks[ix];
+      if(c && c.status === "意識中" && c.since){
+        const since = new Date(c.since);
+        const days = Math.floor((new Date() - since) / (1000*60*60*24));
+        if(days >= 30){
+          const part = PARTS.find(x=>x.id == pid);
+          if(part){
+            if(!candidate || candidate.days < days){
+              candidate = {partName: part.name, checkText: part.checks[ix], days};
+            }
+          }
+        }
+      }
+    });
+  });
+  if(candidate){
+    setTimeout(()=>{
+      toast(`💡「${candidate.partName}: ${candidate.checkText.slice(0,12)}…」${candidate.days}日経過。もう習得？`);
+      try{ localStorage.setItem('mma_30day_toast', today); }catch(e){}
+    }, 1200);
+  }
+}
+
+// ===== チェックデータ移行（v2：未着手リセット） =====
+function migrateChecksV2(){
+  if(state.checkVersion === 2) return;
+  Object.keys(state.parts || {}).forEach(pid=>{
+    const p = state.parts[pid];
+    if(p && p.checks) p.checks = {};
+  });
+  state.checkVersion = 2;
+  saveState(state);
 }
 function saveNotes(id, text){
   const p = ensurePart(id);
@@ -1299,10 +1401,11 @@ function renderModal(){
   if(!p){ closeModal(); return; }
   const ps = ensurePart(p.id);
   const checksHtml = p.checks.map((c,ix)=>{
-    const done = !!ps.checks[ix];
+    const status = getCheckStatus(p.id, ix);
+    const mark = status === "意識中" ? "🎯" : (status === "習得済" ? "✓" : "");
     const safeC = c.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-    return `<div class="checkitem ${done?'done':''}" onclick="toggleCheck(${p.id},${ix})">
-      <div class="box">${done?'✓':''}</div>
+    return `<div class="checkitem s-${status}" onclick="cycleCheckStatus(${p.id},${ix})">
+      <div class="box">${mark}</div>
       <div class="text">${safeC}</div>
     </div>`;
   }).join("");
@@ -1533,6 +1636,7 @@ function render(){
   renderFocus();
   renderPrevCoach();
   renderTodayFocusReview();
+  check30DaySuggest();
   renderReviewYesterday();
   renderFocusHistory();
   renderFocusStats();
@@ -1566,12 +1670,13 @@ function renderTodayPart(){
     isAllDone = false;
     const status = getPartStatus(p.id);
     const statusLabel = status==="練習中" ? "🔄 練習中" : "🎯 今日の1個";
-    const ps = ensurePart(p.id);
+    ensurePart(p.id);
     const checksHtml = p.checks.map((c,ix)=>{
-      const done = !!ps.checks[ix];
+      const status = getCheckStatus(p.id, ix);
+      const mark = status === "意識中" ? "🎯" : (status === "習得済" ? "✓" : "");
       const safeC = c.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-      return `<div class="icitem ${done?'done':''}" onclick="event.stopPropagation();toggleCheck(${p.id},${ix})">
-        <div class="icbox">${done?'✓':''}</div>
+      return `<div class="icitem s-${status}" onclick="event.stopPropagation();cycleCheckStatus(${p.id},${ix})">
+        <div class="icbox">${mark}</div>
         <div class="ictext">${safeC}</div>
       </div>`;
     }).join("");
