@@ -226,6 +226,22 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 .modal .m-history .item:last-child{border-bottom:none}
 .modal .m-history .item .t{font-size:10px;color:#999}
 
+/* === 今日の意識ポイント（朝書く・1発で見える） === */
+.focus-card{margin:14px 14px 10px;padding:16px;border-radius:14px;background:linear-gradient(135deg,#ffb300 0%,#ff6b00 100%);color:#fff;box-shadow:0 4px 14px rgba(255,107,0,.3)}
+.focus-card .fhead{font-size:12px;font-weight:800;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.focus-card .fhead .badge{font-size:10px;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:999px;font-weight:700}
+.focus-card textarea{width:100%;min-height:80px;border:none;background:#fff;color:#5a2d00;border-radius:10px;padding:12px;font:inherit;font-size:16px;font-weight:700;resize:vertical;line-height:1.5}
+.focus-card textarea::placeholder{color:rgba(90,45,0,.4);font-weight:500}
+.focus-card textarea:focus{outline:none;box-shadow:0 0 0 3px rgba(255,255,255,.4)}
+.focus-card .fmeta{font-size:11px;opacity:.85;margin-top:8px}
+
+/* === Claude推奨（タップでコピー） === */
+.suggest-card{margin:0 14px 12px;padding:12px;border-radius:12px;background:#fff;border:1.5px solid var(--line)}
+.suggest-card .shead{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px}
+.suggest-card .sitem{display:block;width:100%;background:#f5f0ff;border:1.5px solid #d4c5f0;color:#3a1860;padding:11px 12px;border-radius:10px;margin-bottom:6px;text-align:left;font:inherit;font-size:13px;line-height:1.4;cursor:pointer;font-weight:600;transition:all .15s}
+.suggest-card .sitem:active{background:#ddd0ff;transform:scale(.99)}
+.suggest-card .sitem:last-child{margin-bottom:0}
+
 /* === タブバー（3ページ切替） === */
 .tabbar{position:sticky;top:46px;z-index:9;background:rgba(245,245,247,.95);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:8px 12px;border-bottom:1px solid var(--line);display:flex;gap:6px}
 .tab{flex:1;background:#fff;border:1.5px solid var(--line);color:var(--muted);padding:8px 4px;border-radius:10px;font:inherit;font-weight:800;font-size:12px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:2px}
@@ -265,7 +281,28 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 <!-- ========== ページ📝 今日やる ========== -->
 <div class="page active" data-page="input">
 
-<div class="main-area" style="padding-top:14px">
+<!-- 🎯 今日の意識ポイント（1発で見える主役） -->
+<div class="focus-card">
+  <div class="fhead"><span>🎯 今日の練習で意識する1点</span><span class="badge" id="focusDate"></span></div>
+  <textarea id="focusBox" placeholder="例：ジャブの距離測りを徹底／ビビらず1パーツに絞る／視野を広く首振り" oninput="onFocusInput()"></textarea>
+  <div class="fmeta" id="focusMeta">朝書く・自動保存される</div>
+</div>
+
+<!-- 💡 Claude推奨（タップで意識ポイントにコピー） -->
+<div class="suggest-card">
+  <div class="shead">💡 Claude推奨（タップで上にコピー・5/18踏まえ）</div>
+  <button class="sitem" onclick="copyToFocus('ジャブ：「楽しめる」状態を再現できるか観察（5/18で初到達）')">① ジャブ：「楽しめる」状態を再現できるか観察</button>
+  <button class="sitem" onclick="copyToFocus('ジャブのチェック5「2への繋ぎ」を意識')">② ジャブの「2への繋ぎ」を意識</button>
+  <button class="sitem" onclick="copyToFocus('月水基礎練（壁タックル・フォーム確認・技基礎）')">③ 月水基礎練（壁タックル・フォーム・技基礎）</button>
+  <button class="sitem" onclick="copyToFocus('寝技：腕十字＋派生（三角・木村・脇締め）を1セットとして捉える')">④ 寝技：腕十字Assyとして捉える</button>
+  <button class="sitem" onclick="copyToFocus('スパー中「ビビリ」が出たら→1パーツに絞る実験に切替')">⑤ ビビリ出たら1パーツ実験に切替</button>
+  <button class="sitem" onclick="copyToFocus('視野を広く・首振り（ハンドボール由来）も継続意識')">⑥ 視野を広く・首振り</button>
+</div>
+
+<!-- 📦 今日の1個パーツ（スキル積み上げと両方表示） -->
+<div class="today-part" id="todayPartCardInput"></div>
+
+<div class="main-area">
   <textarea id="memoBox" placeholder="任意：何があった？（音声入力もOK）"></textarea>
   <div class="hint">↓ ボタンでカテゴリ別に即記録</div>
 </div>
@@ -561,10 +598,45 @@ function loadState(){
       const s = JSON.parse(raw);
       if(!s.logs) s.logs = [];
       if(!s.parts) s.parts = {};
+      if(!s.daily) s.daily = {};
       return s;
     }
   }catch(e){ console.warn("loadState fail", e); }
-  return {logs:[], parts:{}};
+  return {logs:[], parts:{}, daily:{}};
+}
+
+// ===== 今日の意識ポイント =====
+function getTodayDaily(){
+  const d = todayStr();
+  if(!state.daily) state.daily = {};
+  if(!state.daily[d]) state.daily[d] = {};
+  return state.daily[d];
+}
+function onFocusInput(){
+  const txt = document.getElementById("focusBox").value;
+  const data = getTodayDaily();
+  data.focus = txt;
+  saveState(state);
+  document.getElementById("focusMeta").textContent = `✓ 自動保存 ${new Date().toLocaleTimeString('ja-JP')}`;
+}
+function copyToFocus(text){
+  const box = document.getElementById("focusBox");
+  if(box.value.trim() && !confirm("今日の意識ポイントを上書きする？")) return;
+  box.value = text;
+  const data = getTodayDaily();
+  data.focus = text;
+  saveState(state);
+  document.getElementById("focusMeta").textContent = `✓ コピーした ${new Date().toLocaleTimeString('ja-JP')}`;
+  toast("✓ 意識ポイントにコピー");
+}
+function renderFocus(){
+  const data = getTodayDaily();
+  const box = document.getElementById("focusBox");
+  if(box && document.activeElement !== box){
+    box.value = data.focus || "";
+  }
+  const dateEl = document.getElementById("focusDate");
+  if(dateEl) dateEl.textContent = todayStr();
 }
 function saveState(s){
   try{ localStorage.setItem(KEY, JSON.stringify(s)); }
@@ -923,6 +995,7 @@ function render(){
   document.getElementById("todayLabel").textContent =
     `${todayStr()}（${wd}）/ ログ${state.logs.length}件 / パーツ ${completed}/${PARTS.length}`;
 
+  renderFocus();
   renderTodayPart();
   renderDateTabs();
   renderLogs();
@@ -931,39 +1004,44 @@ function render(){
 }
 
 function renderTodayPart(){
-  const card = document.getElementById("todayPartCard");
+  const cards = ['todayPartCard','todayPartCardInput'].map(id=>document.getElementById(id)).filter(Boolean);
   const p = pickTodayPart();
   const completed = PARTS.filter(x=>getPartStatus(x.id)==="組み上がった").length;
+  let html, isAllDone;
   if(!p){
-    card.classList.add("all-done");
-    card.innerHTML = `
+    isAllDone = true;
+    html = `
       <div class="header"><span>🏆 完成</span><span class="pcount">${completed}/${PARTS.length}</span></div>
       <div class="name" style="cursor:default;text-decoration:none">全パーツ組み上がった！</div>
       <div class="desc">次のレベルのパーツを追加するか、リセットして再挑戦できる。</div>
       <div class="actions">
         <button class="btn-detail" onclick="alert('次レベルのパーツ追加は俺と相談してね')">✨ 次へ</button>
         <button class="btn-skip" onclick="if(confirm('パーツ進捗だけリセット？')){state.parts={};saveState(state);render();}">🔄 リセット</button>
-        <button class="btn-skip" onclick="document.getElementById('partsContainer').scrollIntoView({behavior:'smooth'})">📦 表へ</button>
+        <button class="btn-skip" onclick="switchPage('now');document.getElementById('partsContainer').scrollIntoView({behavior:'smooth'})">📦 表へ</button>
         <button class="btn-skip" style="grid-column:span 1" onclick="alert('お疲れさん！')">🎉</button>
       </div>
     `;
-    return;
+  } else {
+    isAllDone = false;
+    const status = getPartStatus(p.id);
+    const statusLabel = status==="練習中" ? "🔄 練習中" : "🎯 今日の1個";
+    html = `
+      <div class="header"><span>${statusLabel}</span><span class="pcount">${completed}/${PARTS.length} 完成</span></div>
+      <span class="cat-tag ${p.cat}">${CATS[p.cat].emoji} ${CATS[p.cat].name}</span>
+      <div class="name" onclick="openPartModal(${p.id})" title="タップで詳細">${p.name} <span style="font-size:14px;opacity:.7">▶</span></div>
+      <div class="desc">${p.desc}</div>
+      <div class="actions">
+        <button class="btn-detail" onclick="openPartModal(${p.id})">📋 詳細</button>
+        <button class="btn-complete" onclick="partComplete(${p.id})">✅ 完成</button>
+        <button class="btn-progress" onclick="partInProgress(${p.id})">🔄 練習</button>
+        <button class="btn-skip" onclick="partSkip(${p.id})">⏭ パス</button>
+      </div>
+    `;
   }
-  card.classList.remove("all-done");
-  const status = getPartStatus(p.id);
-  const statusLabel = status==="練習中" ? "🔄 練習中" : "🎯 今日の1個";
-  card.innerHTML = `
-    <div class="header"><span>${statusLabel}</span><span class="pcount">${completed}/${PARTS.length} 完成</span></div>
-    <span class="cat-tag ${p.cat}">${CATS[p.cat].emoji} ${CATS[p.cat].name}</span>
-    <div class="name" onclick="openPartModal(${p.id})" title="タップで詳細">${p.name} <span style="font-size:14px;opacity:.7">▶</span></div>
-    <div class="desc">${p.desc}</div>
-    <div class="actions">
-      <button class="btn-detail" onclick="openPartModal(${p.id})">📋 詳細</button>
-      <button class="btn-complete" onclick="partComplete(${p.id})">✅ 完成</button>
-      <button class="btn-progress" onclick="partInProgress(${p.id})">🔄 練習</button>
-      <button class="btn-skip" onclick="partSkip(${p.id})">⏭ パス</button>
-    </div>
-  `;
+  cards.forEach(card=>{
+    card.classList.toggle('all-done', isAllDone);
+    card.innerHTML = html;
+  });
 }
 
 function renderDateTabs(){
