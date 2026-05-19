@@ -287,6 +287,35 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 .suggest-card .sitem:active{background:#ddd0ff;transform:scale(.99)}
 .suggest-card .sitem:last-child{margin-bottom:0}
 
+/* === 記録タブの日付1カード集約 === */
+.day-card{margin:0 14px 12px;padding:14px;background:#fff;border:2px solid #d4dbe5;border-radius:14px;box-shadow:0 3px 10px rgba(26,58,82,.08)}
+.day-card .dheader{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1px dashed #d4dbe5;margin-bottom:10px}
+.day-card .ddate{font-size:15px;font-weight:900;color:#1a3a52}
+.day-card .dscore{font-size:13px;font-weight:800;padding:4px 12px;border-radius:999px;color:#fff}
+.day-card .dscore.s1{background:#ff5050}
+.day-card .dscore.s2{background:#ff8c3c}
+.day-card .dscore.s3{background:#ffc850;color:#5a4500}
+.day-card .dscore.s4{background:#8cdc64;color:#1a4a20}
+.day-card .dscore.s5{background:#50c878}
+.day-card .dscore.empty{background:#eee;color:#999}
+.day-card .dsection{margin-bottom:12px}
+.day-card .dsection:last-child{margin-bottom:0}
+.day-card .dlabel{font-size:11px;font-weight:800;color:var(--muted);margin-bottom:4px;letter-spacing:.03em}
+.day-card .dvalue{font-size:14px;line-height:1.5;color:var(--text);padding:10px 12px;background:#f8f8fa;border-radius:8px;white-space:pre-wrap;word-break:break-word}
+.day-card .dvalue.empty{color:#999;font-style:italic;font-size:12px}
+.day-card .dlogs{display:flex;flex-direction:column;gap:5px}
+.day-card .dlogs .dlog{display:grid;grid-template-columns:46px 1fr auto;gap:6px;padding:8px 10px;background:#f8f8fa;border-radius:8px;border:1px solid #e3e3e8;align-items:start}
+.day-card .dlogs .dlog .time{font-size:10px;color:var(--muted);font-weight:700;padding-top:2px}
+.day-card .dlogs .dlog .body .cat{display:inline-block;font-size:9px;font-weight:800;color:#fff;padding:2px 7px;border-radius:5px;margin-bottom:3px}
+.day-card .dlogs .dlog .body .cat.strike{background:var(--c-strike)}
+.day-card .dlogs .dlog .body .cat.clinch{background:var(--c-clinch)}
+.day-card .dlogs .dlog .body .cat.ground{background:var(--c-ground)}
+.day-card .dlogs .dlog .body .cat.spar{background:var(--c-spar)}
+.day-card .dlogs .dlog .body .cat.memo{background:var(--c-memo)}
+.day-card .dlogs .dlog .body .cat.part{background:var(--gold)}
+.day-card .dlogs .dlog .body .text{font-size:12px;line-height:1.4;word-break:break-word}
+.day-card .dlogs .dlog .del{background:transparent;border:none;color:#ccc;font-size:16px;cursor:pointer;padding:0 4px}
+
 /* === メモ＋カテゴリのカード化 === */
 .memo-section{margin:0 14px 14px;padding:14px;border-radius:14px;background:#fff;border:2px solid #d4dbe5;box-shadow:0 3px 10px rgba(26,58,82,.08)}
 .memo-section .memo-header{font-size:13px;font-weight:800;color:#1a3a52;margin-bottom:10px;display:flex;align-items:center;gap:6px;padding-bottom:8px;border-bottom:1px dashed #d4dbe5}
@@ -528,29 +557,21 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 <!-- ========== ページ📋 記録 ========== -->
 <div class="page" data-page="archive">
 
-<!-- 🎯 意識ポイント履歴＆達成率 -->
-<div class="section-title" onclick="toggleSection('focusStatsContainer', this)">
-  <span>🎯 意識ポイント履歴＆達成率</span>
-  <span class="arrow">▼</span>
-</div>
-<div id="focusStatsContainer" class="collapsible">
-  <div class="focus-stats" id="focusStats"></div>
-  <div class="focus-history" id="focusHistoryList"></div>
-</div>
+<!-- 📊 月間達成率（コンパクト・上部固定） -->
+<div class="focus-stats" id="focusStats" style="margin-top:14px"></div>
 
-<div class="section-title" onclick="toggleSection('logsContainer', this)">
-  <span id="logsTitle">📋 今日のログ（新しい順）</span>
-  <span><span class="count" id="logsCount"></span> <span class="arrow">▼</span></span>
-</div>
-<div id="logsContainer" class="collapsible"></div>
-
+<!-- 📅 日付選択（横スクロール） -->
 <div class="section-title">
-  <span>📅 日付切替</span>
+  <span>📅 日付を選ぶ（タップで詳細）</span>
 </div>
 <div class="date-tabs" id="dateTabs"></div>
 
+<!-- 📋 選んだ日の全情報（1枚カード集約） -->
+<div class="day-card" id="daySummary"></div>
+
+<!-- 📊 月次比率（折りたたみ） -->
 <div class="section-title" onclick="toggleSection('chartContainer', this)">
-  <span>📊 月次比率</span>
+  <span>📊 月次カテゴリ比率</span>
   <span><span class="count" id="monthLabel"></span> <span class="arrow">▼</span></span>
 </div>
 <div id="chartContainer" class="collapsible">
@@ -560,6 +581,15 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
       <div id="chartArea"></div>
     </div>
   </div>
+</div>
+
+<!-- 📜 全期間 意識ポイント履歴（折りたたみ） -->
+<div class="section-title collapsed" onclick="toggleSection('focusHistoryContainer', this)">
+  <span>📜 全期間 意識ポイント履歴</span>
+  <span class="arrow">▼</span>
+</div>
+<div id="focusHistoryContainer" class="collapsible hidden">
+  <div class="focus-history" id="focusHistoryList"></div>
 </div>
 
 <div class="toolbar">
@@ -943,6 +973,53 @@ function renderFocusHistory(){
     </div>`;
   }).join("");
 }
+function renderDaySummary(){
+  const cont = document.getElementById("daySummary");
+  if(!cont) return;
+  const d = viewDate;
+  const data = (state.daily && state.daily[d]) || {};
+  const wd = ["日","月","火","水","木","金","土"][new Date(d).getDay()];
+  const score = data.focusScore || 0;
+  const focus = data.focus || "";
+  const note = data.focusNote || "";
+  const dayLogs = state.logs.filter(l => l.date === d).sort((a,b)=>b.ts.localeCompare(a.ts));
+  const safeFocus = focus.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const safeNote = note.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const scoreCls = score ? `s${score}` : 'empty';
+  const scoreText = score ? `⭐ ${score}/5` : '未評価';
+  const isToday = d === todayStr();
+  const dateLabel = isToday ? `${d}（${wd}・今日）` : `${d}（${wd}）`;
+  const logsHtml = dayLogs.length ? dayLogs.map(l=>{
+    const t = new Date(l.ts);
+    const tt = `${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+    const c = CATS[l.cat] || CATS.memo;
+    const safeText = l.text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    return `<div class="dlog">
+      <div class="time">${tt}</div>
+      <div class="body"><span class="cat ${l.cat}">${c.name}</span><div class="text">${safeText}</div></div>
+      <button class="del" onclick="delLog('${l.ts}')" title="削除">×</button>
+    </div>`;
+  }).join("") : `<div class="dvalue empty">この日はログなし</div>`;
+  cont.innerHTML = `
+    <div class="dheader">
+      <span class="ddate">${dateLabel}</span>
+      <span class="dscore ${scoreCls}">${scoreText}</span>
+    </div>
+    <div class="dsection">
+      <div class="dlabel">🎯 意識ポイント</div>
+      <div class="dvalue ${focus?'':'empty'}">${safeFocus || 'この日はfocus未記入'}</div>
+    </div>
+    ${note ? `<div class="dsection">
+      <div class="dlabel">📝 振り返りメモ</div>
+      <div class="dvalue">${safeNote}</div>
+    </div>` : ''}
+    <div class="dsection">
+      <div class="dlabel">📋 ログ（${dayLogs.length}件）</div>
+      <div class="dlogs">${logsHtml}</div>
+    </div>
+  `;
+}
+
 function renderFocusStats(){
   const cont = document.getElementById("focusStats");
   if(!cont) return;
@@ -1335,6 +1412,7 @@ function render(){
   renderReviewYesterday();
   renderFocusHistory();
   renderFocusStats();
+  renderDaySummary();
   renderTodayPart();
   renderDateTabs();
   renderLogs();
@@ -1405,13 +1483,15 @@ function renderDateTabs(){
 function setView(d){ viewDate = d; render(); }
 
 function renderLogs(){
+  const cont = document.getElementById("logsContainer");
+  if(!cont) return; // 旧仕様の logsContainer は記録タブから削除済（day-card に集約）
   const logs = state.logs.filter(l=>l.date===viewDate)
     .sort((a,b)=>b.ts.localeCompare(a.ts));
-  document.getElementById("logsTitle").textContent =
+  const titleEl = document.getElementById("logsTitle");
+  if(titleEl) titleEl.textContent =
     viewDate===todayStr() ? "📋 今日のログ（新しい順）" : `📋 ${viewDate} のログ`;
-  document.getElementById("logsCount").textContent = `${logs.length}件`;
-
-  const cont = document.getElementById("logsContainer");
+  const countEl = document.getElementById("logsCount");
+  if(countEl) countEl.textContent = `${logs.length}件`;
   if(!logs.length){
     cont.innerHTML = `<div class="empty">この日はまだログなし</div>`;
     return;
