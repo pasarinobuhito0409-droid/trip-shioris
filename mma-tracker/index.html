@@ -287,6 +287,12 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 .focus-card .suggest-inline .sitem:active{background:#fff;transform:scale(.99)}
 .focus-card .suggest-inline .sitem:last-child{margin-bottom:0}
 
+/* === 入力欄一括クリアボタン === */
+.ta-wrap{position:relative}
+.ta-wrap > .clear-x{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.25);color:#fff;border:none;width:24px;height:24px;border-radius:50%;font-size:14px;font-weight:900;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;z-index:5;padding:0;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.ta-wrap > .clear-x:active{background:rgba(0,0,0,.4);transform:scale(.88)}
+.ta-wrap > .clear-x:hover{background:rgba(0,0,0,.35)}
+
 /* === 記録タブの日付1カード集約 === */
 .day-card{margin:0 14px 12px;padding:14px;background:#fff;border:2px solid #d4dbe5;border-radius:14px;box-shadow:0 3px 10px rgba(26,58,82,.08)}
 .day-card .dheader{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1px dashed #d4dbe5;margin-bottom:10px}
@@ -381,7 +387,10 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 <!-- 🎯 今日の意識ポイント（1発で見える主役＋Claude推奨を同カード内に統合） -->
 <div class="focus-card">
   <div class="fhead"><span>🎯 今日の練習で意識する1点</span><span class="badge" id="focusDate"></span></div>
-  <textarea id="focusBox" placeholder="例：ジャブの距離測りを徹底／ビビらず1パーツに絞る／視野を広く首振り" oninput="onFocusInput()"></textarea>
+  <div class="ta-wrap">
+    <textarea id="focusBox" placeholder="例：ジャブの距離測りを徹底／ビビらず1パーツに絞る／視野を広く首振り" oninput="onFocusInput()"></textarea>
+    <button class="clear-x" onclick="clearTextarea('focusBox','onFocusInput')" title="この欄をクリア">×</button>
+  </div>
   <div class="fmeta" id="focusMeta">朝書く・自動保存される</div>
 
   <!-- 同日内振り返り（focus書いたら出る） -->
@@ -406,7 +415,10 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
     <span class="sub">何があった？</span>
   </div>
   <div class="main-area">
-    <textarea id="memoBox" placeholder="何があった？（音声入力もOK・任意）"></textarea>
+    <div class="ta-wrap">
+      <textarea id="memoBox" placeholder="何があった？（音声入力もOK・任意）"></textarea>
+      <button class="clear-x" onclick="clearTextarea('memoBox')" title="この欄をクリア">×</button>
+    </div>
     <div class="hint">↓ カテゴリボタンで記録（メモ＋カテゴリでログに保存）</div>
   </div>
   <div class="btn-grid">
@@ -609,7 +621,10 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
     <div class="grip"></div>
     <div style="font-size:18px;font-weight:800;margin-bottom:6px">📥 テキストから読み込み</div>
     <div style="font-size:12px;color:var(--muted);margin-bottom:12px">下のエリアにJSON文字列を貼り付けて「読み込む」を押す。既存データは上書きされる。</div>
-    <textarea id="pasteBox" style="width:100%;min-height:200px;border:2px solid var(--line);border-radius:10px;padding:10px;font:inherit;font-size:12px;font-family:ui-monospace,Menlo,Consolas,monospace;resize:vertical" placeholder='{"logs":[...], "parts":{...}}'></textarea>
+    <div class="ta-wrap">
+      <textarea id="pasteBox" style="width:100%;min-height:200px;border:2px solid var(--line);border-radius:10px;padding:10px;padding-right:38px;font:inherit;font-size:12px;font-family:ui-monospace,Menlo,Consolas,monospace;resize:vertical" placeholder='{"logs":[...], "parts":{...}}'></textarea>
+      <button class="clear-x" onclick="clearTextarea('pasteBox')" title="この欄をクリア">×</button>
+    </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px">
       <button onclick="doImportText()" style="appearance:none;border:none;border-radius:10px;padding:14px;font:inherit;font-weight:800;font-size:14px;cursor:pointer;background:#34c759;color:#fff">✓ 読み込む</button>
       <button onclick="closePaste()" style="appearance:none;border:none;border-radius:10px;padding:14px;font:inherit;font-weight:800;font-size:14px;cursor:pointer;background:#eee;color:#666">キャンセル</button>
@@ -626,6 +641,19 @@ h1{margin:0 0 4px;font-size:18px;font-weight:800}
 
 <script>
 console.log("MMA Tracker v7 - 更新ボタン＆Pull-to-refresh搭載");
+
+// ===== テキストエリア一括クリア =====
+function clearTextarea(id, callbackName){
+  const el = document.getElementById(id);
+  if(!el) return;
+  if(!el.value){ toast("既に空っぽ"); return; }
+  if(!confirm("この欄の文字を全部消す？")) return;
+  el.value = "";
+  if(callbackName && typeof window[callbackName] === 'function'){
+    window[callbackName]();
+  }
+  toast("✓ クリア");
+}
 
 // ===== 更新ボタン＆Pull-to-refresh =====
 function forceReload(){
@@ -867,7 +895,10 @@ function renderTodayFocusReview(){
       <button class="s5 ${score===5?'selected':''}" onclick="setTodayFocusScore(5)">5</button>
     </div>
     ${cancelLink}
-    <textarea id="todayNote" placeholder="一言メモ（例：できた／忘れた／半分意識）" oninput="onTodayNoteInput()">${safeNote}</textarea>
+    <div class="ta-wrap">
+      <textarea id="todayNote" placeholder="一言メモ（例：できた／忘れた／半分意識）" oninput="onTodayNoteInput()">${safeNote}</textarea>
+      <button class="clear-x" onclick="clearTextarea('todayNote','onTodayNoteInput')" title="この欄をクリア">×</button>
+    </div>
   `;
 }
 
@@ -938,7 +969,10 @@ function renderReviewYesterday(){
       <button class="s5 ${score===5?'selected':''}" onclick="setFocusScore(5)">5</button>
     </div>
     ${cancelLink}
-    <textarea id="focusNote" placeholder="一言メモ（例：スパーでは意識できた、打ち込みで忘れた）" oninput="onFocusNoteInput()">${safeNote}</textarea>
+    <div class="ta-wrap">
+      <textarea id="focusNote" placeholder="一言メモ（例：スパーでは意識できた、打ち込みで忘れた）" oninput="onFocusNoteInput()">${safeNote}</textarea>
+      <button class="clear-x" onclick="clearTextarea('focusNote','onFocusNoteInput')" title="この欄をクリア">×</button>
+    </div>
   `;
 }
 
@@ -1209,7 +1243,10 @@ function renderModal(){
     <div class="checklist">${checksHtml}</div>
 
     <h3>📝 自分のメモ（コツ・気づき・失敗）</h3>
-    <textarea id="notesBox" placeholder="例：左肩が上がる癖がある。鏡見ながらやると意識できる" oninput="saveNotes(${p.id}, this.value)">${safeNotes}</textarea>
+    <div class="ta-wrap">
+      <textarea id="notesBox" placeholder="例：左肩が上がる癖がある。鏡見ながらやると意識できる" oninput="saveNotes(${p.id}, this.value)">${safeNotes}</textarea>
+      <button class="clear-x" onclick="if(confirm('このパーツのメモを消す？')){document.getElementById('notesBox').value='';saveNotes(${p.id},'');toast('✓ クリア');}" title="この欄をクリア">×</button>
+    </div>
     <div class="hint">↑ 自動で保存される</div>
 
     <h3>💬 Claudeに相談</h3>
