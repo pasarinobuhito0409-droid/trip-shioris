@@ -39,6 +39,34 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
 .jump-today{background:#0a84ff;color:#fff;border:none;font-size:12px;font-weight:800;padding:8px 12px;border-radius:999px;cursor:pointer;box-shadow:0 2px 6px rgba(10,132,255,.3);transition:transform .1s;display:flex;align-items:center;gap:3px;white-space:nowrap}
 .jump-today:active{transform:scale(.94)}
 
+/* === 活動継続日バナー（リスト・記録 両方の上部に常時表示） === */
+.streak-banner{margin:8px 12px;padding:12px 14px;border-radius:14px;background:linear-gradient(135deg,#ff9500 0%,#ff5e3a 100%);color:#fff;box-shadow:0 3px 10px rgba(255,94,58,.3);display:flex;align-items:center;gap:12px}
+.streak-banner .sb-fire{font-size:30px;line-height:1}
+.streak-banner .sb-main{flex:1}
+.streak-banner .sb-days{font-size:24px;font-weight:900;line-height:1.1}
+.streak-banner .sb-days small{font-size:12px;font-weight:600;opacity:.9;margin-left:3px}
+.streak-banner .sb-sub{font-size:11px;opacity:.9;margin-top:2px}
+.streak-banner .sb-edit{background:rgba(255,255,255,.25);border:none;color:#fff;font-size:11px;font-weight:800;padding:7px 11px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.streak-banner .sb-edit:active{transform:scale(.94)}
+.streak-banner.unset{background:linear-gradient(135deg,#8e8e93 0%,#636366 100%);box-shadow:0 3px 10px rgba(99,99,102,.25)}
+
+/* === 月総括（記録タブ・3欄） === */
+.month-review{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}
+.month-review h3{margin:0 0 4px;font-size:14px;font-weight:800;color:var(--text)}
+.month-review .mr-hint{font-size:11px;color:var(--muted);margin-bottom:12px}
+.month-review .mr-field{margin-bottom:12px}
+.month-review .mr-field:last-child{margin-bottom:0}
+.month-review .mr-label{font-size:12px;font-weight:800;margin-bottom:5px;display:flex;align-items:center;gap:5px}
+.month-review .mr-label.good{color:#1d8a4e}
+.month-review .mr-label.improve{color:#c2410c}
+.month-review .mr-label.goal{color:#0a5dc2}
+.month-review textarea{width:100%;min-height:60px;border:1.5px solid var(--line);border-radius:10px;padding:10px;font:inherit;font-size:13px;resize:vertical;background:#fafafa}
+.month-review textarea:focus{outline:none;background:#fff}
+.month-review .mr-field.good textarea:focus{border-color:#34c759}
+.month-review .mr-field.improve textarea:focus{border-color:#ff8c3c}
+.month-review .mr-field.goal textarea:focus{border-color:#0a84ff}
+.month-review .mr-saved{font-size:10px;color:var(--muted);text-align:right;margin-top:4px;min-height:12px}
+
 /* === 記録ビュー === */
 .record-view{padding:0 12px 24px}
 .record-summary{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}
@@ -215,6 +243,8 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
 
 <button class="refresh-btn" onclick="forceReload()" title="最新を取得（キャッシュ無視）">🔄</button>
 <div class="ptr-indicator" id="ptrIndicator">↓</div>
+
+<div id="streakBanner"></div>
 
 <div class="summary" id="summary"></div>
 
@@ -396,7 +426,7 @@ let currentMonth = (function(){
   if(t.getFullYear()===2026 && [4,5,6,7].includes(t.getMonth()+1)) return t.getMonth()+1;
   return 5;
 })();
-let currentView = "list";
+let currentView = "record";
 
 function setView(v){
   currentView = v;
@@ -407,6 +437,7 @@ function setView(v){
 
 function render(){
   renderTabs();
+  renderStreak();
   renderSummary();
   renderCharts();
   renderContent();
@@ -557,6 +588,76 @@ function renderList(){
 }
 
 // ===== 記録ビュー =====
+// ===== 活動継続日 =====
+function getStreakDays(){
+  if(!state.streakStart) return null;
+  const start = new Date(state.streakStart + "T00:00:00");
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const diff = Math.floor((today - start) / (1000*60*60*24)) + 1;
+  return diff;
+}
+function editStreak(){
+  const cur = state.streakStart || "";
+  const input = prompt("活動を始めた日を入力（例：2026-05-01）\n空欄でEnterすると解除", cur || "2026-05-01");
+  if(input === null) return;
+  const v = input.trim();
+  if(!v){
+    delete state.streakStart;
+    saveState(state);
+    diaryToast("継続日カウントを解除");
+    render();
+    return;
+  }
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(v)){
+    alert("YYYY-MM-DD の形式で入れてね（例：2026-05-01）");
+    return;
+  }
+  state.streakStart = v;
+  saveState(state);
+  diaryToast("✓ 活動継続日を設定");
+  render();
+}
+function renderStreak(){
+  const el = document.getElementById("streakBanner");
+  if(!el) return;
+  const days = getStreakDays();
+  if(days === null){
+    el.innerHTML = `<div class="streak-banner unset">
+      <div class="sb-fire">🔥</div>
+      <div class="sb-main">
+        <div class="sb-days">活動継続日 <small>未設定</small></div>
+        <div class="sb-sub">始めた日を入れると毎日カウント</div>
+      </div>
+      <button class="sb-edit" onclick="editStreak()">設定する</button>
+    </div>`;
+    return;
+  }
+  const startLabel = state.streakStart.replace(/^\d{4}-/, '').replace('-', '/');
+  el.innerHTML = `<div class="streak-banner">
+    <div class="sb-fire">🔥</div>
+    <div class="sb-main">
+      <div class="sb-days">${days}<small>日 継続中！</small></div>
+      <div class="sb-sub">${startLabel} から積み上げ中</div>
+    </div>
+    <button class="sb-edit" onclick="editStreak()">変更</button>
+  </div>`;
+}
+
+// ===== 月総括（良かった点／改善点／来月目標） =====
+function getMonthReview(m){
+  const k = `monthReview_${m}`;
+  state[k] = state[k] || {good:"", improve:"", goal:""};
+  return state[k];
+}
+function saveMonthReview(m, field, val){
+  const r = getMonthReview(m);
+  r[field] = val;
+  saveState(state);
+  const el = document.getElementById(`mrSaved_${field}`);
+  if(el) el.textContent = `✓ 自動保存 ${new Date().toLocaleTimeString('ja-JP')}`;
+}
+
 function renderRecord(){
   const t = tally(currentMonth);
   const pct = t.totalPlan ? Math.round(100*t.totalDone/t.totalPlan) : 0;
@@ -568,6 +669,29 @@ function renderRecord(){
       <div><b>${t.actDay["普通"]}/${t.planDay["普通"]}</b>普通日</div>
       <div><b>${t.actDay["特別"]}/${t.planDay["特別"]}</b>特別日</div>
       <div><b>${t.planDay["チート"]}</b>チート日</div>
+    </div>
+  </div>`;
+
+  // 月総括3欄
+  const mr = getMonthReview(currentMonth);
+  const esc = s => (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const monthReview = `<div class="month-review">
+    <h3>🗓 ${currentMonth}月の総括 → 来月へ</h3>
+    <div class="mr-hint">1か月を振り返って、来月の自分に繋げる（自動保存）</div>
+    <div class="mr-field good">
+      <div class="mr-label good">✅ 良かった点</div>
+      <textarea oninput="saveMonthReview(${currentMonth},'good',this.value)" placeholder="例：朝の新聞を週5で続けられた／夜のMMA皆勤">${esc(mr.good)}</textarea>
+      <div class="mr-saved" id="mrSaved_good"></div>
+    </div>
+    <div class="mr-field improve">
+      <div class="mr-label improve">🔧 改善点</div>
+      <textarea oninput="saveMonthReview(${currentMonth},'improve',this.value)" placeholder="例：昼のマクロ練習をサボりがち／チート日に食べすぎ">${esc(mr.improve)}</textarea>
+      <div class="mr-saved" id="mrSaved_improve"></div>
+    </div>
+    <div class="mr-field goal">
+      <div class="mr-label goal">🎯 来月の目標</div>
+      <textarea oninput="saveMonthReview(${currentMonth},'goal',this.value)" placeholder="例：昼マクロを週3で固定／達成率85%以上">${esc(mr.goal)}</textarea>
+      <div class="mr-saved" id="mrSaved_goal"></div>
     </div>
   </div>`;
 
@@ -588,7 +712,7 @@ function renderRecord(){
     </div>`;
   }).join("") : `<div class="empty" style="background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:30px;text-align:center;color:var(--muted);font-size:13px">この月はまだ日記なし<br><small>リストビューで日付タップして書ける</small></div>`;
 
-  return `<div class="record-view">${summary}<div class="record-section-title">📝 日記（新しい順）</div>${diaryHtml}</div>`;
+  return `<div class="record-view">${summary}${monthReview}<div class="record-section-title">📝 日記（新しい順）</div>${diaryHtml}</div>`;
 }
 
 // ===== カレンダー（未使用・残置） =====
@@ -873,6 +997,8 @@ function forceReload(){
   }, {passive: true});
 })();
 
+// 初期表示を記録タブに（毎回トップは記録）
+setView("record");
 render();
 </script>
 </body>
