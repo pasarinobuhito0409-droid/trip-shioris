@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="theme-color" content="#0a84ff">
-<title>Fusion 360 縦串教科書トラッカー</title>
+<title>Fusion 360 教科書トラッカー</title>
 <style>
 :root{
   --c-p0:#5ab4ff; --c-p1:#a99cff; --c-p2:#c850dc; --c-p3:#e68c3c;
@@ -102,7 +102,7 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:500;margin-left:6px}
 <body>
 
 <header>
-  <h1>Fusion 360 縦串教科書 <span class="sub">v1 · 三輪允仁</span></h1>
+  <h1>Fusion 360 教科書 <span class="sub">v1 · 三輪允仁</span></h1>
   <div class="phase-tabs" id="phaseTabs"></div>
 </header>
 
@@ -324,23 +324,23 @@ const PHASES = {
       D: { label: "D. 動作確認", items: [
         ["D1", "通電して動く"],
         ["D2", "目標動作（例：物を掴む）達成"],
-        ["D3", "★アーム完成★ Phase 5 卒業条件 ★縦串1周完走★"],
+        ["D3", "★アーム完成★ Phase 5 卒業条件 ★メカ→電気→ソフト→組立 1周完走★"],
       ]},
     },
     works: [
       ["M1", "アーム外装3D印刷"],
       ["M2", "実機組立・配線"],
-      ["M3", "動くアーム完成（縦串1周完了）"],
+      ["M3", "動くアーム完成（メカ→電気→ソフト→組立 1周完了）"],
     ],
   },
   6: {
-    name: "次の縦串（ループ）",
+    name: "次の作品（くり返し）",
     period: "継続",
     goal: "Phase 1-5 を別作品で繰り返す。難易度を上げて発明力を育てる",
     categories: {
       A: { label: "A. 次作品の選定", items: [
         ["A1", "次の作品テーマを決定（量子PC筐体／ガラクタ発明／PC内部マウント等）"],
-        ["A2", "縦串計画を立てる（メカ→電気→ソフト→組立）"],
+        ["A2", "作品の計画を立てる（メカ→電気→ソフト→組立）"],
       ]},
       B: { label: "B. 実行", items: [
         ["B1", "メカ設計フェーズ完了"],
@@ -351,7 +351,7 @@ const PHASES = {
       C: { label: "C. 学び蓄積", items: [
         ["C1", "今回の学びを mech_design_log に追記"],
         ["C2", "発明アイデアを mech_design_inventions に追記"],
-        ["C3", "次の縦串の構想を始める"],
+        ["C3", "次の作品の構想を始める"],
       ]},
     },
     works: [
