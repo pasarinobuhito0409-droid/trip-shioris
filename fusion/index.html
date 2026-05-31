@@ -40,13 +40,20 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:500;margin-left:6px}
 .cat-bar .b i{display:block;height:100%;background:#34c759}
 .cat-bar .pct{font-weight:600;font-size:11px;flex:0 0 42px;text-align:right}
 
-.charts{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:0 12px 10px}
-.chart-card{background:var(--card);border-radius:12px;padding:10px;border:1px solid var(--line)}
-.chart-card h3{margin:0 0 6px;font-size:11px;color:var(--muted);font-weight:600}
-.chart-card svg{width:100%;height:auto;display:block}
-.legend{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;font-size:10px;color:var(--muted)}
-.legend span{display:inline-flex;align-items:center;gap:3px}
-.legend i{width:9px;height:9px;border-radius:2px;display:inline-block}
+.charts{padding:0 12px 10px}
+/* === 学習マップ（Phase別 進捗バー） === */
+.pmap-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.pmap-head{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;gap:8px}
+.pmap-total{font-size:13px;font-weight:800;color:var(--text);white-space:nowrap}
+.pmap-row{display:flex;align-items:center;gap:9px;width:100%;background:none;border:none;padding:7px 6px;border-radius:9px;cursor:pointer;text-align:left;font:inherit;border:1.5px solid transparent}
+.pmap-row.cur{background:#eef6ff;border-color:#c4dffb}
+.pmap-row:active{transform:scale(.99)}
+.pmap-label{flex:0 0 138px;font-size:12.5px;color:var(--text);display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.pmap-label b{color:var(--muted);font-size:11px}
+.pmap-label .now{font-size:9px;background:#0a84ff;color:#fff;padding:1px 6px;border-radius:7px;font-weight:700}
+.pmap-bar{flex:1;height:13px;background:#ececf0;border-radius:999px;overflow:hidden;min-width:60px}
+.pmap-bar i{display:block;height:100%;border-radius:999px;transition:width .3s}
+.pmap-pct{flex:0 0 40px;text-align:right;font-size:12.5px;font-weight:800}
 
 .phase-info{padding:8px 12px}
 .phase-info-card{background:var(--card);border-radius:12px;padding:10px 12px;border:1px solid var(--line);font-size:13px}
@@ -100,7 +107,6 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:500;margin-left:6px}
 .toolbar button.danger{color:#c43;border-color:#fbb}
 
 @media (min-width:720px){
-  .charts{grid-template-columns:repeat(3,1fr)}
   .cat-bars{grid-template-columns:repeat(4,1fr)}
   .content{max-width:780px;margin:0 auto}
   .summary{max-width:780px;margin:0 auto}
@@ -680,30 +686,24 @@ function legendHTML(segs){
 
 function renderCharts(){
   const all = tallyAll();
-  // 全Phase別 完了数
-  const phaseSegs = Object.keys(PHASES).map(p=>({
-    name: `P${p}`,
-    val: all.perPhase[p].done,
-    color: PHASE_COLORS[parseInt(p)]
-  }));
-  // 全体 完了/未完（完了0なら未達成表示）
-  const totalSegs = all.done > 0
-    ? [{name:"完了", val: all.done, color:"#34c759"}, {name:"未完", val: all.total - all.done, color:"#e0e0e0"}]
-    : [];
-  // 現Phase カテゴリ別
-  const cur = tallyPhase(currentPhase);
-  const ph = PHASES[currentPhase];
-  const catKeys = Object.keys(ph.categories);
-  const catSegs = catKeys.map((k, i)=>({
-    name: k,
-    val: cur.catStats[k].done,
-    color: PHASE_COLORS[i % PHASE_COLORS.length]
-  }));
-
+  const rows = Object.keys(PHASES).map(p=>{
+    const t = all.perPhase[p];
+    const isCur = parseInt(p)===currentPhase;
+    const nowTag = isCur ? ' <span class="now">今ここ</span>' : '';
+    return `<button class="pmap-row ${isCur?'cur':''}" onclick="currentPhase=${p};render();window.scrollTo(0,0);">
+      <div class="pmap-label"><b>P${p}</b> ${PHASES[p].name}${nowTag}</div>
+      <div class="pmap-bar"><i style="width:${t.pct}%;background:${PHASE_COLORS[parseInt(p)]}"></i></div>
+      <div class="pmap-pct">${t.pct}%</div>
+    </button>`;
+  }).join("");
   document.getElementById("charts").innerHTML = `
-    <div class="chart-card"><h3>全体進捗（${all.done}/${all.total}）</h3>${pieSVG(totalSegs)}${legendHTML(totalSegs)}</div>
-    <div class="chart-card"><h3>Phase別 完了数</h3>${pieSVG(phaseSegs)}${legendHTML(phaseSegs)}</div>
-    <div class="chart-card"><h3>P${currentPhase} カテゴリ別</h3>${pieSVG(catSegs)}${legendHTML(catSegs)}</div>
+    <div class="pmap-card">
+      <div class="pmap-head">
+        <span>📍 学習マップ（全7ステップ・タップで移動）</span>
+        <span class="pmap-total">全体 ${all.pct}%</span>
+      </div>
+      ${rows}
+    </div>
   `;
 }
 
