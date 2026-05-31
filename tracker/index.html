@@ -433,6 +433,8 @@ function setView(v){
   document.getElementById("vList").classList.toggle("active", v==="list");
   document.getElementById("vRecord").classList.toggle("active", v==="record");
   renderContent();
+  // タブ切替で一番上へ
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 
 function render(){
