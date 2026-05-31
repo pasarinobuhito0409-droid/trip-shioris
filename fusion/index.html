@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#0a84ff">
+<title>Fusion 360 縦串教科書トラッカー</title>
+<style>
+:root{
+  --c-p0:#5ab4ff; --c-p1:#a99cff; --c-p2:#c850dc; --c-p3:#e68c3c;
+  --c-p4:#34c759; --c-p5:#ffa0b4; --c-p6:#64c8dc;
+  --bg:#f5f5f7; --card:#fff; --line:#e3e3e8; --text:#1d1d1f;
+  --muted:#6b6b73; --done:#34c759; --accent:#0a84ff;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,"Hiragino Sans","Yu Gothic UI","Segoe UI",sans-serif;font-size:15px;line-height:1.5}
+
+header{position:sticky;top:0;z-index:10;background:var(--bg);padding:10px 12px 4px;border-bottom:1px solid var(--line)}
+h1{margin:0 0 6px;font-size:17px;font-weight:700}
+h1 .sub{font-size:11px;color:var(--muted);font-weight:500;margin-left:6px}
+
+.phase-tabs{display:flex;gap:5px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+.phase-tabs button{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--text);font-size:12px;font-weight:600;padding:7px 12px;border-radius:999px;cursor:pointer;display:flex;align-items:center;gap:4px}
+.phase-tabs button .num{font-weight:800;font-size:13px}
+.phase-tabs button .pct{font-size:10px;color:var(--muted)}
+.phase-tabs button.active{background:var(--text);color:#fff;border-color:var(--text)}
+.phase-tabs button.active .pct{color:#a0d8ff}
+
+.summary{padding:8px 12px}
+.summary-card{background:var(--card);border-radius:12px;padding:12px 14px;border:1px solid var(--line)}
+.summary-card .label{font-size:11px;color:var(--muted);font-weight:500}
+.summary-card .big{font-size:28px;font-weight:800;line-height:1.1;margin-top:2px}
+.summary-card .big small{font-size:13px;font-weight:500;color:var(--muted)}
+.bar{margin-top:8px;height:9px;border-radius:999px;background:#eee;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#34c759,#0a84ff);transition:width .3s}
+.cat-bars{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:10px}
+.cat-bar{display:flex;align-items:center;gap:6px;font-size:11px}
+.cat-bar .lbl{flex:0 0 80px;color:var(--muted);font-weight:600}
+.cat-bar .b{flex:1;height:6px;background:#eee;border-radius:999px;overflow:hidden}
+.cat-bar .b i{display:block;height:100%;background:#34c759}
+.cat-bar .pct{font-weight:600;font-size:11px;flex:0 0 42px;text-align:right}
+
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:0 12px 10px}
+.chart-card{background:var(--card);border-radius:12px;padding:10px;border:1px solid var(--line)}
+.chart-card h3{margin:0 0 6px;font-size:11px;color:var(--muted);font-weight:600}
+.chart-card svg{width:100%;height:auto;display:block}
+.legend{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;font-size:10px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:3px}
+.legend i{width:9px;height:9px;border-radius:2px;display:inline-block}
+
+.phase-info{padding:8px 12px}
+.phase-info-card{background:var(--card);border-radius:12px;padding:10px 12px;border:1px solid var(--line);font-size:13px}
+.phase-info-card .title{font-weight:700;font-size:14px}
+.phase-info-card .meta{font-size:11px;color:var(--muted);margin-top:2px}
+.phase-info-card .goal{margin-top:6px;font-size:12px;color:#444}
+
+.content{padding:0 12px 24px}
+
+.cat-group{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:8px;overflow:hidden}
+.cat-head{padding:9px 12px;background:#f0f5fa;font-weight:700;font-size:13px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;border-bottom:1px solid var(--line)}
+.cat-head .pct-mini{font-size:11px;color:var(--muted);font-weight:600}
+.cat-items{padding:8px 10px;display:flex;flex-direction:column;gap:4px}
+
+.item-chip{appearance:none;border:none;font:inherit;font-size:12.5px;font-weight:500;background:#f5f7fa;color:var(--text);padding:9px 12px;border-radius:8px;cursor:pointer;line-height:1.4;border:1.5px solid transparent;transition:all .15s;display:flex;align-items:flex-start;gap:8px;text-align:left;width:100%}
+.item-chip:active{transform:scale(.99)}
+.item-chip .check-box{flex:0 0 18px;height:18px;border-radius:5px;border:2px solid #c0c5cc;background:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;margin-top:1px}
+.item-chip.done{background:#e8f8ec;color:#1d6435;border-color:#b9e8c5}
+.item-chip.done .check-box{background:var(--done);border-color:var(--done);color:#fff}
+.item-chip.done .label{text-decoration:line-through;opacity:.85}
+.item-chip .label{flex:1}
+
+.works-card{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:8px;overflow:hidden}
+.works-head{padding:9px 12px;background:#fef6e8;font-weight:700;font-size:13px}
+.works-items{padding:8px 10px;display:flex;flex-direction:column;gap:5px}
+.work-chip{appearance:none;border:none;font:inherit;font-size:12px;font-weight:500;background:#fff7e3;color:#6e4c0a;padding:9px 12px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:8px;text-align:left;border:1.5px solid #f3e0a8}
+.work-chip.done{background:var(--done);color:#fff;border-color:var(--done)}
+.work-chip.done .label{text-decoration:line-through}
+
+.memo-card{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:8px;padding:10px 12px}
+.memo-card h4{margin:0 0 6px;font-size:12px;color:var(--muted);font-weight:600}
+.memo-card textarea{width:100%;min-height:80px;border:1px solid var(--line);border-radius:8px;padding:8px;font:inherit;font-size:13px;resize:vertical;background:#fafbfc}
+.memo-card .photo-input{margin-top:6px;font-size:11px;color:var(--muted)}
+.memo-card .photo-input input{width:100%;border:1px solid var(--line);border-radius:6px;padding:6px;font:inherit;font-size:12px;margin-top:3px}
+
+.link-card{background:#eff7ff;border:1px solid #c4dffb;border-radius:12px;padding:10px 12px;margin-bottom:8px;font-size:12px}
+.link-card a{color:var(--accent);text-decoration:none;font-weight:600}
+
+.toolbar{display:flex;gap:7px;padding:6px 12px 24px;flex-wrap:wrap}
+.toolbar button{flex:1;min-width:100px;background:#fff;border:1px solid var(--line);padding:9px;border-radius:9px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer}
+.toolbar button.danger{color:#c43;border-color:#fbb}
+
+@media (min-width:720px){
+  .charts{grid-template-columns:repeat(3,1fr)}
+  .cat-bars{grid-template-columns:repeat(4,1fr)}
+  .content{max-width:780px;margin:0 auto}
+  .summary{max-width:780px;margin:0 auto}
+  .charts{max-width:780px;margin:0 auto}
+  .phase-info{max-width:780px;margin:0 auto}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Fusion 360 縦串教科書 <span class="sub">v1 · 三輪允仁</span></h1>
+  <div class="phase-tabs" id="phaseTabs"></div>
+</header>
+
+<div class="phase-info" id="phaseInfo"></div>
+<div class="summary" id="summary"></div>
+<div class="charts" id="charts"></div>
+<div class="content" id="content"></div>
+
+<div class="toolbar">
+  <button onclick="exportJSON()">JSON書き出し</button>
+  <button onclick="importJSON()">JSON読み込み</button>
+  <button class="danger" onclick="resetPhase()">この Phase をリセット</button>
+</div>
+
+<script>
+// ===== Phase データ定義（phase0.md/roadmap.md と同期） =====
+const PHASE_COLORS = ["#5ab4ff","#a99cff","#c850dc","#e68c3c","#34c759","#ffa0b4","#64c8dc"];
+
+const PHASES = {
+  0: {
+    name: "基礎操作",
+    period: "1週（試用版残り日数）",
+    goal: "Fusion を起動してスケッチ→3Dボディ→保存までを1人で迷わずできる",
+    categories: {
+      A: { label: "A. セットアップ", items: [
+        ["A1", "Fusion 360 が起動する（インストール済・サインイン済）"],
+        ["A2", "自分のハブ（Autodeskアカウント）が見える"],
+        ["A3", "新規デザインを作って「.f3d」で保存できる"],
+        ["A4", "保存したファイルを開き直せる"],
+        ["A5", "タイトルバーが「Trial」表示（試用版確認）"],
+      ]},
+      B: { label: "B. UIを覚える", items: [
+        ["B1", "ソリッド/サーフェス/板金/メッシュ/ユーティリティタブが何かザックリ分かる"],
+        ["B2", "ViewCubeで視点を切り替えられる"],
+        ["B3", "ブラウザツリーで原点・スケッチ・ボディが見える"],
+        ["B4", "タイムラインが「やったことの履歴」だと理解"],
+        ["B5", "マウス操作（ズーム・移動・回転）ができる"],
+      ]},
+      C: { label: "C. スケッチ", items: [
+        ["C1", "スケッチ作成→XY平面選択ができる"],
+        ["C2", "線（L）を描ける"],
+        ["C3", "矩形（R）を描ける"],
+        ["C4", "円（C）を描ける"],
+        ["C5", "寸法（D）で長さ・直径を数値確定できる"],
+        ["C6", "拘束（一致・水平・垂直・平行）が分かる"],
+        ["C7", "スケッチを完了して抜けられる"],
+      ]},
+      D: { label: "D. 押出", items: [
+        ["D1", "閉じたスケッチを押出（E）できる"],
+        ["D2", "距離数値指定で3Dボディができる"],
+        ["D3", "結合/カット/交差/新規ボディの違いが分かる"],
+        ["D4", "面に再スケッチして積み上げできる"],
+        ["D5", "穴あけ（円→カット押出）ができる"],
+      ]},
+      E: { label: "E. 回転体", items: [
+        ["E1", "半分の断面をスケッチで描ける"],
+        ["E2", "軸を指定して回転体を作れる"],
+        ["E3", "360度以外の回転体も作れる"],
+      ]},
+      F: { label: "F. 修正・履歴", items: [
+        ["F1", "フィレット（角丸め）を当てられる"],
+        ["F2", "面取り（チャンファ）を当てられる"],
+        ["F3", "タイムラインから過去操作に戻って編集できる"],
+        ["F4", "寸法変更でボディが自動更新されることを体感"],
+        ["F5", "ボディの移動・コピー（M）ができる"],
+      ]},
+      G: { label: "G. 保存と書き出し", items: [
+        ["G1", "クラウド保存できる"],
+        ["G2", "バージョン履歴を確認できる"],
+        ["G3", "STL形式で書き出せる"],
+        ["G4", "スクリーンショットを撮ってメモ欄に貼れる"],
+        ["G5", "ペン立てを1個完成 ★Phase 0 卒業条件★"],
+      ]},
+    },
+    works: [
+      ["M1", "5cm立方体（5分）"],
+      ["M2", "直径3cmの円柱（5分）"],
+      ["M3", "中央穴1cmの板50×50×5（10分）"],
+      ["M4", "コップ Φ6×H10×t3（20分）"],
+      ["M5", "ペン立て（★卒業作品 30-60分）"],
+    ],
+  },
+  1: {
+    name: "単品設計",
+    period: "2週",
+    goal: "板金・ジョイント・公差・パラメトリックを使ってメカ部品単品を設計できる",
+    categories: {
+      A: { label: "A. 板金", items: [
+        ["A1", "板金ボディを作成できる"],
+        ["A2", "曲げ（フランジ）追加ができる"],
+        ["A3", "展開図を作れる"],
+        ["A4", "板厚パラメータを変えて全体追従させる"],
+      ]},
+      B: { label: "B. パラメトリック", items: [
+        ["B1", "パラメータ（変数）を定義できる"],
+        ["B2", "寸法に変数を入れて連動させる"],
+        ["B3", "数式（=d1*2 等）が使える"],
+      ]},
+      C: { label: "C. ジョイント", items: [
+        ["C1", "2部品をジョイントで繋げる"],
+        ["C2", "回転ジョイント・スライダージョイントが分かる"],
+        ["C3", "可動範囲を設定できる"],
+      ]},
+      D: { label: "D. 公差・第1作品", items: [
+        ["D1", "公差を意識した寸法設定ができる"],
+        ["D2", "3D印刷向けクリアランス（隙間）を入れられる"],
+        ["D3", "第1作品（アーム1関節 or ジャンク置換パーツ）完成 ★Phase 1 卒業条件★"],
+      ]},
+    },
+    works: [
+      ["M1", "L字ブラケット（板金）"],
+      ["M2", "ハの字ブラケット（パラメトリック）"],
+      ["M3", "アーム1関節（ジョイント実機）"],
+    ],
+  },
+  2: {
+    name: "機構設計",
+    period: "1ヶ月",
+    goal: "アセンブリ・干渉チェック・図面を使って動かないが組み立てた状態のメカ骨格を完成させる",
+    categories: {
+      A: { label: "A. アセンブリ", items: [
+        ["A1", "複数部品をアセンブリで配置できる"],
+        ["A2", "ジョイントで部品同士を組み立てる"],
+        ["A3", "アセンブリ全体を動かしてシミュレートできる"],
+      ]},
+      B: { label: "B. 干渉・解析", items: [
+        ["B1", "干渉チェックができる"],
+        ["B2", "部品の重量・重心が分かる"],
+        ["B3", "簡易応力解析ができる（個人版制限内）"],
+      ]},
+      C: { label: "C. 図面", items: [
+        ["C1", "2D図面を作成できる"],
+        ["C2", "寸法・公差を記入できる"],
+        ["C3", "PDF/DWGで書き出せる"],
+      ]},
+      D: { label: "D. 完成", items: [
+        ["D1", "アーム本体（骨格）をアセンブリ完成 ★Phase 2 卒業条件★"],
+      ]},
+    },
+    works: [
+      ["M1", "3部品の簡単アセンブリ"],
+      ["M2", "アーム骨格（複数関節・動く想定）"],
+    ],
+  },
+  3: {
+    name: "電気設計（Electronics）",
+    period: "2-3週",
+    goal: "Fusion Electronics で回路図と基板設計ができ、アームを動かす駆動回路を組める",
+    categories: {
+      A: { label: "A. Electronics基本", items: [
+        ["A1", "Electronics ワークスペースに入れる"],
+        ["A2", "回路図エディタが開ける"],
+        ["A3", "ライブラリから部品を配置できる"],
+      ]},
+      B: { label: "B. 回路図", items: [
+        ["B1", "LED点灯回路を回路図で描ける"],
+        ["B2", "Arduino周辺の基本回路を描ける"],
+        ["B3", "モータードライバ回路を描ける"],
+      ]},
+      C: { label: "C. 基板設計", items: [
+        ["C1", "回路図から基板にコンポーネント配置できる"],
+        ["C2", "配線（ルーティング）ができる"],
+        ["C3", "ガーバーデータを書き出せる"],
+      ]},
+      D: { label: "D. 完成", items: [
+        ["D1", "アーム駆動基板の設計完成 ★Phase 3 卒業条件★"],
+      ]},
+    },
+    works: [
+      ["M1", "LED点灯基板"],
+      ["M2", "アーム駆動基板（モーター制御）"],
+    ],
+  },
+  4: {
+    name: "ソフト",
+    period: "2-3週",
+    goal: "Arduino/MicroPythonでアームを動かす制御コードを書ける",
+    categories: {
+      A: { label: "A. 環境構築", items: [
+        ["A1", "Arduino IDE or PlatformIO 設定済"],
+        ["A2", "Lチカ（LED点滅）動作確認"],
+      ]},
+      B: { label: "B. 入出力", items: [
+        ["B1", "デジタル出力でモーター駆動できる"],
+        ["B2", "PWMでサーボ角度制御できる"],
+        ["B3", "アナログ入力でセンサー値読める"],
+      ]},
+      C: { label: "C. 通信", items: [
+        ["C1", "シリアル通信でPCと値のやり取りができる"],
+        ["C2", "コマンド受信で動作分岐できる"],
+      ]},
+      D: { label: "D. 完成", items: [
+        ["D1", "アームを動かす制御コード完成 ★Phase 4 卒業条件★"],
+      ]},
+    },
+    works: [
+      ["M1", "Lチカ"],
+      ["M2", "サーボ1個を角度制御"],
+      ["M3", "アーム駆動コード（複数サーボ協調）"],
+    ],
+  },
+  5: {
+    name: "統合・組立",
+    period: "1ヶ月",
+    goal: "3D印刷・実物組立・配線・実機デバッグで動くアームを完成させる",
+    categories: {
+      A: { label: "A. 3D印刷", items: [
+        ["A1", "STL書き出し→スライサーで成功印刷"],
+        ["A2", "サポート材を考えた設計修正できる"],
+      ]},
+      B: { label: "B. 組立", items: [
+        ["B1", "部品を実物で組み立てられる"],
+        ["B2", "ネジ・ナット選定が適切"],
+      ]},
+      C: { label: "C. 配線・実装", items: [
+        ["C1", "基板実装（はんだ付け or 既製基板使用）"],
+        ["C2", "アームへの配線完了"],
+      ]},
+      D: { label: "D. 動作確認", items: [
+        ["D1", "通電して動く"],
+        ["D2", "目標動作（例：物を掴む）達成"],
+        ["D3", "★アーム完成★ Phase 5 卒業条件 ★縦串1周完走★"],
+      ]},
+    },
+    works: [
+      ["M1", "アーム外装3D印刷"],
+      ["M2", "実機組立・配線"],
+      ["M3", "動くアーム完成（縦串1周完了）"],
+    ],
+  },
+  6: {
+    name: "次の縦串（ループ）",
+    period: "継続",
+    goal: "Phase 1-5 を別作品で繰り返す。難易度を上げて発明力を育てる",
+    categories: {
+      A: { label: "A. 次作品の選定", items: [
+        ["A1", "次の作品テーマを決定（量子PC筐体／ガラクタ発明／PC内部マウント等）"],
+        ["A2", "縦串計画を立てる（メカ→電気→ソフト→組立）"],
+      ]},
+      B: { label: "B. 実行", items: [
+        ["B1", "メカ設計フェーズ完了"],
+        ["B2", "電気設計フェーズ完了"],
+        ["B3", "ソフトフェーズ完了"],
+        ["B4", "組立完了・動作確認"],
+      ]},
+      C: { label: "C. 学び蓄積", items: [
+        ["C1", "今回の学びを mech_design_log に追記"],
+        ["C2", "発明アイデアを mech_design_inventions に追記"],
+        ["C3", "次の縦串の構想を始める"],
+      ]},
+    },
+    works: [
+      ["M1", "第2作品（自由選定）"],
+      ["M2", "第3作品（さらに難易度UP）"],
+    ],
+  },
+};
+
+// ===== ストレージ =====
+const KEY = "fusion_textbook_v1";
+function loadState(){ try{ return JSON.parse(localStorage.getItem(KEY)||"{}"); }catch(e){return {}} }
+function saveState(s){ localStorage.setItem(KEY, JSON.stringify(s)); }
+let state = loadState();
+function getPhaseState(p){
+  const k = String(p);
+  state[k] = state[k] || {};
+  return state[k];
+}
+
+// ===== 集計 =====
+function tallyPhase(p){
+  const ph = PHASES[p];
+  const s = getPhaseState(p);
+  const catStats = {};
+  let total = 0, done = 0;
+  Object.entries(ph.categories).forEach(([catKey, cat]) => {
+    let cTotal = 0, cDone = 0;
+    cat.items.forEach(([id]) => {
+      cTotal++; total++;
+      if(s[id]){ cDone++; done++; }
+    });
+    catStats[catKey] = {label: cat.label, total: cTotal, done: cDone};
+  });
+  let workTotal = 0, workDone = 0;
+  ph.works.forEach(([id]) => {
+    workTotal++; total++;
+    if(s[id]){ workDone++; done++; }
+  });
+  return {total, done, pct: total?Math.round(100*done/total):0, catStats, workTotal, workDone};
+}
+
+function tallyAll(){
+  let total=0, done=0;
+  const perPhase = {};
+  Object.keys(PHASES).forEach(p=>{
+    const t = tallyPhase(p);
+    total += t.total;
+    done += t.done;
+    perPhase[p] = t;
+  });
+  return {total, done, pct: total?Math.round(100*done/total):0, perPhase};
+}
+
+// ===== UI =====
+let currentPhase = 0;
+
+function render(){
+  renderTabs();
+  renderInfo();
+  renderSummary();
+  renderCharts();
+  renderContent();
+}
+
+function renderTabs(){
+  const el = document.getElementById("phaseTabs");
+  el.innerHTML = "";
+  const all = tallyAll();
+  Object.keys(PHASES).forEach(p=>{
+    const ph = PHASES[p];
+    const t = all.perPhase[p];
+    const b = document.createElement("button");
+    b.innerHTML = `<span class="num">P${p}</span><span>${ph.name}</span><span class="pct">${t.pct}%</span>`;
+    if(parseInt(p)===currentPhase) b.classList.add("active");
+    b.onclick = ()=>{ currentPhase=parseInt(p); render(); };
+    el.appendChild(b);
+  });
+}
+
+function renderInfo(){
+  const ph = PHASES[currentPhase];
+  document.getElementById("phaseInfo").innerHTML = `
+    <div class="phase-info-card">
+      <div class="title">Phase ${currentPhase} — ${ph.name}</div>
+      <div class="meta">期間目安: ${ph.period}</div>
+      <div class="goal">★ ${ph.goal}</div>
+    </div>
+  `;
+}
+
+function renderSummary(){
+  const t = tallyPhase(currentPhase);
+  const catBars = Object.entries(t.catStats).map(([key, c])=>{
+    const p = c.total ? Math.round(100*c.done/c.total) : 0;
+    return `<div class="cat-bar"><div class="lbl">${c.label.replace(/^.+\.\s*/, '')}</div><div class="b"><i style="width:${p}%"></i></div><div class="pct">${c.done}/${c.total}</div></div>`;
+  }).join("");
+  const workPct = t.workTotal ? Math.round(100*t.workDone/t.workTotal) : 0;
+  const works = `<div class="cat-bar"><div class="lbl">ミニ作品</div><div class="b"><i style="width:${workPct}%"></i></div><div class="pct">${t.workDone}/${t.workTotal}</div></div>`;
+  document.getElementById("summary").innerHTML = `
+    <div class="summary-card">
+      <div class="label">Phase ${currentPhase} 進捗</div>
+      <div class="big">${t.pct}% <small>(${t.done}/${t.total} 項目)</small></div>
+      <div class="bar"><i style="width:${t.pct}%"></i></div>
+      <div class="cat-bars">${catBars}${works}</div>
+    </div>
+  `;
+}
+
+// ===== 円グラフ =====
+function pieSVG(segs, size=130){
+  const total = segs.reduce((a,b)=>a+b.val,0);
+  const r = size/2 - 4;
+  const cx=size/2, cy=size/2;
+  if(total===0) return `<svg viewBox="0 0 ${size} ${size}"><circle cx="${cx}" cy="${cy}" r="${r}" fill="#eee"/><text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="middle" fill="#999" font-size="11">未達成</text></svg>`;
+  let acc = -90;
+  let parts = "";
+  segs.forEach(s=>{
+    if(s.val===0) return;
+    const ang = 360*s.val/total;
+    const start = acc, end = acc+ang;
+    const x1 = cx + r*Math.cos(start*Math.PI/180);
+    const y1 = cy + r*Math.sin(start*Math.PI/180);
+    const x2 = cx + r*Math.cos(end*Math.PI/180);
+    const y2 = cy + r*Math.sin(end*Math.PI/180);
+    const large = ang>180?1:0;
+    if(ang>=359.99){
+      parts += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${s.color}"/>`;
+    } else {
+      parts += `<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${large} 1 ${x2},${y2} Z" fill="${s.color}" stroke="#fff" stroke-width="2"/>`;
+    }
+    const mid = (start+end)/2;
+    const lx = cx + r*0.6*Math.cos(mid*Math.PI/180);
+    const ly = cy + r*0.6*Math.sin(mid*Math.PI/180);
+    const pct = Math.round(100*s.val/total);
+    if(pct>=8){
+      parts += `<text x="${lx}" y="${ly}" fill="#fff" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="middle">${pct}%</text>`;
+    }
+    acc = end;
+  });
+  return `<svg viewBox="0 0 ${size} ${size}">${parts}</svg>`;
+}
+
+function legendHTML(segs){
+  return `<div class="legend">${segs.filter(s=>s.val>0).map(s=>`<span><i style="background:${s.color}"></i>${s.name} ${s.val}</span>`).join("")}</div>`;
+}
+
+function renderCharts(){
+  const all = tallyAll();
+  // 全Phase別 完了数
+  const phaseSegs = Object.keys(PHASES).map(p=>({
+    name: `P${p}`,
+    val: all.perPhase[p].done,
+    color: PHASE_COLORS[parseInt(p)]
+  }));
+  // 全体 完了/未完（完了0なら未達成表示）
+  const totalSegs = all.done > 0
+    ? [{name:"完了", val: all.done, color:"#34c759"}, {name:"未完", val: all.total - all.done, color:"#e0e0e0"}]
+    : [];
+  // 現Phase カテゴリ別
+  const cur = tallyPhase(currentPhase);
+  const ph = PHASES[currentPhase];
+  const catKeys = Object.keys(ph.categories);
+  const catSegs = catKeys.map((k, i)=>({
+    name: k,
+    val: cur.catStats[k].done,
+    color: PHASE_COLORS[i % PHASE_COLORS.length]
+  }));
+
+  document.getElementById("charts").innerHTML = `
+    <div class="chart-card"><h3>全体進捗（${all.done}/${all.total}）</h3>${pieSVG(totalSegs)}${legendHTML(totalSegs)}</div>
+    <div class="chart-card"><h3>Phase別 完了数</h3>${pieSVG(phaseSegs)}${legendHTML(phaseSegs)}</div>
+    <div class="chart-card"><h3>P${currentPhase} カテゴリ別</h3>${pieSVG(catSegs)}${legendHTML(catSegs)}</div>
+  `;
+}
+
+function renderContent(){
+  const ph = PHASES[currentPhase];
+  const s = getPhaseState(currentPhase);
+  const t = tallyPhase(currentPhase);
+
+  let html = "";
+
+  // カテゴリごとのチェック項目
+  Object.entries(ph.categories).forEach(([catKey, cat])=>{
+    const stat = t.catStats[catKey];
+    const items = cat.items.map(([id, label])=>{
+      const done = !!s[id];
+      return `<button class="item-chip ${done?'done':''}" onclick="toggleItem(${currentPhase},'${id}')">
+        <div class="check-box">${done?'✓':''}</div>
+        <div class="label"><b>${id}</b> ${label}</div>
+      </button>`;
+    }).join("");
+    html += `
+      <div class="cat-group">
+        <div class="cat-head">
+          <span>${cat.label}</span>
+          <span class="pct-mini">${stat.done}/${stat.total}</span>
+        </div>
+        <div class="cat-items">${items}</div>
+      </div>
+    `;
+  });
+
+  // ミニ作品
+  const works = ph.works.map(([id, label])=>{
+    const done = !!s[id];
+    return `<button class="work-chip ${done?'done':''}" onclick="toggleItem(${currentPhase},'${id}')">
+      <span>${done?'✓':'○'}</span><span class="label"><b>${id}</b> ${label}</span>
+    </button>`;
+  }).join("");
+  html += `
+    <div class="works-card">
+      <div class="works-head">★ ミニ作品（手を動かす）</div>
+      <div class="works-items">${works}</div>
+    </div>
+  `;
+
+  // 学びメモ
+  const memo = s.__memo__ || "";
+  const photo = s.__photo__ || "";
+  html += `
+    <div class="memo-card">
+      <h4>📝 学び・気づきメモ（自由記述）</h4>
+      <textarea id="memoInput" placeholder="今日学んだこと・つまずいたこと・発明アイデア…" oninput="updateMemo(${currentPhase})">${memo}</textarea>
+      <div class="photo-input">
+        作品写真URL（Google Photos等の共有リンク・任意）
+        <input type="text" id="photoInput" placeholder="https://..." value="${photo}" oninput="updatePhoto(${currentPhase})">
+      </div>
+    </div>
+  `;
+
+  // 教科書本体へのリンク
+  html += `
+    <div class="link-card">
+      📖 教科書本体: <a href="https://github.com/pasarinobuhito0409-droid/trip-shioris/blob/main/fusion-textbook/phase${currentPhase}.md" target="_blank">phase${currentPhase}.md</a>
+      / <a href="https://github.com/pasarinobuhito0409-droid/trip-shioris/blob/main/fusion-textbook/roadmap.md" target="_blank">roadmap.md（全体MASTER）</a>
+    </div>
+  `;
+
+  document.getElementById("content").innerHTML = html;
+}
+
+// ===== 操作 =====
+function toggleItem(p, id){
+  const s = getPhaseState(p);
+  s[id] = !s[id];
+  if(!s[id]) delete s[id];
+  saveState(state);
+  render();
+}
+
+function updateMemo(p){
+  const v = document.getElementById("memoInput").value;
+  const s = getPhaseState(p);
+  s.__memo__ = v;
+  if(!v) delete s.__memo__;
+  saveState(state);
+}
+
+function updatePhoto(p){
+  const v = document.getElementById("photoInput").value;
+  const s = getPhaseState(p);
+  s.__photo__ = v;
+  if(!v) delete s.__photo__;
+  saveState(state);
+}
+
+function resetPhase(){
+  if(!confirm(`Phase ${currentPhase} の進捗を全消去します。よろしい？`)) return;
+  delete state[String(currentPhase)];
+  saveState(state);
+  render();
+}
+
+function exportJSON(){
+  const blob = new Blob([JSON.stringify(state,null,2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `fusion_textbook_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importJSON(){
+  const inp = document.createElement("input");
+  inp.type = "file";
+  inp.accept = "application/json";
+  inp.onchange = e=>{
+    const f = e.target.files[0];
+    if(!f) return;
+    const r = new FileReader();
+    r.onload = ()=>{
+      try{
+        const data = JSON.parse(r.result);
+        if(confirm("既存データを上書きします。よろしい？")){
+          state = data;
+          saveState(state);
+          render();
+        }
+      }catch(err){ alert("JSON読込失敗: "+err.message); }
+    };
+    r.readAsText(f);
+  };
+  inp.click();
+}
+
+render();
+</script>
+</body>
+</html>
