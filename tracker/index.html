@@ -620,6 +620,16 @@ function editStreak(){
   diaryToast("✓ 活動継続日を設定");
   render();
 }
+function formatStreak(days){
+  // 1年=365日, 1ヶ月=30日 で近似（人が感覚で分かる表記）
+  const y = Math.floor(days/365);
+  const rem = days - y*365;
+  const mo = Math.floor(rem/30);
+  const d = rem - mo*30;
+  if(y > 0) return y + "年" + (mo > 0 ? mo + "ヶ月" : "");
+  if(mo > 0) return mo + "ヶ月" + (d > 0 ? d + "日" : "");
+  return days + "日";
+}
 function renderStreak(){
   const el = document.getElementById("streakBanner");
   if(!el) return;
@@ -639,8 +649,8 @@ function renderStreak(){
   el.innerHTML = `<div class="streak-banner">
     <div class="sb-fire">🔥</div>
     <div class="sb-main">
-      <div class="sb-days">${days}<small>日 継続中！</small></div>
-      <div class="sb-sub">${startLabel} から積み上げ中</div>
+      <div class="sb-days">${formatStreak(days)}<small> 継続中！</small></div>
+      <div class="sb-sub">${startLabel} から（通算${days}日）</div>
     </div>
     <button class="sb-edit" onclick="editStreak()">変更</button>
   </div>`;
