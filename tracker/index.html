@@ -50,6 +50,23 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
 .streak-banner .sb-edit:active{transform:scale(.94)}
 .streak-banner.unset{background:linear-gradient(135deg,#8e8e93 0%,#636366 100%);box-shadow:0 3px 10px rgba(99,99,102,.25)}
 
+/* === 前月からの引き継ぎ（参照・読み取り専用） === */
+.prev-carry{background:linear-gradient(135deg,#0a5dc2 0%,#0a84ff 100%);color:#fff;border-radius:12px;padding:14px;margin-bottom:14px;box-shadow:0 3px 10px rgba(10,132,255,.25)}
+.prev-carry h3{margin:0 0 3px;font-size:14px;font-weight:800;display:flex;align-items:center;gap:6px}
+.prev-carry .pc-hint{font-size:11px;opacity:.85;margin-bottom:10px}
+.prev-carry .pc-goal{background:rgba(255,255,255,.18);border-radius:10px;padding:11px 12px;margin-bottom:8px}
+.prev-carry .pc-goal .pc-label{font-size:11px;font-weight:800;opacity:.95;margin-bottom:4px}
+.prev-carry .pc-goal .pc-text{font-size:15px;font-weight:700;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.prev-carry details{background:rgba(255,255,255,.1);border-radius:10px;overflow:hidden;margin-top:6px}
+.prev-carry summary{padding:9px 12px;font-size:12px;font-weight:700;cursor:pointer;list-style:none}
+.prev-carry summary::-webkit-details-marker{display:none}
+.prev-carry summary::before{content:"▶ ";font-size:9px}
+.prev-carry details[open] summary::before{content:"▼ "}
+.prev-carry .pc-detail{padding:0 12px 10px;font-size:13px;line-height:1.5}
+.prev-carry .pc-detail .pc-d-label{font-size:11px;font-weight:800;opacity:.9;margin:6px 0 2px}
+.prev-carry .pc-detail .pc-d-text{white-space:pre-wrap;word-break:break-word;opacity:.95}
+.prev-carry .pc-empty{font-size:12px;opacity:.85;font-style:italic}
+
 /* === 月総括（記録タブ・3欄） === */
 .month-review{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}
 .month-review h3{margin:0 0 4px;font-size:14px;font-weight:800;color:var(--text)}
@@ -670,6 +687,36 @@ function saveMonthReview(m, field, val){
   if(el) el.textContent = `✓ 自動保存 ${new Date().toLocaleTimeString('ja-JP')}`;
 }
 
+// 前月の総括を引き継ぎ表示（参照・読み取り専用）
+function renderPrevCarry(m){
+  const prevM = m - 1;
+  if(prevM < 1) return ""; // 前月なし
+  const k = `monthReview_${prevM}`;
+  const r = state[k];
+  if(!r || (!r.good && !r.improve && !r.goal)) return ""; // 前月に記入なし
+  const esc = s => (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const goalHtml = r.goal
+    ? `<div class="pc-text">${esc(r.goal)}</div>`
+    : `<div class="pc-empty">先月は目標未記入</div>`;
+  const detailHtml = (r.good || r.improve) ? `
+    <details>
+      <summary>先月の振り返りも見る</summary>
+      <div class="pc-detail">
+        ${r.good ? `<div class="pc-d-label">✅ 良かった点</div><div class="pc-d-text">${esc(r.good)}</div>` : ''}
+        ${r.improve ? `<div class="pc-d-label">🔧 改善点</div><div class="pc-d-text">${esc(r.improve)}</div>` : ''}
+      </div>
+    </details>` : '';
+  return `<div class="prev-carry">
+    <h3>📌 ${prevM}月から引き継いだ目標</h3>
+    <div class="pc-hint">先月たてた目標。今月これを意識する</div>
+    <div class="pc-goal">
+      <div class="pc-label">🎯 ${prevM}月にたてた「来月の目標」</div>
+      ${goalHtml}
+    </div>
+    ${detailHtml}
+  </div>`;
+}
+
 function renderRecord(){
   const t = tally(currentMonth);
   const pct = t.totalPlan ? Math.round(100*t.totalDone/t.totalPlan) : 0;
@@ -724,7 +771,8 @@ function renderRecord(){
     </div>`;
   }).join("") : `<div class="empty" style="background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:30px;text-align:center;color:var(--muted);font-size:13px">この月はまだ日記なし<br><small>リストビューで日付タップして書ける</small></div>`;
 
-  return `<div class="record-view">${summary}${monthReview}<div class="record-section-title">📝 日記（新しい順）</div>${diaryHtml}</div>`;
+  const prevCarry = renderPrevCarry(currentMonth);
+  return `<div class="record-view">${summary}${prevCarry}${monthReview}<div class="record-section-title">📝 日記（新しい順）</div>${diaryHtml}</div>`;
 }
 
 // ===== カレンダー（未使用・残置） =====
