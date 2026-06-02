@@ -263,6 +263,8 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
 
 <div id="streakBanner"></div>
 
+<div id="carryBanner"></div>
+
 <div class="summary" id="summary"></div>
 
 <div class="charts" id="charts"></div>
@@ -449,6 +451,7 @@ function setView(v){
   currentView = v;
   document.getElementById("vList").classList.toggle("active", v==="list");
   document.getElementById("vRecord").classList.toggle("active", v==="record");
+  renderCarryBanner();
   renderContent();
   // タブ切替で一番上へ
   window.scrollTo({top:0, behavior:'smooth'});
@@ -457,6 +460,7 @@ function setView(v){
 function render(){
   renderTabs();
   renderStreak();
+  renderCarryBanner();
   renderSummary();
   renderCharts();
   renderContent();
@@ -771,8 +775,16 @@ function renderRecord(){
     </div>`;
   }).join("") : `<div class="empty" style="background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:30px;text-align:center;color:var(--muted);font-size:13px">この月はまだ日記なし<br><small>リストビューで日付タップして書ける</small></div>`;
 
-  const prevCarry = renderPrevCarry(currentMonth);
-  return `<div class="record-view">${summary}${prevCarry}${monthReview}<div class="record-section-title">📝 日記（新しい順）</div>${diaryHtml}</div>`;
+  return `<div class="record-view">${summary}${monthReview}<div class="record-section-title">📝 日記（新しい順）</div>${diaryHtml}</div>`;
+}
+
+// 引き継ぎカードを継続日バナー直下の専用枠に描画（記録ビューの時だけ）
+function renderCarryBanner(){
+  const el = document.getElementById("carryBanner");
+  if(!el) return;
+  if(currentView !== "record"){ el.innerHTML = ""; return; }
+  const html = renderPrevCarry(currentMonth);
+  el.innerHTML = html ? `<div style="padding:0 12px">${html}</div>` : "";
 }
 
 // ===== カレンダー（未使用・残置） =====
