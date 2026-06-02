@@ -822,6 +822,89 @@ function opSVG(type){
         <path d="M70,70 l70,-22 l90,18 l-70,22 Z" fill="#cce6ff" stroke="${A}" stroke-width="2"/>
         <ellipse cx="160" cy="72" rx="16" ry="7" fill="#1c1c21" stroke="${A}" stroke-width="1.5"/>
         <text x="160" y="138" font-size="12" fill="#2c4a6b" text-anchor="middle" font-weight="bold">円→押出カットで穴</text></svg>`;
+    case 'plane':
+      return `<svg viewBox="0 0 300 150"><rect width="300" height="150" rx="6" fill="#f4f8fd"/>
+        <path d="M90,75 l80,-22 l55,20 l-80,22 Z" fill="#0a84ff33" stroke="${A}" stroke-width="2.5"/>
+        <path d="M90,75 l80,-22 l0,-40 l-80,22 Z" fill="#dfe9f3" stroke="#9aa7b5" stroke-width="1.5"/>
+        <path d="M170,53 l55,20 l0,-40 l-55,-20 Z" fill="#eef3f8" stroke="#9aa7b5" stroke-width="1.5"/>
+        <text x="135" y="83" font-size="11" fill="#0a4a82" text-anchor="middle" font-weight="bold">XY(床)</text>
+        <text x="150" y="138" font-size="12" fill="#2c4a6b" text-anchor="middle" font-weight="bold">床のXY平面をクリック</text></svg>`;
+    case 'dim':
+      return `<svg viewBox="0 0 300 150">${gridBG()}
+        <line x1="80" y1="55" x2="220" y2="55" stroke="${A}" stroke-width="3"/>
+        <line x1="80" y1="60" x2="80" y2="92" stroke="#c0392b" stroke-width="1"/>
+        <line x1="220" y1="60" x2="220" y2="92" stroke="#c0392b" stroke-width="1"/>
+        <line x1="80" y1="86" x2="220" y2="86" stroke="#c0392b" stroke-width="1.5" marker-start="url(#dl)" marker-end="url(#dl)"/>
+        <defs><marker id="dl" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto"><path d="M7,0 L0,3.5 L7,7 Z" fill="#c0392b"/></marker></defs>
+        <rect x="134" y="76" width="32" height="19" rx="2" fill="#fff" stroke="#c0392b"/>
+        <text x="150" y="90" font-size="12" fill="#c0392b" text-anchor="middle" font-weight="bold">50</text>
+        <text x="150" y="128" font-size="12" fill="#2c4a6b" text-anchor="middle" font-weight="bold">数値を打って長さを固定</text></svg>`;
+    case 'constraint':
+      return `<svg viewBox="0 0 300 150">${gridBG()}
+        <line x1="70" y1="55" x2="165" y2="38" stroke="${A}" stroke-width="3"/>
+        <line x1="80" y1="98" x2="175" y2="81" stroke="${A}" stroke-width="3"/>
+        <text x="125" y="30" font-size="15" fill="#c0392b" text-anchor="middle" font-weight="bold">∥</text>
+        <text x="135" y="112" font-size="15" fill="#c0392b" text-anchor="middle" font-weight="bold">∥</text>
+        <text x="150" y="135" font-size="12" fill="#2c4a6b" text-anchor="middle" font-weight="bold">2本を「平行」で固定</text></svg>`;
+    case 'finish':
+      return `<svg viewBox="0 0 300 150"><rect width="300" height="150" rx="6" fill="#f4f8fd"/>
+        <rect x="78" y="52" width="144" height="44" rx="9" fill="#34c759" stroke="#2aa048" stroke-width="2"/>
+        <text x="150" y="80" font-size="15" fill="#fff" text-anchor="middle" font-weight="bold">✓ スケッチを終了</text>
+        <text x="150" y="125" font-size="12" fill="#2c4a6b" text-anchor="middle">押すと3D画面に戻る</text></svg>`;
+    case 'boolean':
+      return `<svg viewBox="0 0 300 150"><rect width="300" height="150" rx="6" fill="#f4f8fd"/>
+        <circle cx="42" cy="52" r="19" fill="#9fd0ff" stroke="${A}" stroke-width="1.5"/><circle cx="66" cy="52" r="19" fill="#9fd0ff" stroke="${A}" stroke-width="1.5"/><text x="54" y="92" font-size="11" fill="#2c4a6b" text-anchor="middle" font-weight="bold">結合</text>
+        <circle cx="135" cy="52" r="19" fill="#9fd0ff" stroke="${A}" stroke-width="1.5"/><circle cx="159" cy="52" r="19" fill="#fff" stroke="${A}" stroke-width="1.5"/><text x="147" y="92" font-size="11" fill="#2c4a6b" text-anchor="middle" font-weight="bold">カット</text>
+        <circle cx="228" cy="52" r="19" fill="none" stroke="#9aa7b5" stroke-width="1.5"/><circle cx="252" cy="52" r="19" fill="none" stroke="#9aa7b5" stroke-width="1.5"/><path d="M240,37 a19,19 0 0,0 0,30 a19,19 0 0,0 0,-30" fill="#9fd0ff"/><text x="240" y="92" font-size="11" fill="#2c4a6b" text-anchor="middle" font-weight="bold">交差</text>
+        <text x="150" y="125" font-size="11.5" fill="#2c4a6b" text-anchor="middle" font-weight="bold">押出の「操作」で選ぶ</text></svg>`;
+    case 'chamfer':
+      return `<svg viewBox="0 0 300 150"><rect width="300" height="150" rx="6" fill="#f4f8fd"/>
+        <rect x="45" y="50" width="68" height="55" fill="#dfe9f3" stroke="#7a8aa0" stroke-width="2.5"/>
+        <text x="79" y="125" font-size="11" fill="#2c4a6b" text-anchor="middle">角ばった角</text>
+        <path d="M148,77 L183,77" stroke="${A}" stroke-width="3" marker-end="url(#ahc)"/>
+        <defs><marker id="ahc" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="${A}"/></marker></defs>
+        <path d="M218,68 L236,50 L268,50 L268,105 L200,105 L200,86 Z" fill="#cce6ff" stroke="${A}" stroke-width="2.5"/>
+        <text x="234" y="125" font-size="11" fill="#2c4a6b" text-anchor="middle">面取り＝斜めカット</text></svg>`;
+    case 'move':
+      return `<svg viewBox="0 0 300 150">${gridBG()}
+        <rect x="55" y="55" width="50" height="40" fill="none" stroke="#9aa7b5" stroke-width="2" stroke-dasharray="4 3"/>
+        <rect x="150" y="55" width="50" height="40" fill="#9fd0ff" stroke="${A}" stroke-width="2.5"/>
+        <path d="M112,75 L145,75" stroke="${A}" stroke-width="3" marker-end="url(#ahm)"/>
+        <defs><marker id="ahm" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="${A}"/></marker></defs>
+        <text x="150" y="128" font-size="12" fill="#2c4a6b" text-anchor="middle" font-weight="bold">Mキー→ドラッグで移動</text></svg>`;
+    case 'version':
+      return `<svg viewBox="0 0 300 150"><rect width="300" height="150" rx="6" fill="#f4f8fd"/>
+        <rect x="95" y="28" width="110" height="26" rx="5" fill="#cce6ff" stroke="${A}" stroke-width="2"/>
+        <text x="150" y="45" font-size="12" fill="#0a4a82" text-anchor="middle" font-weight="bold">v3（今）</text>
+        <rect x="95" y="60" width="110" height="24" rx="5" fill="#fff" stroke="#9aa7b5"/><text x="150" y="76" font-size="11" fill="#555" text-anchor="middle">v2</text>
+        <rect x="95" y="90" width="110" height="24" rx="5" fill="#fff" stroke="#9aa7b5"/><text x="150" y="106" font-size="11" fill="#555" text-anchor="middle">v1</text>
+        <text x="150" y="135" font-size="11.5" fill="#2c4a6b" text-anchor="middle" font-weight="bold">昔の保存に戻せる</text></svg>`;
+    case 'export':
+      return `<svg viewBox="0 0 300 150"><rect width="300" height="150" rx="6" fill="#f4f8fd"/>
+        <path d="M68,38 l30,0 l10,10 l0,57 l-40,0 Z" fill="#fff" stroke="${A}" stroke-width="2.5"/>
+        <text x="88" y="80" font-size="11" fill="${A}" text-anchor="middle" font-weight="bold">STL</text>
+        <path d="M122,70 L162,70" stroke="${A}" stroke-width="3" marker-end="url(#ahe)"/>
+        <defs><marker id="ahe" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="${A}"/></marker></defs>
+        <rect x="176" y="48" width="64" height="46" rx="4" fill="#dfe9f3" stroke="#7a8aa0" stroke-width="2"/>
+        <rect x="188" y="40" width="40" height="13" fill="#9fd0ff" stroke="#7a8aa0" stroke-width="1.5"/>
+        <text x="208" y="110" font-size="10" fill="#2c4a6b" text-anchor="middle">3Dプリンタ</text>
+        <text x="150" y="135" font-size="11.5" fill="#2c4a6b" text-anchor="middle" font-weight="bold">STLで書き出し</text></svg>`;
+    case 'screenshot':
+      return `<svg viewBox="0 0 300 150"><rect width="300" height="150" rx="6" fill="#f4f8fd"/>
+        <rect x="28" y="55" width="58" height="40" rx="6" fill="#fff" stroke="${A}" stroke-width="2.5"/><text x="57" y="80" font-size="12" fill="${A}" text-anchor="middle" font-weight="bold">⊞Win</text>
+        <text x="94" y="80" font-size="18" fill="#888" text-anchor="middle">+</text>
+        <rect x="106" y="55" width="60" height="40" rx="6" fill="#fff" stroke="${A}" stroke-width="2.5"/><text x="136" y="80" font-size="13" fill="${A}" text-anchor="middle" font-weight="bold">Shift</text>
+        <text x="174" y="80" font-size="18" fill="#888" text-anchor="middle">+</text>
+        <rect x="186" y="55" width="44" height="40" rx="6" fill="#fff" stroke="${A}" stroke-width="2.5"/><text x="208" y="82" font-size="18" fill="${A}" text-anchor="middle" font-weight="bold">S</text>
+        <text x="150" y="125" font-size="12" fill="#2c4a6b" text-anchor="middle" font-weight="bold">画面の一部を撮影</text></svg>`;
+    case 'pencup':
+      return `<svg viewBox="0 0 300 150"><rect width="300" height="150" rx="6" fill="#f4f8fd"/>
+        <rect x="138" y="18" width="5" height="42" fill="#e68c3c"/><circle cx="140.5" cy="18" r="3" fill="#c0392b"/>
+        <rect x="152" y="26" width="5" height="34" fill="#34c759"/><circle cx="154.5" cy="26" r="3" fill="#2aa048"/>
+        <rect x="163" y="22" width="5" height="38" fill="#a99cff"/><circle cx="165.5" cy="22" r="3" fill="#7a6fd0"/>
+        <ellipse cx="150" cy="60" rx="38" ry="10" fill="#cce6ff" stroke="${A}" stroke-width="2"/>
+        <path d="M112,60 L118,120 a32,9 0 0,0 64,0 L188,60" fill="#9fd0ff" stroke="${A}" stroke-width="2"/>
+        <text x="150" y="142" font-size="12" fill="#2c4a6b" text-anchor="middle" font-weight="bold">★ ペン立て完成 ★</text></svg>`;
     default:
       return '';
   }
@@ -842,6 +925,36 @@ const VISUALS = {
   B3:{kind:'screen',hl:'browser',  cap:'左のツリーで原点・スケッチ・ボディを管理',q:'ブラウザ ツリー 原点'},
   B4:{kind:'screen',hl:'timeline', cap:'下の帯＝操作の履歴（あとで編集できる）',q:'タイムライン 履歴 編集'},
   B5:{kind:'op',op:'mouse',        cap:'マウスのホイールでズーム・移動・回転',q:'マウス 操作 視点 回転'},
+  C1:{kind:'op',op:'plane',     cap:'3つの平面からXY（床）を選ぶ',q:'スケッチ 平面 作成'},
+  C2:{kind:'op',op:'line',      cap:'Lキー→始点→終点で線',q:'スケッチ 線 line'},
+  C3:{kind:'op',op:'rect',      cap:'Rキー→角→対角で四角',q:'スケッチ 長方形 rectangle'},
+  C4:{kind:'op',op:'circle',    cap:'Cキー→中心→広げて円',q:'スケッチ 円 circle'},
+  C5:{kind:'op',op:'dim',       cap:'Dキー→線→数値で寸法確定',q:'スケッチ 寸法 dimension'},
+  C6:{kind:'op',op:'constraint',cap:'線同士の関係を固定（平行など）',q:'スケッチ 拘束 constraint'},
+  C7:{kind:'op',op:'finish',    cap:'「スケッチを終了」で3Dに戻る',q:'スケッチ 終了'},
+  D1:{kind:'op',op:'extrude',   cap:'Eキー→面を選んで押出',q:'押出 extrude 使い方'},
+  D2:{kind:'op',op:'extrude',   cap:'距離を数値入力で厚みを決める',q:'押出 距離 extrude'},
+  D3:{kind:'op',op:'boolean',   cap:'結合／カット／交差／新規ボディ',q:'押出 結合 カット 操作'},
+  D4:{kind:'op',op:'extrude',   cap:'面に再スケッチして積み上げ',q:'面 スケッチ 押出'},
+  D5:{kind:'op',op:'hole',      cap:'円→押出カットで穴あけ',q:'穴 カット 押出'},
+  E1:{kind:'op',op:'revolve',   cap:'縦半分の断面＋軸を描く',q:'回転 断面 revolve'},
+  E2:{kind:'op',op:'revolve',   cap:'断面＋軸を選んで360度回転',q:'回転体 revolve 使い方'},
+  E3:{kind:'op',op:'revolve',   cap:'角度を変えれば部分回転も',q:'回転 角度 revolve'},
+  F1:{kind:'op',op:'fillet',    cap:'Fキー→角を丸める（半径指定）',q:'フィレット fillet 角丸'},
+  F2:{kind:'op',op:'chamfer',   cap:'面取り＝角を斜めにカット',q:'面取り chamfer'},
+  F3:{kind:'screen',hl:'timeline',cap:'下の履歴をダブルクリックで再編集',q:'タイムライン 編集 履歴'},
+  F4:{kind:'op',op:'dim',       cap:'寸法を変えると形が自動で更新',q:'寸法 変更 パラメトリック'},
+  F5:{kind:'op',op:'move',      cap:'Mキー→ドラッグで移動・コピー',q:'移動 コピー move'},
+  G1:{kind:'op',op:'save',      cap:'Ctrl+Sでクラウド保存',q:'保存 クラウド'},
+  G2:{kind:'op',op:'version',   cap:'バージョン履歴で過去に戻れる',q:'バージョン 履歴'},
+  G3:{kind:'op',op:'export',    cap:'STL形式で書き出し→3Dプリント',q:'STL 書き出し エクスポート'},
+  G4:{kind:'op',op:'screenshot',cap:'Win+Shift+Sで画面を撮る',q:'スクリーンショット 撮り方'},
+  G5:{kind:'op',op:'pencup',    cap:'ペン立てを完成させて卒業！',q:'ペン立て 作り方'},
+  M1:{kind:'op',op:'extrude',   cap:'四角を50mm押し出すだけ',q:'立方体 作り方'},
+  M2:{kind:'op',op:'extrude',   cap:'円を押し出して円柱',q:'円柱 作り方'},
+  M3:{kind:'op',op:'hole',      cap:'板に穴を1つ',q:'板 穴 作り方'},
+  M4:{kind:'op',op:'revolve',   cap:'断面を回転してコップ',q:'コップ 作り方 回転'},
+  M5:{kind:'op',op:'pencup',    cap:'卒業作品のペン立て',q:'ペン立て 作り方'},
 };
 function visualHTML(id){
   const v = VISUALS[id];
