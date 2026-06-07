@@ -225,7 +225,10 @@ function radarSVG(){
   const dp=vals.map((v,i)=>pt(i,r*v/10).join(',')).join(' ');
   let dots=vals.map((v,i)=>{const[x,y]=pt(i,r*v/10);return `<circle cx="${x}" cy="${y}" r="3" fill="#ffd479"/>`;}).join('');
   let lbl='';
-  for(let i=0;i<n;i++){const[x,y]=pt(i,r+15);lbl+=`<text x="${x}" y="${y}" font-size="9.5" fill="#8da3c8" text-anchor="middle" dominant-baseline="middle">${labs[i]}</text>`;}
+  for(let i=0;i<n;i++){const[x,y]=pt(i,r+17);
+    lbl+=`<text x="${x}" y="${y-4}" font-size="9.5" fill="#8da3c8" text-anchor="middle" dominant-baseline="middle">${labs[i]}</text>`;
+    lbl+=`<text x="${x}" y="${y+7}" font-size="10.5" fill="#ffd479" font-weight="bold" text-anchor="middle" dominant-baseline="middle">${vals[i]}</text>`;
+  }
   return `<svg viewBox="0 0 260 250">${grid}${axes}<polygon points="${dp}" fill="rgba(255,212,121,.25)" stroke="#ffd479" stroke-width="2"/>${dots}${lbl}</svg>`;
 }
 
