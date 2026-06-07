@@ -77,6 +77,14 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
 .radar-wrap{display:flex;justify-content:center}
 .radar-wrap svg{width:100%;max-width:280px;height:auto}
 .lv-mini{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.lv-chip{cursor:pointer;border:1px solid var(--line);font:inherit}
+.lv-chip:active{background:#33415f}
+.hint-edit{font-size:10.5px;color:var(--muted);margin-top:7px;text-align:center}
+.record-btn{width:100%;margin-top:11px;background:var(--accent);color:#fff;border:none;border-radius:11px;padding:12px;font-weight:800;font-size:13px;cursor:pointer}
+.record-btn:active{transform:scale(.98)}
+.snap-row{display:flex;justify-content:space-between;align-items:center;padding:9px 2px;border-bottom:1px solid rgba(255,255,255,.05);font-size:12.5px}
+.snap-row:last-child{border-bottom:none}
+.snap-del{color:var(--muted);cursor:pointer;font-size:17px}
 .lv-chip{font-size:11px;background:#27325a;border-radius:8px;padding:5px 9px;font-weight:700}
 .lv-chip b{color:var(--gold)}
 
@@ -214,14 +222,44 @@ function importData(ev){
   r.readAsText(f); ev.target.value='';
 }
 
+function getLabs(){ return DATA.level7.map(l=>l[0]); }
+function getVals(){
+  const base=DATA.level7.map(l=>l[1]);
+  const lv=state.__level__;
+  return base.map((v,i)=> (lv && typeof lv[i]==='number') ? lv[i] : v);
+}
+function editLevel(i){
+  const labs=getLabs(), vals=getVals();
+  const v=prompt(labs[i]+' の今の値（0〜10）', vals[i]);
+  if(v===null) return;
+  const num=parseFloat(v);
+  if(isNaN(num)||num<0||num>10){ alert('0〜10の数字で入れてね'); return; }
+  if(!state.__level__) state.__level__=getVals();
+  state.__level__[i]=num; save(); render();
+}
+function recordSnap(){
+  if(!state.__snaps__) state.__snaps__=[];
+  const today=new Date().toISOString().slice(0,10);
+  state.__snaps__.push({date:today, vals:getVals()});
+  save(); render();
+}
+function delSnap(i){ state.__snaps__.splice(i,1); save(); render(); }
+
 function radarSVG(){
-  const labs=DATA.level7.map(l=>l[0]), vals=DATA.level7.map(l=>l[1]);
+  const labs=getLabs(), vals=getVals();
   const cx=130,cy=125,r=80,n=7;
   const pt=(i,rad)=>{const a=-Math.PI/2+i*2*Math.PI/n;return [cx+rad*Math.cos(a), cy+rad*Math.sin(a)];};
   let grid='';
   [0.25,0.5,0.75,1].forEach(f=>{ const p=[...Array(n)].map((_,i)=>pt(i,r*f).join(',')).join(' '); grid+=`<polygon points="${p}" fill="none" stroke="#2e3a5c" stroke-width="1"/>`; });
   let axes='';
   for(let i=0;i<n;i++){const[x,y]=pt(i,r);axes+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#2e3a5c" stroke-width="1"/>`;}
+  const snaps=state.__snaps__||[];
+  let past='';
+  snaps.forEach((s,si)=>{
+    const op=(0.10+0.12*((si+1)/(snaps.length+1))).toFixed(2);
+    const sp=s.vals.map((v,i)=>pt(i,r*v/10).join(',')).join(' ');
+    past+=`<polygon points="${sp}" fill="rgba(138,163,200,${op})" stroke="#8da3c8" stroke-width="1" stroke-dasharray="3 2"/>`;
+  });
   const dp=vals.map((v,i)=>pt(i,r*v/10).join(',')).join(' ');
   let dots=vals.map((v,i)=>{const[x,y]=pt(i,r*v/10);return `<circle cx="${x}" cy="${y}" r="3" fill="#ffd479"/>`;}).join('');
   let lbl='';
@@ -229,7 +267,7 @@ function radarSVG(){
     lbl+=`<text x="${x}" y="${y-4}" font-size="9.5" fill="#8da3c8" text-anchor="middle" dominant-baseline="middle">${labs[i]}</text>`;
     lbl+=`<text x="${x}" y="${y+7}" font-size="10.5" fill="#ffd479" font-weight="bold" text-anchor="middle" dominant-baseline="middle">${vals[i]}</text>`;
   }
-  return `<svg viewBox="0 0 260 250">${grid}${axes}<polygon points="${dp}" fill="rgba(255,212,121,.25)" stroke="#ffd479" stroke-width="2"/>${dots}${lbl}</svg>`;
+  return `<svg viewBox="0 0 260 250">${grid}${axes}${past}<polygon points="${dp}" fill="rgba(255,212,121,.25)" stroke="#ffd479" stroke-width="2"/>${dots}${lbl}</svg>`;
 }
 
 function nowCardHTML(){
@@ -277,7 +315,12 @@ function questHTML(){
 }
 
 function selfHTML(){
-  const chips=DATA.level7.map(l=>`<div class="lv-chip">${l[0]} <b>${l[1]}</b></div>`).join("");
+  const labs=getLabs(), vals=getVals();
+  const chips=labs.map((lb,i)=>`<button class="lv-chip" onclick="editLevel(${i})">${lb} <b>${vals[i]}</b></button>`).join("");
+  const snaps=state.__snaps__||[];
+  const snapList = snaps.length
+    ? snaps.map((s,i)=>`<div class="snap-row"><span>📸 ${s.date}</span><span class="snap-del" onclick="delSnap(${i})">×</span></div>`).join("")
+    : `<div class="seed-empty">まだ記録なし。年1で測り直して📸記録すると、過去の自分が薄く重なって、成長が目で見える。</div>`;
   const str=DATA.strengths.map(s=>`<div class="bullet good">${s}</div>`).join("");
   const ene=DATA.enemies.map(e=>`<div class="kv"><div class="k">🛡 ${e[0]}</div><div class="v">${e[1]}</div></div>`).join("");
   const tra=DATA.traits.map(t=>`<div class="kv"><div class="k">${t[0]}</div><div class="v">${t[1]}</div></div>`).join("");
@@ -287,9 +330,12 @@ function selfHTML(){
       <div class="quote">⚔ 「彼（敵）を知り 己（おのれ）を知れば、百戦 危うからず」</div>
       <div style="font-size:11px;color:var(--muted);line-height:1.5">自分の強み・弱み・クセを知る。それが夢への戦略になる。</div>
     </div>
-    <div class="sec"><h3>📊 今の自分（7軸・2026-06-07）</h3>
+    <div class="sec"><h3>📊 今の自分（7軸・タップで更新）</h3>
       <div class="radar-wrap">${radarSVG()}</div>
-      <div class="lv-mini">${chips}</div></div>
+      <div class="lv-mini">${chips}</div>
+      <div class="hint-edit">↑ 各チップをタップで 値を更新</div>
+      <button class="record-btn" onclick="recordSnap()">📸 今の自分を記録（成長を重ねる）</button>
+      <div style="margin-top:11px">${snapList}</div></div>
     <div class="sec"><h3>💪 強み（君の武器）</h3>${str}</div>
     <div class="sec"><h3>🛡 弱み・壁（倒す敵）</h3>${ene}</div>
     <div class="sec"><h3>🧠 特性（自分のクセ＝取扱説明書）</h3>${tra}</div>
