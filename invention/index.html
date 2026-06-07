@@ -95,6 +95,11 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
 .lvl-n{flex:0 0 40px;font-weight:800;color:var(--gold);font-size:13px}
 .lvl-d{flex:1;font-size:12.5px;line-height:1.45}
 .modal-x{width:100%;margin-top:6px;background:var(--card2);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:11px;font-weight:700;cursor:pointer}
+.adj-box{display:flex;align-items:center;justify-content:center;gap:12px;margin:12px 0 5px}
+.adj-b{background:var(--accent);color:#fff;border:none;border-radius:9px;padding:9px 17px;font-weight:800;font-size:14px;cursor:pointer}
+.adj-b:active{transform:scale(.96)}
+.adj-v{font-size:18px;font-weight:900;color:var(--gold);min-width:60px;text-align:center}
+.adj-hint{font-size:10.5px;color:var(--muted);text-align:center;margin-bottom:8px;line-height:1.5}
 .lv-chip{font-size:11px;background:#27325a;border-radius:8px;padding:5px 9px;font-weight:700}
 .lv-chip b{color:var(--gold)}
 
@@ -264,12 +269,15 @@ function openLevelModal(i){
     <div class="modal-h">${name} の ものさし</div>
     <div class="modal-sub">できるようになったレベルを タップ。次の的が、次の成長目標。</div>
     ${rows}
+    <div class="adj-box"><button class="adj-b" onclick="adjustLevel(${i},-0.1)">−0.1</button><span class="adj-v">今 ${curVal.toFixed(1)}</span><button class="adj-b" onclick="adjustLevel(${i},0.1)">＋0.1</button></div>
+    <div class="adj-hint">レベルで 大きく動かす。＋−で 小刻み（7.1, 7.2…）。<br>上限なし。10の先（11, 12…）も どこまでも 伸びる。</div>
     <button class="modal-x" onclick="closeModal()">閉じる</button></div></div>`;
   let m=document.getElementById('modalRoot');
   if(!m){ m=document.createElement('div'); m.id='modalRoot'; document.body.appendChild(m); }
   m.innerHTML=html;
 }
-function pickLevel(i,v){ if(!state.__level__) state.__level__=getVals(); state.__level__[i]=v; save(); closeModal(); render(); }
+function pickLevel(i,v){ if(!state.__level__) state.__level__=getVals(); state.__level__[i]=v; save(); render(); openLevelModal(i); }
+function adjustLevel(i,delta){ if(!state.__level__) state.__level__=getVals(); let v=Math.round((state.__level__[i]+delta)*10)/10; if(v<0)v=0; state.__level__[i]=v; save(); render(); openLevelModal(i); }
 function closeModal(){ const m=document.getElementById('modalRoot'); if(m) m.innerHTML=''; }
 function recordSnap(){
   if(!state.__snaps__) state.__snaps__=[];
@@ -281,21 +289,23 @@ function delSnap(i){ state.__snaps__.splice(i,1); save(); render(); }
 
 function radarSVG(){
   const labs=getLabs(), vals=getVals();
+  const snaps=state.__snaps__||[];
+  let allV=[...vals]; snaps.forEach(s=>{ if(s.vals) allV.push(...s.vals); });
+  const maxScale=Math.max(10, ...allV); // 10を超えたら目盛りが伸びる（上限なし）
   const cx=130,cy=125,r=80,n=7;
   const pt=(i,rad)=>{const a=-Math.PI/2+i*2*Math.PI/n;return [cx+rad*Math.cos(a), cy+rad*Math.sin(a)];};
   let grid='';
   [0.25,0.5,0.75,1].forEach(f=>{ const p=[...Array(n)].map((_,i)=>pt(i,r*f).join(',')).join(' '); grid+=`<polygon points="${p}" fill="none" stroke="#2e3a5c" stroke-width="1"/>`; });
   let axes='';
   for(let i=0;i<n;i++){const[x,y]=pt(i,r);axes+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#2e3a5c" stroke-width="1"/>`;}
-  const snaps=state.__snaps__||[];
   let past='';
   snaps.forEach((s,si)=>{
     const op=(0.10+0.12*((si+1)/(snaps.length+1))).toFixed(2);
-    const sp=s.vals.map((v,i)=>pt(i,r*v/10).join(',')).join(' ');
+    const sp=s.vals.map((v,i)=>pt(i,r*v/maxScale).join(',')).join(' ');
     past+=`<polygon points="${sp}" fill="rgba(138,163,200,${op})" stroke="#8da3c8" stroke-width="1" stroke-dasharray="3 2"/>`;
   });
-  const dp=vals.map((v,i)=>pt(i,r*v/10).join(',')).join(' ');
-  let dots=vals.map((v,i)=>{const[x,y]=pt(i,r*v/10);return `<circle cx="${x}" cy="${y}" r="3" fill="#ffd479"/>`;}).join('');
+  const dp=vals.map((v,i)=>pt(i,r*v/maxScale).join(',')).join(' ');
+  let dots=vals.map((v,i)=>{const[x,y]=pt(i,r*v/maxScale);return `<circle cx="${x}" cy="${y}" r="3" fill="#ffd479"/>`;}).join('');
   let lbl='';
   for(let i=0;i<n;i++){const[x,y]=pt(i,r+17);
     lbl+=`<text x="${x}" y="${y-4}" font-size="9.5" fill="#8da3c8" text-anchor="middle" dominant-baseline="middle">${labs[i]}</text>`;
