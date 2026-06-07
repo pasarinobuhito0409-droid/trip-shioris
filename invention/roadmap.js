@@ -99,6 +99,10 @@ const zoneTitle = document.getElementById("zoneTitle");
 const zoneLead = document.getElementById("zoneLead");
 const zoneTasks = document.getElementById("zoneTasks");
 const zonePanel = document.getElementById("zonePanel");
+const heroStage = document.querySelector(".heroStage");
+const heroZoneKicker = document.getElementById("heroZoneKicker");
+const heroZoneTitle = document.getElementById("heroZoneTitle");
+const heroZoneLead = document.getElementById("heroZoneLead");
 
 function setDetail(index) {
   const item = details[index];
@@ -116,6 +120,11 @@ function setZone(name) {
   document.querySelectorAll("[data-zone]").forEach((item) => {
     item.classList.toggle("zoneSelected", item.dataset.zone === name);
   });
+  heroStage.classList.remove("zone-build", "zone-design", "zone-lab");
+  heroStage.classList.add(`zone-${name}`);
+  heroZoneKicker.textContent = zone.kicker;
+  heroZoneTitle.textContent = zone.title;
+  heroZoneLead.textContent = zone.lead;
   zoneIcon.textContent = zone.icon;
   zoneKicker.textContent = zone.kicker;
   zoneTitle.textContent = zone.title;
@@ -146,7 +155,6 @@ cards.forEach((card) => {
 document.querySelectorAll(".stageZone, .stageLabel").forEach((control) => {
   control.addEventListener("click", () => {
     setZone(control.dataset.zone);
-    zonePanel.scrollIntoView({ behavior: "smooth", block: "center" });
   });
   control.addEventListener("mouseenter", () => setZone(control.dataset.zone));
 });
