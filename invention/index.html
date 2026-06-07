@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>人生ロードマップ — 夢→ゴールの全体地図</title>
+<title>発明クエスト — 1つずつクリアして夢へ</title>
 <style>
 :root{
   --bg:#0e1326; --card:#1a2138; --card2:#212a47; --line:#2e3a5c;
@@ -13,375 +13,260 @@
 *{box-sizing:border-box}
 body{margin:0;font-family:-apple-system,"Hiragino Kaku Gothic ProN",system-ui,sans-serif;
   background:radial-gradient(1200px 600px at 50% -10%,#1b2547 0%,#0e1326 60%);color:var(--text);
-  -webkit-font-smoothing:antialiased;padding-bottom:48px}
-header{padding:16px 14px 10px}
-h1{margin:0;font-size:18px;font-weight:800;letter-spacing:.2px}
+  -webkit-font-smoothing:antialiased;padding:0 0 48px}
+header{padding:16px 14px 6px}
+h1{margin:0;font-size:17px;font-weight:800}
 h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
-.north{margin:10px 14px 0;background:linear-gradient(135deg,#27325a,#1a2138);border:1px solid var(--line);
-  border-radius:14px;padding:12px 14px}
-.north .tag{font-size:10.5px;color:var(--gold);font-weight:800;letter-spacing:1px}
-.north .txt{font-size:13.5px;line-height:1.6;margin-top:5px;font-weight:600}
+.north{margin:8px 14px 0;font-size:11.5px;color:var(--gold);line-height:1.5;font-weight:600}
+.wrap{padding:10px 14px 0;max-width:560px;margin:0 auto}
 
-.tabs{display:flex;gap:6px;overflow-x:auto;padding:12px 14px 6px;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tab{flex:0 0 auto;background:var(--card);border:1.5px solid var(--line);color:var(--muted);
-  padding:8px 13px;border-radius:11px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap}
-.tab.active{background:#fff;color:#0e1326;border-color:#fff}
-.tab .pct{font-size:10.5px;opacity:.7;margin-left:4px}
+.sec{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:14px;margin-bottom:12px}
+.sec h3{margin:0 0 11px;font-size:12.5px;color:var(--muted);font-weight:800;letter-spacing:.5px}
 
-.wrap{padding:4px 14px 0}
-.phase-head{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-bottom:10px}
-.phase-head .nm{font-size:16px;font-weight:800}
-.phase-head .pd{font-size:11.5px;color:var(--muted);margin-top:3px}
-.phase-head .gl{font-size:12.5px;color:var(--gold);margin-top:7px;line-height:1.5}
-.bigpct{font-size:30px;font-weight:900;line-height:1}
-.bigpct small{font-size:13px;color:var(--muted);font-weight:700;margin-left:6px}
-.bar{height:13px;background:#0c1124;border-radius:999px;overflow:hidden;margin-top:9px;border:1px solid var(--line)}
-.bar i{display:block;height:100%;border-radius:999px;transition:width .35s}
-
-.ms{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:4px;margin-bottom:8px}
-.ms-item{display:flex;align-items:center;gap:11px;width:100%;background:none;border:none;text-align:left;
-  color:var(--text);padding:11px 10px;border-radius:9px;cursor:pointer;font:inherit}
-.ms-item:active{background:var(--card2)}
-.cb{flex:0 0 22px;height:22px;border-radius:7px;border:2px solid var(--muted);display:flex;
-  align-items:center;justify-content:center;font-size:14px;color:#fff;transition:.15s}
-.ms-item.done .cb{background:var(--p1);border-color:var(--p1)}
-.ms-item.done .lb{text-decoration:line-through;opacity:.55}
-.lb{flex:1;font-size:13.5px;line-height:1.45}
-
-.list{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
-.list h3{margin:0 0 10px;font-size:13px;color:var(--muted);font-weight:800;letter-spacing:.5px}
-.five{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid var(--line)}
-.five:last-child{border-bottom:none}
-.five .n{flex:0 0 26px;height:26px;border-radius:50%;background:#27325a;color:var(--gold);
-  display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px}
-.five .t{font-size:13.5px;font-weight:600}
-.five .t small{display:block;color:var(--muted);font-size:11px;font-weight:500;margin-top:1px}
-
-.timeline .row{display:flex;gap:11px}
-.timeline .dot{flex:0 0 16px;display:flex;flex-direction:column;align-items:center}
-.timeline .dot .o{width:14px;height:14px;border-radius:50%;border:3px solid var(--accent);background:var(--bg);margin-top:3px}
-.timeline .dot .ln{flex:1;width:2px;background:var(--line);margin:2px 0}
-.timeline .row:last-child .ln{display:none}
-.timeline .body{padding-bottom:16px;flex:1}
-.timeline .body .t{font-size:13.5px;font-weight:800}
-.timeline .body .d{font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.5}
-.timeline .row.cur .o{border-color:var(--gold);background:var(--gold);box-shadow:0 0 0 4px rgba(255,212,121,.2)}
-.timeline .row.cur .t{color:var(--gold)}
-
-.step{display:flex;align-items:center;gap:9px;padding:7px 2px;font-size:12.5px;border-bottom:1px solid var(--line)}
-.step:last-child{border-bottom:none}
-.step .si{flex:0 0 22px;height:22px;border-radius:6px;background:#27325a;display:flex;align-items:center;
-  justify-content:center;font-weight:800;font-size:11px;color:var(--muted)}
-.step.done .si{background:var(--p1);color:#fff}
-.step.now{background:#27325a;border-radius:8px;padding:7px 8px;margin:2px 0}
-.step.now .lab{color:var(--gold);font-weight:800}
-.step .lab{flex:1}
-
-.pmap .hd{display:flex;justify-content:space-between;font-size:12px;font-weight:800;color:var(--muted);margin-bottom:10px}
-.prow{display:flex;align-items:center;gap:9px;width:100%;background:none;color:var(--text);
-  padding:7px 6px;border-radius:9px;cursor:pointer;text-align:left;border:1.5px solid transparent;font:inherit}
-.prow.cur{background:#27325a;border-color:#3a4a78}
-.plab{flex:0 0 116px;font-size:12px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
-.plab .now{font-size:9px;background:var(--gold);color:#3a2a00;padding:1px 6px;border-radius:7px;font-weight:800}
-.pbar{flex:1;height:12px;background:#0c1124;border-radius:999px;overflow:hidden}
-.pbar i{display:block;height:100%;border-radius:999px;transition:width .35s}
-.ppct{flex:0 0 38px;text-align:right;font-size:12px;font-weight:800}
-
-.note{font-size:11.5px;color:var(--muted);line-height:1.6;background:var(--card);border:1px dashed var(--line);
-  border-radius:11px;padding:11px 13px;margin-bottom:10px}
-.note b{color:var(--p3)}
+/* 今のクエスト（大カード） */
+.now-card{background:linear-gradient(135deg,#2a3768,#1a2138);border:2px solid var(--gold);
+  border-radius:18px;padding:17px;margin-bottom:14px;box-shadow:0 0 28px rgba(255,212,121,.13)}
+.now-card .lbl{font-size:10.5px;color:var(--gold);font-weight:800;letter-spacing:1.5px}
+.now-card .ph{display:inline-block;font-size:10px;font-weight:800;padding:2px 9px;border-radius:8px;margin-top:8px;color:#0e1326}
+.now-card .ttl{font-size:21px;font-weight:900;line-height:1.3;margin-top:9px}
+.now-card .prog{height:15px;background:#0c1124;border-radius:999px;overflow:hidden;margin-top:13px;border:1px solid var(--line)}
+.now-card .prog i{display:block;height:100%;background:var(--gold);border-radius:999px;transition:width .4s}
+.now-card .pnum{font-size:12px;color:var(--muted);margin-top:7px;font-weight:700;text-align:right}
+.now-card .next{font-size:11.5px;color:var(--muted);margin-top:12px;border-top:1px dashed var(--line);padding-top:10px}
+.clear-btn{width:100%;margin-top:13px;background:var(--gold);color:#3a2a00;border:none;border-radius:11px;
+  padding:13px;font-size:15px;font-weight:900;cursor:pointer}
+.clear-btn:active{transform:scale(.98)}
 
 /* 種タンク */
-.seed-input{display:flex;gap:6px;margin-bottom:9px}
-.seed-input input{flex:1;background:#0c1124;border:1px solid var(--line);color:var(--text);border-radius:8px;padding:10px 11px;font:inherit;font-size:13px}
-.seed-input button{flex:0 0 46px;background:var(--gold);color:#3a2a00;border:none;border-radius:8px;font-size:22px;font-weight:800;cursor:pointer}
-.seed{display:flex;align-items:center;gap:9px;padding:9px 2px;border-bottom:1px solid var(--line)}
+.seed-input{display:flex;gap:6px;margin:12px 0 9px}
+.seed-input input{flex:1;background:#0c1124;border:1px solid var(--line);color:var(--text);border-radius:9px;padding:11px;font:inherit;font-size:13px}
+.seed-input button{flex:0 0 48px;background:var(--gold);color:#3a2a00;border:none;border-radius:9px;font-size:22px;font-weight:800;cursor:pointer}
+.seed{display:flex;align-items:center;gap:9px;padding:9px 2px;border-bottom:1px solid rgba(255,255,255,.07)}
 .seed:last-child{border-bottom:none}
 .seed .sc{flex:0 0 21px;height:21px;border-radius:6px;border:2px solid var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff}
 .seed.done .sc{background:var(--p1);border-color:var(--p1)}
 .seed.done .st{text-decoration:line-through;opacity:.5}
 .seed .st{flex:1;font-size:13px;line-height:1.45}
 .seed .sd{flex:0 0 26px;color:var(--muted);cursor:pointer;font-size:18px;text-align:center}
-.seed-count{font-size:11.5px;color:var(--gold);margin-top:9px;font-weight:700;text-align:center}
-.seed-empty{font-size:12px;color:var(--muted);padding:8px 2px;line-height:1.5}
+.seed-empty{font-size:12px;color:var(--muted);padding:6px 2px;line-height:1.5}
 
-/* 道しるべ3層 */
-.guide-block{margin-bottom:11px}
-.guide-block:last-child{margin-bottom:0}
-.guide-block .gh{font-size:12px;font-weight:800;color:var(--gold);margin-bottom:4px}
-.guide-block .gi{font-size:12.5px;padding:4px 0 4px 18px;position:relative;line-height:1.5}
-.guide-block .gi::before{content:"▸";position:absolute;left:2px;color:var(--accent)}
+/* すごろくの道 */
+.qph{font-size:11.5px;font-weight:800;margin:14px 0 8px;letter-spacing:.5px}
+.qph:first-child{margin-top:0}
+.qnode{display:flex;align-items:center;gap:12px;position:relative;padding:3px 0}
+.qnode .qm{flex:0 0 28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:800;background:#27325a;color:var(--muted);z-index:1}
+.qnode.done .qm{background:var(--p1);color:#fff}
+.qnode.now .qm{color:#0e1326;box-shadow:0 0 0 4px rgba(255,212,121,.2);animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 4px rgba(255,212,121,.18)}50%{box-shadow:0 0 0 7px rgba(255,212,121,.05)}}
+.qnode::before{content:"";position:absolute;left:13.5px;top:-9px;width:2px;height:11px;background:var(--line)}
+.qnode:first-of-type::before{display:none}
+.qnode .qlb{flex:1;font-size:13.5px;padding:8px 0;line-height:1.4}
+.qnode.future .qlb{color:var(--muted)}
+.qnode.done .qlb{opacity:.6}
+.qnode.now .qlb{font-weight:800;color:var(--gold)}
+.qclear{font-size:10px;background:#27325a;color:var(--gold);padding:1px 7px;border-radius:7px;font-weight:800;margin-left:4px}
+.qgoal{margin-top:14px;text-align:center;font-size:15px;font-weight:900;color:var(--gold);
+  background:#27325a;border-radius:12px;padding:14px;border:1px solid var(--line)}
 
-/* 7軸現在地 */
-.lv-row{display:flex;gap:10px;padding:10px 2px;border-bottom:1px solid var(--line)}
-.lv-row:last-child{border-bottom:none}
-.lv-row .lvn{flex:0 0 90px;font-size:12px;font-weight:700}
-.lv-row .lvv{flex:0 0 54px;font-size:13px;font-weight:800;color:var(--gold)}
-.lv-row .lvd{flex:1;font-size:11px;color:var(--muted);line-height:1.5}
-.bullet{font-size:12.5px;padding:5px 0 5px 18px;position:relative;line-height:1.5}
-.bullet::before{content:"・";position:absolute;left:4px;color:var(--accent)}
+/* レーダー */
+.radar-wrap{display:flex;justify-content:center}
+.radar-wrap svg{width:100%;max-width:280px;height:auto}
+.lv-mini{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.lv-chip{font-size:11px;background:#27325a;border-radius:8px;padding:5px 9px;font-weight:700}
+.lv-chip b{color:var(--gold)}
 
-.foot{text-align:center;font-size:10.5px;color:var(--muted);margin-top:14px;line-height:1.6}
+/* 毎日 */
+.daily-item{font-size:12.5px;padding:6px 0 6px 20px;position:relative;line-height:1.5}
+.daily-item::before{content:"☀";position:absolute;left:0;color:var(--gold)}
+
+.tools{display:flex;gap:8px}
+.tools button,.tools label{flex:1;background:var(--card2);border:1px solid var(--line);color:var(--text);
+  border-radius:10px;padding:11px;font-size:12px;font-weight:700;cursor:pointer;text-align:center}
+.foot{text-align:center;font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.6}
 </style>
 </head>
 <body>
 <header>
-  <h1>人生ロードマップ <span class="sub">v2 · 三輪允仁</span></h1>
+  <h1>🚀 発明クエスト <span class="sub">v3 · 三輪允仁</span></h1>
+  <div class="north" id="north"></div>
 </header>
 
-<div class="north">
-  <div class="tag">★ 北極星（最終ゴール）</div>
-  <div class="txt" id="northTxt"></div>
-</div>
-
-<div class="tabs" id="tabs"></div>
 <div class="wrap" id="wrap"></div>
-<div class="foot" id="foot"></div>
 
 <script>
-const C = ["var(--p0)","var(--p1)","var(--p2)","var(--p3)"];
+const C = ["#5ab4ff","#34c759","#c850dc","#ffa0b4"];
+const PHN = ["第1期 土台（36〜41歳）","第2期 お金（41〜51歳）","第3期 参戦（51〜66歳）","第4期 魔法（66歳〜）"];
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 const DATA = {
-  north: "一生、働かず、研究と発明だけをして生きる。そして5つの大発明で、SFを本気で現実にする。",
-  five: [
-    ["不老不死", "19歳の若さのまま200年生きる"],
-    ["時間操作", "時間を自由に操る"],
-    ["恒星間宇宙船", "宇宙をどこまでも行ける船"],
-    ["脳拡張", "脳をPCのようにカスタム（IQ500）"],
-    ["万能ヒューマノイド", "ものを実際に作るロボット"],
+  north: "北極星：一生 研究と発明だけで生きる。5大発明でSFを現実にする。",
+  quests: [
+    {id:"q1", ph:0, label:"種を10個 集める", seed:true},
+    {id:"q2", ph:0, label:"最初の1発を決める（特許×コスパ×わくわく）"},
+    {id:"q3", ph:0, label:"試作1号を作る"},
+    {id:"q4", ph:0, label:"特許を調べる・出す"},
+    {id:"q5", ph:0, label:"発明で初収入を得る", clear:"第1期クリア"},
+    {id:"q6", ph:1, label:"投資の基礎を学ぶ"},
+    {id:"q7", ph:1, label:"特許収入を投資に回す"},
+    {id:"q8", ph:1, label:"収入の柱を3本にする"},
+    {id:"q9", ph:1, label:"経済的自由に到達（働かなくていい）", clear:"第2期クリア"},
+    {id:"q10", ph:2, label:"大学で学ぶ（生物・物理・工学）"},
+    {id:"q11", ph:2, label:"不老の研究装置を作る"},
+    {id:"q12", ph:2, label:"5大発明の研究開発に着手", clear:"第3期クリア"},
+    {id:"q13", ph:3, label:"5大発明を達成する", clear:"★夢クリア★"},
   ],
-  guide: {
-    daily: ["算数15分（もうやってる）","Fusion教科書を火・土に少し進める","「面倒×わくわく」を種タンクにメモ"],
-    month: ["種を10個 集める","フィルター（特許×コスパ×わくわく）でふるう","2〜3個に絞って、一番わくわくする1個を選ぶ"],
-    big: ["最初の1発を決める（今ここ）","今週やる1歩まで砕く","試作を作る","特許を調べる・出す","初収入を得る（＝第1期クリア）"],
-  },
-  steps: [
-    ["1","夢を全部出す", true],
-    ["2","各夢の「現実の入口」を調べる", false],
-    ["3","5つの夢に順番をつける", false],
-    ["4","最初の1発を決める", "now"],
-    ["5","最初の1発を「今週やる1歩」まで砕く", false],
-    ["6","アプリで見える化", "done"],
-    ["7","毎月見直して更新", false],
-  ],
-  phases: [
-    { name:"第1期 土台づくり", period:"今〜5年（36〜41歳）", goal:"設計力 ＋ 最初の1発 ＋ 初収入を作る", cur:true,
-      ms:[
-        ["p0a","Fusion 360 を習得する（教科書 Phase0〜6）"],
-        ["p0b","self-study で算数→中学数学の土台"],
-        ["p0c","「面倒×わくわく」の種を10個集める"],
-        ["p0d","最初の1発の発明テーマを決める"],
-        ["p0e","試作1号を作る"],
-        ["p0f","特許を調べる・出願する"],
-        ["p0g","発明で初収入を得る"],
-      ]},
-    { name:"第2期 お金エンジン", period:"5〜15年（41〜51歳）", goal:"経済的自由（★40代で自由＝君の目標と一致）",
-      ms:[
-        ["p1a","投資の基礎を学ぶ"],
-        ["p1b","特許収入を投資に回す"],
-        ["p1c","発明を量産する（ガラクタ研究所）"],
-        ["p1d","収入の柱を3本に増やす"],
-        ["p1e","「働かなくていい」ラインに到達"],
-      ]},
-    { name:"第3期 本丸に参戦", period:"15〜30年（51〜66歳）", goal:"大学で学び ＋ 5大発明の研究開発に着手",
-      ms:[
-        ["p2a","世界の大学/専門で学ぶ（生物・物理・工学）"],
-        ["p2b","不老の研究装置を作る（機械設計の武器）"],
-        ["p2c","5大発明の研究開発に着手"],
-        ["p2d","研究コミュニティと繋がる"],
-        ["p2e","研究を加速させる装置を世に出す"],
-      ]},
-    { name:"第4期 魔法の実現", period:"30年〜（66歳〜）", goal:"5大発明を達成し、SFを現実にする",
-      ms:[
-        ["p3a","不老不死を達成する"],
-        ["p3b","時間操作を研究する"],
-        ["p3c","恒星間宇宙船を作る"],
-        ["p3d","脳拡張（IQ500）を実現する"],
-        ["p3e","万能ヒューマノイドを作る"],
-      ]},
-  ],
+  daily: ["算数15分（もうやってる）","Fusion教科書を火・土に進める","「面倒×わくわく」を種タンクにメモ"],
   level7: [
-    ["1 設計スキル","7/10","製缶1年＋訓練。基本部品は1人で設計可。最大の武器"],
-    ["2 学力","数2-3 英1","算数1年継続中。割合→掛け算に戻り中。英語ほぼゼロ"],
-    ["3 お金","安定","固定費月¥55k・給料10%投資・収入安定"],
-    ["4 時間","3-4","火1h＋土半日＋平日15分。2027.4のIT訓練で激増"],
-    ["5 健康・年齢","36歳/8","持病なし・睡眠8h・MMAで体力高い"],
-    ["6 環境・人脈","4","妻が応援・40代で経済自由が目標"],
-    ["7 続ける力","6-7","わくわく×見える化で続く。複利マインドあり"],
-  ],
-  strengths: [
-    "設計スキル7（普通の発明初心者は2〜3）",
-    "続ける仕組みづくり（気合でなく仕組み）",
-    "睡眠8h（記憶の定着・発明の土台）",
-    "コスパ職人の美意識（価値÷価格）",
-    "24時間相談できるAI相棒",
-    "妻の応援（心の土台）",
-  ],
-  cautions: [
-    "興味が移りやすい → 最初の1発に1点集中",
-    "完璧主義（10問全問正解で足踏み）→ 時々8割で進む",
-    "わくわくしないと続かない → わくわくチェック必須",
+    ["設計", 7, "基本部品は1人で設計可・最大の武器"],
+    ["学力", 2.5, "算数1年継続中・英語ほぼゼロ"],
+    ["お金", 6, "固定費月¥55k・投資10%・収入安定"],
+    ["時間", 3.5, "火1h＋土半日。2027.4で激増"],
+    ["健康", 8, "36歳・睡眠8h・体力高い"],
+    ["人脈", 4, "妻が応援・発明仲間はこれから"],
+    ["継続", 6.5, "わくわく×見える化で続く"],
   ],
 };
 
 const KEY = "life_roadmap_v1";
 let state = JSON.parse(localStorage.getItem(KEY) || "{}");
-let tab = 0; // 0=全体, 1-4=各期, 5=現在地
-
 function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
-function toggle(id){ state[id] = !state[id]; save(); render(); }
 
 // 種タンク
 function addSeed(){
-  const inp = document.getElementById('seedInput');
-  const v = (inp.value||"").trim();
+  const inp=document.getElementById('seedInput'); const v=(inp.value||"").trim();
   if(!v) return;
-  if(!state.__seeds__) state.__seeds__ = [];
-  state.__seeds__.push({t:v, done:false});
-  inp.value=''; save(); render();
-  const ni = document.getElementById('seedInput'); if(ni) ni.focus();
+  if(!state.__seeds__) state.__seeds__=[];
+  state.__seeds__.push({t:v,done:false}); inp.value=''; save(); render();
+  const ni=document.getElementById('seedInput'); if(ni) ni.focus();
 }
-function toggleSeed(i){ state.__seeds__[i].done = !state.__seeds__[i].done; save(); render(); }
+function toggleSeed(i){ state.__seeds__[i].done=!state.__seeds__[i].done; save(); render(); }
 function delSeed(i){ state.__seeds__.splice(i,1); save(); render(); }
+function seedDoneCount(){ return (state.__seeds__||[]).filter(s=>s.done).length; }
 
-function phaseStat(pi){
-  const ms = DATA.phases[pi].ms;
-  const done = ms.filter(m=>state[m[0]]).length;
-  return { done, total:ms.length, pct: ms.length? Math.round(done/ms.length*100):0 };
+// クエスト
+function isQuestDone(q){
+  if(q.seed) return state[q.id]===true || seedDoneCount()>=10;
+  return state[q.id]===true;
 }
-function allStat(){
-  let d=0,t=0;
-  DATA.phases.forEach((p,i)=>{ const s=phaseStat(i); d+=s.done; t+=s.total; });
-  return { done:d, total:t, pct: t? Math.round(d/t*100):0 };
-}
-
-function renderTabs(){
-  const names = ["🗺 全体","1期","2期","3期","4期","📊 現在地"];
-  document.getElementById("tabs").innerHTML = names.map((n,i)=>{
-    let pct = "";
-    if(i>=1 && i<=4){ pct = `<span class="pct">${phaseStat(i-1).pct}%</span>`; }
-    return `<button class="tab ${tab===i?'active':''}" onclick="tab=${i};render();window.scrollTo(0,0)">${n}${pct}</button>`;
-  }).join("");
+function currentQuest(){ return DATA.quests.find(q=>!isQuestDone(q)) || null; }
+function clearQuest(id){ state[id]=true; save(); render(); window.scrollTo({top:0,behavior:'smooth'}); }
+function allClearedPct(){
+  const d=DATA.quests.filter(isQuestDone).length;
+  return Math.round(d/DATA.quests.length*100);
 }
 
-function overviewHTML(){
-  const all = allStat();
-  // 道しるべ3層
-  const g = DATA.guide;
-  const gBlock = (title, arr) => `<div class="guide-block"><div class="gh">${title}</div>${arr.map(x=>`<div class="gi">${x}</div>`).join("")}</div>`;
-  // 4期進捗バー
-  const prows = DATA.phases.map((p,i)=>{
-    const s = phaseStat(i);
-    const now = p.cur ? ' <span class="now">今ここ</span>' : '';
-    return `<button class="prow ${p.cur?'cur':''}" onclick="tab=${i+1};render();window.scrollTo(0,0)">
-      <div class="plab">${i+1}期${now}</div>
-      <div class="pbar"><i style="width:${s.pct}%;background:${C[i]}"></i></div>
-      <div class="ppct">${s.pct}%</div></button>`;
-  }).join("");
-  // 5大発明
-  const five = DATA.five.map((f,i)=>`<div class="five">
-    <div class="n">${i+1}</div><div class="t">${f[0]}<small>${f[1]}</small></div></div>`).join("");
-  // タイムライン
-  const tl = DATA.phases.map((p,i)=>{
-    const s = phaseStat(i);
-    return `<div class="row ${p.cur?'cur':''}">
-      <div class="dot"><div class="o"></div><div class="ln"></div></div>
-      <div class="body"><div class="t">${p.name}　<span style="font-weight:600;color:var(--muted);font-size:11px">${p.period}</span></div>
-      <div class="d">${p.goal}（${s.pct}%）</div></div></div>`;
-  }).join("");
-  // 7ステップ
-  const steps = DATA.steps.map(s=>{
-    const cls = s[2]==="now" ? "now" : (s[2]===true||s[2]==="done" ? "done":"");
-    const mark = (s[2]===true||s[2]==="done") ? "✓" : s[0];
-    const tag = s[2]==="now" ? ' 👈 今ここ' : '';
-    return `<div class="step ${cls}"><div class="si">${mark}</div><div class="lab">${s[1]}${tag}</div></div>`;
-  }).join("");
-  // 種タンク
-  const seeds = state.__seeds__ || [];
-  const seedList = seeds.length
-    ? seeds.map((s,i)=>`<div class="seed ${s.done?'done':''}">
-        <div class="sc" onclick="toggleSeed(${i})">${s.done?'✓':''}</div>
-        <div class="st">${esc(s.t)}</div>
-        <div class="sd" onclick="delSeed(${i})">×</div></div>`).join("")
-    : `<div class="seed-empty">まだ種がない。日常の「これ面倒 × でもわくわく」を入れてみよう。</div>`;
-  const remain = Math.max(0, 10 - seeds.length);
-  const countTxt = seeds.length===0 ? "" : (remain>0 ? `あと ${remain}個で10個（最初の1発を選ぶ目安）` : "★10個達成！そろそろ1個に絞ろう");
+// バックアップ
+function exportData(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='hatsumei_quest_backup.json'; a.click();
+}
+function importData(ev){
+  const f=ev.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=e=>{ try{ state=JSON.parse(e.target.result); save(); render(); }catch(x){ alert('読み込み失敗'); } };
+  r.readAsText(f); ev.target.value='';
+}
 
-  return `
-    <div class="list">
-      <h3>🧭 道しるべ（毎日・今月・全体）</h3>
-      ${gBlock("【毎日】土台を育てる", g.daily)}
-      ${gBlock("【今月】最初の1発に近づく", g.month)}
-      ${gBlock("【全体】初収入までの流れ", g.big)}
-    </div>
+function radarSVG(){
+  const labs=DATA.level7.map(l=>l[0]), vals=DATA.level7.map(l=>l[1]);
+  const cx=130,cy=125,r=80,n=7;
+  const pt=(i,rad)=>{const a=-Math.PI/2+i*2*Math.PI/n;return [cx+rad*Math.cos(a), cy+rad*Math.sin(a)];};
+  let grid='';
+  [0.25,0.5,0.75,1].forEach(f=>{
+    const p=[...Array(n)].map((_,i)=>pt(i,r*f).join(',')).join(' ');
+    grid+=`<polygon points="${p}" fill="none" stroke="#2e3a5c" stroke-width="1"/>`;
+  });
+  let axes='';
+  for(let i=0;i<n;i++){const[x,y]=pt(i,r);axes+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#2e3a5c" stroke-width="1"/>`;}
+  const dp=vals.map((v,i)=>pt(i,r*v/10).join(',')).join(' ');
+  let dots=vals.map((v,i)=>{const[x,y]=pt(i,r*v/10);return `<circle cx="${x}" cy="${y}" r="3" fill="#ffd479"/>`;}).join('');
+  let lbl='';
+  for(let i=0;i<n;i++){const[x,y]=pt(i,r+15);lbl+=`<text x="${x}" y="${y}" font-size="9.5" fill="#8da3c8" text-anchor="middle" dominant-baseline="middle">${labs[i]}</text>`;}
+  return `<svg viewBox="0 0 260 250">${grid}${axes}<polygon points="${dp}" fill="rgba(255,212,121,.25)" stroke="#ffd479" stroke-width="2"/>${dots}${lbl}</svg>`;
+}
 
-    <div class="list">
-      <h3>💡 種タンク（面倒×わくわくを貯める）👈 今ここ</h3>
+function nowCardHTML(){
+  const cq=currentQuest();
+  if(!cq) return `<div class="now-card"><div class="ttl">🎉 全クエスト達成！夢が叶った！</div></div>`;
+  const idx=DATA.quests.indexOf(cq);
+  const next=DATA.quests[idx+1];
+  let body;
+  if(cq.seed){
+    const dc=seedDoneCount(), total=(state.__seeds__||[]).length;
+    const pct=Math.min(100, dc*10);
+    const seeds=state.__seeds__||[];
+    const list=seeds.length
+      ? seeds.map((s,i)=>`<div class="seed ${s.done?'done':''}"><div class="sc" onclick="toggleSeed(${i})">${s.done?'✓':''}</div><div class="st">${esc(s.t)}</div><div class="sd" onclick="delSeed(${i})">×</div></div>`).join("")
+      : `<div class="seed-empty">日常の「これ面倒 × でもわくわく」を入れよう。チェック✓した種が10個でクリア。</div>`;
+    body = `
+      <div class="prog"><i style="width:${pct}%"></i></div>
+      <div class="pnum">良い種 ${dc} / 10（メモ ${total}個）</div>
       <div class="seed-input">
-        <input id="seedInput" placeholder="例：〇〇が面倒。でも△△なら楽しそう" onkeydown="if(event.key==='Enter')addSeed()">
+        <input id="seedInput" placeholder="例：ネジ締めが面倒。自動なら楽しそう" onkeydown="if(event.key==='Enter')addSeed()">
         <button onclick="addSeed()">＋</button>
       </div>
-      ${seedList}
-      ${countTxt?`<div class="seed-count">${countTxt}</div>`:""}
-    </div>
-
-    <div class="list">
-      <div class="hd"><span>📍 4期の進捗（タップで移動）</span><span>全体 ${all.pct}%</span></div>
-      ${prows}
-    </div>
-
-    <div class="list"><h3>🌟 5大発明（魔法のゴール）</h3>${five}</div>
-
-    <div class="list timeline"><h3>🛤 今 → 魔法（年齢入りの線）</h3>${tl}</div>
-
-    <div class="note">★ 注意：<b>不老</b>だけは時間との戦い。36歳の今から、健康を保って若返り技術が来るまで体を維持する。</div>
-
-    <div class="list"><h3>🪜 夢→ロードマップ変換の7ステップ</h3>${steps}</div>
-  `;
+      ${list}`;
+  } else {
+    body = `<button class="clear-btn" onclick="clearQuest('${cq.id}')">✓ クリアした！</button>`;
+  }
+  return `
+    <div class="now-card">
+      <div class="lbl">🎯 今のクエスト</div>
+      <span class="ph" style="background:${C[cq.ph]}">${PHN[cq.ph].split('（')[0]}</span>
+      <div class="ttl">${cq.label}</div>
+      ${body}
+      ${next?`<div class="next">次は → ${next.label}</div>`:''}
+    </div>`;
 }
 
-function phaseHTML(pi){
-  const p = DATA.phases[pi];
-  const s = phaseStat(pi);
-  const items = p.ms.map(m=>{
-    const done = !!state[m[0]];
-    return `<button class="ms-item ${done?'done':''}" onclick="toggle('${m[0]}')">
-      <div class="cb">${done?'✓':''}</div><div class="lb">${m[1]}</div></button>`;
-  }).join("");
-  return `
-    <div class="phase-head"><div class="nm">${p.name}</div>
-      <div class="pd">${p.period}${p.cur?'　👈 今ここ':''}</div>
-      <div class="gl">🎯 ${p.goal}</div></div>
-    <div class="phase-head"><div class="bigpct">${s.pct}%<small>(${s.done}/${s.total})</small></div>
-      <div class="bar"><i style="width:${s.pct}%;background:${C[pi]}"></i></div></div>
-    <div class="ms">${items}</div>
-  `;
-}
-
-function levelHTML(){
-  const rows = DATA.level7.map(l=>`<div class="lv-row">
-    <div class="lvn">${l[0]}</div><div class="lvv">${l[1]}</div><div class="lvd">${l[2]}</div></div>`).join("");
-  const str = DATA.strengths.map(s=>`<div class="bullet">${s}</div>`).join("");
-  const cau = DATA.cautions.map(s=>`<div class="bullet">${s}</div>`).join("");
-  return `
-    <div class="list"><h3>📊 現在地（7軸・2026-06-07 測定）</h3>${rows}</div>
-    <div class="list"><h3>💪 強み（武器）</h3>${str}</div>
-    <div class="list"><h3>⚠ 注意（仕組みでカバー）</h3>${cau}</div>
-  `;
+function roadHTML(){
+  let html=''; let lastPh=-1;
+  DATA.quests.forEach(q=>{
+    if(q.ph!==lastPh){ html+=`<div class="qph" style="color:${C[q.ph]}">▼ ${PHN[q.ph]}</div>`; lastPh=q.ph; }
+    const done=isQuestDone(q), now=currentQuest()===q;
+    const cls=done?'done':(now?'now':'future');
+    const mark=done?'✓':(now?'●':'○');
+    const style=now?`background:${C[q.ph]}`:'';
+    html+=`<div class="qnode ${cls}"><div class="qm" style="${style}">${mark}</div>
+      <div class="qlb">${q.label}${q.clear?`<span class="qclear">${q.clear}</span>`:''}</div></div>`;
+  });
+  html+=`<div class="qgoal">🌟 5大発明を達成 → 夢が叶う</div>`;
+  return html;
 }
 
 function render(){
-  document.getElementById("northTxt").textContent = DATA.north;
-  renderTabs();
-  let html;
-  if(tab===0) html = overviewHTML();
-  else if(tab>=1 && tab<=4) html = phaseHTML(tab-1);
-  else html = levelHTML();
-  document.getElementById("wrap").innerHTML = html;
-  document.getElementById("foot").innerHTML =
-    `現在地：第1期・36歳・ステップ4（種を集める）<br>正本: skills/発明/LIFE_ROADMAP.md ＋ CURRENT_LEVEL.md`;
+  document.getElementById("north").textContent = DATA.north;
+  const lvChips = DATA.level7.map(l=>`<div class="lv-chip">${l[0]} <b>${l[1]}</b></div>`).join("");
+  document.getElementById("wrap").innerHTML = `
+    ${nowCardHTML()}
+
+    <div class="sec">
+      <h3>🗺 クエストの道（${allClearedPct()}% 進んだ）</h3>
+      ${roadHTML()}
+    </div>
+
+    <div class="sec">
+      <h3>📊 今の自分（7軸・2026-06-07）</h3>
+      <div class="radar-wrap">${radarSVG()}</div>
+      <div class="lv-mini">${lvChips}</div>
+    </div>
+
+    <div class="sec">
+      <h3>☀ 毎日の土台（これが全部の燃料）</h3>
+      ${DATA.daily.map(d=>`<div class="daily-item">${d}</div>`).join("")}
+    </div>
+
+    <div class="sec">
+      <h3>⚙ バックアップ（変化したら自由に編集OK）</h3>
+      <div class="tools">
+        <button onclick="exportData()">📤 書き出し</button>
+        <label>📥 読み込み<input type="file" accept="application/json" onchange="importData(event)" style="display:none"></label>
+      </div>
+      <div class="foot">データはこの端末に自動保存。書き出しでバックアップ＆端末間コピー。<br>正本: skills/発明/LIFE_ROADMAP.md ＋ CURRENT_LEVEL.md</div>
+    </div>
+  `;
 }
 render();
 </script>
