@@ -85,6 +85,16 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
 .snap-row{display:flex;justify-content:space-between;align-items:center;padding:9px 2px;border-bottom:1px solid rgba(255,255,255,.05);font-size:12.5px}
 .snap-row:last-child{border-bottom:none}
 .snap-del{color:var(--muted);cursor:pointer;font-size:17px}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.62);display:flex;align-items:center;justify-content:center;z-index:100;padding:18px}
+.modal{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;max-width:390px;width:100%;max-height:82vh;overflow:auto}
+.modal-h{font-size:15px;font-weight:800;margin-bottom:3px}
+.modal-sub{font-size:11px;color:var(--muted);margin-bottom:13px;line-height:1.5}
+.lvl-row{display:flex;gap:10px;align-items:center;width:100%;background:#212a47;border:1.5px solid var(--line);color:var(--text);border-radius:10px;padding:11px;margin-bottom:7px;cursor:pointer;text-align:left;font:inherit}
+.lvl-row.lvl-cur{border-color:var(--gold);background:#34301c}
+.lvl-row.lvl-next{border-color:var(--accent);border-style:dashed}
+.lvl-n{flex:0 0 40px;font-weight:800;color:var(--gold);font-size:13px}
+.lvl-d{flex:1;font-size:12.5px;line-height:1.45}
+.modal-x{width:100%;margin-top:6px;background:var(--card2);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:11px;font-weight:700;cursor:pointer}
 .lv-chip{font-size:11px;background:#27325a;border-radius:8px;padding:5px 9px;font-weight:700}
 .lv-chip b{color:var(--gold)}
 
@@ -147,7 +157,7 @@ const DATA = {
   ],
   daily: ["算数15分（もうやってる）","Fusion教科書を火・土に進める","「面倒×わくわく」を種タンクにメモ"],
   level7: [
-    ["設計", 7, "基本部品は1人で設計可・最大の武器"],
+    ["設計", 7, "基本部品は1人で設計可・最大の武器", [[3,"図面を読める・簡単な部品を真似て描ける"],[5,"基本部品を 先輩の確認ありで設計"],[7,"基本部品を 1人で設計しきれる"],[8,"複雑な部品・板金も 1人で設計"],[9,"動く機構（仕組み）を 設計できる"],[10,"新しい機構を 発明できる"]]],
     ["学力", 2.5, "算数1年継続中・英語ほぼゼロ"],
     ["お金", 6, "固定費月¥55k・投資10%・収入安定"],
     ["時間", 3.5, "火1h＋土半日。2027.4で激増"],
@@ -229,6 +239,8 @@ function getVals(){
   return base.map((v,i)=> (lv && typeof lv[i]==='number') ? lv[i] : v);
 }
 function editLevel(i){
+  const levels=DATA.level7[i][3];
+  if(levels && levels.length){ openLevelModal(i); return; }
   const labs=getLabs(), vals=getVals();
   const v=prompt(labs[i]+' の今の値（0〜10）', vals[i]);
   if(v===null) return;
@@ -237,6 +249,28 @@ function editLevel(i){
   if(!state.__level__) state.__level__=getVals();
   state.__level__[i]=num; save(); render();
 }
+function openLevelModal(i){
+  const name=DATA.level7[i][0], levels=DATA.level7[i][3];
+  const curVal=getVals()[i];
+  let curLv=null; levels.forEach(l=>{ if(l[0]<=curVal+0.001) curLv=l[0]; });
+  let nextLv=null; for(const l of levels){ if(l[0]>(curLv===null?-1:curLv)){ nextLv=l[0]; break; } }
+  const rows=levels.map(([v,desc])=>{
+    const isCur=v===curLv, isNext=v===nextLv;
+    const cls=isCur?'lvl-cur':(isNext?'lvl-next':'');
+    const tag=isCur?' <b style="color:var(--gold)">← 今ここ</b>':(isNext?' <b style="color:var(--accent)">🎯 次の的</b>':'');
+    return `<button class="lvl-row ${cls}" onclick="pickLevel(${i},${v})"><span class="lvl-n">Lv${v}</span><span class="lvl-d">${desc}${tag}</span></button>`;
+  }).join("");
+  const html=`<div class="modal-bg" onclick="closeModal()"><div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-h">${name} の ものさし</div>
+    <div class="modal-sub">できるようになったレベルを タップ。次の的が、次の成長目標。</div>
+    ${rows}
+    <button class="modal-x" onclick="closeModal()">閉じる</button></div></div>`;
+  let m=document.getElementById('modalRoot');
+  if(!m){ m=document.createElement('div'); m.id='modalRoot'; document.body.appendChild(m); }
+  m.innerHTML=html;
+}
+function pickLevel(i,v){ if(!state.__level__) state.__level__=getVals(); state.__level__[i]=v; save(); closeModal(); render(); }
+function closeModal(){ const m=document.getElementById('modalRoot'); if(m) m.innerHTML=''; }
 function recordSnap(){
   if(!state.__snaps__) state.__snaps__=[];
   const today=new Date().toISOString().slice(0,10);
