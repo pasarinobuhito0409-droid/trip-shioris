@@ -80,6 +80,10 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
 .lv-chip{cursor:pointer;border:1px solid var(--line);font:inherit}
 .lv-chip:active{background:#33415f}
 .hint-edit{font-size:10.5px;color:var(--muted);margin-top:7px;text-align:center}
+.now-do{display:flex;gap:10px;padding:9px 2px;border-bottom:1px solid rgba(255,255,255,.05);font-size:12.5px;align-items:flex-start}
+.now-do:last-child{border-bottom:none}
+.nd-ax{flex:0 0 66px;font-weight:800;color:var(--gold)}
+.nd-d{flex:1;color:var(--text);line-height:1.45}
 .record-btn{width:100%;margin-top:11px;background:var(--accent);color:#fff;border:none;border-radius:11px;padding:12px;font-weight:800;font-size:13px;cursor:pointer}
 .record-btn:active{transform:scale(.98)}
 .snap-row{display:flex;justify-content:space-between;align-items:center;padding:9px 2px;border-bottom:1px solid rgba(255,255,255,.05);font-size:12.5px}
@@ -359,9 +363,17 @@ function questHTML(){
       <div class="foot">データはこの端末に自動保存。書き出しでバックアップ＆端末間コピー。<br>正本: skills/発明/LIFE_ROADMAP.md ＋ CURRENT_LEVEL.md</div></div>`;
 }
 
+function curLevelDesc(i){
+  const levels=DATA.level7[i][3]; const v=getVals()[i];
+  if(!levels||!levels.length) return DATA.level7[i][2]||'';
+  let lv=null,desc='これから';
+  levels.forEach(l=>{ if(l[0]<=v+0.001){lv=l[0];desc=l[1];} });
+  return lv!==null ? `Lv${lv}｜${desc}` : 'これから（最初のレベル手前）';
+}
 function selfHTML(){
   const labs=getLabs(), vals=getVals();
   const chips=labs.map((lb,i)=>`<button class="lv-chip" onclick="editLevel(${i})">${lb} <b>${vals[i]}</b></button>`).join("");
+  const nowDoing=labs.map((lb,i)=>`<div class="now-do"><span class="nd-ax">${lb} ${vals[i]}</span><span class="nd-d">${curLevelDesc(i)}</span></div>`).join("");
   const snaps=state.__snaps__||[];
   const snapList = snaps.length
     ? snaps.map((s,i)=>`<div class="snap-row"><span>📸 ${s.date}</span><span class="snap-del" onclick="delSnap(${i})">×</span></div>`).join("")
@@ -381,6 +393,8 @@ function selfHTML(){
       <div class="hint-edit">↑ 各チップをタップで 値を更新</div>
       <button class="record-btn" onclick="recordSnap()">📸 今の自分を記録（成長を重ねる）</button>
       <div style="margin-top:11px">${snapList}</div></div>
+    <div class="sec"><h3>📋 今 できていること（自分の現在地）</h3>${nowDoing}
+      <div class="foot" style="margin-top:9px">各軸の 今のレベルで「できること」。チップ タップで 更新できる。</div></div>
     <div class="sec"><h3>💪 強み（君の武器）</h3>${str}</div>
     <div class="sec"><h3>🛡 弱み・壁（倒す敵）</h3>${ene}</div>
     <div class="sec"><h3>🧠 特性（自分のクセ＝取扱説明書）</h3>${tra}</div>
