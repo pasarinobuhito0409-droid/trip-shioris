@@ -39,6 +39,56 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
 .jump-today{background:#0a84ff;color:#fff;border:none;font-size:12px;font-weight:800;padding:8px 12px;border-radius:999px;cursor:pointer;box-shadow:0 2px 6px rgba(10,132,255,.3);transition:transform .1s;display:flex;align-items:center;gap:3px;white-space:nowrap}
 .jump-today:active{transform:scale(.94)}
 
+/* === iPhone風カレンダー === */
+.ical{padding:0 10px 24px}
+.ical-dow{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:4px}
+.ical-dow span{text-align:center;font-size:11px;font-weight:700;color:var(--muted);padding:6px 0}
+.ical-dow span.sun{color:#ff3b30}
+.ical-dow span.sat{color:#0a84ff}
+.ical-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.ical-cell{background:var(--card);border-radius:10px;min-height:76px;padding:6px 2px 5px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;border:1px solid var(--line);transition:transform .1s}
+.ical-cell:active{transform:scale(.95)}
+.ical-cell.empty{background:transparent;border:none;cursor:default}
+.ical-cell.past{opacity:.55;filter:saturate(.6)}
+.ical-cell .dnum{width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
+.ical-cell .dnum.sun{color:#ff3b30}
+.ical-cell .dnum.sat{color:#0a84ff}
+.ical-cell.today .dnum{background:#ff3b30;color:#fff !important}
+.ical-cell .dots{display:flex;flex-wrap:wrap;gap:3px;justify-content:center;max-width:92%}
+.ical-cell .dots i{width:6px;height:6px;border-radius:50%;display:inline-block}
+.ical-cell .more{font-size:9px;color:var(--muted);font-weight:700}
+.ical-cell .done-mini{font-size:9px;color:var(--done);font-weight:800}
+
+/* === 日別シート（iPhone風・下から出る） === */
+.ds-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:120;opacity:0;pointer-events:none;transition:opacity .25s;display:flex;align-items:flex-end;justify-content:center}
+.ds-bg.show{opacity:1;pointer-events:auto}
+.ds{background:#f5f5f7;width:100%;max-width:640px;max-height:88vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:16px 14px 30px;transform:translateY(100%);transition:transform .3s ease}
+.ds-bg.show .ds{transform:translateY(0)}
+.ds .grip{width:42px;height:5px;background:#ccc;border-radius:999px;margin:0 auto 14px}
+.ds h2{margin:0 0 2px;font-size:19px;font-weight:800}
+.ds .ds-sub{font-size:12px;color:var(--muted);margin-bottom:12px}
+.ds .ds-rows{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.ds .ds-row{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px}
+.ds .ds-row .bar{width:4px;height:26px;border-radius:2px;flex:0 0 auto}
+.ds .ds-row .t{font-size:12px;font-weight:800;color:#0a84ff;min-width:42px;font-variant-numeric:tabular-nums}
+.ds .ds-row .lbl{flex:1;font-size:14px;font-weight:600;cursor:pointer;line-height:1.4}
+.ds .ds-row.done{background:#f0f0f0}
+.ds .ds-row.done .lbl{text-decoration:line-through;color:#aaa}
+.ds .ds-row .act{appearance:none;border:none;background:#f0f0f4;color:#888;width:30px;height:30px;border-radius:50%;font-size:13px;cursor:pointer;flex:0 0 auto;display:flex;align-items:center;justify-content:center}
+.ds .ds-row .act.del{color:#c43}
+.ds .ds-empty{text-align:center;color:var(--muted);font-size:13px;padding:18px;background:#fff;border:1px dashed var(--line);border-radius:12px}
+.ds .ds-restore{width:100%;background:#fff;border:1.5px dashed #aaa;color:#666;padding:10px;border-radius:10px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:12px}
+.ds .ds-form{display:grid;grid-template-columns:1fr auto auto;gap:6px;background:#fff;border:1.5px solid #0a84ff;border-radius:12px;padding:10px}
+.ds .ds-form input[type=text]{border:1px solid var(--line);border-radius:8px;padding:10px;font:inherit;font-size:14px;min-width:0}
+.ds .ds-form input[type=time]{border:1px solid var(--line);border-radius:8px;padding:8px 6px;font:inherit;font-size:13px}
+.ds .ds-form input:focus{outline:none;border-color:#0a84ff}
+.ds .ds-form button{background:#0a84ff;color:#fff;border:none;border-radius:8px;padding:10px 14px;font:inherit;font-weight:800;font-size:13px;cursor:pointer;white-space:nowrap}
+.ds .ds-form button:active{transform:scale(.96)}
+
+/* プリセット予定にも×（削除）を出す */
+.chip .chip-act.preset-del{background:rgba(0,0,0,.1)}
+.chip.chip-restore{background:#fff;border:1.5px dashed #aaa;color:#888;font-weight:700}
+
 /* === 活動継続日バナー（リスト・記録 両方の上部に常時表示） === */
 .streak-banner{margin:8px 12px;padding:12px 14px;border-radius:14px;background:linear-gradient(135deg,#ff9500 0%,#ff5e3a 100%);color:#fff;box-shadow:0 3px 10px rgba(255,94,58,.3);display:flex;align-items:center;gap:12px}
 .streak-banner .sb-fire{font-size:30px;line-height:1}
@@ -252,6 +302,7 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
     <div class="month-tabs" id="monthTabs"></div>
     <div class="view-toggle">
       <button id="vList" class="active" onclick="setView('list')">リスト</button>
+      <button id="vCal2" onclick="setView('cal2')">📆 カレンダー</button>
       <button id="vRecord" onclick="setView('record')">📋 記録</button>
       <button class="jump-today" onclick="jumpToToday()" title="今日のタスクへジャンプ">📅 今日</button>
     </div>
@@ -275,6 +326,13 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
   <button onclick="exportJSON()">JSON書き出し</button>
   <button onclick="importJSON()">JSON読み込み</button>
   <button class="danger" onclick="resetMonth()">この月リセット</button>
+</div>
+
+<div class="ds-bg" id="dsBg" onclick="if(event.target===this)closeDaySheet()">
+  <div class="ds">
+    <div class="grip"></div>
+    <div id="dsBody"></div>
+  </div>
 </div>
 
 <div class="diary-modal-bg" id="diaryBg" onclick="if(event.target===this)closeDiary()">
@@ -406,7 +464,7 @@ function tally(m){
   days.forEach(x=>{
     planDay[x.type]++;
     if(x.night) planNight[x.night]++;
-    const tks = tasksOf(x);
+    const tks = visibleTasksOf(x, m);
     const s = getDayState(m, x.d);
     let dayDone = 0;
     tks.forEach(tk=>{
@@ -450,6 +508,7 @@ let currentView = "record";
 function setView(v){
   currentView = v;
   document.getElementById("vList").classList.toggle("active", v==="list");
+  document.getElementById("vCal2").classList.toggle("active", v==="cal2");
   document.getElementById("vRecord").classList.toggle("active", v==="record");
   renderCarryBanner();
   renderContent();
@@ -554,6 +613,7 @@ function renderCharts(){
 function renderContent(){
   const el = document.getElementById("content");
   if(currentView==="record") el.innerHTML = renderRecord();
+  else if(currentView==="cal2") el.innerHTML = renderIphoneCal();
   else el.innerHTML = renderList();
 }
 
@@ -572,8 +632,9 @@ function renderList(){
   const today = new Date();
   const isToday = (d)=> today.getFullYear()===2026 && today.getMonth()+1===currentMonth && today.getDate()===d;
   const html = days.map(x=>{
-    const tks = tasksOf(x);
+    const tks = visibleTasksOf(x, currentMonth);
     const s = getDayState(currentMonth, x.d);
+    const hid = getHidden(currentMonth, x.d);
     const wdCls = x.wd===6?"sat":(x.wd===0?"sun":"");
     const typeCls = x.type==="普通"?"normal":(x.type==="チート"?"cheat":"special");
     const todayCls = isToday(x.d)?"today":"";
@@ -581,15 +642,20 @@ function renderList(){
     let chips = tks.map(tk=>{
       const done = !!s[tk.id];
       const exCls = tk.ex ? `ex-${tk.ex}` : "";
-      return `<button class="chip cat-${tk.cat} ${exCls} ${done?'done':''}" onclick="toggleTask(${currentMonth},${x.d},'${tk.id}')"><span class="check">${done?'✓':''}</span><span class="label">${tk.label}</span></button>`;
+      return `<button class="chip cat-${tk.cat} ${exCls} ${done?'done':''}" onclick="toggleTask(${currentMonth},${x.d},'${tk.id}')"><span class="check">${done?'✓':''}</span><span class="label">${tk.label}</span><span class="chip-act preset-del" onclick="event.stopPropagation();hidePresetTask(${currentMonth},${x.d},'${tk.id}','${tk.label}')" title="この予定を消す">×</span></button>`;
     }).join("");
     // カスタムタスク
     if(s.__custom__ && s.__custom__.length){
       chips += s.__custom__.map(t=>{
         const done = !!s[t.id];
         const safeLabel = t.label.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-        return `<button class="chip cat-custom ${done?'done':''}" onclick="toggleTask(${currentMonth},${x.d},'${t.id}')"><span class="check">${done?'✓':''}</span><span class="label">${safeLabel}</span><span class="chip-act" onclick="event.stopPropagation();editCustomTask(${currentMonth},${x.d},'${t.id}')" title="編集">✏</span><span class="chip-act" onclick="event.stopPropagation();delCustomTask(${currentMonth},${x.d},'${t.id}')" title="削除">×</span></button>`;
+        const timed = t.time ? `${t.time} ${safeLabel}` : safeLabel;
+        return `<button class="chip cat-custom ${done?'done':''}" onclick="toggleTask(${currentMonth},${x.d},'${t.id}')"><span class="check">${done?'✓':''}</span><span class="label">${timed}</span><span class="chip-act" onclick="event.stopPropagation();editCustomTask(${currentMonth},${x.d},'${t.id}')" title="編集">✏</span><span class="chip-act" onclick="event.stopPropagation();delCustomTask(${currentMonth},${x.d},'${t.id}')" title="削除">×</span></button>`;
       }).join("");
+    }
+    // 消した予定を戻す
+    if(hid.length){
+      chips += `<button class="chip chip-restore" onclick="restoreHidden(${currentMonth},${x.d})" title="消した予定を戻す">↩ ${hid.length}件戻す</button>`;
     }
     // 追加ボタン
     chips += `<button class="chip chip-add" onclick="addCustomTask(${currentMonth},${x.d})" title="タスク追加">+ 追加</button>`;
@@ -893,6 +959,157 @@ function delCustomTask(m,d,id){
   delete s[id];
   saveState(state);
   render();
+}
+
+// ===== プリセット予定の削除（非表示）と復元 =====
+function getHidden(m,d){
+  const s = getDayState(m,d);
+  return s.__hidden__ || [];
+}
+function visibleTasksOf(x, m){
+  const hid = getHidden(m, x.d);
+  if(!hid.length) return tasksOf(x);
+  return tasksOf(x).filter(t=>!hid.includes(t.id));
+}
+function hidePresetTask(m,d,id,label){
+  if(!confirm(`「${label}」を消す？\n（達成率の計算からも外れる。あとで戻せる）`)) return;
+  const s = getDayState(m,d);
+  if(!s.__hidden__) s.__hidden__ = [];
+  if(!s.__hidden__.includes(id)) s.__hidden__.push(id);
+  delete s[id];
+  saveState(state);
+  diaryToast("✓ 予定を消した");
+  render();
+  renderDaySheetIfOpen();
+}
+function restoreHidden(m,d){
+  const s = getDayState(m,d);
+  delete s.__hidden__;
+  saveState(state);
+  diaryToast("✓ 予定を戻した");
+  render();
+  renderDaySheetIfOpen();
+}
+
+// ===== iPhone風カレンダー =====
+const DOT_COLORS = {
+  morning:"#5ab4ff", lunch:"#a99cff", night:"#c850dc",
+  daily:"#34c759", special:"#e6b422", rest:"#ff85a0", custom:"#8e44ad"
+};
+function renderIphoneCal(){
+  const days = buildMonth(currentMonth);
+  const dayMap = {};
+  days.forEach(x=>dayMap[x.d]=x);
+  const first = new Date(2026, currentMonth-1, 1).getDay();
+  const total = daysInMonth(currentMonth);
+  const cells = [];
+  for(let i=0;i<first;i++) cells.push(null);
+  for(let d=1; d<=total; d++) cells.push(d);
+  while(cells.length % 7 !== 0) cells.push(null);
+  const today = new Date();
+  const isToday = (d)=> today.getFullYear()===2026 && today.getMonth()+1===currentMonth && today.getDate()===d;
+  const dow = ["日","月","火","水","木","金","土"].map((w,i)=>
+    `<span class="${i===0?'sun':(i===6?'sat':'')}">${w}</span>`).join("");
+  const cellsHTML = cells.map(d=>{
+    if(!d) return `<div class="ical-cell empty"></div>`;
+    const x = dayMap[d];
+    const s = getDayState(currentMonth, d);
+    const tks = visibleTasksOf(x, currentMonth);
+    const customs = s.__custom__ || [];
+    const all = [
+      ...tks.map(t=>({cat:t.cat, done:!!s[t.id]})),
+      ...customs.map(t=>({cat:"custom", done:!!s[t.id]}))
+    ];
+    const doneCnt = all.filter(a=>a.done).length;
+    const dots = all.slice(0,6).map(a=>
+      `<i style="background:${DOT_COLORS[a.cat]||'#bbb'};${a.done?'opacity:.25':''}"></i>`).join("");
+    const more = all.length>6 ? `<span class="more">+${all.length-6}</span>` : "";
+    const numCls = x.wd===0?"sun":(x.wd===6?"sat":"");
+    return `<div class="ical-cell ${isToday(d)?'today':''} ${isPastDay(currentMonth,d)?'past':''}" onclick="openDaySheet(${currentMonth},${d})">
+      <div class="dnum ${numCls}">${d}</div>
+      <div class="dots">${dots}${more}</div>
+      ${doneCnt?`<span class="done-mini">✓${doneCnt}</span>`:""}
+    </div>`;
+  }).join("");
+  return `<div class="ical"><div class="ical-dow">${dow}</div><div class="ical-grid">${cellsHTML}</div></div>`;
+}
+
+// ===== 日別シート（タップで開く・予定追加/完了/削除） =====
+let dsM = null, dsD = null;
+function openDaySheet(m,d){
+  dsM = m; dsD = d;
+  document.getElementById("dsBg").classList.add("show");
+  renderDaySheet();
+}
+function closeDaySheet(){
+  dsM = null; dsD = null;
+  document.getElementById("dsBg").classList.remove("show");
+  render();
+}
+function renderDaySheetIfOpen(){ if(dsM !== null) renderDaySheet(); }
+function dsToggle(id){ toggleTask(dsM, dsD, id); renderDaySheet(); }
+function dsEdit(id){ editCustomTask(dsM, dsD, id); renderDaySheet(); }
+function dsDel(id){ delCustomTask(dsM, dsD, id); renderDaySheet(); }
+function dsAdd(){
+  const nameEl = document.getElementById("dsName");
+  const timeEl = document.getElementById("dsTime");
+  const name = (nameEl.value||"").trim();
+  const time = timeEl.value || "";
+  if(!name){ diaryToast("予定名を入れてね"); nameEl.focus(); return; }
+  const s = getDayState(dsM, dsD);
+  if(!s.__custom__) s.__custom__ = [];
+  s.__custom__.push({ id:`c_${Date.now()}`, label:name, cat:"custom", time:time });
+  saveState(state);
+  diaryToast("✓ 予定を追加");
+  render();
+  renderDaySheet();
+}
+function renderDaySheet(){
+  if(dsM === null) return;
+  const days = buildMonth(dsM);
+  const x = days.find(k=>k.d===dsD);
+  if(!x) return;
+  const s = getDayState(dsM, dsD);
+  const tks = visibleTasksOf(x, dsM);
+  const hid = getHidden(dsM, dsD);
+  const esc = t => (t||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  // プリセット行
+  let rows = tks.map(tk=>{
+    const done = !!s[tk.id];
+    return `<div class="ds-row ${done?'done':''}">
+      <span class="bar" style="background:${DOT_COLORS[tk.cat]||'#bbb'}"></span>
+      <span class="lbl" onclick="dsToggle('${tk.id}')">${tk.label}</span>
+      <button class="act del" onclick="hidePresetTask(${dsM},${dsD},'${tk.id}','${tk.label}')" title="消す">×</button>
+    </div>`;
+  }).join("");
+  // カスタム行（時間なし→時間あり時刻順）
+  const customs = (s.__custom__||[]).slice().sort((a,b)=>{
+    if(!a.time && !b.time) return 0;
+    if(!a.time) return -1;
+    if(!b.time) return 1;
+    return a.time.localeCompare(b.time);
+  });
+  rows += customs.map(t=>{
+    const done = !!s[t.id];
+    return `<div class="ds-row ${done?'done':''}">
+      <span class="bar" style="background:${DOT_COLORS.custom}"></span>
+      ${t.time?`<span class="t">${t.time}</span>`:""}
+      <span class="lbl" onclick="dsToggle('${t.id}')">${esc(t.label)}</span>
+      <button class="act" onclick="dsEdit('${t.id}')" title="名前を変える">✏</button>
+      <button class="act del" onclick="dsDel('${t.id}')" title="削除">×</button>
+    </div>`;
+  }).join("");
+  const wd = WD_JP[x.wd];
+  document.getElementById("dsBody").innerHTML = `
+    <h2>${dsM}月${dsD}日（${wd}）</h2>
+    <div class="ds-sub">${x.type}日 ・ 予定をタップで完了⇄戻す</div>
+    <div class="ds-rows">${rows || '<div class="ds-empty">予定なし。下から追加できる</div>'}</div>
+    ${hid.length?`<button class="ds-restore" onclick="restoreHidden(${dsM},${dsD})">↩ 消した予定を${hid.length}件戻す</button>`:""}
+    <div class="ds-form">
+      <input id="dsName" type="text" placeholder="予定名（例：歯医者）">
+      <input id="dsTime" type="time">
+      <button onclick="dsAdd()">＋ 追加</button>
+    </div>`;
 }
 
 function resetMonth(){
