@@ -1,178 +1,283 @@
 <!DOCTYPE html>
 <html lang="ja"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>鯉の刺身ガチランキング 福岡・佐賀</title>
+<title>鯉刺し番付 — 福岡・佐賀 ガチランキング</title>
+<meta name="description" content="福岡県・佐賀県で本当にうまい鯉のあらい（刺身）が食べられる店を徹底調査したランキング。地図・公式サイト・写真リンク付き。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;}
-body{font-family:"Hiragino Sans","Yu Gothic",-apple-system,sans-serif;margin:0;padding:0;background:#f5f5f0;color:#2c2c2c;line-height:1.7;}
-.wrap{max-width:800px;margin:0 auto;padding:16px;}
-header{background:linear-gradient(135deg,#1d6fa5,#5b9279);color:white;padding:32px 20px;border-radius:16px;text-align:center;margin-bottom:20px;box-shadow:0 4px 20px rgba(0,0,0,0.1);}
-header h1{margin:0 0 8px;font-size:24px;letter-spacing:1px;}
-header p{margin:0;opacity:.95;font-size:14px;}
-.card{background:white;border-radius:16px;padding:20px;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,0.08);position:relative;}
-.card.no1{border:3px solid #d4a017;}
-.rankrow{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
-.rank{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:20px;flex-shrink:0;background:#eee;color:#666;}
-.rank.r1{background:#f6e3a1;color:#7a5c00;}
-.rank.r2{background:#e3e6ea;color:#5a6470;}
-.rank.r3{background:#f0d4c0;color:#8a4a1d;}
-.name{font-size:19px;font-weight:bold;margin:0;}
-.area{font-size:13px;color:#1d6fa5;font-weight:bold;margin:0;}
-.badge{display:inline-block;padding:2px 10px;background:#d4a017;color:white;border-radius:12px;font-size:11px;margin-bottom:8px;}
-.ev{font-size:14px;color:#444;margin:8px 0 4px;}
-.hours{font-size:12.5px;color:#777;margin:0 0 12px;}
-.links{display:flex;flex-wrap:wrap;gap:8px;}
-.links a{display:inline-block;padding:9px 16px;border-radius:20px;font-size:14px;text-decoration:none;font-weight:bold;}
-a.map{background:#e8f1f7;color:#1d6fa5;}
-a.hp{background:#e9f3ec;color:#3c7050;}
-a.photo{background:#fdf0e5;color:#a05c1c;}
-a.tel{background:#f7e8ee;color:#a03060;}
-.note{background:#fff8e6;border-left:5px solid #d4a017;border-radius:8px;padding:14px 16px;font-size:14px;margin-bottom:14px;}
-.note p{margin:4px 0;}
-.footer{text-align:center;padding:24px 0;color:#888;font-size:12px;}
-.footer a{color:#1d6fa5;}
-.words{background:white;border-radius:16px;padding:16px 20px;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,0.08);font-size:14px;}
-.words table{width:100%;border-collapse:collapse;}
-.words td{padding:6px 4px;border-bottom:1px solid #eee;vertical-align:top;}
-.words td:first-child{font-weight:bold;white-space:nowrap;padding-right:10px;}
+:root{
+  --ink:#10151c; --ink2:#161d27; --paper:#f6f1e7; --gold:#c8a44d; --gold-soft:#e3cd8f;
+  --hi:#d8434a; --saga:#3e9b8f; --fuku:#e0704b; --line:rgba(200,164,77,.25);
+  --txt:#e8e2d4; --txt2:#a89f8c;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Zen Kaku Gothic New",sans-serif;background:var(--ink);color:var(--txt);line-height:1.8;-webkit-font-smoothing:antialiased}
+.serif{font-family:"Shippori Mincho",serif}
+.wrap{max-width:760px;margin:0 auto;padding:0 18px}
+
+/* hero */
+.hero{position:relative;overflow:hidden;text-align:center;padding:72px 16px 56px;border-bottom:1px solid var(--line)}
+.hero .bgchar{position:absolute;top:50%;left:50%;transform:translate(-50%,-54%);font-size:min(78vw,480px);font-family:"Shippori Mincho",serif;font-weight:800;color:rgba(200,164,77,.06);pointer-events:none;user-select:none;line-height:1}
+.hero .kicker{letter-spacing:.42em;font-size:12px;color:var(--gold);margin-bottom:18px}
+.hero h1{font-family:"Shippori Mincho",serif;font-weight:800;font-size:clamp(34px,9vw,56px);letter-spacing:.08em;color:var(--paper)}
+.hero h1 .red{color:var(--hi)}
+.hero .sub{margin-top:14px;font-size:13.5px;color:var(--txt2);letter-spacing:.18em}
+.hero .badge{display:inline-block;margin-top:22px;border:1px solid var(--line);border-radius:999px;padding:7px 20px;font-size:12px;letter-spacing:.22em;color:var(--gold-soft)}
+
+/* quick nav */
+.qnav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:18px 12px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(16,21,28,.92);backdrop-filter:blur(8px);z-index:50}
+.qnav a{font-size:12.5px;color:var(--txt2);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:6px 14px;letter-spacing:.06em;transition:.25s}
+.qnav a:hover{color:var(--gold-soft);border-color:var(--gold)}
+
+/* section heading */
+.sec{padding:54px 0 8px;text-align:center}
+.sec .en{font-size:11px;letter-spacing:.4em;color:var(--gold);text-transform:uppercase}
+.sec h2{font-family:"Shippori Mincho",serif;font-size:26px;letter-spacing:.14em;color:var(--paper);margin-top:8px}
+.sec .rule{width:46px;height:1px;background:var(--gold);margin:18px auto 0}
+
+/* glossary */
+.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:30px 0 8px}
+.gloss div{background:var(--ink2);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.gloss b{display:block;font-family:"Shippori Mincho",serif;color:var(--gold-soft);font-size:15px;margin-bottom:6px;letter-spacing:.08em}
+.gloss p{font-size:13px;color:var(--txt2);line-height:1.7}
+
+/* champion card */
+.champ{position:relative;margin:38px 0 26px;background:linear-gradient(160deg,#1b2330,#141a23);border:1px solid var(--gold);border-radius:20px;padding:38px 28px 30px;text-align:center;box-shadow:0 18px 50px rgba(0,0,0,.45)}
+.champ .crown{position:absolute;top:-17px;left:50%;transform:translateX(-50%);background:var(--gold);color:#1c1607;font-size:12px;font-weight:700;letter-spacing:.26em;border-radius:999px;padding:7px 24px}
+.champ .rankword{font-family:"Shippori Mincho",serif;color:var(--gold);font-size:14px;letter-spacing:.5em;margin-bottom:10px}
+.champ h3{font-family:"Shippori Mincho",serif;font-size:clamp(30px,7vw,40px);font-weight:800;color:var(--paper);letter-spacing:.1em}
+.champ .place{margin-top:8px;font-size:13px;color:var(--txt2);letter-spacing:.12em}
+.champ .copy{margin:18px auto 0;max-width:520px;font-size:14.5px;color:var(--txt);line-height:2}
+.champ .stars{margin-top:14px;color:var(--gold);letter-spacing:6px;font-size:17px}
+.champ .hours{margin-top:8px;font-size:12px;color:var(--txt2)}
+
+/* rank cards */
+.card{display:flex;gap:18px;background:var(--ink2);border:1px solid rgba(200,164,77,.16);border-radius:18px;padding:24px 22px;margin-bottom:16px;transition:transform .3s,border-color .3s;opacity:0;transform:translateY(18px)}
+.card.show{opacity:1;transform:translateY(0)}
+.card:hover{transform:translateY(-3px);border-color:var(--gold)}
+.medal{flex-shrink:0;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"Shippori Mincho",serif;font-weight:800;font-size:22px;border:1px solid var(--line);color:var(--txt2);background:#10161f}
+.m2{background:linear-gradient(150deg,#d9dde3,#9aa3ad);color:#2c3540;border:none}
+.m3{background:linear-gradient(150deg,#e0a172,#a8632f);color:#3d2008;border:none}
+.cbody{flex:1;min-width:0}
+.crow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cname{font-family:"Shippori Mincho",serif;font-size:21px;font-weight:700;color:var(--paper);letter-spacing:.04em}
+.pill{font-size:11px;font-weight:700;letter-spacing:.1em;border-radius:999px;padding:3px 12px}
+.p-saga{background:rgba(62,155,143,.16);color:#7fd0c5;border:1px solid rgba(62,155,143,.45)}
+.p-fuku{background:rgba(224,112,75,.14);color:#f0a184;border:1px solid rgba(224,112,75,.45)}
+.ccatch{margin-top:6px;font-size:13px;color:var(--gold-soft);letter-spacing:.06em}
+.cev{margin-top:8px;font-size:13.5px;color:var(--txt2);line-height:1.9}
+.chours{margin-top:6px;font-size:12px;color:#7d7666}
+.acts{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.acts a{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;text-decoration:none;border-radius:999px;padding:8px 16px;border:1px solid var(--line);color:var(--txt);transition:.25s;min-height:38px}
+.acts a:hover{border-color:var(--gold);color:var(--gold-soft)}
+.acts a.tel{border-color:rgba(216,67,74,.5);color:#f0917f}
+.acts a.tel:hover{border-color:var(--hi)}
+
+/* note + footer */
+.note{background:rgba(200,164,77,.07);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:0 14px 14px 0;padding:20px 22px;margin:34px 0;font-size:13.5px;color:var(--txt2)}
+.note p{margin:5px 0}
+.note b{color:var(--gold-soft)}
+footer{text-align:center;padding:46px 18px 60px;border-top:1px solid var(--line);margin-top:50px}
+footer .fchar{font-family:"Shippori Mincho",serif;font-size:30px;color:var(--gold);letter-spacing:.5em;margin-bottom:14px}
+footer p{font-size:12px;color:#7d7666;line-height:2}
+footer a{color:#9b8d63;text-decoration:none;border-bottom:1px dotted #9b8d63}
+.wave{display:block;width:100%;height:34px;color:rgba(200,164,77,.22);margin:8px 0 0}
+@media(max-width:540px){
+  .card{padding:20px 16px;gap:13px}
+  .medal{width:42px;height:42px;font-size:18px}
+  .cname{font-size:18px}
+  .acts a{font-size:12.5px;padding:8px 13px}
+}
 </style>
 </head><body>
-<div class="wrap">
 
-<header>
-  <h1>🐟 鯉の刺身 ガチランキング</h1>
-  <p>福岡・佐賀 ｜ 2026.06 徹底調査版</p>
+<header class="hero">
+  <div class="bgchar" aria-hidden="true">鯉</div>
+  <p class="kicker">FUKUOKA × SAGA — KOI SASHIMI</p>
+  <h1>鯉刺し<span class="red">番付</span></h1>
+  <p class="sub">福岡・佐賀 ── 本当にうまい鯉のあらいを食べられる店</p>
+  <span class="badge">二〇二六年六月 徹底調査</span>
 </header>
 
-<div class="words">
-  <table>
-    <tr><td>鯉のあらい</td><td>鯉の刺身を冷水でキュッと締めたもの。酢味噌で食べるのが定番</td></tr>
-    <tr><td>鯉こく</td><td>鯉のぶつ切りを味噌で煮た汁</td></tr>
-    <tr><td>清水（きよみず）</td><td>佐賀県小城市の鯉料理の聖地。名水百選の滝の水で泥を抜く</td></tr>
-  </table>
-</div>
+<nav class="qnav">
+  <a href="#no1">👑 横綱</a>
+  <a href="#ranks">番付一覧</a>
+  <a href="#words">用語</a>
+  <a href="#notes">注意</a>
+</nav>
 
-<div class="card no1">
-  <span class="badge">👑 総合1位・聖地の王者</span>
-  <div class="rankrow">
-    <div class="rank r1">1</div>
-    <div><p class="name">滝見屋</p><p class="area">📍 佐賀県小城市・清水の滝そば</p></div>
-  </div>
-  <p class="ev">食べログ約3.5で清水エリア1位。明治27年（1894年）創業。名水百選の滝の水で鯉を泳がせて泥を抜くから臭みゼロ。</p>
-  <p class="hours">⏰ 昼中心の営業。行く前に電話確認が確実</p>
-  <div class="links">
-    <a class="map" href="https://www.google.com/maps/search/?api=1&query=滝見屋+鯉料理+佐賀県小城市">📍 地図</a>
-    <a class="hp" href="http://www.kiyomizu-koi.jp/shop/takimiya.html">🌐 公式</a>
-    <a class="photo" href="https://tabelog.com/saga/A4103/A410303/41000539/dtlphotolst/">📷 写真</a>
-  </div>
-</div>
+<main class="wrap">
 
-<div class="card">
-  <div class="rankrow">
-    <div class="rank r2">2</div>
-    <div><p class="name">鯉とりまぁしゃん 鯉の巣本店</p><p class="area">📍 福岡県久留米市田主丸町</p></div>
-  </div>
-  <p class="ev">Yahooマップ4.1。創業60年超。伝説の鯉漁師「まぁしゃん」の店。あらいを酢醤油で出す＝素材への自信。筑後川上流の鯉だけ使用。</p>
-  <p class="hours">⏰ 11:00〜15:00（日祝は夜も）／水曜定休</p>
-  <div class="links">
-    <a class="map" href="https://www.google.com/maps/search/?api=1&query=鯉とりまあしゃん+鯉の巣本店+久留米市田主丸">📍 地図</a>
-    <a class="hp" href="https://koitori-maashan.com/">🌐 公式</a>
-    <a class="photo" href="https://tabelog.com/fukuoka/A4008/A400801/40003727/dtlphotolst/smp2/">📷 写真</a>
-  </div>
-</div>
+  <section id="words" class="sec">
+    <p class="en">glossary</p>
+    <h2>言葉の意味</h2>
+    <div class="rule"></div>
+  </section>
 
-<div class="card">
-  <div class="rankrow">
-    <div class="rank r3">3</div>
-    <div><p class="name">鯉ひろまつ（広松養魚場）</p><p class="area">📍 福岡県筑紫野市</p></div>
+  <div class="gloss">
+    <div><b>鯉のあらい</b><p>鯉の刺身を冷水でキュッと締めたもの。酢味噌で食べるのが定番。</p></div>
+    <div><b>鯉こく</b><p>鯉のぶつ切りを味噌で煮込んだ汁。あらいと並ぶ二大鯉料理。</p></div>
+    <div><b>清水（きよみず）</b><p>佐賀県小城市の鯉の聖地。名水百選の滝の水で泥を抜く。</p></div>
   </div>
-  <p class="ev">Tripadvisor4.2。大正4年（1915年）創業の養魚場直営。卵から育てる完全養殖で泥臭さなし。鯉料理コンクール入賞歴あり。</p>
-  <p class="hours">⏰ 11:00〜20:00／定休なし</p>
-  <div class="links">
-    <a class="map" href="https://www.google.com/maps/search/?api=1&query=鯉ひろまつ+筑紫野市">📍 地図</a>
-    <a class="hp" href="https://koi-hiromatsu-yougyojou.com/koi-hiromatsu/">🌐 公式</a>
-    <a class="photo" href="https://www.instagram.com/koi.hiromatsu/">📷 写真</a>
-  </div>
-</div>
 
-<div class="card">
-  <div class="rankrow">
-    <div class="rank">4</div>
-    <div><p class="name">鯉御殿 たきもと</p><p class="area">📍 佐賀県小城市・清水</p></div>
-  </div>
-  <p class="ev">清水エリア2位。身の引き締まったあらいと自家製味噌ダレが武器。大型店で団体もOK。</p>
-  <div class="links">
-    <a class="map" href="https://www.google.com/maps/search/?api=1&query=鯉御殿+小城市">📍 地図</a>
-    <a class="hp" href="https://www.ogi-kankou.com/restaurant/koi">🌐 紹介</a>
-    <a class="photo" href="https://www.google.com/search?tbm=isch&q=鯉御殿+たきもと+小城">📷 写真</a>
-  </div>
-</div>
+  <section id="no1" class="sec">
+    <p class="en">grand champion</p>
+    <h2>横綱 ── 総合一位</h2>
+    <div class="rule"></div>
+  </section>
 
-<div class="card">
-  <div class="rankrow">
-    <div class="rank">5</div>
-    <div><p class="name">鯉しげ</p><p class="area">📍 佐賀県小城市・清水</p></div>
+  <div class="champ">
+    <span class="crown">総合 1 位</span>
+    <p class="rankword">佐賀・小城</p>
+    <h3>滝見屋</h3>
+    <p class="place">清水の滝のたもと ── 明治二十七年（1894）創業</p>
+    <p class="copy">
+      名水百選の滝の水に鯉を泳がせて泥を抜く。
+      だから臭みゼロ。
+      食べログ約3.5で清水エリア不動の一位。
+      百三十年、滝の音とともに鯉一筋。
+    </p>
+    <p class="stars">★★★★★</p>
+    <p class="hours">昼中心の営業 ── 行く前に電話確認が確実</p>
+    <div class="acts" style="justify-content:center">
+      <a href="https://www.google.com/maps/search/?api=1&query=滝見屋+鯉料理+佐賀県小城市">📍 地図を開く</a>
+      <a href="http://www.kiyomizu-koi.jp/shop/takimiya.html">🌐 公式</a>
+      <a href="https://tabelog.com/saga/A4103/A410303/41000539/dtlphotolst/">📷 写真</a>
+    </div>
   </div>
-  <p class="ev">創業40年超。全席個室でゆっくり食べられる。家族・デート向き。テイクアウトもあり。</p>
-  <div class="links">
-    <a class="map" href="https://www.google.com/maps/search/?api=1&query=鯉しげ+小城市">📍 地図</a>
-    <a class="hp" href="https://www.koishige.net/">🌐 公式</a>
-    <a class="photo" href="https://tabelog.com/saga/A4103/A410303/41001370/dtlmenu/photo/">📷 写真</a>
-  </div>
-</div>
 
-<div class="card">
-  <div class="rankrow">
-    <div class="rank">6</div>
-    <div><p class="name">白滝</p><p class="area">📍 佐賀県小城市・清水地区入口</p></div>
-  </div>
-  <p class="ev">落ち着いた和風の店構え。清水の名水で締めたあらいと鯉こくの王道セット。</p>
-  <p class="hours">⏰ 11:00〜17:00／火曜定休・要事前電話</p>
-  <div class="links">
-    <a class="map" href="https://www.google.com/maps/search/?api=1&query=鯉料理+白滝+小城市">📍 地図</a>
-    <a class="hp" href="http://www.koi-shirataki.jp/">🌐 公式</a>
-    <a class="photo" href="https://www.google.com/search?tbm=isch&q=鯉料理+白滝+小城">📷 写真</a>
-  </div>
-</div>
+  <section id="ranks" class="sec">
+    <p class="en">ranking</p>
+    <h2>番付一覧</h2>
+    <div class="rule"></div>
+  </section>
 
-<div class="card">
-  <div class="rankrow">
-    <div class="rank">7</div>
-    <div><p class="name">酒食 青松</p><p class="area">📍 福岡市博多区・中洲</p></div>
-  </div>
-  <p class="ev">福岡市内で鯉のあらいが食べられる貴重な店。透き通ったピンクの身が名物。前日までに要予約（大3,800円・小2,000円）。</p>
-  <p class="hours">⏰ 18:30〜（夜のみ）／要予約</p>
-  <div class="links">
-    <a class="map" href="https://www.google.com/maps/search/?api=1&query=酒食+青松+福岡市中洲">📍 地図</a>
-    <a class="photo" href="https://www.google.com/search?tbm=isch&q=酒食青松+鯉のあらい+中洲">📷 写真</a>
-    <a class="tel" href="tel:0922837194">📞 092-283-7194</a>
-  </div>
-</div>
+  <svg class="wave" viewBox="0 0 600 30" preserveAspectRatio="none" aria-hidden="true"><path d="M0 18 Q 50 4 100 18 T 200 18 T 300 18 T 400 18 T 500 18 T 600 18" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
 
-<div class="card">
-  <div class="rankrow">
-    <div class="rank">8</div>
-    <div><p class="name">ドライブイン香魚</p><p class="area">📍 福岡県朝倉市古毛</p></div>
+  <div class="card">
+    <div class="medal m2">2</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">鯉とりまぁしゃん 鯉の巣本店</span><span class="pill p-fuku">福岡・田主丸</span></div>
+      <p class="ccatch">── 伝説の鯉漁師の名を継ぐ、創業六十年</p>
+      <p class="cev">Yahooマップ4.1。あらいを酢醤油で出す＝素材への絶対の自信。筑後川の上流で獲れた鯉しか使わない。物語ごと味わう一皿。</p>
+      <p class="chours">⏰ 11:00〜15:00（日祝は夜あり）／水曜定休</p>
+      <div class="acts">
+        <a href="https://www.google.com/maps/search/?api=1&query=鯉とりまあしゃん+鯉の巣本店+久留米市田主丸">📍 地図</a>
+        <a href="https://koitori-maashan.com/">🌐 公式</a>
+        <a href="https://tabelog.com/fukuoka/A4008/A400801/40003727/dtlphotolst/smp2/">📷 写真</a>
+      </div>
+    </div>
   </div>
-  <p class="ev">鯉こく＋あらいの定番セットが看板。鮎や鰻など川魚全般も楽しめる昭和レトロなドライブイン。2025年に被災から再開済み。</p>
-  <p class="hours">⏰ 11:00〜20:00／火曜定休</p>
-  <div class="links">
-    <a class="map" href="https://www.google.com/maps/search/?api=1&query=ドライブイン香魚+朝倉市">📍 地図</a>
-    <a class="hp" href="https://retty.me/area/PRE40/ARE136/SUB13602/100000523288/">🌐 紹介</a>
-    <a class="photo" href="https://www.google.com/search?tbm=isch&q=ドライブイン香魚+朝倉+鯉">📷 写真</a>
-    <a class="tel" href="tel:0946520053">📞 0946-52-0053</a>
+
+  <div class="card">
+    <div class="medal m3">3</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">鯉ひろまつ</span><span class="pill p-fuku">福岡・筑紫野</span></div>
+      <p class="ccatch">── 大正四年創業、養魚場直営の完全養殖</p>
+      <p class="cev">Tripadvisor4.2。卵の孵化から出荷まで自社管理。清らかな地下水育ちで泥臭さ皆無。鯉料理コンクール入賞歴あり。</p>
+      <p class="chours">⏰ 11:00〜20:00／定休なし</p>
+      <div class="acts">
+        <a href="https://www.google.com/maps/search/?api=1&query=鯉ひろまつ+筑紫野市">📍 地図</a>
+        <a href="https://koi-hiromatsu-yougyojou.com/koi-hiromatsu/">🌐 公式</a>
+        <a href="https://www.instagram.com/koi.hiromatsu/">📷 写真</a>
+      </div>
+    </div>
   </div>
-</div>
 
-<div class="note">
-  <p>※ <b>深松屋</b>（評判最高だった店）は現在<b>休業中</b>のためランク外。</p>
-  <p>※ 鯉料理店は昼営業中心・予約制が多い。<b>行く前に必ず電話</b>。</p>
-  <p>※ ランキング根拠＝評価点（食べログ/Yahoo/Tripadvisor）＋創業の歴史＋鯉専門度。</p>
-</div>
+  <div class="card">
+    <div class="medal">4</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">鯉御殿 たきもと</span><span class="pill p-saga">佐賀・小城</span></div>
+      <p class="ccatch">── 自家製味噌ダレの大御殿</p>
+      <p class="cev">清水エリア2位。身の引き締まったあらいに、秘伝の自家製味噌ダレ。大型店で団体・宴会にも強い。</p>
+      <div class="acts">
+        <a href="https://www.google.com/maps/search/?api=1&query=鯉御殿+小城市">📍 地図</a>
+        <a href="https://www.ogi-kankou.com/restaurant/koi">🌐 紹介</a>
+        <a href="https://www.google.com/search?tbm=isch&q=鯉御殿+たきもと+小城">📷 写真</a>
+      </div>
+    </div>
+  </div>
 
-<div class="footer">
-  調査日：2026-06-12 ｜ 出典：<a href="https://www.ogi-kankou.com/restaurant/koi">小城市観光協会</a>・<a href="http://www.kiyomizu-koi.jp/">清水鯉料理組合</a>・食べログ・Tripadvisor
-</div>
+  <div class="card">
+    <div class="medal">5</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">鯉しげ</span><span class="pill p-saga">佐賀・小城</span></div>
+      <p class="ccatch">── 全席個室、静かに向き合う鯉</p>
+      <p class="cev">創業四十年超。全席個室でゆったり。家族・デート向き。テイクアウトもできる。</p>
+      <div class="acts">
+        <a href="https://www.google.com/maps/search/?api=1&query=鯉しげ+小城市">📍 地図</a>
+        <a href="https://www.koishige.net/">🌐 公式</a>
+        <a href="https://tabelog.com/saga/A4103/A410303/41001370/dtlmenu/photo/">📷 写真</a>
+      </div>
+    </div>
+  </div>
 
-</div>
+  <div class="card">
+    <div class="medal">6</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">白滝</span><span class="pill p-saga">佐賀・小城</span></div>
+      <p class="ccatch">── 清水地区の入口に構える和の風情</p>
+      <p class="cev">名水で締めたあらいと鯉こくの王道セット。落ち着いた和風の店構え。</p>
+      <p class="chours">⏰ 11:00〜17:00／火曜定休・要事前電話</p>
+      <div class="acts">
+        <a href="https://www.google.com/maps/search/?api=1&query=鯉料理+白滝+小城市">📍 地図</a>
+        <a href="http://www.koi-shirataki.jp/">🌐 公式</a>
+        <a href="https://www.google.com/search?tbm=isch&q=鯉料理+白滝+小城">📷 写真</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="medal">7</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">酒食 青松</span><span class="pill p-fuku">福岡・中洲</span></div>
+      <p class="ccatch">── 都心で鯉刺しに出会える夜の隠れ家</p>
+      <p class="cev">福岡市内で鯉のあらいが食べられる貴重な店。透き通ったピンクの身が名物。前日までに要予約（大3,800円・小2,000円）。</p>
+      <p class="chours">⏰ 18:30〜（夜のみ）／要予約</p>
+      <div class="acts">
+        <a href="https://www.google.com/maps/search/?api=1&query=酒食+青松+福岡市中洲">📍 地図</a>
+        <a href="https://www.google.com/search?tbm=isch&q=酒食青松+鯉のあらい+中洲">📷 写真</a>
+        <a class="tel" href="tel:0922837194">📞 予約 092-283-7194</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="medal">8</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">ドライブイン香魚</span><span class="pill p-fuku">福岡・朝倉</span></div>
+      <p class="ccatch">── 昭和レトロ、川魚づくしの休憩所</p>
+      <p class="cev">鯉こく＋あらいの定番セットが看板。鮎や鰻もそろう。2025年に被災から復活済み。</p>
+      <p class="chours">⏰ 11:00〜20:00／火曜定休</p>
+      <div class="acts">
+        <a href="https://www.google.com/maps/search/?api=1&query=ドライブイン香魚+朝倉市">📍 地図</a>
+        <a href="https://retty.me/area/PRE40/ARE136/SUB13602/100000523288/">🌐 紹介</a>
+        <a class="tel" href="tel:0946520053">📞 0946-52-0053</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="notes" class="note">
+    <p>※ <b>深松屋</b>（評判最高だった店）は現在<b>休業中</b>のため番付外。</p>
+    <p>※ 鯉料理店は昼営業中心・予約制が多い。<b>行く前に必ず電話</b>。</p>
+    <p>※ 番付の根拠＝評価点（食べログ／Yahoo／Tripadvisor）＋創業の歴史＋鯉専門度。</p>
+  </div>
+
+</main>
+
+<footer>
+  <p class="fchar">鯉</p>
+  <p>調査日 2026.06 ｜ 出典：<a href="https://www.ogi-kankou.com/restaurant/koi">小城市観光協会</a> ・ <a href="http://www.kiyomizu-koi.jp/">清水鯉料理組合</a> ・ 食べログ ・ Tripadvisor</p>
+  <p>鯉刺し番付 — 福岡・佐賀</p>
+</footer>
+
+<script>
+const io = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.card').forEach(c => io.observe(c));
+</script>
 </body></html>
