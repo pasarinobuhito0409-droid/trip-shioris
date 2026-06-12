@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>癒し番付 — 滝見屋から行く 小城・佐賀</title>
+<meta name="description" content="佐賀県小城市・滝見屋周辺で仕事の疲れを癒せる観光スポットを徹底調査したランキング。地図・写真リンク付き。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0e1714; --ink2:#14201c; --paper:#f0f4ec; --gold:#c8a44d; --gold-soft:#e3cd8f;
+  --mid:#5eb89f; --hot:#e0704b; --line:rgba(94,184,159,.28);
+  --txt:#e2e9e0; --txt2:#9bab9f;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Zen Kaku Gothic New",sans-serif;background:var(--ink);color:var(--txt);line-height:1.8;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:0 18px}
+
+.hero{position:relative;overflow:hidden;text-align:center;padding:72px 16px 56px;border-bottom:1px solid var(--line)}
+.hero .bgchar{position:absolute;top:50%;left:50%;transform:translate(-50%,-54%);font-size:min(78vw,480px);font-family:"Shippori Mincho",serif;font-weight:800;color:rgba(94,184,159,.06);pointer-events:none;user-select:none;line-height:1}
+.hero .kicker{letter-spacing:.42em;font-size:12px;color:var(--mid);margin-bottom:18px}
+.hero h1{font-family:"Shippori Mincho",serif;font-weight:800;font-size:clamp(34px,9vw,56px);letter-spacing:.08em;color:var(--paper)}
+.hero h1 .gr{color:var(--mid)}
+.hero .sub{margin-top:14px;font-size:13.5px;color:var(--txt2);letter-spacing:.14em}
+.hero .badge{display:inline-block;margin-top:22px;border:1px solid var(--line);border-radius:999px;padding:7px 20px;font-size:12px;letter-spacing:.22em;color:var(--gold-soft)}
+
+.qnav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:18px 12px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(14,23,20,.92);backdrop-filter:blur(8px);z-index:50}
+.qnav a{font-size:12.5px;color:var(--txt2);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:6px 14px;letter-spacing:.06em;transition:.25s}
+.qnav a:hover{color:var(--gold-soft);border-color:var(--gold)}
+
+.sec{padding:54px 0 8px;text-align:center}
+.sec .en{font-size:11px;letter-spacing:.4em;color:var(--mid);text-transform:uppercase}
+.sec h2{font-family:"Shippori Mincho",serif;font-size:26px;letter-spacing:.14em;color:var(--paper);margin-top:8px}
+.sec .rule{width:46px;height:1px;background:var(--mid);margin:18px auto 0}
+
+.champ{position:relative;margin:38px 0 26px;background:linear-gradient(160deg,#1a2a25,#131e1a);border:1px solid var(--mid);border-radius:20px;padding:38px 28px 30px;text-align:center;box-shadow:0 18px 50px rgba(0,0,0,.45)}
+.champ .crown{position:absolute;top:-17px;left:50%;transform:translateX(-50%);background:var(--mid);color:#0b1f19;font-size:12px;font-weight:700;letter-spacing:.26em;border-radius:999px;padding:7px 24px}
+.champ .rankword{font-family:"Shippori Mincho",serif;color:var(--mid);font-size:14px;letter-spacing:.5em;margin-bottom:10px}
+.champ h3{font-family:"Shippori Mincho",serif;font-size:clamp(28px,7vw,38px);font-weight:800;color:var(--paper);letter-spacing:.1em}
+.champ .place{margin-top:8px;font-size:13px;color:var(--txt2);letter-spacing:.12em}
+.champ .copy{margin:18px auto 0;max-width:520px;font-size:14.5px;color:var(--txt);line-height:2}
+.champ .stars{margin-top:14px;color:var(--gold);letter-spacing:6px;font-size:17px}
+.champ .hours{margin-top:8px;font-size:12px;color:var(--txt2)}
+
+.card{display:flex;gap:18px;background:var(--ink2);border:1px solid rgba(94,184,159,.18);border-radius:18px;padding:24px 22px;margin-bottom:16px;transition:transform .3s,border-color .3s;opacity:0;transform:translateY(18px)}
+.card.show{opacity:1;transform:translateY(0)}
+.card:hover{transform:translateY(-3px);border-color:var(--mid)}
+.medal{flex-shrink:0;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"Shippori Mincho",serif;font-weight:800;font-size:22px;border:1px solid var(--line);color:var(--txt2);background:#0f1a16}
+.m2{background:linear-gradient(150deg,#d9dde3,#9aa3ad);color:#2c3540;border:none}
+.m3{background:linear-gradient(150deg,#e0a172,#a8632f);color:#3d2008;border:none}
+.cbody{flex:1;min-width:0}
+.crow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cname{font-family:"Shippori Mincho",serif;font-size:21px;font-weight:700;color:var(--paper);letter-spacing:.04em}
+.pill{font-size:11px;font-weight:700;letter-spacing:.1em;border-radius:999px;padding:3px 12px;background:rgba(94,184,159,.14);color:#8fd6c2;border:1px solid rgba(94,184,159,.45)}
+.pill.far{background:rgba(224,112,75,.12);color:#f0a184;border-color:rgba(224,112,75,.4)}
+.ccatch{margin-top:6px;font-size:13px;color:var(--gold-soft);letter-spacing:.06em}
+.cev{margin-top:8px;font-size:13.5px;color:var(--txt2);line-height:1.9}
+.chours{margin-top:6px;font-size:12px;color:#6f8278}
+.acts{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.acts a{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;text-decoration:none;border-radius:999px;padding:8px 16px;border:1px solid var(--line);color:var(--txt);transition:.25s;min-height:38px}
+.acts a:hover{border-color:var(--gold);color:var(--gold-soft)}
+
+.note{background:rgba(200,164,77,.07);border:1px solid rgba(200,164,77,.25);border-left:3px solid var(--gold);border-radius:0 14px 14px 0;padding:20px 22px;margin:34px 0;font-size:13.5px;color:var(--txt2)}
+.note p{margin:5px 0}
+.note b{color:var(--gold-soft)}
+footer{text-align:center;padding:46px 18px 60px;border-top:1px solid var(--line);margin-top:50px}
+footer .fchar{font-family:"Shippori Mincho",serif;font-size:30px;color:var(--mid);letter-spacing:.5em;margin-bottom:14px}
+footer p{font-size:12px;color:#6f8278;line-height:2}
+footer a{color:#8aa893;text-decoration:none;border-bottom:1px dotted #8aa893}
+.wave{display:block;width:100%;height:34px;color:rgba(94,184,159,.25);margin:8px 0 0}
+@media(max-width:540px){
+  .card{padding:20px 16px;gap:13px}
+  .medal{width:42px;height:42px;font-size:18px}
+  .cname{font-size:18px}
+  .acts a{font-size:12.5px;padding:8px 13px}
+}
+</style>
+</head><body>
+
+<header class="hero">
+  <div class="bgchar" aria-hidden="true">癒</div>
+  <p class="kicker">OGI × SAGA — HEALING SPOTS</p>
+  <h1>癒し<span class="gr">番付</span></h1>
+  <p class="sub">滝見屋から行く ── 仕事の疲れを溶かす場所</p>
+  <span class="badge">二〇二六年六月 徹底調査</span>
+</header>
+
+<nav class="qnav">
+  <a href="#no1">👑 横綱</a>
+  <a href="#ranks">番付一覧</a>
+  <a href="#notes">注意</a>
+  <a href="../koi/">🐟 鯉刺し番付へ</a>
+</nav>
+
+<main class="wrap">
+
+  <section id="no1" class="sec">
+    <p class="en">grand champion</p>
+    <h2>横綱 ── 総合一位</h2>
+    <div class="rule"></div>
+  </section>
+
+  <div class="champ">
+    <span class="crown">総合 1 位</span>
+    <p class="rankword">滝見屋から徒歩一分</p>
+    <h3>清水の滝</h3>
+    <p class="place">落差75m ── 全国名水百選・別名「珠簾（たますだれ）の滝」</p>
+    <p class="copy">
+      鯉を食べたら、そのまま滝へ。
+      崖を垂直に落ちる75mの白糸と、
+      マイナスイオンの風。
+      夏は遊歩道に風鈴棚が並び、
+      せせらぎと風鈴の音だけの世界になる。
+      疲れた頭が静かにリセットされる場所。
+    </p>
+    <p class="stars">★★★★★</p>
+    <p class="hours">無料・いつでも ── 夏は天然の避暑地</p>
+    <div class="acts" style="justify-content:center">
+      <a href="https://www.google.com/maps/search/?api=1&query=清水の滝+佐賀県小城市">📍 地図を開く</a>
+      <a href="https://www.city.ogi.lg.jp/main/6226.html">🌐 公式</a>
+      <a href="https://www.google.com/search?tbm=isch&q=清水の滝+小城+風鈴">📷 写真</a>
+    </div>
+  </div>
+
+  <section id="ranks" class="sec">
+    <p class="en">ranking</p>
+    <h2>番付一覧</h2>
+    <div class="rule"></div>
+  </section>
+
+  <svg class="wave" viewBox="0 0 600 30" preserveAspectRatio="none" aria-hidden="true"><path d="M0 18 Q 50 4 100 18 T 200 18 T 300 18 T 400 18 T 500 18 T 600 18" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+
+  <div class="card">
+    <div class="medal m2">2</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">古湯・熊の川温泉郷</span><span class="pill far">車 約25分</span></div>
+      <p class="ccatch">── 38℃のぬる湯に、いつまでも浮かぶ</p>
+      <p class="cev">2100年の歴史を持つ「ぬる湯」の名湯。羊水と同じくらいの38℃で長湯が流儀。アルカリ性単純泉＋九州有数のラドン泉。神経痛・関節痛・リラックスに効く。仕事疲れへの最終兵器。</p>
+      <p class="chours">♨ 日帰り湯・家族風呂多数／嘉瀬川沿いの温泉街</p>
+      <div class="acts">
+        <a href="https://www.google.com/maps/search/?api=1&query=古湯温泉+佐賀市富士町">📍 地図</a>
+        <a href="https://www.fuji-spa.com/">🌐 公式</a>
+        <a href="https://www.google.com/search?tbm=isch&q=古湯温泉+ぬる湯">📷 写真</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="medal m3">3</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">祇園川のホタル</span><span class="pill">車 約5分</span></div>
+      <p class="ccatch">── 日本有数、初夏だけの光の川</p>
+      <p class="cev">毎年5月下旬〜6月上旬、源氏ボタルが乱舞する日本屈指の名所。清水の滝と同じ川筋。数万の光が音もなく流れる夜は、現実を忘れる。</p>
+      <p class="chours">🌙 見頃は5月下旬〜6月上旬の夜／今季は終盤・来季の楽しみに</p>
+      <div class="acts">
+        <a href="https://www.google.com/maps/search/?api=1&query=祇園川+小城市+ホタル">📍 地図</a>
+        <a href="https://www.city.ogi.lg.jp/main/39493.html">🌐 公式</a>
+        <a href="https://www.google.com/search?tbm=isch&q=祇園川+ホタル+小城">📷 写真</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="medal">4</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">小城公園</span><span class="pill">車 約10分</span></div>
+      <p class="ccatch">── 殿様が造った庭で、何もしない時間</p>
+      <p class="cev">小城藩主が造営した名庭園で「日本の歴史公園百選」。桜3000本、ツツジ2万5000株。池と老木の間をただ歩くだけで呼吸が深くなる。</p>
+      <p class="chours">🌸 無料・いつでも／春は桜とツツジの名所</p>
+      <div class="acts">
+        <a href="https://www.google.com/maps/search/?api=1&query=小城公園+佐賀県小城市">📍 地図</a>
+        <a href="https://www.ogi-kankou.com/">🌐 紹介</a>
+        <a href="https://www.google.com/search?tbm=isch&q=小城公園+桜">📷 写真</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="medal">5</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">村岡総本舗 羊羹資料館</span><span class="pill">車 約10分</span></div>
+      <p class="ccatch">── 羊羹の町で、甘いひと休み</p>
+      <p class="cev">昭和16年築のレンガ倉庫（国登録有形文化財）が資料館に。入館無料で、小城羊羹とお茶のおもてなしも。疲れた体に糖分と歴史が染みる。</p>
+      <p class="chours">🍵 入館無料／小城は「羊羹の町」</p>
+      <div class="acts">
+        <a href="https://www.google.com/maps/search/?api=1&query=村岡総本舗+羊羹資料館+小城市">📍 地図</a>
+        <a href="https://muraoka-sohonpo.co.jp/shiryoukan">🌐 公式</a>
+        <a href="https://www.google.com/search?tbm=isch&q=村岡総本舗+羊羹資料館">📷 写真</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="medal">6</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">小城温泉 開泉閣</span><span class="pill">車 約3分</span></div>
+      <p class="ccatch">── 滝見屋からすぐの一軒宿</p>
+      <p class="cev">ほたるの郷・小城エリア唯一の天然温泉旅館。100%天然のアルカリ性単純泉。春は桜、夏は風呂からホタルが見えることも。鯉→滝→湯の黄金ルートが完成する。</p>
+      <p class="chours">♨ 日帰り入浴あり／宿泊も可</p>
+      <div class="acts">
+        <a href="https://www.google.com/maps/search/?api=1&query=小城温泉+開泉閣">📍 地図</a>
+        <a href="https://www.kaisenkaku-saga.com/">🌐 公式</a>
+        <a href="https://www.google.com/search?tbm=isch&q=小城温泉+開泉閣">📷 写真</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="medal">7</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">川上峡</span><span class="pill far">車 約20分</span></div>
+      <p class="ccatch">── 「九州の嵐山」を屋形舟でゆらり</p>
+      <p class="cev">嘉瀬川の渓谷美。春は約300匹の鯉のぼり、夏は灯ろう流しと花火。屋形舟の遊覧（約10〜15分）は日常を忘れる時間。名物の白玉饅頭も。</p>
+      <p class="chours">⛵ 遊覧船は有料／四季それぞれの景色</p>
+      <div class="acts">
+        <a href="https://www.google.com/maps/search/?api=1&query=川上峡+佐賀市">📍 地図</a>
+        <a href="https://www.asobo-saga.jp/spots/detail/2b27ba73-93e6-4408-a290-38e64f4d2a2b">🌐 紹介</a>
+        <a href="https://www.google.com/search?tbm=isch&q=川上峡+鯉のぼり+屋形舟">📷 写真</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="medal">8</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">牛尾梅林</span><span class="pill">車 約12分</span></div>
+      <p class="ccatch">── 五千本の梅と、海まで見渡す丘</p>
+      <p class="cev">牛尾山一帯に約5000本の梅。2月中旬〜3月上旬は梅の香りに包まれ、一足早い春を体で感じる。眺めの良さは小城随一。</p>
+      <p class="chours">🌺 見頃は2月中旬〜3月上旬／無料</p>
+      <div class="acts">
+        <a href="https://www.google.com/maps/search/?api=1&query=牛尾梅林+小城市">📍 地図</a>
+        <a href="https://www.jalan.net/kankou/spt_41361ac2100121676/">🌐 紹介</a>
+        <a href="https://www.google.com/search?tbm=isch&q=牛尾梅林+小城">📷 写真</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="notes" class="note">
+    <p>※ 番付の根拠＝<b>癒し効果 × 滝見屋からの近さ × 通年で行けるか</b>。</p>
+    <p>※ ホタル（5月下旬〜6月上旬）・梅（2〜3月）・桜（3月末〜4月）は<b>季節限定</b>。時期を合わせると癒しが倍増。</p>
+    <p>※ 所要時間は車での目安。出発前にGoogleマップで最新の時間を確認してね。</p>
+  </div>
+
+  <div class="note" style="border-left-color:var(--mid)">
+    <p><b>おすすめ黄金ルート（日帰り・癒し全振り）</b></p>
+    <p>昼：滝見屋で鯉のあらい → 徒歩1分：清水の滝で深呼吸</p>
+    <p>午後：羊羹資料館で甘味 → 小城公園を散歩</p>
+    <p>夕方：古湯温泉のぬる湯に1時間 → 帰路</p>
+  </div>
+
+</main>
+
+<footer>
+  <p class="fchar">癒</p>
+  <p>調査日 2026.06 ｜ 出典：<a href="https://www.city.ogi.lg.jp/main/6226.html">小城市公式</a> ・ <a href="https://www.ogi-kankou.com/">小城市観光協会</a> ・ <a href="https://www.asobo-saga.jp/">あそぼーさが</a> ・ <a href="https://www.fuji-spa.com/">ふるくま温泉郷</a></p>
+  <p><a href="../koi/">🐟 鯉刺し番付はこちら</a></p>
+</footer>
+
+<script>
+const io = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.card').forEach(c => io.observe(c));
+</script>
+</body></html>
