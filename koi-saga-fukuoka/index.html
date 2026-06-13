@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f6f68">
+  <title>福岡・佐賀 鯉の刺身ガチランキング</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <style>
+    :root {
+      --ink: #182422;
+      --muted: #5b6965;
+      --line: #d8e5de;
+      --paper: #fbf8ef;
+      --panel: #ffffff;
+      --green: #0f6f68;
+      --green-2: #dff2ec;
+      --gold: #b07621;
+      --red: #a63e2d;
+      --blue: #245f8e;
+      --shadow: 0 14px 34px rgba(25, 45, 38, .12);
+      font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    body {
+      margin: 0;
+      background:
+        linear-gradient(180deg, rgba(15,111,104,.13), transparent 280px),
+        var(--paper);
+      color: var(--ink);
+      letter-spacing: 0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .app {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+      padding: 18px 14px 48px;
+    }
+
+    .hero {
+      padding: 18px 0 12px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border: 1px solid rgba(15,111,104,.24);
+      border-radius: 999px;
+      color: var(--green);
+      background: rgba(255,255,255,.72);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    h1 {
+      margin: 14px 0 8px;
+      font-size: clamp(28px, 9vw, 54px);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+      max-width: 760px;
+    }
+
+    .top-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .verdict {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+
+    .verdict strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--green);
+      font-size: 14px;
+    }
+
+    .verdict p {
+      margin: 0;
+      line-height: 1.7;
+      font-weight: 700;
+    }
+
+    .tabs {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 7px;
+      margin: 16px -14px 16px;
+      padding: 10px 14px;
+      background: rgba(251,248,239,.92);
+      backdrop-filter: blur(14px);
+      border-top: 1px solid rgba(216,229,222,.72);
+      border-bottom: 1px solid rgba(216,229,222,.72);
+    }
+
+    .tab {
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--muted);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .tab[aria-pressed="true"] {
+      border-color: var(--green);
+      background: var(--green);
+      color: white;
+    }
+
+    .quick {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin: 0 0 16px;
+    }
+
+    .quick a {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      min-height: 48px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.86);
+      font-weight: 900;
+    }
+
+    .quick small {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .section-title {
+      margin: 24px 0 10px;
+      font-size: 20px;
+      line-height: 1.3;
+    }
+
+    .ranking {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .photo-wrap {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      background: linear-gradient(135deg, #dff2ec, #f6e8c8);
+    }
+
+    .photo-wrap img {
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .rank-badge {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      display: inline-flex;
+      min-width: 58px;
+      justify-content: center;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(24,36,34,.88);
+      color: white;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .score {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      display: inline-flex;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.92);
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .card-body {
+      padding: 14px;
+    }
+
+    .place-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .place h2 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .place p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      font-weight: 700;
+    }
+
+    .pref {
+      flex: 0 0 auto;
+      padding: 7px 9px;
+      border-radius: 999px;
+      background: var(--green-2);
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .summary {
+      margin: 10px 0 12px;
+      padding: 10px 12px;
+      border-left: 4px solid var(--gold);
+      background: #fff8ea;
+      font-weight: 800;
+      line-height: 1.65;
+    }
+
+    .facts {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 7px;
+      margin: 0 0 12px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .facts li {
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .facts b {
+      color: var(--ink);
+    }
+
+    .reason-list {
+      display: grid;
+      gap: 7px;
+      margin: 0 0 12px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .reason-list li {
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: #f4f8f5;
+      color: #33423e;
+      font-size: 13px;
+      line-height: 1.55;
+      font-weight: 700;
+    }
+
+    .caution {
+      margin: 0 0 12px;
+      color: var(--red);
+      font-size: 13px;
+      line-height: 1.6;
+      font-weight: 800;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .action {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 43px;
+      padding: 9px 10px;
+      border-radius: 8px;
+      background: #edf4f1;
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .action.primary {
+      background: var(--green);
+      color: white;
+    }
+
+    .panel {
+      margin: 16px 0;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,.88);
+    }
+
+    .panel h2 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    .panel p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .panel p:last-child {
+      margin-bottom: 0;
+    }
+
+    .checks {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .check {
+      padding: 12px;
+      border-radius: 8px;
+      background: #f7fbf8;
+      border: 1px solid var(--line);
+    }
+
+    .check b {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--green);
+    }
+
+    .check span {
+      display: block;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 14px;
+    }
+
+    footer {
+      margin: 28px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    @media (min-width: 760px) {
+      .app {
+        padding: 28px 22px 60px;
+      }
+
+      .top-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .quick {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .ranking {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .tabs {
+        margin-left: 0;
+        margin-right: 0;
+        border: 1px solid rgba(216,229,222,.72);
+        border-radius: 8px;
+      }
+
+      .checks {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (min-width: 1040px) {
+      .ranking {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <div class="eyebrow">2026-06-12 再チェック版</div>
+      <h1>福岡・佐賀<br>鯉の刺身ガチランキング</h1>
+      <p class="lead">
+        「鯉の刺身」は店では「鯉のあらい」と書かれることが多いです。
+        公式情報、観光協会ページ、専門性、現役営業っぽさ、行きやすさで再判定しました。
+      </p>
+    </header>
+
+    <section class="top-grid" aria-label="結論">
+      <article class="verdict">
+        <strong>総合1位</strong>
+        <p>鯉しげ。初めて1軒だけ行くなら、ここが一番バランス強い。</p>
+      </article>
+      <article class="verdict">
+        <strong>鯉のあらい一点突破</strong>
+        <p>滝見屋。古い名店感と、鯉のあらい直球なら首位級。</p>
+      </article>
+      <article class="verdict">
+        <strong>福岡だけで選ぶ</strong>
+        <p>鯉ひろまつ。福岡側の本命はほぼここ。</p>
+      </article>
+    </section>
+
+    <nav class="tabs" aria-label="表示切替">
+      <button class="tab" type="button" data-filter="all" aria-pressed="true">全部</button>
+      <button class="tab" type="button" data-filter="saga" aria-pressed="false">佐賀</button>
+      <button class="tab" type="button" data-filter="fukuoka" aria-pressed="false">福岡</button>
+      <button class="tab" type="button" data-filter="extra" aria-pressed="false">番外</button>
+    </nav>
+
+    <section class="quick" aria-label="最短リンク">
+      <a href="#rank-1">
+        <span>総合1位へ</span>
+        <small>鯉しげ</small>
+      </a>
+      <a href="#rank-2">
+        <span>あらい最強候補へ</span>
+        <small>滝見屋</small>
+      </a>
+      <a href="#rank-4">
+        <span>福岡本命へ</span>
+        <small>鯉ひろまつ</small>
+      </a>
+      <a href="./healing.html">
+        <span>滝見屋周辺の癒やし観光へ</span>
+        <small>地図・写真つき</small>
+      </a>
+    </section>
+
+    <section class="panel" aria-label="再チェック結果">
+      <h2>本当にこの順位でいいか</h2>
+      <div class="checks">
+        <div class="check">
+          <b>総合なら</b>
+          <span>鯉しげが1位。公式サイトが強く、個室、バリアフリー、料理幅まである。</span>
+        </div>
+        <div class="check">
+          <b>味の直球なら</b>
+          <span>滝見屋が1位でもいい。明治創業で、鯉のあらい中心の硬派な店。</span>
+        </div>
+        <div class="check">
+          <b>注意点</b>
+          <span>小城市の名店は休みが多い。行く前の電話確認は必須。</span>
+        </div>
+      </div>
+    </section>
+
+    <h2 class="section-title">ランキング</h2>
+    <section class="ranking" id="ranking" aria-live="polite"></section>
+
+    <section class="panel" aria-label="判定基準">
+      <h2>判定基準</h2>
+      <p>味の根拠は、水、活魚管理、切り方、鯉料理専門性を重く見ました。</p>
+      <p>次に、公式情報の新しさ、電話・営業時間の確認しやすさ、初訪問の失敗しにくさを見ました。</p>
+      <p>「元祖 深松屋」は小城市観光協会ページで休業中扱いだったため、今回はランキングから外しました。</p>
+    </section>
+
+    <footer>
+      営業時間、休業日、価格は変わることがあります。
+      特に鯉料理は仕入れや予約で変わるため、出発前に電話確認してください。
+    </footer>
+  </main>
+
+  <script>
+    const shops = [
+      {
+        rank: 1,
+        type: "saga",
+        name: "鯉しげ",
+        area: "佐賀県小城市",
+        address: "佐賀県小城市小城町松尾2261",
+        tel: "0952-72-2008",
+        hours: "平日 11:00-21:00 / 土日祝 11:00-20:00 / 木曜休",
+        score: 96,
+        image: "https://www.ogi-kankou.com/cms/wp-content/uploads/2013/11/koisige_1.jpg",
+        home: "https://www.koishige.net/",
+        source: "https://www.ogi-kankou.com/gourmet/1169.html",
+        photo: "https://www.google.com/search?tbm=isch&q=%E9%AF%89%E3%81%97%E3%81%92+%E5%B0%8F%E5%9F%8E+%E9%AF%89%E3%81%AE%E3%81%82%E3%82%89%E3%81%84",
+        summary: "総合1位。初めて1軒だけ行くなら、味・設備・情報の揃い方でここが一番強い。",
+        reasons: [
+          "公式サイトで、地下水のいけすと丁寧な包丁仕事を説明している。",
+          "鯉のあらい、鯉こく、創作系まであり、鯉料理を広く楽しめる。",
+          "全室個室、バリアフリー、アクセス情報も分かりやすい。"
+        ],
+        caution: "木曜休み。人数が多い時は予約推奨。"
+      },
+      {
+        rank: 2,
+        type: "saga",
+        name: "鯉料理 滝見屋",
+        area: "佐賀県小城市",
+        address: "佐賀県小城市小城町松尾2222",
+        tel: "0952-72-3895",
+        hours: "11:00-20:00 / 火曜休",
+        score: 95,
+        image: "https://www.ogi-kankou.com/cms/wp-content/uploads/2013/10/takimiya_1.jpg",
+        home: "https://www.ogi-kankou.com/gourmet/76.html",
+        source: "https://www.ogi-kankou.com/gourmet/76.html",
+        photo: "https://www.google.com/search?tbm=isch&q=%E6%BB%9D%E8%A6%8B%E5%B1%8B+%E5%B0%8F%E5%9F%8E+%E9%AF%89%E3%81%AE%E3%81%82%E3%82%89%E3%81%84",
+        summary: "鯉のあらい一点突破なら1位級。明治創業の硬派な名店。",
+        reasons: [
+          "明治27年創業の老舗。",
+          "名水で長期間さらした鯉を、秘伝の酢味噌で食べる型。",
+          "料理メニューが鯉のあらい中心で、専門店としての濃さがある。"
+        ],
+        caution: "専用駐車場なし。共同駐車場を使う形なので、初めてなら時間に余裕。"
+      },
+      {
+        rank: 3,
+        type: "saga",
+        name: "清水屋",
+        area: "佐賀県小城市",
+        address: "佐賀県小城市小城町松尾2224",
+        tel: "0952-72-2701",
+        hours: "11:00-21:00 / 木曜休",
+        score: 94,
+        image: "https://www.ogi-kankou.com/cms/wp-content/uploads/2013/11/kiyomizuya.jpg",
+        home: "https://www.ogi-kankou.com/gourmet/1177.html",
+        source: "https://www.ogi-kankou.com/gourmet/1177.html",
+        photo: "https://www.google.com/search?tbm=isch&q=%E6%B8%85%E6%B0%B4%E5%B1%8B+%E5%B0%8F%E5%9F%8E+%E9%AF%89%E3%81%AE%E3%81%82%E3%82%89%E3%81%84",
+        summary: "小城の鯉料理の源流感を味わうならここ。歴史込みでかなり強い。",
+        reasons: [
+          "小城の鯉料理の始まりとして紹介される店。",
+          "清流を使ったいけす管理で、川魚の臭みを抑える説明がある。",
+          "鯉こくのおかわり可など、鯉料理をしっかり食べる構成。"
+        ],
+        caution: "公式ホームページは弱め。最新営業は電話確認が安全。"
+      },
+      {
+        rank: 4,
+        type: "fukuoka",
+        name: "鯉ひろまつ",
+        area: "福岡県筑紫野市",
+        address: "福岡県筑紫野市塔原西2-18-8",
+        tel: "092-922-3457",
+        hours: "11:00-20:00 / 火曜休",
+        score: 91,
+        image: "https://jizakanavi-fukuoka.jp/ouen/images/12aeab4a060bf881a57adedbb483976d867f6cb2.jpg",
+        home: "https://koihiromatu.owst.jp/",
+        source: "https://jizakanavi-fukuoka.jp/ouen/shop/ouen-112.html",
+        photo: "https://www.hotpepper.jp/strJ003984554/photo/",
+        summary: "福岡県側の本命。自社養殖、注文後調理の説明が強い。",
+        reasons: [
+          "福岡で鯉を正面から出す希少な専門店。",
+          "自社養殖の鯉を店内いけすで管理し、注文後に調理する説明がある。",
+          "公式系ページが複数あり、行く前の確認がしやすい。"
+        ],
+        caution: "佐賀小城の名水エリアとは方向性が違う。福岡で選ぶならここ。"
+      },
+      {
+        rank: 5,
+        type: "saga",
+        name: "ひのでや",
+        area: "佐賀県小城市",
+        address: "佐賀県小城市小城町松尾2053",
+        tel: "0952-73-4451",
+        hours: "10:00-21:00 / 夜は予約制 / 不定休",
+        score: 89,
+        image: "https://www.ogi-kankou.com/cms/wp-content/uploads/2016/06/1eee9c66d1d3046bb7e0bf151bc20f4b.jpg",
+        home: "https://www.ogi-kankou.com/gourmet/3854.html",
+        source: "https://www.ogi-kankou.com/gourmet/3854.html",
+        photo: "https://www.google.com/search?tbm=isch&q=%E3%81%B2%E3%81%AE%E3%81%A7%E3%82%84+%E5%B0%8F%E5%9F%8E+%E9%AF%89%E6%96%99%E7%90%86",
+        summary: "景色と水の雰囲気まで込みならかなり良い。家族でも行きやすい。",
+        reasons: [
+          "名水で数か月さらす説明があり、臭み対策の根拠がある。",
+          "清流の音を聞きながら食べる雰囲気が強い。",
+          "大人数、送迎、駐車場の情報があり使いやすい。"
+        ],
+        caution: "夜は予約制。不定休なので電話確認。"
+      },
+      {
+        rank: 6,
+        type: "saga",
+        name: "鯉料理 たきもと 鯉御殿",
+        area: "佐賀県小城市",
+        address: "佐賀県小城市小城町松尾2234",
+        tel: "0952-73-4151",
+        hours: "11:00-19:30 / 水曜休",
+        score: 88,
+        image: "https://www.ogi-kankou.com/cms/wp-content/uploads/2015/10/0241f49fcb241bec179e470e7b80a7e0.jpg",
+        home: "https://www.ogi-kankou.com/gourmet/3344.html",
+        source: "https://www.ogi-kankou.com/gourmet/3344.html",
+        photo: "https://www.google.com/search?tbm=isch&q=%E9%AF%89%E5%BE%A1%E6%AE%BF+%E3%81%9F%E3%81%8D%E3%82%82%E3%81%A8+%E5%B0%8F%E5%9F%8E",
+        summary: "自家製味噌ダレ推し。大きめの鯉料理店として安心感がある。",
+        reasons: [
+          "身の引き締まった鯉のあらいを推している。",
+          "自家製味噌ダレの個性がある。",
+          "清水地区で大きめの店舗として紹介されている。"
+        ],
+        caution: "公式ホームページは見当たらないため、観光協会ページと電話で確認。"
+      },
+      {
+        rank: 7,
+        type: "saga",
+        name: "白滝",
+        area: "佐賀県小城市",
+        address: "佐賀県小城市小城町松尾2282-2",
+        tel: "0952-73-3323",
+        hours: "11:00-20:30 / 火曜休",
+        score: 86,
+        image: "https://www.ogi-kankou.com/cms/wp-content/uploads/2013/11/sirataki_1.jpg",
+        home: "https://www.ogi-kankou.com/gourmet/1175.html",
+        source: "https://www.ogi-kankou.com/gourmet/1175.html",
+        photo: "https://www.google.com/search?tbm=isch&q=%E7%99%BD%E6%BB%9D+%E5%B0%8F%E5%9F%8E+%E9%AF%89%E6%96%99%E7%90%86",
+        summary: "1日10食限定の鯉のあらい定食が狙い目。軽く食べたい時に良い。",
+        reasons: [
+          "清流でさらした鯉料理を出す店。",
+          "鯉のあらい定食があり、初めてでも注文しやすい。",
+          "清水地区の入口側で寄りやすい。"
+        ],
+        caution: "限定食は売り切れ注意。早めか電話確認が安全。"
+      },
+      {
+        rank: 8,
+        type: "fukuoka",
+        name: "鯉の里 なかはら",
+        area: "福岡県嘉麻市",
+        address: "福岡県嘉麻市馬見1204-7",
+        tel: "0948-57-0612",
+        hours: "11:00-19:00 / 月曜休",
+        score: 83,
+        image: "https://kama-kanko.com/wp-content/uploads/2023/02/45d153680be8b249636eb8b36ad08fe8.jpg",
+        home: "https://www.kama-kanko.com/569/",
+        source: "https://www.kama-kanko.com/569/",
+        photo: "https://www.google.com/search?tbm=isch&q=%E9%AF%89%E3%81%AE%E9%87%8C+%E3%81%AA%E3%81%8B%E3%81%AF%E3%82%89+%E5%98%89%E9%BA%BB",
+        summary: "福岡の穴場候補。馬見山の地下水と注文後カットが良い。",
+        reasons: [
+          "馬見山の地下水を使う説明がある。",
+          "注文を受けてからあらい・刺身を切る説明がある。",
+          "小さめ店舗で、落ち着いて食べる候補。"
+        ],
+        caution: "席数は多くない。遠出前に営業確認。"
+      },
+      {
+        rank: 9,
+        type: "extra",
+        name: "酒食 青松",
+        area: "福岡県福岡市博多区",
+        address: "福岡県福岡市博多区中洲2丁目2-7 新中洲ビル2階",
+        tel: "092-283-7194",
+        hours: "18:30-翌2:00 / 日曜休",
+        score: 78,
+        image: "https://www.io-web.net/wp/wp-content/uploads/2021/09/omise_202110_01-720x480.jpg",
+        home: "https://www.io-web.net/2021/10/syusyokuaomatsu/",
+        source: "https://www.io-web.net/2021/10/syusyokuaomatsu/",
+        photo: "https://www.google.com/search?tbm=isch&q=%E9%85%92%E9%A3%9F+%E9%9D%92%E6%9D%BE+%E9%AF%89%E3%81%AE%E3%81%82%E3%82%89%E3%81%84",
+        summary: "番外。福岡市内で鯉のあらいを食べたい時の確認候補。",
+        reasons: [
+          "紹介記事で鯉のあらいが特徴として扱われている。",
+          "市内で夜に行ける珍しさがある。",
+          "ただし鯉料理専門店ではない。"
+        ],
+        caution: "現在も提供中か電話確認必須。ランキング本線ではなく番外。"
+      }
+    ];
+
+    const ranking = document.querySelector("#ranking");
+    const tabs = [...document.querySelectorAll(".tab")];
+
+    function mapUrl(shop) {
+      return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${shop.name} ${shop.address}`)}`;
+    }
+
+    function photoUrl(shop) {
+      return shop.photo || `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(`${shop.name} ${shop.area}`)}`;
+    }
+
+    function card(shop) {
+      const rankText = shop.type === "extra" ? "番外" : `No.${shop.rank}`;
+      const sourceLabel = shop.home === shop.source ? "情報元" : "公式";
+      return `
+        <article class="card" id="rank-${shop.rank}" data-type="${shop.type}">
+          <div class="photo-wrap">
+            <img src="${shop.image}" alt="${shop.name}の写真" loading="lazy">
+            <span class="rank-badge">${rankText}</span>
+            <span class="score">${shop.score}点</span>
+          </div>
+          <div class="card-body">
+            <div class="place-row">
+              <div class="place">
+                <h2>${shop.name}</h2>
+                <p>${shop.area}</p>
+              </div>
+              <span class="pref">${shop.type === "fukuoka" ? "福岡" : shop.type === "saga" ? "佐賀" : "番外"}</span>
+            </div>
+
+            <p class="summary">${shop.summary}</p>
+
+            <ul class="facts">
+              <li><b>住所</b><span>${shop.address}</span></li>
+              <li><b>電話</b><span>${shop.tel}</span></li>
+              <li><b>営業</b><span>${shop.hours}</span></li>
+            </ul>
+
+            <ul class="reason-list">
+              ${shop.reasons.map((reason) => `<li>${reason}</li>`).join("")}
+            </ul>
+
+            <p class="caution">${shop.caution}</p>
+
+            <div class="actions">
+              <a class="action primary" href="${mapUrl(shop)}" target="_blank" rel="noreferrer">Googleマップ</a>
+              <a class="action" href="${photoUrl(shop)}" target="_blank" rel="noreferrer">写真を見る</a>
+              <a class="action" href="${shop.home}" target="_blank" rel="noreferrer">${sourceLabel}</a>
+              <a class="action" href="tel:${shop.tel.replaceAll("-", "")}">電話する</a>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function render(filter) {
+      const visible = filter === "all" ? shops : shops.filter((shop) => shop.type === filter);
+      ranking.innerHTML = visible.map(card).join("");
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        tabs.forEach((item) => item.setAttribute("aria-pressed", "false"));
+        tab.setAttribute("aria-pressed", "true");
+        render(tab.dataset.filter);
+      });
+    });
+
+    render("all");
+
+    if ("serviceWorker" in navigator && location.protocol !== "file:") {
+      navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+    }
+  </script>
+</body>
+</html>

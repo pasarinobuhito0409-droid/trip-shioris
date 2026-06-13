@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#174e48">
+  <title>滝見屋周辺 癒やし観光ランキング</title>
+  <style>
+    :root {
+      --ink: #152220;
+      --muted: #62716d;
+      --line: #d9e8e2;
+      --paper: #f7f4ea;
+      --panel: #ffffff;
+      --green: #174e48;
+      --mint: #e2f2ed;
+      --gold: #b7791f;
+      --blue: #2b648b;
+      --red: #9b3a30;
+      --shadow: 0 14px 34px rgba(17, 45, 40, .13);
+      font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, rgba(23, 78, 72, .15), transparent 330px),
+        var(--paper);
+      letter-spacing: 0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .app {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+      padding: 18px 14px 50px;
+    }
+
+    .hero {
+      padding: 18px 0 12px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      padding: 7px 10px;
+      border: 1px solid rgba(23, 78, 72, .24);
+      border-radius: 999px;
+      background: rgba(255,255,255,.72);
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    h1 {
+      margin: 14px 0 10px;
+      font-size: clamp(28px, 9vw, 54px);
+      line-height: 1.04;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin: 0;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+      font-weight: 650;
+    }
+
+    .nav-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .nav-row a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 48px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,.86);
+      font-weight: 900;
+    }
+
+    .nav-row small {
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .verdicts {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .verdict {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+
+    .verdict b {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--green);
+      font-size: 14px;
+    }
+
+    .verdict p {
+      margin: 0;
+      font-weight: 850;
+      line-height: 1.65;
+    }
+
+    .tabs {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+      margin: 16px -14px;
+      padding: 10px 14px;
+      background: rgba(247,244,234,.92);
+      backdrop-filter: blur(14px);
+      border-top: 1px solid rgba(217,232,226,.72);
+      border-bottom: 1px solid rgba(217,232,226,.72);
+    }
+
+    .tab {
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--muted);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .tab[aria-pressed="true"] {
+      background: var(--green);
+      border-color: var(--green);
+      color: white;
+    }
+
+    .section-title {
+      margin: 24px 0 10px;
+      font-size: 20px;
+    }
+
+    .panel {
+      margin: 16px 0;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,.88);
+    }
+
+    .panel h2 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      line-height: 1.4;
+    }
+
+    .panel p {
+      margin: 0 0 9px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-weight: 650;
+    }
+
+    .panel p:last-child {
+      margin-bottom: 0;
+    }
+
+    .plan {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 9px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .plan li {
+      padding: 11px 12px;
+      border-radius: 8px;
+      background: #f3faf6;
+      border: 1px solid var(--line);
+      line-height: 1.65;
+      font-weight: 800;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .photo {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      background: linear-gradient(135deg, #dff2ec, #f7e6bf);
+    }
+
+    .photo img {
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .rank {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(21,34,32,.88);
+      color: white;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .score {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.92);
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .body {
+      padding: 14px;
+    }
+
+    .place-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .place h2 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .place p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
+    .tag {
+      flex: 0 0 auto;
+      padding: 7px 9px;
+      border-radius: 999px;
+      background: var(--mint);
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .summary {
+      margin: 10px 0 12px;
+      padding: 10px 12px;
+      border-left: 4px solid var(--gold);
+      background: #fff8e9;
+      line-height: 1.65;
+      font-weight: 850;
+    }
+
+    .facts {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 7px;
+      margin: 0 0 12px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .facts li {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .facts b {
+      color: var(--ink);
+    }
+
+    .reasons {
+      display: grid;
+      gap: 7px;
+      margin: 0 0 12px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .reasons li {
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: #f4f8f5;
+      color: #32413d;
+      font-size: 13px;
+      line-height: 1.55;
+      font-weight: 750;
+    }
+
+    .caution {
+      margin: 0 0 12px;
+      color: var(--red);
+      font-size: 13px;
+      line-height: 1.6;
+      font-weight: 850;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .action {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 43px;
+      padding: 9px 10px;
+      border-radius: 8px;
+      background: #edf4f1;
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .action.primary {
+      background: var(--green);
+      color: white;
+    }
+
+    footer {
+      margin: 26px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    @media (min-width: 760px) {
+      .app {
+        padding: 28px 22px 60px;
+      }
+
+      .nav-row,
+      .verdicts {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .plan {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .tabs {
+        margin-left: 0;
+        margin-right: 0;
+        border: 1px solid rgba(217,232,226,.72);
+        border-radius: 8px;
+      }
+    }
+
+    @media (min-width: 1040px) {
+      .cards {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <div class="eyebrow">2026-06-13 調査版</div>
+      <h1>滝見屋周辺<br>癒やし観光ランキング</h1>
+      <p class="lead">
+        日々の仕事疲れを抜く目的で、鯉料理 滝見屋から行きやすい場所を再調査。
+        派手さより、滝音、温泉、静けさ、歩きやすさ、甘い休憩を重く見ました。
+      </p>
+    </header>
+
+    <section class="verdicts" aria-label="結論">
+      <article class="verdict">
+        <b>総合1位</b>
+        <p>清水の滝。滝見屋の流れでそのまま行ける、回復力の核。</p>
+      </article>
+      <article class="verdict">
+        <b>体を休める1位</b>
+        <p>小城温泉 開泉閣。温泉まで入れるならここが強い。</p>
+      </article>
+      <article class="verdict">
+        <b>季節の大当たり</b>
+        <p>祇園川のホタル。5月下旬から6月上旬なら最上位級。</p>
+      </article>
+    </section>
+
+    <nav class="nav-row" aria-label="最短リンク">
+      <a href="./index.html"><span>鯉ランキングへ戻る</span><small>前ページ</small></a>
+      <a href="#best-plan"><span>半日コースを見る</span><small>疲労回復型</small></a>
+      <a href="#rank-1"><span>1位へ移動</span><small>清水の滝</small></a>
+    </nav>
+
+    <nav class="tabs" aria-label="表示切替">
+      <button class="tab" type="button" data-filter="all" aria-pressed="true">全部</button>
+      <button class="tab" type="button" data-filter="near" aria-pressed="false">近場</button>
+      <button class="tab" type="button" data-filter="rest" aria-pressed="false">休む</button>
+      <button class="tab" type="button" data-filter="season" aria-pressed="false">季節</button>
+      <button class="tab" type="button" data-filter="active" aria-pressed="false">歩く</button>
+    </nav>
+
+    <section class="panel" id="best-plan">
+      <h2>疲れている日の最強半日コース</h2>
+      <ul class="plan">
+        <li>滝見屋で鯉料理。体に重すぎない昼ごはんにする。</li>
+        <li>清水観音から清水の滝へ。滝音だけ聞いて頭を空にする。</li>
+        <li>余力があれば開泉閣。温泉で体を戻す。</li>
+      </ul>
+    </section>
+
+    <section class="panel">
+      <h2>ランキングの見方</h2>
+      <p>「癒やし点」は、疲れた日に実際行きやすいか、静かに回復できるかで付けています。</p>
+      <p>神社の階段、登山、季節限定のホタルは強いけど、体力や時期で順位が変わります。</p>
+    </section>
+
+    <h2 class="section-title">癒やしランキング</h2>
+    <section class="cards" id="cards" aria-live="polite"></section>
+
+    <footer>
+      営業時間、通行可否、季節イベントは変わります。
+      出発前に公式ページか電話で確認してください。
+    </footer>
+  </main>
+
+  <script>
+    const origin = "鯉料理 滝見屋 佐賀県小城市小城町松尾2222";
+
+    const spots = [
+      {
+        rank: 1,
+        type: "near",
+        name: "清水の滝と清水観音",
+        area: "佐賀県小城市小城町松尾",
+        time: "滝見屋から最寄り級。駐車場から滝まで徒歩15-20分目安。",
+        score: 98,
+        image: "https://www.ogi-kankou.com/cms/wp-content/uploads/2022/12/kiyomizu001_page-0001.jpg",
+        official: "https://www.ogi-kankou.com/tourist/kiyomizu.html",
+        photo: "https://www.google.com/search?tbm=isch&q=%E6%B8%85%E6%B0%B4%E3%81%AE%E6%BB%9D+%E5%B0%8F%E5%9F%8E+%E6%B8%85%E6%B0%B4%E8%A6%B3%E9%9F%B3",
+        summary: "疲労回復の本命。滝音、名水、木陰、寺の空気が一気に効く。",
+        reasons: [
+          "落差75m、幅13mの滝で、水音と涼しさが強い。",
+          "参道に巨木や仏像があり、静かな山の空気に切り替わる。",
+          "滝見屋のある清水エリアとセットにしやすい。"
+        ],
+        caution: "坂道と階段あり。疲れが強い日は無理に奥まで行かず、途中で引き返してOK。"
+      },
+      {
+        rank: 2,
+        type: "rest",
+        name: "小城温泉 開泉閣",
+        area: "佐賀県小城市小城町岩蔵77",
+        time: "滝見屋から車移動向き。10:00-22:00、定休日なし扱い。",
+        score: 95,
+        image: "https://www.ogi-kankou.com/cms/wp-content/uploads/kaisenkaku_1.jpg",
+        official: "https://www.ogi-kankou.com/gourmet/1179.html",
+        photo: "https://www.google.com/search?tbm=isch&q=%E5%B0%8F%E5%9F%8E%E6%B8%A9%E6%B3%89+%E9%96%8B%E6%B3%89%E9%96%A3",
+        summary: "体の疲れを落とすならここ。温泉の湯で回復する枠。",
+        reasons: [
+          "温泉はアルカリ性単純泉で、疲労回復などに触れている。",
+          "宿泊以外に、少人数の食事休憩も可能と紹介されている。",
+          "鯉料理のあとに体を温める流れが作りやすい。"
+        ],
+        caution: "日帰り入浴や休憩利用の最新条件は電話確認が安全。"
+      },
+      {
+        rank: 3,
+        type: "rest",
+        name: "龍水園ホテル",
+        area: "佐賀県小城市小城町松尾1817-1",
+        time: "滝見屋から近い山中の宿・食事処。11:30-22:00、定休日なし扱い。",
+        score: 90,
+        image: "https://www.ogi-kankou.com/cms/wp-content/uploads/ryusuienn_top.jpg",
+        official: "https://www.ogi-kankou.com/gourmet/1185.html",
+        photo: "https://www.google.com/search?tbm=isch&q=%E9%BE%8D%E6%B0%B4%E5%9C%92%E3%83%9B%E3%83%86%E3%83%AB+%E5%B0%8F%E5%9F%8E",
+        summary: "静かな山中と佐賀平野の夜景で、ぼーっと休む候補。",
+        reasons: [
+          "静かな山中から佐賀平野を眺める宿として紹介されている。",
+          "夜景と花、鯉料理の組み合わせでゆっくり型。",
+          "送迎バスあり、少人数も要予約で相談できる。"
+        ],
+        caution: "温泉目的ではなく、食事・休憩・夜景寄りとして見る。"
+      },
+      {
+        rank: 4,
+        type: "rest",
+        name: "小城公園",
+        area: "佐賀県小城市小城町185",
+        time: "滝見屋から車で市街地へ。広い公園を30分ほど散策。",
+        score: 88,
+        image: "https://www.ogi-kankou.com/cms/wp-content/uploads/2020/10/12e6744d7377edf79a8fa5faca4ffb47.jpg",
+        official: "https://www.ogi-kankou.com/ogi-park.html",
+        photo: "https://www.google.com/search?tbm=isch&q=%E5%B0%8F%E5%9F%8E%E5%85%AC%E5%9C%92+%E4%BD%90%E8%B3%80",
+        summary: "気持ちを整える散歩枠。桜の季節以外も静かで使いやすい。",
+        reasons: [
+          "約8ヘクタールの広い公園で、池、庭園、神社をゆっくり回れる。",
+          "普段は静かな公園として紹介されている。",
+          "無料駐車場が複数あり、疲れていても寄りやすい。"
+        ],
+        caution: "桜の時期は混む。静けさ重視なら通常期か朝夕。"
+      },
+      {
+        rank: 5,
+        type: "season",
+        name: "祇園川のホタル",
+        area: "佐賀県小城市小城町 岩松周辺",
+        time: "5月下旬から6月上旬が本命。夜の季節限定。",
+        score: 87,
+        image: "https://www.ogi-kankou.com/cms/wp-content/uploads/giongawa_1.jpg",
+        official: "https://www.ogi-kankou.com/gion-river.html",
+        photo: "https://www.google.com/search?tbm=isch&q=%E7%A5%87%E5%9C%92%E5%B7%9D+%E3%83%9B%E3%82%BF%E3%83%AB+%E5%B0%8F%E5%9F%8E",
+        summary: "時期が合えば最強級。光の静けさで、頭の疲れを抜く。",
+        reasons: [
+          "5月下旬から6月上旬にゲンジボタルが飛ぶ名所。",
+          "川沿いの遊歩道を歩く静かな夜観光。",
+          "天山酒造付近から石体橋方面まで、時期で見どころが移る。"
+        ],
+        caution: "季節限定。2026年の実施・駐車場所は行く直前に公式確認。"
+      },
+      {
+        rank: 6,
+        type: "active",
+        name: "須賀神社と千葉城跡",
+        area: "佐賀県小城市小城町",
+        time: "滝見屋から車で下る。石段153段あり。",
+        score: 84,
+        image: "https://www.ogi-kankou.com/cms/wp-content/uploads/rico_sugajinja.jpg",
+        official: "https://www.ogi-kankou.com/page-1880",
+        photo: "https://www.google.com/search?tbm=isch&q=%E9%A0%88%E8%B3%80%E7%A5%9E%E7%A4%BE+%E5%B0%8F%E5%9F%8E+%E5%8D%83%E8%91%89%E5%9F%8E%E8%B7%A1",
+        summary: "少し動いて気分転換したい時。赤い橋と石段、上からの景色が良い。",
+        reasons: [
+          "赤い橋と長い石段で、気分が切り替わる。",
+          "千葉城跡の展望台から有明海や雲仙方面が見える日もある。",
+          "食後に軽く体を動かしたい日に合う。"
+        ],
+        caution: "足が疲れている日は避ける。153段の石段がある。"
+      },
+      {
+        rank: 7,
+        type: "rest",
+        name: "村岡総本舗 羊羹資料館",
+        area: "佐賀県小城市小城町",
+        time: "須賀神社前。甘い休憩と土産に向く。",
+        score: 82,
+        image: "https://www.ogi-kankou.com/cms/wp-content/uploads/rico_kirekisiryoukan.jpg",
+        official: "https://www.ogi-kankou.com/page-1880",
+        photo: "https://www.google.com/search?tbm=isch&q=%E6%9D%91%E5%B2%A1%E7%B7%8F%E6%9C%AC%E8%88%97+%E7%BE%8A%E7%BE%B9%E8%B3%87%E6%96%99%E9%A4%A8+%E5%B0%8F%E5%9F%8E",
+        summary: "歩き疲れた後の甘い回復枠。小城羊羹で落ち着く。",
+        reasons: [
+          "国の有形文化財に登録された歴史ある建物。",
+          "小城羊羹の歴史や製造工程を見られる。",
+          "本店でお茶と羊羹の休憩に寄れる。"
+        ],
+        caution: "開館日・営業時間は行く前に公式確認。"
+      },
+      {
+        rank: 8,
+        type: "rest",
+        name: "天山酒造",
+        area: "佐賀県小城市小城町岩蔵1520",
+        time: "車移動向き。酒蔵ギャラリーとショップ。",
+        score: 80,
+        image: "https://www.ogi-kankou.com/cms/wp-content/uploads/2022/10/IMG_1821.jpg",
+        official: "https://www.ogi-kankou.com/tenzan-sake-brewery.html",
+        photo: "https://www.google.com/search?tbm=isch&q=%E5%A4%A9%E5%B1%B1%E9%85%92%E9%80%A0+%E5%B0%8F%E5%9F%8E",
+        summary: "静かな文化休憩。水と酒蔵の空気を楽しむ場所。",
+        reasons: [
+          "明治8年創業の酒造メーカーとして紹介されている。",
+          "明治蔵や大正蔵のギャラリー見学が可能。",
+          "祇園川の清流と酒蔵の景色で、ゆっくり見られる。"
+        ],
+        caution: "運転者は試飲不可。見学・買い物中心で考える。"
+      },
+      {
+        rank: 9,
+        type: "season",
+        name: "江里山の棚田と甘露水",
+        area: "佐賀県小城市小城町岩蔵4148",
+        time: "車移動向き。9月下旬の彼岸花が特に強い。",
+        score: 79,
+        image: "https://www.ogi-kankou.com/cms/wp-content/uploads/eriyama_1.jpg",
+        official: "https://www.ogi-kankou.com/eriyama.html",
+        photo: "https://www.google.com/search?tbm=isch&q=%E6%B1%9F%E9%87%8C%E5%B1%B1%E3%81%AE%E6%A3%9A%E7%94%B0+%E5%B0%8F%E5%9F%8E",
+        summary: "里山で深く抜けたい日。人が少ない景色を見たいなら候補。",
+        reasons: [
+          "日本の棚田百選、全国農村景観百選に選ばれた里山。",
+          "約600枚の棚田が山の斜面に広がる。",
+          "甘露水という湧き水もあり、静かな水の癒やしがある。"
+        ],
+        caution: "季節で満足度が変わる。夜や雨の日は無理しない。"
+      },
+      {
+        rank: 10,
+        type: "active",
+        name: "天山",
+        area: "佐賀県小城市周辺",
+        time: "元気な日向け。山頂まで30-40分のルートあり。",
+        score: 76,
+        image: "https://www.ogi-kankou.com/cms/wp-content/uploads/2020/10/IMG_3131-500x375.jpg",
+        official: "https://www.ogi-kankou.com/tenzan.html",
+        photo: "https://www.google.com/search?tbm=isch&q=%E5%A4%A9%E5%B1%B1+%E4%BD%90%E8%B3%80+%E5%B0%8F%E5%9F%8E",
+        summary: "疲労回復というより、頭を空にするハイキング枠。",
+        reasons: [
+          "山頂は360度の展望が楽しめる。",
+          "初心者向けに30-40分程度で山頂に行けるルートもある。",
+          "自然の開放感は強い。"
+        ],
+        caution: "仕事疲れが強い日は逆に疲れる。靴と天気確認が必須。"
+      }
+    ];
+
+    const cards = document.querySelector("#cards");
+    const tabs = [...document.querySelectorAll(".tab")];
+
+    function mapsSearch(spot) {
+      return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${spot.name} ${spot.area}`)}`;
+    }
+
+    function routeUrl(spot) {
+      return `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(`${spot.name} ${spot.area}`)}&travelmode=driving`;
+    }
+
+    function card(spot) {
+      return `
+        <article class="card" id="rank-${spot.rank}" data-type="${spot.type}">
+          <div class="photo">
+            <img src="${spot.image}" alt="${spot.name}の写真" loading="lazy">
+            <span class="rank">No.${spot.rank}</span>
+            <span class="score">癒やし${spot.score}</span>
+          </div>
+          <div class="body">
+            <div class="place-row">
+              <div class="place">
+                <h2>${spot.name}</h2>
+                <p>${spot.area}</p>
+              </div>
+              <span class="tag">${label(spot.type)}</span>
+            </div>
+
+            <p class="summary">${spot.summary}</p>
+
+            <ul class="facts">
+              <li><b>行き方</b><span>${spot.time}</span></li>
+              <li><b>基準</b><span>疲れを抜けるか、滝見屋から寄りやすいか。</span></li>
+            </ul>
+
+            <ul class="reasons">
+              ${spot.reasons.map((reason) => `<li>${reason}</li>`).join("")}
+            </ul>
+
+            <p class="caution">${spot.caution}</p>
+
+            <div class="actions">
+              <a class="action primary" href="${routeUrl(spot)}" target="_blank" rel="noreferrer">滝見屋から地図</a>
+              <a class="action" href="${mapsSearch(spot)}" target="_blank" rel="noreferrer">Googleマップ</a>
+              <a class="action" href="${spot.photo}" target="_blank" rel="noreferrer">写真を見る</a>
+              <a class="action" href="${spot.official}" target="_blank" rel="noreferrer">公式・情報元</a>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function label(type) {
+      if (type === "near") return "近場";
+      if (type === "rest") return "休む";
+      if (type === "season") return "季節";
+      if (type === "active") return "歩く";
+      return "候補";
+    }
+
+    function render(filter) {
+      const visible = filter === "all" ? spots : spots.filter((spot) => spot.type === filter);
+      cards.innerHTML = visible.map(card).join("");
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        tabs.forEach((item) => item.setAttribute("aria-pressed", "false"));
+        tab.setAttribute("aria-pressed", "true");
+        render(tab.dataset.filter);
+      });
+    });
+
+    render("all");
+  </script>
+</body>
+</html>

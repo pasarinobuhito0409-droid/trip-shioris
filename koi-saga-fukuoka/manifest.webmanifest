@@ -1,0 +1,16 @@
+{
+  "name": "福岡・佐賀 鯉の刺身ランキング",
+  "short_name": "鯉ランキング",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#fbf8ef",
+  "theme_color": "#0f6f68",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
