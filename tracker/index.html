@@ -89,6 +89,49 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
 .chip .chip-act.preset-del{background:rgba(0,0,0,.1)}
 .chip.chip-restore{background:#fff;border:1.5px dashed #aaa;color:#888;font-weight:700}
 
+/* === iPhone式 日ビュー（縦タイムライン） === */
+.dv{padding:0 0 24px}
+.dv-week{display:grid;grid-template-columns:repeat(7,1fr);padding:4px 8px 8px;gap:2px}
+.dv-week .dw{display:flex;flex-direction:column;align-items:center;gap:3px;background:transparent;border:none;cursor:pointer;font:inherit;padding:4px 0;border-radius:10px}
+.dv-week .dw .w{font-size:10px;font-weight:700;color:var(--muted)}
+.dv-week .dw .w.sun{color:#ff3b30}
+.dv-week .dw .w.sat{color:#0a84ff}
+.dv-week .dw .n{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700}
+.dv-week .dw.sel .n{background:#1d1d1f;color:#fff}
+.dv-week .dw.today .n{background:#ff3b30;color:#fff}
+.dv-week .dw.out{opacity:.2;pointer-events:none}
+.dv-date{font-size:14px;font-weight:800;padding:6px 14px 10px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.dv-date .back{background:#eee;border:none;border-radius:999px;padding:6px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.dv-allday{display:flex;flex-wrap:wrap;gap:5px;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--card)}
+.dv-allday .ad-label{font-size:10px;font-weight:800;color:var(--muted);width:100%;margin-bottom:2px}
+.dv-hint{font-size:11px;color:var(--muted);text-align:center;padding:8px;background:var(--card)}
+.dv-gridwrap{position:relative;background:var(--card)}
+.dv-grid{position:relative;margin-left:56px;border-left:1px solid var(--line)}
+.dv-hline{position:absolute;left:0;right:0;height:0;border-top:1px solid #ececf0}
+.dv-hlabel{position:absolute;left:-56px;width:48px;text-align:right;font-size:10px;color:var(--muted);transform:translateY(-50%);font-variant-numeric:tabular-nums}
+.dv-ev{position:absolute;border-radius:8px;padding:5px 8px 14px;font-size:12px;font-weight:700;color:#fff;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.18);cursor:pointer;border-left:3px solid rgba(255,255,255,.65)}
+.dv-ev .tm{font-size:10px;opacity:.9;font-weight:600;display:block;line-height:1.2}
+.dv-ev .nm{display:block;line-height:1.3}
+.dv-ev.done{opacity:.45}
+.dv-ev.done .nm{text-decoration:line-through}
+.dv-ev .rsz{position:absolute;left:0;right:0;bottom:0;height:16px;display:flex;align-items:flex-end;justify-content:center;cursor:ns-resize;touch-action:none}
+.dv-ev .rsz::after{content:"";width:28px;height:4px;border-radius:2px;background:rgba(255,255,255,.75);margin-bottom:3px}
+.dv-now{position:absolute;left:0;right:0;height:0;border-top:2px solid #ff3b30;z-index:5;pointer-events:none}
+.dv-now::before{content:"";position:absolute;left:-5px;top:-5px;width:9px;height:9px;border-radius:50%;background:#ff3b30}
+
+/* === 予定編集シート === */
+.es-form{display:flex;flex-direction:column;gap:10px}
+.es-form input[type=text]{border:1.5px solid var(--line);border-radius:10px;padding:12px;font:inherit;font-size:15px;background:#fff}
+.es-form input:focus{outline:none;border-color:#0a84ff}
+.es-times{display:flex;gap:10px}
+.es-times label{flex:1;display:flex;flex-direction:column;gap:4px;font-size:11px;font-weight:700;color:var(--muted)}
+.es-times input{border:1.5px solid var(--line);border-radius:10px;padding:10px;font:inherit;font-size:15px;background:#fff}
+.es-btns{display:flex;gap:8px;margin-top:2px}
+.es-btns button{flex:1;border:none;border-radius:10px;padding:13px;font:inherit;font-weight:800;font-size:13px;cursor:pointer}
+.es-btns .es-save{background:#0a84ff;color:#fff}
+.es-btns .es-done{background:#34c759;color:#fff}
+.es-btns .es-del{background:#ffd9df;color:#c43;flex:0 0 auto;padding:13px 14px}
+
 /* === 活動継続日バナー（リスト・記録 両方の上部に常時表示） === */
 .streak-banner{margin:8px 12px;padding:12px 14px;border-radius:14px;background:linear-gradient(135deg,#ff9500 0%,#ff5e3a 100%);color:#fff;box-shadow:0 3px 10px rgba(255,94,58,.3);display:flex;align-items:center;gap:12px}
 .streak-banner .sb-fire{font-size:30px;line-height:1}
@@ -613,7 +656,7 @@ function renderCharts(){
 function renderContent(){
   const el = document.getElementById("content");
   if(currentView==="record") el.innerHTML = renderRecord();
-  else if(currentView==="cal2") el.innerHTML = renderIphoneCal();
+  else if(currentView==="cal2"){ el.innerHTML = renderDayView(); afterDayViewRender(); }
   else el.innerHTML = renderList();
 }
 
@@ -991,125 +1034,267 @@ function restoreHidden(m,d){
   renderDaySheetIfOpen();
 }
 
-// ===== iPhone風カレンダー =====
+// ===== iPhone式 日ビュー（縦タイムライン） =====
 const DOT_COLORS = {
   morning:"#5ab4ff", lunch:"#a99cff", night:"#c850dc",
   daily:"#34c759", special:"#e6b422", rest:"#ff85a0", custom:"#8e44ad"
 };
-function renderIphoneCal(){
-  const days = buildMonth(currentMonth);
-  const dayMap = {};
-  days.forEach(x=>dayMap[x.d]=x);
-  const first = new Date(2026, currentMonth-1, 1).getDay();
+const HOUR_PX = 52;
+const PRESET_TIME = {
+  morning:["06:30","07:30"], lunch:["12:00","12:40"],
+  night:["20:00","21:30"], daily:["21:30","22:00"],
+  loc:["09:00","16:30"],
+  sp1:["09:00","10:00"], sp2:["10:00","11:00"], sp3:["11:00","12:00"],
+  sp4:["13:00","14:00"], sp5:["14:00","15:00"], sp6:["15:00","16:00"],
+  sp7:["16:00","17:00"], sp8:["17:00","18:00"],
+  cheat:null
+};
+function pad2(n){ return String(n).padStart(2,'0'); }
+function hm2min(hm){ if(!hm) return null; const p=hm.split(':'); return (+p[0])*60+(+p[1]); }
+function min2hm(t){ t=Math.max(0,Math.min(1439,Math.round(t))); return pad2(Math.floor(t/60))+':'+pad2(t%60); }
+
+let selDay = (function(){
+  const t=new Date();
+  if(t.getFullYear()===2026 && t.getMonth()+1===currentMonth) return t.getDate();
+  return 1;
+})();
+
+function getPresetTime(s, id){
+  if(s.__ptime__ && s.__ptime__[id]) return s.__ptime__[id];
+  const def = PRESET_TIME[id];
+  if(def===undefined) return {start:9*60, end:10*60};
+  if(def===null) return null;
+  return {start:hm2min(def[0]), end:hm2min(def[1])};
+}
+function collectEvents(m,d){
+  const days = buildMonth(m);
+  const x = days.find(k=>k.d===d);
+  if(!x) return [];
+  const s = getDayState(m,d);
+  const out = [];
+  visibleTasksOf(x, m).forEach(tk=>{
+    const tm = getPresetTime(s, tk.id);
+    out.push({ id:tk.id, kind:'preset', cat:tk.cat, label:tk.label,
+      done:!!s[tk.id], start: tm?tm.start:null, end: tm?tm.end:null, allDay: !tm });
+  });
+  (s.__custom__||[]).forEach(t=>{
+    const start = hm2min(t.start || t.time);
+    const end = hm2min(t.end) || (start!=null ? start+60 : null);
+    out.push({ id:t.id, kind:'custom', cat:'custom', label:t.label,
+      done:!!s[t.id], start, end, allDay: start==null });
+  });
+  return out;
+}
+function setEventTime(m,d,id,kind,startMin,endMin){
+  const s = getDayState(m,d);
+  if(kind==='custom'){
+    const t = (s.__custom__||[]).find(t=>t.id===id);
+    if(t){ t.start=min2hm(startMin); t.end=min2hm(endMin); delete t.time; }
+  } else {
+    if(!s.__ptime__) s.__ptime__={};
+    s.__ptime__[id] = {start:Math.round(startMin), end:Math.round(endMin)};
+  }
+  saveState(state);
+}
+function changeDay(delta){
   const total = daysInMonth(currentMonth);
-  const cells = [];
-  for(let i=0;i<first;i++) cells.push(null);
-  for(let d=1; d<=total; d++) cells.push(d);
-  while(cells.length % 7 !== 0) cells.push(null);
+  selDay = Math.max(1, Math.min(total, selDay+delta));
+  renderContent();
+}
+function pickDay(d){ selDay=d; renderContent(); }
+
+function renderDayView(){
+  const total = daysInMonth(currentMonth);
+  const days = buildMonth(currentMonth);
+  const x = days.find(k=>k.d===selDay) || days[0];
+  selDay = x.d;
   const today = new Date();
   const isToday = (d)=> today.getFullYear()===2026 && today.getMonth()+1===currentMonth && today.getDate()===d;
-  const dow = ["日","月","火","水","木","金","土"].map((w,i)=>
-    `<span class="${i===0?'sun':(i===6?'sat':'')}">${w}</span>`).join("");
-  const cellsHTML = cells.map(d=>{
-    if(!d) return `<div class="ical-cell empty"></div>`;
-    const x = dayMap[d];
-    const s = getDayState(currentMonth, d);
-    const tks = visibleTasksOf(x, currentMonth);
-    const customs = s.__custom__ || [];
-    const all = [
-      ...tks.map(t=>({cat:t.cat, done:!!s[t.id]})),
-      ...customs.map(t=>({cat:"custom", done:!!s[t.id]}))
-    ];
-    const doneCnt = all.filter(a=>a.done).length;
-    const dots = all.slice(0,6).map(a=>
-      `<i style="background:${DOT_COLORS[a.cat]||'#bbb'};${a.done?'opacity:.25':''}"></i>`).join("");
-    const more = all.length>6 ? `<span class="more">+${all.length-6}</span>` : "";
-    const numCls = x.wd===0?"sun":(x.wd===6?"sat":"");
-    return `<div class="ical-cell ${isToday(d)?'today':''} ${isPastDay(currentMonth,d)?'past':''}" onclick="openDaySheet(${currentMonth},${d})">
-      <div class="dnum ${numCls}">${d}</div>
-      <div class="dots">${dots}${more}</div>
-      ${doneCnt?`<span class="done-mini">✓${doneCnt}</span>`:""}
+  const esc = t => (t||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+  const wdOfSel = new Date(2026, currentMonth-1, selDay).getDay();
+  const weekStart = selDay - wdOfSel;
+  let strip='';
+  for(let i=0;i<7;i++){
+    const dd = weekStart+i;
+    const wlabel = ["日","月","火","水","木","金","土"][i];
+    const wcls = i===0?'sun':(i===6?'sat':'');
+    if(dd<1 || dd>total){
+      strip += `<button class="dw out"><span class="w ${wcls}">${wlabel}</span><span class="n"></span></button>`;
+    } else {
+      const cls = (dd===selDay?'sel':'')+' '+(isToday(dd)?'today':'');
+      strip += `<button class="dw ${cls}" onclick="pickDay(${dd})"><span class="w ${wcls}">${wlabel}</span><span class="n">${dd}</span></button>`;
+    }
+  }
+
+  const evs = collectEvents(currentMonth, selDay);
+  const allDay = evs.filter(e=>e.allDay);
+  const timed = evs.filter(e=>!e.allDay);
+
+  let lines='';
+  for(let h=0;h<=24;h++){
+    const y=h*HOUR_PX;
+    lines += `<div class="dv-hline" style="top:${y}px"></div>`;
+    if(h<24) lines += `<div class="dv-hlabel" style="top:${y}px">${pad2(h)}:00</div>`;
+  }
+  const blocks = timed.map(e=>{
+    const top=e.start/60*HOUR_PX;
+    const h=Math.max(22,(e.end-e.start)/60*HOUR_PX);
+    const col=DOT_COLORS[e.cat]||'#8e44ad';
+    return `<div class="dv-ev ${e.done?'done':''}" style="top:${top}px;height:${h}px;background:${col}" data-start="${e.start}" data-end="${e.end}" onclick="openEvent('${e.id}','${e.kind}')">
+      <span class="tm">${min2hm(e.start)}–${min2hm(e.end)}</span>
+      <span class="nm">${esc(e.label)}</span>
+      <div class="rsz" data-id="${e.id}" data-kind="${e.kind}"></div>
     </div>`;
   }).join("");
-  return `<div class="ical"><div class="ical-dow">${dow}</div><div class="ical-grid">${cellsHTML}</div></div>`;
+  let nowLine='';
+  if(isToday(selDay)){
+    const nm=today.getHours()*60+today.getMinutes();
+    nowLine=`<div class="dv-now" style="top:${nm/60*HOUR_PX}px"></div>`;
+  }
+  const allDayHTML = allDay.length ? `<div class="dv-allday"><span class="ad-label">終日</span>${allDay.map(e=>`<button class="chip cat-${e.cat} ${e.done?'done':''}" onclick="toggleTask(${currentMonth},${selDay},'${e.id}')"><span class="check">${e.done?'✓':''}</span><span class="label">${esc(e.label)}</span></button>`).join('')}</div>` : '';
+  const wd = WD_JP[x.wd];
+  return `<div class="dv">
+    <div class="dv-week">${strip}</div>
+    <div class="dv-date"><span>${currentMonth}月${selDay}日（${wd}）・${x.type}日</span><span><button class="back" onclick="changeDay(-1)">‹ 前</button> <button class="back" onclick="openEvent(null,'custom')">＋ 予定</button> <button class="back" onclick="changeDay(1)">次 ›</button></span></div>
+    ${allDayHTML}
+    <div class="dv-hint">予定タップ=編集 ／ 下の白いつまみを引く=時間を伸ばす ／ 空きタップ=その時刻に追加</div>
+    <div class="dv-gridwrap"><div class="dv-grid" id="dvGrid" style="height:${24*HOUR_PX}px" onclick="dvEmptyTap(event)">${lines}${blocks}${nowLine}</div></div>
+  </div>`;
+}
+function dvEmptyTap(ev){
+  if(ev.target.id!=='dvGrid') return;
+  const rect=ev.currentTarget.getBoundingClientRect();
+  let startMin=Math.round(((ev.clientY-rect.top)/HOUR_PX*60)/15)*15;
+  startMin=Math.max(0,Math.min(1380,startMin));
+  openEvent(null,'custom',startMin);
+}
+function afterDayViewRender(){
+  const wrap=document.querySelector('.dv-gridwrap');
+  if(!wrap) return;
+  const today=new Date();
+  const isTd=today.getFullYear()===2026 && today.getMonth()+1===currentMonth && today.getDate()===selDay;
+  const targetMin=isTd?Math.max(0,(today.getHours()*60+today.getMinutes())-120):6*60;
+  setTimeout(()=>{ wrap.scrollTop=targetMin/60*HOUR_PX; setupResize(); },30);
 }
 
-// ===== 日別シート（タップで開く・予定追加/完了/削除） =====
-let dsM = null, dsD = null;
-function openDaySheet(m,d){
-  dsM = m; dsD = d;
+let rsz=null;
+function setupResize(){
+  if(setupResize._done) return;
+  setupResize._done=true;
+  const onMove=(ev)=>{
+    if(!rsz) return;
+    const cy=(ev.touches?ev.touches[0].clientY:ev.clientY);
+    let endMin=rsz.startEnd+(cy-rsz.y0)/HOUR_PX*60;
+    endMin=Math.round(endMin/5)*5;
+    endMin=Math.max(rsz.startMin+15,Math.min(1440,endMin));
+    rsz.el.style.height=Math.max(22,(endMin-rsz.startMin)/60*HOUR_PX)+'px';
+    rsz.el.querySelector('.tm').textContent=`${min2hm(rsz.startMin)}–${min2hm(endMin)}`;
+    rsz.cur=endMin; ev.preventDefault();
+  };
+  const onUp=()=>{
+    if(!rsz) return;
+    setEventTime(currentMonth, selDay, rsz.id, rsz.kind, rsz.startMin, rsz.cur);
+    rsz=null; renderContent(); diaryToast("✓ 時間を変更");
+  };
+  document.addEventListener('mousemove',onMove);
+  document.addEventListener('mouseup',onUp);
+  document.addEventListener('touchmove',onMove,{passive:false});
+  document.addEventListener('touchend',onUp);
+}
+document.addEventListener('mousedown',startResize,true);
+document.addEventListener('touchstart',startResize,{capture:true,passive:false});
+function startResize(ev){
+  const handle=ev.target.closest&&ev.target.closest('.rsz');
+  if(!handle) return;
+  ev.stopPropagation(); ev.preventDefault();
+  const block=handle.parentElement;
+  rsz={ id:handle.dataset.id, kind:handle.dataset.kind, el:block,
+    y0:(ev.touches?ev.touches[0].clientY:ev.clientY),
+    startMin:parseInt(block.dataset.start), startEnd:parseInt(block.dataset.end), cur:parseInt(block.dataset.end) };
+}
+
+let evCtx=null;
+function openEvent(id, kind, presetStart){
+  const s=getDayState(currentMonth, selDay);
+  if(id==='null') id=null;
+  let name,start,end,done,isPreset;
+  if(!id){
+    evCtx={ id:null, kind:'custom', isNew:true };
+    name=''; start=(presetStart!=null?presetStart:9*60); end=start+60; done=false; isPreset=false;
+  } else if(kind==='custom'){
+    const t=(s.__custom__||[]).find(t=>t.id===id);
+    if(!t) return;
+    evCtx={ id, kind:'custom', isNew:false };
+    const st=hm2min(t.start||t.time); name=t.label; start=(st!=null?st:9*60); end=hm2min(t.end)||(start+60); done=!!s[id]; isPreset=false;
+  } else {
+    const tm=getPresetTime(s,id);
+    const days=buildMonth(currentMonth); const x=days.find(k=>k.d===selDay);
+    const tk=tasksOf(x).find(t=>t.id===id);
+    evCtx={ id, kind:'preset', isNew:false };
+    name=tk?tk.label:id; start=tm?tm.start:9*60; end=tm?tm.end:10*60; done=!!s[id]; isPreset=true;
+  }
   document.getElementById("dsBg").classList.add("show");
-  renderDaySheet();
+  const esc=t=>(t||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  document.getElementById("dsBody").innerHTML=`
+    <h2>${evCtx.isNew?'新しい予定':'予定を編集'}</h2>
+    <div class="ds-sub">${currentMonth}月${selDay}日</div>
+    <div class="es-form">
+      <input id="evName" type="text" placeholder="予定名（例：歯医者）" value="${esc(name)}" ${isPreset?'readonly':''}>
+      <div class="es-times">
+        <label>開始<input id="evStart" type="time" value="${min2hm(start)}"></label>
+        <label>終了<input id="evEnd" type="time" value="${min2hm(end)}"></label>
+      </div>
+      <div class="es-btns">
+        <button class="es-done" onclick="evToggleDone()">${done?'✓ 完了を取消':'完了にする'}</button>
+        ${!evCtx.isNew?`<button class="es-del" onclick="evDelete()">🗑</button>`:''}
+      </div>
+      <div class="es-btns"><button class="es-save" onclick="evSave()">${evCtx.isNew?'＋ 追加':'保存'}</button></div>
+    </div>`;
 }
 function closeDaySheet(){
-  dsM = null; dsD = null;
+  evCtx=null;
   document.getElementById("dsBg").classList.remove("show");
-  render();
+  renderContent();
 }
-function renderDaySheetIfOpen(){ if(dsM !== null) renderDaySheet(); }
-function dsToggle(id){ toggleTask(dsM, dsD, id); renderDaySheet(); }
-function dsEdit(id){ editCustomTask(dsM, dsD, id); renderDaySheet(); }
-function dsDel(id){ delCustomTask(dsM, dsD, id); renderDaySheet(); }
-function dsAdd(){
-  const nameEl = document.getElementById("dsName");
-  const timeEl = document.getElementById("dsTime");
-  const name = (nameEl.value||"").trim();
-  const time = timeEl.value || "";
-  if(!name){ diaryToast("予定名を入れてね"); nameEl.focus(); return; }
-  const s = getDayState(dsM, dsD);
-  if(!s.__custom__) s.__custom__ = [];
-  s.__custom__.push({ id:`c_${Date.now()}`, label:name, cat:"custom", time:time });
+function renderDaySheetIfOpen(){}
+function evToggleDone(){
+  if(!evCtx||!evCtx.id){ diaryToast("先に追加してね"); return; }
+  toggleTask(currentMonth, selDay, evCtx.id);
+  closeDaySheet();
+}
+function evDelete(){
+  if(!evCtx) return;
+  if(evCtx.kind==='custom'){
+    if(!confirm('この予定を削除？')) return;
+    delCustomTask(currentMonth, selDay, evCtx.id);
+  } else {
+    const days=buildMonth(currentMonth); const x=days.find(k=>k.d===selDay);
+    const tk=tasksOf(x).find(t=>t.id===evCtx.id);
+    hidePresetTask(currentMonth, selDay, evCtx.id, tk?tk.label:evCtx.id);
+  }
+  closeDaySheet();
+}
+function evSave(){
+  const name=(document.getElementById('evName').value||'').trim();
+  const start=hm2min(document.getElementById('evStart').value);
+  let end=hm2min(document.getElementById('evEnd').value);
+  if(end!=null&&start!=null&&end<=start) end=start+30;
+  const s=getDayState(currentMonth, selDay);
+  if(evCtx.isNew){
+    if(!name){ diaryToast("予定名を入れてね"); return; }
+    if(!s.__custom__) s.__custom__=[];
+    s.__custom__.push({ id:`c_${Date.now()}`, label:name, cat:'custom', start:min2hm(start), end:min2hm(end) });
+  } else if(evCtx.kind==='custom'){
+    const t=(s.__custom__||[]).find(t=>t.id===evCtx.id);
+    if(t){ t.label=name||t.label; t.start=min2hm(start); t.end=min2hm(end); delete t.time; }
+  } else {
+    if(!s.__ptime__) s.__ptime__={};
+    s.__ptime__[evCtx.id]={start, end};
+  }
   saveState(state);
-  diaryToast("✓ 予定を追加");
-  render();
-  renderDaySheet();
-}
-function renderDaySheet(){
-  if(dsM === null) return;
-  const days = buildMonth(dsM);
-  const x = days.find(k=>k.d===dsD);
-  if(!x) return;
-  const s = getDayState(dsM, dsD);
-  const tks = visibleTasksOf(x, dsM);
-  const hid = getHidden(dsM, dsD);
-  const esc = t => (t||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-  // プリセット行
-  let rows = tks.map(tk=>{
-    const done = !!s[tk.id];
-    return `<div class="ds-row ${done?'done':''}">
-      <span class="bar" style="background:${DOT_COLORS[tk.cat]||'#bbb'}"></span>
-      <span class="lbl" onclick="dsToggle('${tk.id}')">${tk.label}</span>
-      <button class="act del" onclick="hidePresetTask(${dsM},${dsD},'${tk.id}','${tk.label}')" title="消す">×</button>
-    </div>`;
-  }).join("");
-  // カスタム行（時間なし→時間あり時刻順）
-  const customs = (s.__custom__||[]).slice().sort((a,b)=>{
-    if(!a.time && !b.time) return 0;
-    if(!a.time) return -1;
-    if(!b.time) return 1;
-    return a.time.localeCompare(b.time);
-  });
-  rows += customs.map(t=>{
-    const done = !!s[t.id];
-    return `<div class="ds-row ${done?'done':''}">
-      <span class="bar" style="background:${DOT_COLORS.custom}"></span>
-      ${t.time?`<span class="t">${t.time}</span>`:""}
-      <span class="lbl" onclick="dsToggle('${t.id}')">${esc(t.label)}</span>
-      <button class="act" onclick="dsEdit('${t.id}')" title="名前を変える">✏</button>
-      <button class="act del" onclick="dsDel('${t.id}')" title="削除">×</button>
-    </div>`;
-  }).join("");
-  const wd = WD_JP[x.wd];
-  document.getElementById("dsBody").innerHTML = `
-    <h2>${dsM}月${dsD}日（${wd}）</h2>
-    <div class="ds-sub">${x.type}日 ・ 予定をタップで完了⇄戻す</div>
-    <div class="ds-rows">${rows || '<div class="ds-empty">予定なし。下から追加できる</div>'}</div>
-    ${hid.length?`<button class="ds-restore" onclick="restoreHidden(${dsM},${dsD})">↩ 消した予定を${hid.length}件戻す</button>`:""}
-    <div class="ds-form">
-      <input id="dsName" type="text" placeholder="予定名（例：歯医者）">
-      <input id="dsTime" type="time">
-      <button onclick="dsAdd()">＋ 追加</button>
-    </div>`;
+  diaryToast("✓ 保存");
+  closeDaySheet();
 }
 
 function resetMonth(){
