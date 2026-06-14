@@ -113,7 +113,7 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
 .dv-ev .tm{font-size:10px;opacity:.9;font-weight:600;display:block;line-height:1.2}
 .dv-ev .nm{display:block;line-height:1.3}
 .dv-ev.done{opacity:.45}
-.dv-ev.done .nm{text-decoration:line-through}
+.dv-ev.done .nm{text-decoration:line-through;text-decoration-color:#000;text-decoration-thickness:2px}
 .dv-ev .rsz{position:absolute;left:0;right:0;bottom:0;height:16px;display:flex;align-items:flex-end;justify-content:center;cursor:ns-resize;touch-action:none}
 .dv-ev .rsz::after{content:"";width:28px;height:4px;border-radius:2px;background:rgba(255,255,255,.75);margin-bottom:3px}
 .dv-now{position:absolute;left:0;right:0;height:0;border-top:2px solid #ff3b30;z-index:5;pointer-events:none}
@@ -131,6 +131,11 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
 .es-btns .es-save{background:#0a84ff;color:#fff}
 .es-btns .es-done{background:#34c759;color:#fff}
 .es-btns .es-del{background:#ffd9df;color:#c43;flex:0 0 auto;padding:13px 14px}
+.es-colors{display:flex;flex-wrap:wrap;gap:8px;padding:6px 0}
+.es-colors .cbox{width:34px;height:34px;border-radius:50%;border:3px solid transparent;cursor:pointer;transition:transform .1s}
+.es-colors .cbox:active{transform:scale(.88)}
+.es-colors .cbox.sel{border-color:#1d1d1f;box-shadow:0 0 0 2px #fff,0 0 0 4px #1d1d1f}
+.es-clabel{font-size:11px;font-weight:700;color:var(--muted);margin-top:4px}
 
 /* === 活動継続日バナー（リスト・記録 両方の上部に常時表示） === */
 .streak-banner{margin:8px 12px;padding:12px 14px;border-radius:14px;background:linear-gradient(135deg,#ff9500 0%,#ff5e3a 100%);color:#fff;box-shadow:0 3px 10px rgba(255,94,58,.3);display:flex;align-items:center;gap:12px}
@@ -1039,6 +1044,24 @@ const DOT_COLORS = {
   morning:"#5ab4ff", lunch:"#a99cff", night:"#c850dc",
   daily:"#34c759", special:"#e6b422", rest:"#ff85a0", custom:"#8e44ad"
 };
+const EV_PALETTE = [
+  {name:"紫",   color:"#8e44ad"},
+  {name:"青",   color:"#0a84ff"},
+  {name:"水色", color:"#30b0c7"},
+  {name:"緑",   color:"#34c759"},
+  {name:"黄",   color:"#f5c500"},
+  {name:"橙",   color:"#ff9500"},
+  {name:"赤",   color:"#ff3b30"},
+  {name:"桃",   color:"#ff2d55"},
+  {name:"藤",   color:"#af52de"},
+  {name:"藍",   color:"#5856d6"},
+  {name:"茶",   color:"#a2845e"},
+  {name:"灰",   color:"#8e8e93"},
+  {name:"深緑", color:"#248a3d"},
+  {name:"紺",   color:"#0040dd"},
+  {name:"えんじ",color:"#a02040"},
+  {name:"黒",   color:"#1d1d1f"},
+];
 const HOUR_PX = 52;
 const PRESET_TIME = {
   morning:["06:30","07:30"], lunch:["12:00","12:40"],
@@ -1074,14 +1097,15 @@ function collectEvents(m,d){
   const out = [];
   visibleTasksOf(x, m).forEach(tk=>{
     const tm = getPresetTime(s, tk.id);
+    const pc = (s.__pcolor__&&s.__pcolor__[tk.id]) || null;
     out.push({ id:tk.id, kind:'preset', cat:tk.cat, label:tk.label,
-      done:!!s[tk.id], start: tm?tm.start:null, end: tm?tm.end:null, allDay: !tm });
+      done:!!s[tk.id], start: tm?tm.start:null, end: tm?tm.end:null, allDay: !tm, color:pc });
   });
   (s.__custom__||[]).forEach(t=>{
     const start = hm2min(t.start || t.time);
     const end = hm2min(t.end) || (start!=null ? start+60 : null);
     out.push({ id:t.id, kind:'custom', cat:'custom', label:t.label,
-      done:!!s[t.id], start, end, allDay: start==null });
+      done:!!s[t.id], start, end, allDay: start==null, color:t.color||null });
   });
   return out;
 }
@@ -1140,7 +1164,7 @@ function renderDayView(){
   const blocks = timed.map(e=>{
     const top=e.start/60*HOUR_PX;
     const h=Math.max(22,(e.end-e.start)/60*HOUR_PX);
-    const col=DOT_COLORS[e.cat]||'#8e44ad';
+    const col=e.color||DOT_COLORS[e.cat]||'#8e44ad';
     return `<div class="dv-ev ${e.done?'done':''}" style="top:${top}px;height:${h}px;background:${col}" data-start="${e.start}" data-end="${e.end}" onclick="openEvent('${e.id}','${e.kind}')">
       <span class="tm">${min2hm(e.start)}–${min2hm(e.end)}</span>
       <span class="nm">${esc(e.label)}</span>
@@ -1165,7 +1189,7 @@ function renderDayView(){
 function dvEmptyTap(ev){
   if(ev.target.id!=='dvGrid') return;
   const rect=ev.currentTarget.getBoundingClientRect();
-  let startMin=Math.round(((ev.clientY-rect.top)/HOUR_PX*60)/15)*15;
+  let startMin=Math.round(((ev.clientY-rect.top)/HOUR_PX*60)/60)*60;
   startMin=Math.max(0,Math.min(1380,startMin));
   openEvent(null,'custom',startMin);
 }
@@ -1175,7 +1199,7 @@ function afterDayViewRender(){
   const today=new Date();
   const isTd=today.getFullYear()===2026 && today.getMonth()+1===currentMonth && today.getDate()===selDay;
   const targetMin=isTd?Math.max(0,(today.getHours()*60+today.getMinutes())-120):6*60;
-  setTimeout(()=>{ wrap.scrollTop=targetMin/60*HOUR_PX; setupResize(); },30);
+  setTimeout(()=>{ wrap.scrollTop=targetMin/60*HOUR_PX; setupResize(); setupLongPress(); },30);
 }
 
 let rsz=null;
@@ -1201,6 +1225,26 @@ function setupResize(){
   document.addEventListener('mouseup',onUp);
   document.addEventListener('touchmove',onMove,{passive:false});
   document.addEventListener('touchend',onUp);
+}
+// === 長押しで予定追加（iPhone風） ===
+let lpTimer=null, lpMoved=false;
+function setupLongPress(){
+  const grid=document.getElementById('dvGrid');
+  if(!grid) return;
+  grid.addEventListener('touchstart',function(ev){
+    if(ev.target.closest('.dv-ev')||ev.target.closest('.rsz')) return;
+    lpMoved=false;
+    lpTimer=setTimeout(()=>{
+      if(lpMoved) return;
+      const rect=grid.getBoundingClientRect();
+      let startMin=Math.round(((ev.touches[0].clientY-rect.top+grid.closest('.dv-gridwrap').scrollTop)/HOUR_PX*60)/60)*60;
+      startMin=Math.max(0,Math.min(1380,startMin));
+      if(navigator.vibrate) navigator.vibrate(30);
+      openEvent(null,'custom',startMin);
+    },500);
+  },{passive:true});
+  grid.addEventListener('touchmove',function(){ lpMoved=true; clearTimeout(lpTimer); },{passive:true});
+  grid.addEventListener('touchend',function(){ clearTimeout(lpTimer); },{passive:true});
 }
 document.addEventListener('mousedown',startResize,true);
 document.addEventListener('touchstart',startResize,{capture:true,passive:false});
@@ -1236,15 +1280,24 @@ function openEvent(id, kind, presetStart){
   }
   document.getElementById("dsBg").classList.add("show");
   const esc=t=>(t||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  const curColor = evCtx.isNew ? '#8e44ad' : (function(){
+    if(kind==='custom'){ const t=(s.__custom__||[]).find(t=>t.id===id); return t&&t.color?t.color:'#8e44ad'; }
+    if(s.__pcolor__ && s.__pcolor__[id]) return s.__pcolor__[id];
+    return DOT_COLORS[evCtx.kind==='preset'? (function(){ const days=buildMonth(currentMonth); const x=days.find(k=>k.d===selDay); const tk=tasksOf(x).find(t=>t.id===id); return tk?tk.cat:'custom'; })() :'custom'] || '#8e44ad';
+  })();
+  evCtx.color = curColor;
+  const colorSwatches = EV_PALETTE.map(c=>`<div class="cbox ${c.color===curColor?'sel':''}" style="background:${c.color}" onclick="pickEvColor('${c.color}')" title="${c.name}"></div>`).join('');
   document.getElementById("dsBody").innerHTML=`
     <h2>${evCtx.isNew?'新しい予定':'予定を編集'}</h2>
     <div class="ds-sub">${currentMonth}月${selDay}日</div>
     <div class="es-form">
       <input id="evName" type="text" placeholder="予定名（例：歯医者）" value="${esc(name)}" ${isPreset?'readonly':''}>
       <div class="es-times">
-        <label>開始<input id="evStart" type="time" value="${min2hm(start)}"></label>
-        <label>終了<input id="evEnd" type="time" value="${min2hm(end)}"></label>
+        <label>開始<input id="evStart" type="text" inputmode="numeric" pattern="[0-9]{2}:[0-9]{2}" placeholder="07:00" value="${min2hm(start)}"></label>
+        <label>終了<input id="evEnd" type="text" inputmode="numeric" pattern="[0-9]{2}:[0-9]{2}" placeholder="08:00" value="${min2hm(end)}"></label>
       </div>
+      <div class="es-clabel">色</div>
+      <div class="es-colors" id="evColors">${colorSwatches}</div>
       <div class="es-btns">
         <button class="es-done" onclick="evToggleDone()">${done?'✓ 完了を取消':'完了にする'}</button>
         ${!evCtx.isNew?`<button class="es-del" onclick="evDelete()">🗑</button>`:''}
@@ -1275,22 +1328,35 @@ function evDelete(){
   }
   closeDaySheet();
 }
+function pickEvColor(c){
+  if(!evCtx) return;
+  evCtx.color=c;
+  document.querySelectorAll('#evColors .cbox').forEach(el=>{
+    el.classList.toggle('sel', el.style.background===c || el.style.backgroundColor===c);
+  });
+  // re-render swatches for reliability
+  const swatches=EV_PALETTE.map(p=>`<div class="cbox ${p.color===c?'sel':''}" style="background:${p.color}" onclick="pickEvColor('${p.color}')" title="${p.name}"></div>`).join('');
+  document.getElementById('evColors').innerHTML=swatches;
+}
 function evSave(){
   const name=(document.getElementById('evName').value||'').trim();
   const start=hm2min(document.getElementById('evStart').value);
   let end=hm2min(document.getElementById('evEnd').value);
   if(end!=null&&start!=null&&end<=start) end=start+30;
   const s=getDayState(currentMonth, selDay);
+  const col=evCtx.color||'#8e44ad';
   if(evCtx.isNew){
     if(!name){ diaryToast("予定名を入れてね"); return; }
     if(!s.__custom__) s.__custom__=[];
-    s.__custom__.push({ id:`c_${Date.now()}`, label:name, cat:'custom', start:min2hm(start), end:min2hm(end) });
+    s.__custom__.push({ id:`c_${Date.now()}`, label:name, cat:'custom', start:min2hm(start), end:min2hm(end), color:col });
   } else if(evCtx.kind==='custom'){
     const t=(s.__custom__||[]).find(t=>t.id===evCtx.id);
-    if(t){ t.label=name||t.label; t.start=min2hm(start); t.end=min2hm(end); delete t.time; }
+    if(t){ t.label=name||t.label; t.start=min2hm(start); t.end=min2hm(end); delete t.time; t.color=col; }
   } else {
     if(!s.__ptime__) s.__ptime__={};
     s.__ptime__[evCtx.id]={start, end};
+    if(!s.__pcolor__) s.__pcolor__={};
+    s.__pcolor__[evCtx.id]=col;
   }
   saveState(state);
   diaryToast("✓ 保存");
