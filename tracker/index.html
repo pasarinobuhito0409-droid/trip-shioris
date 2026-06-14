@@ -1231,8 +1231,13 @@ function afterDayViewRender(){
   if(!wrap) return;
   const today=new Date();
   const isTd=today.getFullYear()===2026 && today.getMonth()+1===currentMonth && today.getDate()===selDay;
-  const targetMin=isTd?Math.max(0,(today.getHours()*60+today.getMinutes())-120):6*60;
-  setTimeout(()=>{ wrap.scrollTop=targetMin/60*HOUR_PX; setupResize(); setupLongPress(); },30);
+  const targetMin=isTd?Math.max(0,(today.getHours()*60+today.getMinutes())-90):6*60;
+  setTimeout(()=>{
+    const gridTop=wrap.getBoundingClientRect().top+window.scrollY;
+    const scrollTarget=gridTop+(targetMin/60*HOUR_PX);
+    window.scrollTo({top:scrollTarget,behavior:'smooth'});
+    setupResize(); setupLongPress();
+  },50);
 }
 
 let rsz=null;
