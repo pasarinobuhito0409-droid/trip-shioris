@@ -107,7 +107,8 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
 .dv-hint{font-size:11px;color:var(--muted);text-align:center;padding:8px;background:var(--card)}
 .dv-gridwrap{position:relative;background:var(--card)}
 .dv-grid{position:relative;margin-left:56px;border-left:1px solid var(--line)}
-.dv-hline{position:absolute;left:0;right:0;height:0;border-top:1px solid #ececf0}
+.dv-hline{position:absolute;left:0;right:0;height:0;border-top:1px solid #c8c8cc}
+.dv-hline-half{position:absolute;left:0;right:0;height:0;border-top:1px dashed #e0e0e4}
 .dv-hlabel{position:absolute;left:-56px;width:48px;text-align:right;font-size:10px;color:var(--muted);transform:translateY(-50%);font-variant-numeric:tabular-nums}
 .dv-ev{position:absolute;border-radius:8px;padding:5px 8px 14px;font-size:12px;font-weight:700;color:#fff;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.18);cursor:pointer;border-left:3px solid rgba(255,255,255,.65)}
 .dv-ev .tm{font-size:10px;opacity:.9;font-weight:600;display:block;line-height:1.2}
@@ -116,6 +117,9 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700}
 .dv-ev.done .nm{text-decoration:line-through;text-decoration-color:#000;text-decoration-thickness:2px}
 .dv-ev .rsz{position:absolute;left:0;right:0;bottom:0;height:16px;display:flex;align-items:flex-end;justify-content:center;cursor:ns-resize;touch-action:none}
 .dv-ev .rsz::after{content:"";width:28px;height:4px;border-radius:2px;background:rgba(255,255,255,.75);margin-bottom:3px}
+.dv-ev .rsz-top{position:absolute;left:0;right:0;top:0;height:14px;display:flex;align-items:flex-start;justify-content:center;cursor:ns-resize;touch-action:none}
+.dv-ev .rsz-top::after{content:"";width:28px;height:4px;border-radius:2px;background:rgba(255,255,255,.75);margin-top:3px}
+.dv-ev.dragging{opacity:.7;z-index:10;box-shadow:0 4px 16px rgba(0,0,0,.3)}
 .dv-now{position:absolute;left:0;right:0;height:0;border-top:2px solid #ff3b30;z-index:5;pointer-events:none}
 .dv-now::before{content:"";position:absolute;left:-5px;top:-5px;width:9px;height:9px;border-radius:50%;background:#ff3b30}
 
@@ -1159,16 +1163,20 @@ function renderDayView(){
   for(let h=0;h<=24;h++){
     const y=h*HOUR_PX;
     lines += `<div class="dv-hline" style="top:${y}px"></div>`;
-    if(h<24) lines += `<div class="dv-hlabel" style="top:${y}px">${pad2(h)}:00</div>`;
+    if(h<24){
+      lines += `<div class="dv-hlabel" style="top:${y}px">${pad2(h)}:00</div>`;
+      lines += `<div class="dv-hline-half" style="top:${y+HOUR_PX/2}px"></div>`;
+    }
   }
   const blocks = timed.map(e=>{
     const top=e.start/60*HOUR_PX;
     const h=Math.max(22,(e.end-e.start)/60*HOUR_PX);
     const col=e.color||DOT_COLORS[e.cat]||'#8e44ad';
-    return `<div class="dv-ev ${e.done?'done':''}" style="top:${top}px;height:${h}px;background:${col}" data-start="${e.start}" data-end="${e.end}" onclick="openEvent('${e.id}','${e.kind}')">
+    return `<div class="dv-ev ${e.done?'done':''}" style="top:${top}px;height:${h}px;background:${col}" data-start="${e.start}" data-end="${e.end}" data-id="${e.id}" data-kind="${e.kind}" onclick="openEvent('${e.id}','${e.kind}')">
+      <div class="rsz-top" data-id="${e.id}" data-kind="${e.kind}" data-dir="top"></div>
       <span class="tm">${min2hm(e.start)}–${min2hm(e.end)}</span>
       <span class="nm">${esc(e.label)}</span>
-      <div class="rsz" data-id="${e.id}" data-kind="${e.kind}"></div>
+      <div class="rsz" data-id="${e.id}" data-kind="${e.kind}" data-dir="bot"></div>
     </div>`;
   }).join("");
   let nowLine='';
@@ -1203,23 +1211,55 @@ function afterDayViewRender(){
 }
 
 let rsz=null;
+let drag=null;
 function setupResize(){
   if(setupResize._done) return;
   setupResize._done=true;
   const onMove=(ev)=>{
-    if(!rsz) return;
     const cy=(ev.touches?ev.touches[0].clientY:ev.clientY);
-    let endMin=rsz.startEnd+(cy-rsz.y0)/HOUR_PX*60;
-    endMin=Math.round(endMin/5)*5;
-    endMin=Math.max(rsz.startMin+15,Math.min(1440,endMin));
-    rsz.el.style.height=Math.max(22,(endMin-rsz.startMin)/60*HOUR_PX)+'px';
-    rsz.el.querySelector('.tm').textContent=`${min2hm(rsz.startMin)}–${min2hm(endMin)}`;
-    rsz.cur=endMin; ev.preventDefault();
+    if(rsz){
+      if(rsz.dir==='top'){
+        let startMin=rsz.origStart+(cy-rsz.y0)/HOUR_PX*60;
+        startMin=Math.round(startMin/5)*5;
+        startMin=Math.max(0,Math.min(rsz.origEnd-15,startMin));
+        rsz.el.style.top=(startMin/60*HOUR_PX)+'px';
+        rsz.el.style.height=Math.max(22,(rsz.origEnd-startMin)/60*HOUR_PX)+'px';
+        rsz.el.querySelector('.tm').textContent=`${min2hm(startMin)}–${min2hm(rsz.origEnd)}`;
+        rsz.curStart=startMin; rsz.curEnd=rsz.origEnd;
+      } else {
+        let endMin=rsz.origEnd+(cy-rsz.y0)/HOUR_PX*60;
+        endMin=Math.round(endMin/5)*5;
+        endMin=Math.max(rsz.origStart+15,Math.min(1440,endMin));
+        rsz.el.style.height=Math.max(22,(endMin-rsz.origStart)/60*HOUR_PX)+'px';
+        rsz.el.querySelector('.tm').textContent=`${min2hm(rsz.origStart)}–${min2hm(endMin)}`;
+        rsz.curStart=rsz.origStart; rsz.curEnd=endMin;
+      }
+      ev.preventDefault();
+    }
+    if(drag){
+      const dy=cy-drag.y0;
+      let newStart=drag.origStart+dy/HOUR_PX*60;
+      newStart=Math.round(newStart/5)*5;
+      newStart=Math.max(0,Math.min(1440-drag.dur,newStart));
+      const newEnd=newStart+drag.dur;
+      drag.el.style.top=(newStart/60*HOUR_PX)+'px';
+      drag.el.querySelector('.tm').textContent=`${min2hm(newStart)}–${min2hm(newEnd)}`;
+      drag.curStart=newStart; drag.curEnd=newEnd;
+      ev.preventDefault();
+    }
   };
   const onUp=()=>{
-    if(!rsz) return;
-    setEventTime(currentMonth, selDay, rsz.id, rsz.kind, rsz.startMin, rsz.cur);
-    rsz=null; renderContent(); diaryToast("✓ 時間を変更");
+    if(rsz){
+      setEventTime(currentMonth, selDay, rsz.id, rsz.kind, rsz.curStart, rsz.curEnd);
+      rsz=null; renderContent(); diaryToast("✓ 時間を変更");
+    }
+    if(drag){
+      drag.el.classList.remove('dragging');
+      const moved=Math.abs(drag.curStart-drag.origStart)>=5;
+      setEventTime(currentMonth, selDay, drag.id, drag.kind, drag.curStart, drag.curEnd);
+      if(moved) diaryToast("✓ 移動した");
+      drag=null; renderContent();
+    }
   };
   document.addEventListener('mousemove',onMove);
   document.addEventListener('mouseup',onUp);
@@ -1249,13 +1289,29 @@ function setupLongPress(){
 document.addEventListener('mousedown',startResize,true);
 document.addEventListener('touchstart',startResize,{capture:true,passive:false});
 function startResize(ev){
-  const handle=ev.target.closest&&ev.target.closest('.rsz');
-  if(!handle) return;
-  ev.stopPropagation(); ev.preventDefault();
-  const block=handle.parentElement;
-  rsz={ id:handle.dataset.id, kind:handle.dataset.kind, el:block,
-    y0:(ev.touches?ev.touches[0].clientY:ev.clientY),
-    startMin:parseInt(block.dataset.start), startEnd:parseInt(block.dataset.end), cur:parseInt(block.dataset.end) };
+  const handle=ev.target.closest&&(ev.target.closest('.rsz')||ev.target.closest('.rsz-top'));
+  if(handle){
+    ev.stopPropagation(); ev.preventDefault();
+    const block=handle.parentElement;
+    const dir=handle.dataset.dir||'bot';
+    rsz={ id:handle.dataset.id, kind:handle.dataset.kind, el:block, dir,
+      y0:(ev.touches?ev.touches[0].clientY:ev.clientY),
+      origStart:parseInt(block.dataset.start), origEnd:parseInt(block.dataset.end),
+      curStart:parseInt(block.dataset.start), curEnd:parseInt(block.dataset.end) };
+    return;
+  }
+  const evBlock=ev.target.closest&&ev.target.closest('.dv-ev');
+  if(evBlock && !ev.target.closest('.rsz') && !ev.target.closest('.rsz-top')){
+    const startMin=parseInt(evBlock.dataset.start);
+    const endMin=parseInt(evBlock.dataset.end);
+    if(isNaN(startMin)||isNaN(endMin)) return;
+    drag={ id:evBlock.dataset.id, kind:evBlock.dataset.kind, el:evBlock,
+      y0:(ev.touches?ev.touches[0].clientY:ev.clientY),
+      origStart:startMin, origEnd:endMin, dur:endMin-startMin,
+      curStart:startMin, curEnd:endMin, moved:false };
+    evBlock.classList.add('dragging');
+    ev.preventDefault();
+  }
 }
 
 let evCtx=null;
