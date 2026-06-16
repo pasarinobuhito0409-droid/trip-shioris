@@ -1236,8 +1236,32 @@ function afterDayViewRender(){
     const gridTop=wrap.getBoundingClientRect().top+window.scrollY;
     const scrollTarget=gridTop+(targetMin/60*HOUR_PX);
     window.scrollTo({top:scrollTarget,behavior:'smooth'});
-    setupResize(); setupLongPress();
+    setupResize(); setupLongPress(); setupDaySwipe();
   },50);
+}
+function setupDaySwipe(){
+  const wrap=document.querySelector('.dv-gridwrap');
+  if(!wrap||wrap._swipeReady) return;
+  wrap._swipeReady=true;
+  let sx=0,sy=0,swiping=false;
+  wrap.addEventListener('touchstart',e=>{
+    if(rsz||drag) return;
+    sx=e.touches[0].clientX; sy=e.touches[0].clientY; swiping=true;
+  },{passive:true});
+  wrap.addEventListener('touchmove',e=>{
+    if(!swiping) return;
+    const dx=Math.abs(e.touches[0].clientX-sx), dy=Math.abs(e.touches[0].clientY-sy);
+    if(dy>dx+10) swiping=false;
+  },{passive:true});
+  wrap.addEventListener('touchend',e=>{
+    if(!swiping||rsz||drag) return;
+    swiping=false;
+    const ex=e.changedTouches[0].clientX, dx=ex-sx;
+    if(Math.abs(dx)<60) return;
+    const total=daysInMonth(currentMonth);
+    if(dx<0&&selDay<total){ changeDay(1); }
+    else if(dx>0&&selDay>1){ changeDay(-1); }
+  },{passive:true});
 }
 
 let rsz=null;
