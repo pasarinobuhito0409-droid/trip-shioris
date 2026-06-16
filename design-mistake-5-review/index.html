@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f4f8d">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <title>設計ミス防止 5問復習</title>
+  <style>
+    :root{
+      --bg:#eef3f6;
+      --paper:#ffffff;
+      --ink:#111827;
+      --muted:#5b6777;
+      --line:#d7e2ea;
+      --blue:#0f5faf;
+      --blue2:#e9f4ff;
+      --green:#16834f;
+      --red:#c9342d;
+      --amber:#b76512;
+      --shadow:0 18px 50px rgba(13,35,56,.16);
+    }
+    *{box-sizing:border-box}
+    html{
+      max-width:100%;
+      overflow-x:hidden;
+    }
+    body{
+      margin:0;
+      min-height:100svh;
+      max-width:100%;
+      overflow-x:hidden;
+      color:var(--ink);
+      font-family:"Yu Gothic","Meiryo",system-ui,sans-serif;
+      background:
+        radial-gradient(circle at 16% 5%,rgba(15,95,175,.16),transparent 36%),
+        linear-gradient(180deg,#dde9f2 0%,var(--bg) 45%,#f7fafc 100%);
+    }
+    main{
+      width:min(940px,100%);
+      max-width:100%;
+      margin:auto;
+      padding:14px;
+    }
+    .app{
+      max-width:100%;
+      overflow:hidden;
+      border:1px solid #cbd7e2;
+      border-radius:18px;
+      background:rgba(255,255,255,.82);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(10px);
+    }
+    header{
+      padding:18px 16px 14px;
+      color:#fff;
+      background:linear-gradient(135deg,#123b66,#0f5faf 55%,#1677c7);
+    }
+    h1{
+      margin:0;
+      font-size:clamp(25px,7vw,44px);
+      line-height:1.15;
+      letter-spacing:0;
+    }
+    .sub{
+      margin:8px 0 0;
+      font-weight:800;
+      line-height:1.6;
+      color:#dbeafe;
+    }
+    .status{
+      display:grid;
+      gap:10px;
+      padding:14px 16px;
+      background:#f8fbfe;
+      border-bottom:1px solid var(--line);
+    }
+    .status-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      font-weight:900;
+    }
+    .progress{
+      height:12px;
+      overflow:hidden;
+      border-radius:999px;
+      background:#d9e4ee;
+    }
+    .progress span{
+      display:block;
+      width:0;
+      height:100%;
+      background:linear-gradient(90deg,#0f5faf,#19a56f);
+      transition:width .25s ease;
+    }
+    .layout{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+      padding:14px;
+      min-width:0;
+    }
+    .question-card{
+      display:grid;
+      gap:14px;
+      min-width:0;
+      max-width:100%;
+    }
+    .qtag{
+      width:max-content;
+      border-radius:999px;
+      padding:7px 11px;
+      background:#102a43;
+      color:#fff;
+      font-weight:900;
+    }
+    h2{
+      margin:0;
+      font-size:clamp(23px,6vw,38px);
+      line-height:1.25;
+      letter-spacing:0;
+      overflow-wrap:anywhere;
+    }
+    .hint-lock{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      color:var(--muted);
+      font-weight:900;
+      line-height:1.55;
+    }
+    .choices{
+      display:grid;
+      gap:10px;
+      min-width:0;
+    }
+    button{
+      appearance:none;
+      border:1px solid var(--line);
+      border-radius:13px;
+      background:var(--paper);
+      color:var(--ink);
+      cursor:pointer;
+      font:inherit;
+      font-weight:900;
+      letter-spacing:0;
+    }
+    button:active{transform:scale(.99)}
+    .choice{
+      display:grid;
+      grid-template-columns:auto 1fr;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+      padding:13px;
+      text-align:left;
+      line-height:1.55;
+    }
+    .choice span:last-child{
+      min-width:0;
+      overflow-wrap:anywhere;
+    }
+    .badge{
+      display:grid;
+      place-items:center;
+      width:38px;
+      aspect-ratio:1;
+      border-radius:999px;
+      background:#dbeafe;
+      color:#0f4f8d;
+      font-weight:1000;
+      flex:none;
+    }
+    .choice.correct{
+      border-color:var(--green);
+      background:#e9f8f0;
+      color:#075f36;
+    }
+    .choice.correct .badge{background:var(--green);color:#fff}
+    .choice.wrong{
+      border-color:var(--red);
+      background:#fff0ef;
+      color:#8d1f18;
+    }
+    .choice.wrong .badge{background:var(--red);color:#fff}
+    .answer{
+      display:none;
+      max-width:100%;
+      overflow:hidden;
+      border:2px solid #b9d8f1;
+      border-radius:15px;
+      background:#f1f8ff;
+    }
+    .answer.show{display:block}
+    .answer-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:11px 12px;
+      background:#0f5faf;
+      color:#fff;
+      font-weight:1000;
+      flex-wrap:wrap;
+    }
+    .answer img{
+      display:block;
+      width:100%;
+      max-height:430px;
+      object-fit:contain;
+      background:#e8eef5;
+    }
+    .answer-body{
+      display:grid;
+      gap:11px;
+      padding:13px;
+      line-height:1.7;
+      font-weight:800;
+    }
+    .answer-body p{margin:0}
+    .chips{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .chip{
+      border-radius:999px;
+      padding:6px 10px;
+      background:#fff;
+      border:1px solid #c7d8e8;
+      color:#164e82;
+      font-weight:900;
+    }
+    .copy{
+      border-radius:12px;
+      padding:12px;
+      background:#111827;
+      color:#fff;
+      font-weight:900;
+      line-height:1.7;
+    }
+    .nav{
+      display:grid;
+      grid-template-columns:1fr 1.2fr 1fr;
+      gap:10px;
+    }
+    .nav button{
+      padding:13px 10px;
+      text-align:center;
+      background:#fff;
+    }
+    .nav .primary{
+      color:#fff;
+      background:linear-gradient(135deg,#0f5faf,#1677c7);
+      border-color:#0f5faf;
+    }
+    .side{
+      display:grid;
+      gap:10px;
+      min-width:0;
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+    }
+    .mini-title{
+      margin:0;
+      font-size:18px;
+      font-weight:1000;
+    }
+    .topic-list{
+      display:grid;
+      gap:8px;
+    }
+    .topic{
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      gap:8px;
+      align-items:center;
+      min-width:0;
+      border:1px solid var(--line);
+      border-radius:11px;
+      padding:9px;
+      color:var(--muted);
+      background:#fbfdff;
+      font-weight:900;
+    }
+    .topic span:nth-child(2){
+      min-width:0;
+      overflow-wrap:anywhere;
+    }
+    .topic.active{
+      border-color:#83bcec;
+      color:#0f4f8d;
+      background:#eef7ff;
+    }
+    .dot{
+      width:10px;
+      aspect-ratio:1;
+      border-radius:999px;
+      background:#cbd5e1;
+    }
+    .topic.done .dot{background:var(--green)}
+    .topic.wrong-done .dot{background:var(--red)}
+    .small{
+      margin:0;
+      color:var(--muted);
+      line-height:1.7;
+      font-weight:800;
+    }
+    .tools{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .tools button{
+      padding:9px 11px;
+      font-size:14px;
+    }
+    @media (min-width:820px){
+      .layout{grid-template-columns:minmax(0,1fr) 280px;align-items:start}
+      .question-card{min-width:0}
+      .side{position:sticky;top:12px}
+    }
+    @media (max-width:520px){
+      main{padding:0}
+      .app{min-height:100svh;border-radius:0;border:0}
+      header,
+      .status,
+      .layout{
+        width:100%;
+        max-width:390px;
+      }
+      header{padding-top:calc(16px + env(safe-area-inset-top))}
+      h1{font-size:30px}
+      h2{font-size:26px}
+      .sub{font-size:14px}
+      .status-row{
+        display:grid;
+        justify-content:start;
+        gap:5px;
+      }
+      .layout{padding:12px}
+      .qtag{font-size:15px}
+      .choice{grid-template-columns:36px 1fr}
+      .badge{width:34px}
+      .nav{position:sticky;bottom:0;padding-bottom:env(safe-area-inset-bottom);background:linear-gradient(180deg,rgba(238,243,246,0),#eef3f6 28%)}
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="app" aria-label="設計ミス防止 5問復習">
+      <header>
+        <h1>設計ミス防止 5問復習</h1>
+        <p class="sub">問題だけ先に見る。答えた後に画像で確認する。</p>
+      </header>
+
+      <section class="status">
+        <div class="status-row">
+          <span id="counter">1 / 5</span>
+          <span id="score">正解 0 / 5</span>
+        </div>
+        <div class="progress" aria-label="進捗"><span id="bar"></span></div>
+      </section>
+
+      <section class="layout">
+        <section class="question-card">
+          <span class="qtag" id="qtag">Q1</span>
+          <h2 id="question">読み込み中</h2>
+          <div class="hint-lock">🔒 回答後に画像解説が開きます</div>
+          <div class="choices" id="choices"></div>
+
+          <section class="answer" id="answer">
+            <div class="answer-head">
+              <span id="result">回答結果</span>
+              <span id="answer-topic">画像解説</span>
+            </div>
+            <img id="answerImage" src="" alt="">
+            <div class="answer-body">
+              <div class="chips" id="chips"></div>
+              <p id="reason"></p>
+              <div class="copy" id="fieldRule"></div>
+            </div>
+          </section>
+
+          <nav class="nav" aria-label="問題移動">
+            <button type="button" id="prev">前へ</button>
+            <button type="button" class="primary" id="check">答える</button>
+            <button type="button" id="next">次へ</button>
+          </nav>
+        </section>
+
+        <aside class="side">
+          <p class="mini-title">今日の5テーマ</p>
+          <div class="topic-list" id="topics"></div>
+          <p class="small">作成日：2026/06/16</p>
+          <p class="small">目的：現場で迷う判断を、短時間で思い出す。</p>
+          <div class="tools">
+            <button type="button" id="reset">リセット</button>
+            <button type="button" id="install" hidden>ホーム画面</button>
+          </div>
+        </aside>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const quiz = [
+      {
+        tag:"SolidWorks",
+        question:"TB1を縦文字で入れる。安全な作り方は？",
+        choices:[
+          "TB1を1つのスケッチ文字で90度回転する",
+          "T・B・1を別々のスケッチ文字で縦に配置する",
+          "フォントを変えて縦書きに見せる"
+        ],
+        answer:1,
+        image:"assets/q1-solidworks-vertical-text.png",
+        alt:"T B 1を別々のスケッチ文字で縦に並べたSolidWorks風CAD画面",
+        chips:["1文字ずつ", "中心線で整列", "寸法管理"],
+        reason:"縦書きに見せたい時は、1つの文字枠で無理に回すより、T・B・1を分ける方が位置と間隔を管理しやすいです。",
+        fieldRule:"現場判断：刻印やカット用は、文字を分けてから中心線と等間隔寸法で固定する。"
+      },
+      {
+        tag:"Sketch Text",
+        question:"文字の間に大きな空白が出た。まず疑う原因は？",
+        choices:[
+          "Curvesに長い直線を選んでいる",
+          "板厚が薄すぎる",
+          "材料がSUSではない"
+        ],
+        answer:0,
+        image:"assets/q2-text-curve-blank-space.png",
+        alt:"長いスケッチ文字枠にT B 1が広がっているSolidWorks風CAD画面",
+        chips:["Curves確認", "長い基準線", "文字枠を小さく"],
+        reason:"スケッチ文字は、選んだ線やエッジに沿って配置されます。長い線を選ぶと、その全長に文字が広がります。",
+        fieldRule:"現場判断：空白が大きい時は、文字内容より先にCurves欄の選択線を外す。"
+      },
+      {
+        tag:"3D CAD調査",
+        question:"3D CADが見つからない。設計上の扱いは？",
+        choices:[
+          "型番が似ていれば3Dありとして進める",
+          "公式ページでCAD/STEPが見えるまで未確認扱いにする",
+          "検索結果に出ない時は廃番と決める"
+        ],
+        answer:1,
+        image:"assets/q3-cad-data-unconfirmed.png",
+        alt:"3D CAD未確認の検索画面とチェックリスト",
+        chips:["公式優先", "完全型番", "未確認扱い"],
+        reason:"商品ページやCAD欄が動的表示で確認できない時は、3Dデータありとは断定しない方が安全です。",
+        fieldRule:"現場判断：公式でSTEPや3D CAD欄を確認できるまで、モデル流用前提にしない。"
+      },
+      {
+        tag:"表面仕上げ",
+        question:"HLや鏡面を図面で伝える。最低限必要な指示は？",
+        choices:[
+          "面・仕上げ種類・方向・番手",
+          "材料名だけ",
+          "表面粗さ記号だけ"
+        ],
+        answer:0,
+        image:"assets/q4-surface-finish-direction.png",
+        alt:"板金図面とHL方向と鏡面サンプルを示す作業机",
+        chips:["加工面", "方向", "番手"],
+        reason:"HLは方向が大事です。鏡面#400/#500は番手の目安なので、加工する面と仕上げ内容を分けて書くと伝わりやすいです。",
+        fieldRule:"図面コメント例：指示面 HL方向記入部、#150〜180相当仕上げ。キズ・打痕なきこと。"
+      },
+      {
+        tag:"固定設計",
+        question:"ラグ板を固定する。設計前に確認する組み合わせは？",
+        choices:[
+          "色だけ",
+          "穴径・スペーサー・タップ/溶接スタッド・締結高さ",
+          "部品名だけ"
+        ],
+        answer:1,
+        image:"assets/q5-lug-stud-spacer.png",
+        alt:"ラグ板をスペーサーと溶接スタッドで固定する構造",
+        chips:["穴径", "スペーサー", "溶接スタッド"],
+        reason:"通し穴に対して、スペーサーやスタッド径が合うか、締めた時に基板や端子が干渉しないかを先に見ます。",
+        fieldRule:"現場判断：穴径だけで決めない。重なり順、逃げ、締結高さ、溶接可否まで確認する。"
+      }
+    ];
+
+    const state = {
+      index: Number(localStorage.getItem("dm5-index") || 0),
+      selected: null,
+      answers: JSON.parse(localStorage.getItem("dm5-answers") || "[]")
+    };
+
+    const el = {
+      counter: document.getElementById("counter"),
+      score: document.getElementById("score"),
+      bar: document.getElementById("bar"),
+      qtag: document.getElementById("qtag"),
+      question: document.getElementById("question"),
+      choices: document.getElementById("choices"),
+      answer: document.getElementById("answer"),
+      result: document.getElementById("result"),
+      answerTopic: document.getElementById("answer-topic"),
+      answerImage: document.getElementById("answerImage"),
+      chips: document.getElementById("chips"),
+      reason: document.getElementById("reason"),
+      fieldRule: document.getElementById("fieldRule"),
+      prev: document.getElementById("prev"),
+      next: document.getElementById("next"),
+      check: document.getElementById("check"),
+      topics: document.getElementById("topics"),
+      reset: document.getElementById("reset"),
+      install: document.getElementById("install")
+    };
+
+    function save(){
+      localStorage.setItem("dm5-index", String(state.index));
+      localStorage.setItem("dm5-answers", JSON.stringify(state.answers));
+    }
+
+    function score(){
+      return state.answers.filter((item, i) => item === quiz[i].answer).length;
+    }
+
+    function renderTopics(){
+      el.topics.innerHTML = "";
+      quiz.forEach((q, i) => {
+        const item = document.createElement("button");
+        item.type = "button";
+        item.className = "topic" + (i === state.index ? " active" : "");
+        if (state.answers[i] !== undefined) {
+          item.className += state.answers[i] === q.answer ? " done" : " wrong-done";
+        }
+        item.innerHTML = `<span class="dot"></span><span>Q${i + 1} ${q.tag}</span><span>${state.answers[i] === undefined ? "未" : state.answers[i] === q.answer ? "○" : "△"}</span>`;
+        item.addEventListener("click", () => {
+          state.index = i;
+          state.selected = null;
+          save();
+          render();
+        });
+        el.topics.appendChild(item);
+      });
+    }
+
+    function showAnswer(selected){
+      const q = quiz[state.index];
+      const correct = selected === q.answer;
+      state.answers[state.index] = selected;
+      save();
+      el.answer.classList.add("show");
+      el.result.textContent = correct ? "正解" : "確認";
+      el.answerTopic.textContent = q.tag + " 画像解説";
+      el.answerImage.src = q.image;
+      el.answerImage.alt = q.alt;
+      el.chips.innerHTML = q.chips.map(chip => `<span class="chip">${chip}</span>`).join("");
+      el.reason.textContent = q.reason;
+      el.fieldRule.textContent = q.fieldRule;
+      Array.from(el.choices.children).forEach((btn, i) => {
+        btn.disabled = true;
+        btn.classList.toggle("correct", i === q.answer);
+        btn.classList.toggle("wrong", i === selected && i !== q.answer);
+      });
+      updateStatus();
+      renderTopics();
+    }
+
+    function renderChoices(q){
+      el.choices.innerHTML = "";
+      q.choices.forEach((choice, i) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "choice";
+        btn.innerHTML = `<span class="badge">${String.fromCharCode(65 + i)}</span><span>${choice}</span>`;
+        btn.addEventListener("click", () => {
+          state.selected = i;
+          showAnswer(i);
+        });
+        el.choices.appendChild(btn);
+      });
+    }
+
+    function updateStatus(){
+      el.counter.textContent = `${state.index + 1} / ${quiz.length}`;
+      el.score.textContent = `正解 ${score()} / ${quiz.length}`;
+      el.bar.style.width = `${((state.index + 1) / quiz.length) * 100}%`;
+      el.prev.disabled = state.index === 0;
+      el.next.disabled = state.index === quiz.length - 1;
+    }
+
+    function render(){
+      state.index = Math.max(0, Math.min(state.index, quiz.length - 1));
+      const q = quiz[state.index];
+      el.qtag.textContent = `Q${state.index + 1} ${q.tag}`;
+      el.question.textContent = q.question;
+      el.answer.classList.remove("show");
+      el.answerImage.removeAttribute("src");
+      renderChoices(q);
+      updateStatus();
+      renderTopics();
+      if (state.answers[state.index] !== undefined) {
+        showAnswer(state.answers[state.index]);
+      }
+    }
+
+    el.prev.addEventListener("click", () => {
+      if (state.index === 0) return;
+      state.index -= 1;
+      state.selected = null;
+      save();
+      render();
+    });
+
+    el.next.addEventListener("click", () => {
+      if (state.index === quiz.length - 1) return;
+      state.index += 1;
+      state.selected = null;
+      save();
+      render();
+    });
+
+    el.check.addEventListener("click", () => {
+      if (state.answers[state.index] !== undefined) return;
+      const first = el.choices.querySelector(".choice");
+      if (first) first.focus();
+    });
+
+    el.reset.addEventListener("click", () => {
+      state.index = 0;
+      state.selected = null;
+      state.answers = [];
+      save();
+      render();
+    });
+
+    let deferredPrompt = null;
+    window.addEventListener("beforeinstallprompt", event => {
+      event.preventDefault();
+      deferredPrompt = event;
+      el.install.hidden = false;
+    });
+    el.install.addEventListener("click", async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      el.install.hidden = true;
+    });
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+      });
+    }
+
+    render();
+  </script>
+</body>
+</html>
