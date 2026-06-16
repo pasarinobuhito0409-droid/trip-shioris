@@ -71,6 +71,38 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
 .quiz-card .qbtns button.wrong{background:#ff6b6b;color:#fff}
 .quiz-card .qbtns button.del{flex:0 0 44px;color:#c43;background:#fff;border:1px solid #fbb}
 
+/* === 仕事復習モード === */
+.daily-review-hub{margin:12px 14px;padding:14px;border-radius:16px;background:linear-gradient(135deg,#ffffff 0%,#f5f9ff 100%);border:1.5px solid #cfe0f5;box-shadow:0 4px 14px rgba(26,58,82,.08)}
+.daily-review-hub .hub-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.daily-review-hub .hub-title{font-size:13px;font-weight:900;color:#1a3a52}
+.daily-review-hub .hub-badge{font-size:10px;font-weight:800;color:#0a4a82;background:#dceeff;border-radius:999px;padding:3px 8px;white-space:nowrap}
+.today-quiz-card{background:#fff;border:1.5px solid #d9e3ec;border-radius:14px;padding:12px}
+.today-quiz-card .qtop{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:8px;font-size:11px;font-weight:800;color:#6b6b73}
+.today-quiz-card .qset{color:#c850dc}
+.today-quiz-card .qtext{font-size:15px;font-weight:900;color:#1d1d1f;line-height:1.45;margin-bottom:10px}
+.today-quiz-card .choice-grid{display:grid;gap:7px}
+.today-quiz-card .choice-btn{border:1.5px solid #d9e3ec;background:#f8fbff;color:#1d1d1f;border-radius:10px;padding:10px;text-align:left;font:inherit;font-size:13px;font-weight:800;cursor:pointer}
+.today-quiz-card .choice-btn.correct{background:#e0f7ea;border-color:#34c759;color:#155d2b}
+.today-quiz-card .choice-btn.wrong{background:#ffe6e6;border-color:#ff6b6b;color:#8a2020}
+.today-quiz-card .answer-panel{margin-top:10px;padding:10px;border-radius:12px;background:#f8f5ff;border:1.5px solid #e3d4ff}
+.today-quiz-card .answer-panel img{width:100%;max-height:180px;object-fit:cover;border-radius:10px;border:1px solid #e3e3e8;margin:8px 0}
+.today-quiz-card .answer-panel .chips{display:flex;gap:5px;flex-wrap:wrap;margin:6px 0}
+.today-quiz-card .answer-panel .chips span{font-size:10px;font-weight:800;background:#fff;color:#6a2078;border:1px solid #e3d4ff;border-radius:999px;padding:3px 7px}
+.today-quiz-card .answer-panel .reason{font-size:12px;line-height:1.55;color:#3a1050}
+.review-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.review-actions button{border:none;border-radius:10px;padding:10px;font:inherit;font-size:12px;font-weight:900;cursor:pointer}
+.review-actions .main{background:#1a3a52;color:#fff}
+.review-actions .sub{background:#eef3f7;color:#1a3a52}
+.review-shelf{padding:0 14px 12px;display:grid;gap:10px}
+.review-set-card{background:#fff;border:1.5px solid #d9e3ec;border-radius:14px;padding:12px}
+.review-set-card .shead{display:flex;justify-content:space-between;gap:8px;margin-bottom:8px}
+.review-set-card .sname{font-size:15px;font-weight:900;color:#1a3a52}
+.review-set-card .sdate{font-size:10px;font-weight:800;color:#6b6b73;background:#f1f3f5;border-radius:999px;padding:3px 8px;height:max-content}
+.review-set-card .smeta{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+.review-set-card .smeta span{background:#f8fbff;border:1px solid #e3eaf2;border-radius:10px;padding:7px 4px;text-align:center;font-size:11px;font-weight:800;color:#1a3a52}
+.weak-list{margin-top:8px;display:grid;gap:6px}
+.weak-list .weak-item{background:#fff8f0;border:1px solid #ffd8a8;border-radius:10px;padding:8px;font-size:12px;font-weight:800;color:#6a3a00}
+
 /* === 更新ボタン＆Pull-to-refresh === */
 .refresh-btn{position:fixed;top:10px;right:10px;z-index:11;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1.5px solid var(--line);width:40px;height:40px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.12);transition:transform .15s}
 .refresh-btn:active{transform:rotate(180deg) scale(.9)}
@@ -375,6 +407,19 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
   <div class="hint">↓ ボタンでカテゴリ別に即記録</div>
 </div>
 
+<!-- 仕事復習モード -->
+<div class="daily-review-hub">
+  <div class="hub-head">
+    <div class="hub-title">🌙 仕事復習モード</div>
+    <div class="hub-badge">今日の1問</div>
+  </div>
+  <div id="todayQuizCard" class="today-quiz-card"></div>
+  <div class="review-actions">
+    <button class="main" onclick="showTodayReview()">今日の1問</button>
+    <button class="sub" onclick="focusWeakReviews()">弱点だけ</button>
+  </div>
+</div>
+
 <div class="btn-grid">
   <button class="cat-btn design" onclick="quickSave('design')"><span class="icon">📐</span><span>設計</span><span class="sub">タップで記録</span></button>
   <button class="cat-btn process" onclick="quickSave('process')"><span class="icon">🔨</span><span>加工/製造</span><span class="sub">タップで記録</span></button>
@@ -486,6 +531,15 @@ h1 .sub{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
 </div>
 <div id="inquiriesContainer" class="collapsible">
   <div class="inquiry-tank" id="inquiryTank"></div>
+</div>
+
+<!-- 復習棚 -->
+<div class="section-title" onclick="toggleSection('reviewShelfContainer', this)">
+  <span>🗂 復習棚（毎日の仕事復習）</span>
+  <span><span class="count" id="reviewShelfCount"></span> <span class="arrow">▼</span></span>
+</div>
+<div id="reviewShelfContainer" class="collapsible">
+  <div class="review-shelf" id="reviewShelf"></div>
 </div>
 
 <!-- 復習問題タンク -->
@@ -717,10 +771,11 @@ function loadState(){
       if(!s.ideas) s.ideas = [];
       if(!s.inquiries) s.inquiries = [];
       if(!s.quizzes) s.quizzes = [];
+      if(!s.reviewSets) s.reviewSets = {};
       return s;
     }
   }catch(e){ console.warn("loadState fail", e); }
-  return {logs:[], parts:{}, daily:{}, projects:[], ideas:[], inquiries:[], quizzes:[]};
+  return {logs:[], parts:{}, daily:{}, projects:[], ideas:[], inquiries:[], quizzes:[], reviewSets:{}};
 }
 function saveState(s){
   try{ localStorage.setItem(KEY, JSON.stringify(s)); }
@@ -746,6 +801,72 @@ const CATS = {
   memo:{name:"メモ", color:"#6b6b73", emoji:"📝"},
   part:{name:"パーツ", color:"#1a3a52", emoji:"📦"}
 };
+const REVIEW_SETS = [
+  {
+    id:"design-mistake-5",
+    title:"設計ミス防止 5問",
+    created:"2026/06/16",
+    source:"SolidWorks・3D CAD・表面仕上げ・固定設計",
+    next:"明日",
+    questions:[
+      {
+        id:"dm5-q1",
+        tag:"SolidWorks",
+        question:"TB1を縦文字で入れる。安全な作り方は？",
+        choices:["TB1を1つのスケッチ文字で90度回転する","T・B・1を別々のスケッチ文字で縦に配置する","フォントを変えて縦書きに見せる"],
+        answer:1,
+        image:"../design-mistake-5-review/assets/q1-solidworks-vertical-text.png",
+        chips:["1文字ずつ","中心線で整列","寸法管理"],
+        reason:"縦書きに見せたい時は、1つの文字枠で無理に回すより、T・B・1を分ける方が位置と間隔を管理しやすいです。",
+        fieldRule:"現場判断：刻印やカット用は、文字を分けてから中心線と等間隔寸法で固定する。"
+      },
+      {
+        id:"dm5-q2",
+        tag:"Sketch Text",
+        question:"文字の間に大きな空白が出た。まず疑う原因は？",
+        choices:["Curvesに長い直線を選んでいる","板厚が薄すぎる","材料がSUSではない"],
+        answer:0,
+        image:"../design-mistake-5-review/assets/q2-text-curve-blank-space.png",
+        chips:["Curves確認","長い基準線","文字枠を小さく"],
+        reason:"スケッチ文字は、選んだ線やエッジに沿って配置されます。長い線を選ぶと、その全長に文字が広がります。",
+        fieldRule:"現場判断：空白が大きい時は、文字内容より先にCurves欄の選択線を外す。"
+      },
+      {
+        id:"dm5-q3",
+        tag:"3D CAD調査",
+        question:"3D CADが見つからない。設計上の扱いは？",
+        choices:["型番が似ていれば3Dありとして進める","公式ページでCAD/STEPが見えるまで未確認扱いにする","検索結果に出ない時は廃番と決める"],
+        answer:1,
+        image:"../design-mistake-5-review/assets/q3-cad-data-unconfirmed.png",
+        chips:["公式優先","完全型番","未確認扱い"],
+        reason:"商品ページやCAD欄が動的表示で確認できない時は、3Dデータありとは断定しない方が安全です。",
+        fieldRule:"現場判断：公式でSTEPや3D CAD欄を確認できるまで、モデル流用前提にしない。"
+      },
+      {
+        id:"dm5-q4",
+        tag:"表面仕上げ",
+        question:"HLや鏡面を図面で伝える。最低限必要な指示は？",
+        choices:["面・仕上げ種類・方向・番手","材料名だけ","表面粗さ記号だけ"],
+        answer:0,
+        image:"../design-mistake-5-review/assets/q4-surface-finish-direction.png",
+        chips:["加工面","方向","番手"],
+        reason:"HLは方向が大事です。鏡面#400/#500は番手の目安なので、加工する面と仕上げ内容を分けて書くと伝わりやすいです。",
+        fieldRule:"図面コメント例：指示面 HL方向記入部、#150〜180相当仕上げ。キズ・打痕なきこと。"
+      },
+      {
+        id:"dm5-q5",
+        tag:"固定設計",
+        question:"ラグ板を固定する。設計前に確認する組み合わせは？",
+        choices:["色だけ","穴径・スペーサー・タップ/溶接スタッド・締結高さ","部品名だけ"],
+        answer:1,
+        image:"../design-mistake-5-review/assets/q5-lug-stud-spacer.png",
+        chips:["穴径","スペーサー","溶接スタッド"],
+        reason:"通し穴に対して、スペーサーやスタッド径が合うか、締めた時に基板や端子が干渉しないかを先に見ます。",
+        fieldRule:"現場判断：穴径だけで決めない。重なり順、逃げ、締結高さ、溶接可否まで確認する。"
+      }
+    ]
+  }
+];
 const PART_CATS = {
   material:{name:"材料", color:"#5a7a8a"},
   weld:{name:"溶接", color:"#e64545"},
@@ -984,6 +1105,143 @@ function renderQuizzes(){
            </div>`
         : `<button class="show-btn" onclick="toggleAnswer(${q.id})">👁 答えを見る</button>`
       }
+    </div>`;
+  }).join("");
+}
+
+// ===== 毎日の仕事復習 =====
+function escapeHtml(txt){
+  return String(txt || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+function ensureReviewSets(){
+  if(!state.reviewSets) state.reviewSets = {};
+  REVIEW_SETS.forEach(set=>{
+    if(!state.reviewSets[set.id]) state.reviewSets[set.id] = {answers:{}, last:null};
+    if(!state.reviewSets[set.id].answers) state.reviewSets[set.id].answers = {};
+  });
+}
+function allReviewItems(){
+  const items = [];
+  REVIEW_SETS.forEach(set=>{
+    set.questions.forEach(q=>items.push({set, q}));
+  });
+  return items;
+}
+function dayIndex(){
+  const d = new Date(`${todayStr()}T00:00:00`);
+  return Math.floor(d.getTime() / 86400000);
+}
+function todayReviewItem(){
+  const items = allReviewItems();
+  return items[dayIndex() % items.length];
+}
+function reviewStats(set){
+  ensureReviewSets();
+  const rec = state.reviewSets[set.id];
+  let correct = 0, wrong = 0, last = rec.last || "";
+  set.questions.forEach(q=>{
+    const a = rec.answers[q.id];
+    if(!a) return;
+    correct += a.correct || 0;
+    wrong += a.wrong || 0;
+    if(a.last && a.last > last) last = a.last;
+  });
+  const total = correct + wrong;
+  return {correct, wrong, total, rate: total ? Math.round(100 * correct / total) : 0, last};
+}
+function answerReviewQuestion(setId, questionId, selected){
+  ensureReviewSets();
+  const set = REVIEW_SETS.find(s=>s.id===setId);
+  if(!set) return;
+  const q = set.questions.find(item=>item.id===questionId);
+  if(!q) return;
+  const rec = state.reviewSets[set.id];
+  if(!rec.answers[q.id]) rec.answers[q.id] = {correct:0, wrong:0, last:"", lastChoice:null};
+  const ok = selected === q.answer;
+  rec.answers[q.id][ok ? "correct" : "wrong"]++;
+  rec.answers[q.id].last = todayStr();
+  rec.answers[q.id].lastChoice = selected;
+  rec.last = todayStr();
+  getDaily(todayStr()).reviewQuiz = {
+    setId,
+    questionId,
+    selected,
+    ok,
+    date: todayStr()
+  };
+  saveState(state);
+  toast(ok ? "✓ 仕事復習できた" : "△ 弱点に残した");
+  renderTodayQuiz();
+  renderReviewShelf();
+}
+function showTodayReview(){
+  switchPage("input");
+  document.getElementById("todayQuizCard").scrollIntoView({behavior:"smooth", block:"center"});
+}
+function focusWeakReviews(){
+  switchPage("archive");
+  document.getElementById("reviewShelfContainer").classList.remove("hidden");
+  document.getElementById("reviewShelfContainer").scrollIntoView({behavior:"smooth", block:"start"});
+}
+function renderTodayQuiz(){
+  ensureReviewSets();
+  const mount = document.getElementById("todayQuizCard");
+  if(!mount) return;
+  const item = todayReviewItem();
+  if(!item){
+    mount.innerHTML = `<div class="empty" style="margin:0">復習セットがまだありません</div>`;
+    return;
+  }
+  const {set, q} = item;
+  const daily = getDaily(todayStr()).reviewQuiz;
+  const answered = daily && daily.setId === set.id && daily.questionId === q.id;
+  const selected = answered ? daily.selected : null;
+  const choices = q.choices.map((choice, ix)=>{
+    const cls = answered ? (ix === q.answer ? " correct" : (ix === selected ? " wrong" : "")) : "";
+    const action = answered ? "" : ` onclick="answerReviewQuestion('${set.id}','${q.id}',${ix})"`;
+    return `<button class="choice-btn${cls}"${action}>${ix + 1}. ${escapeHtml(choice)}</button>`;
+  }).join("");
+  mount.innerHTML = `
+    <div class="qtop">
+      <span class="qset">${escapeHtml(set.title)}</span>
+      <span>${escapeHtml(q.tag)}</span>
+    </div>
+    <div class="qtext">${escapeHtml(q.question)}</div>
+    <div class="choice-grid">${choices}</div>
+    ${answered ? `<div class="answer-panel">
+      <strong>${daily.ok ? "正解" : "確認"}：${escapeHtml(q.choices[q.answer])}</strong>
+      <img src="${q.image}" alt="${escapeHtml(q.tag)}の画像解説">
+      <div class="chips">${q.chips.map(chip=>`<span>${escapeHtml(chip)}</span>`).join("")}</div>
+      <div class="reason">${escapeHtml(q.reason)}<br>${escapeHtml(q.fieldRule)}</div>
+    </div>` : ""}
+  `;
+}
+function renderReviewShelf(){
+  ensureReviewSets();
+  const mount = document.getElementById("reviewShelf");
+  const count = document.getElementById("reviewShelfCount");
+  if(!mount || !count) return;
+  count.textContent = `${REVIEW_SETS.length}セット`;
+  mount.innerHTML = REVIEW_SETS.map(set=>{
+    const stats = reviewStats(set);
+    const weak = set.questions.filter(q=>{
+      const a = state.reviewSets[set.id].answers[q.id];
+      return a && (a.wrong || 0) > (a.correct || 0);
+    });
+    return `<div class="review-set-card">
+      <div class="shead">
+        <div>
+          <div class="sname">${escapeHtml(set.title)}</div>
+          <div style="font-size:12px;color:var(--muted);font-weight:700">${escapeHtml(set.source)}</div>
+        </div>
+        <span class="sdate">作成日 ${escapeHtml(set.created)}</span>
+      </div>
+      <div class="smeta">
+        <span>正答率 ${stats.total ? `${stats.rate}%` : "-"}</span>
+        <span>弱点 ${weak.length}</span>
+        <span>次回 ${escapeHtml(set.next)}</span>
+      </div>
+      ${weak.length ? `<div class="weak-list">${weak.map(q=>`<div class="weak-item">△ ${escapeHtml(q.tag)}：${escapeHtml(q.question)}</div>`).join("")}</div>` : `<div class="weak-list"><div class="weak-item" style="background:#e0f7ea;border-color:#bde8c8;color:#155d2b">◎ 今の弱点なし</div></div>`}
     </div>`;
   }).join("");
 }
@@ -1263,6 +1521,7 @@ function doImportText(){
     if(!data.projects) data.projects = [];
     if(!data.ideas) data.ideas = [];
     if(!data.inquiries) data.inquiries = [];
+    if(!data.reviewSets) data.reviewSets = {};
     if(!confirm(`既存${state.logs.length}件 → 読込${data.logs.length}件で上書き。OK？`)) return;
     state = data;
     saveState(state);
@@ -1295,6 +1554,8 @@ function render(){
   renderLogs();
   renderIdeas();
   renderInquiries();
+  renderTodayQuiz();
+  renderReviewShelf();
   renderQuizzes();
   renderParts();
   renderReview();
