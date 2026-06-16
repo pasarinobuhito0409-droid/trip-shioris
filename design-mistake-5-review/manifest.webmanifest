@@ -1,0 +1,18 @@
+{
+  "name": "\u8a2d\u8a08\u30df\u30b9\u9632\u6b62 5\u554f\u5fa9\u7fd2",
+  "short_name": "\u8a2d\u8a085\u554f",
+  "description": "SolidWorks, surface finish, 3D CAD check, and fastening design review quiz.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef3f6",
+  "theme_color": "#0f4f8d",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
