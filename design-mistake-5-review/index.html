@@ -6,138 +6,79 @@
   <meta name="theme-color" content="#0f4f8d">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <title>設計ミス防止 5問復習</title>
+  <title>設計復習アプリ</title>
   <style>
     :root{
       --bg:#eef3f6;
-      --paper:#ffffff;
+      --paper:#fff;
       --ink:#111827;
       --muted:#5b6777;
       --line:#d7e2ea;
       --blue:#0f5faf;
-      --blue2:#e9f4ff;
       --green:#16834f;
       --red:#c9342d;
-      --amber:#b76512;
       --shadow:0 18px 50px rgba(13,35,56,.16);
     }
     *{box-sizing:border-box}
-    html{
-      max-width:100%;
-      overflow-x:hidden;
-    }
+    html,body{max-width:100%;overflow-x:hidden}
     body{
       margin:0;
       min-height:100svh;
-      max-width:100%;
-      overflow-x:hidden;
       color:var(--ink);
       font-family:"Yu Gothic","Meiryo",system-ui,sans-serif;
       background:
-        radial-gradient(circle at 16% 5%,rgba(15,95,175,.16),transparent 36%),
-        linear-gradient(180deg,#dde9f2 0%,var(--bg) 45%,#f7fafc 100%);
+        radial-gradient(circle at 18% 4%,rgba(15,95,175,.15),transparent 34%),
+        linear-gradient(180deg,#dce8f1 0%,var(--bg) 46%,#f8fafc 100%);
     }
-    main{
-      width:min(940px,100%);
-      max-width:100%;
-      margin:auto;
-      padding:14px;
-    }
+    main{width:min(960px,100%);margin:auto;padding:14px}
     .app{
-      max-width:100%;
       overflow:hidden;
       border:1px solid #cbd7e2;
       border-radius:18px;
-      background:rgba(255,255,255,.82);
+      background:rgba(255,255,255,.86);
       box-shadow:var(--shadow);
-      backdrop-filter:blur(10px);
     }
     header{
       padding:18px 16px 14px;
       color:#fff;
-      background:linear-gradient(135deg,#123b66,#0f5faf 55%,#1677c7);
+      background:linear-gradient(135deg,#123b66,#0f5faf 56%,#1677c7);
     }
-    h1{
-      margin:0;
-      font-size:clamp(25px,7vw,44px);
-      line-height:1.15;
-      letter-spacing:0;
+    h1{margin:0;font-size:clamp(28px,7vw,44px);line-height:1.15;letter-spacing:0}
+    .sub{margin:8px 0 0;font-weight:800;line-height:1.6;color:#dbeafe}
+    .sets{
+      display:grid;
+      gap:10px;
+      padding:13px 16px;
+      background:#f8fbfe;
+      border-bottom:1px solid var(--line);
     }
-    .sub{
-      margin:8px 0 0;
-      font-weight:800;
-      line-height:1.6;
-      color:#dbeafe;
+    .set-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+    .set-btn{
+      flex:0 0 auto;
+      padding:10px 12px;
+      border-radius:999px;
+      color:#0f4f8d;
+      background:#fff;
+      border:1px solid #bfd8ee;
     }
+    .set-btn.active{color:#fff;background:#0f5faf;border-color:#0f5faf}
+    .created{margin:0;color:var(--muted);font-weight:900;line-height:1.5}
     .status{
       display:grid;
       gap:10px;
       padding:14px 16px;
-      background:#f8fbfe;
+      background:#fff;
       border-bottom:1px solid var(--line);
     }
-    .status-row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
-      font-weight:900;
-    }
-    .progress{
-      height:12px;
-      overflow:hidden;
-      border-radius:999px;
-      background:#d9e4ee;
-    }
-    .progress span{
-      display:block;
-      width:0;
-      height:100%;
-      background:linear-gradient(90deg,#0f5faf,#19a56f);
-      transition:width .25s ease;
-    }
-    .layout{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:14px;
-      padding:14px;
-      min-width:0;
-    }
-    .question-card{
-      display:grid;
-      gap:14px;
-      min-width:0;
-      max-width:100%;
-    }
-    .qtag{
-      width:max-content;
-      border-radius:999px;
-      padding:7px 11px;
-      background:#102a43;
-      color:#fff;
-      font-weight:900;
-    }
-    h2{
-      margin:0;
-      font-size:clamp(23px,6vw,38px);
-      line-height:1.25;
-      letter-spacing:0;
-      overflow-wrap:anywhere;
-    }
-    .hint-lock{
-      display:flex;
-      gap:8px;
-      align-items:center;
-      color:var(--muted);
-      font-weight:900;
-      line-height:1.55;
-    }
-    .choices{
-      display:grid;
-      gap:10px;
-      min-width:0;
-    }
+    .status-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-weight:900}
+    .progress{height:12px;overflow:hidden;border-radius:999px;background:#d9e4ee}
+    .progress span{display:block;width:0;height:100%;background:linear-gradient(90deg,#0f5faf,#19a56f);transition:width .25s ease}
+    .layout{display:grid;grid-template-columns:1fr;gap:14px;padding:14px;min-width:0}
+    .question-card{display:grid;gap:14px;min-width:0}
+    .qtag{width:max-content;max-width:100%;border-radius:999px;padding:7px 11px;background:#102a43;color:#fff;font-weight:900}
+    h2{margin:0;font-size:clamp(24px,6vw,38px);line-height:1.25;letter-spacing:0;overflow-wrap:anywhere}
+    .hint-lock{display:flex;gap:8px;align-items:center;color:var(--muted);font-weight:900;line-height:1.55}
+    .choices{display:grid;gap:10px;min-width:0}
     button{
       appearance:none;
       border:1px solid var(--line);
@@ -150,202 +91,51 @@
       letter-spacing:0;
     }
     button:active{transform:scale(.99)}
-    .choice{
-      display:grid;
-      grid-template-columns:auto 1fr;
-      align-items:center;
-      gap:12px;
-      min-width:0;
-      padding:13px;
-      text-align:left;
-      line-height:1.55;
-    }
-    .choice span:last-child{
-      min-width:0;
-      overflow-wrap:anywhere;
-    }
-    .badge{
-      display:grid;
-      place-items:center;
-      width:38px;
-      aspect-ratio:1;
-      border-radius:999px;
-      background:#dbeafe;
-      color:#0f4f8d;
-      font-weight:1000;
-      flex:none;
-    }
-    .choice.correct{
-      border-color:var(--green);
-      background:#e9f8f0;
-      color:#075f36;
-    }
+    .choice{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:12px;min-width:0;padding:13px;text-align:left;line-height:1.55}
+    .choice span:last-child{min-width:0;overflow-wrap:anywhere}
+    .badge{display:grid;place-items:center;width:38px;aspect-ratio:1;border-radius:999px;background:#dbeafe;color:#0f4f8d;font-weight:1000;flex:none}
+    .choice.correct{border-color:var(--green);background:#e9f8f0;color:#075f36}
     .choice.correct .badge{background:var(--green);color:#fff}
-    .choice.wrong{
-      border-color:var(--red);
-      background:#fff0ef;
-      color:#8d1f18;
-    }
+    .choice.wrong{border-color:var(--red);background:#fff0ef;color:#8d1f18}
     .choice.wrong .badge{background:var(--red);color:#fff}
-    .answer{
-      display:none;
-      max-width:100%;
-      overflow:hidden;
-      border:2px solid #b9d8f1;
-      border-radius:15px;
-      background:#f1f8ff;
-    }
+    .answer{display:none;overflow:hidden;border:2px solid #b9d8f1;border-radius:15px;background:#f1f8ff}
     .answer.show{display:block}
-    .answer-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding:11px 12px;
-      background:#0f5faf;
-      color:#fff;
-      font-weight:1000;
-      flex-wrap:wrap;
-    }
-    .answer img{
-      display:block;
-      width:100%;
-      max-height:430px;
-      object-fit:contain;
-      background:#e8eef5;
-    }
-    .answer-body{
-      display:grid;
-      gap:11px;
-      padding:13px;
-      line-height:1.7;
-      font-weight:800;
-    }
+    .answer-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;background:#0f5faf;color:#fff;font-weight:1000;flex-wrap:wrap}
+    .answer img{display:block;width:100%;max-height:430px;object-fit:contain;background:#e8eef5}
+    .answer-body{display:grid;gap:11px;padding:13px;line-height:1.7;font-weight:800}
     .answer-body p{margin:0}
-    .chips{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-    .chip{
-      border-radius:999px;
-      padding:6px 10px;
-      background:#fff;
-      border:1px solid #c7d8e8;
-      color:#164e82;
-      font-weight:900;
-    }
-    .copy{
-      border-radius:12px;
-      padding:12px;
-      background:#111827;
-      color:#fff;
-      font-weight:900;
-      line-height:1.7;
-    }
-    .nav{
-      display:grid;
-      grid-template-columns:1fr 1.2fr 1fr;
-      gap:10px;
-    }
-    .nav button{
-      padding:13px 10px;
-      text-align:center;
-      background:#fff;
-    }
-    .nav .primary{
-      color:#fff;
-      background:linear-gradient(135deg,#0f5faf,#1677c7);
-      border-color:#0f5faf;
-    }
-    .side{
-      display:grid;
-      gap:10px;
-      min-width:0;
-      padding:12px;
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:#fff;
-    }
-    .mini-title{
-      margin:0;
-      font-size:18px;
-      font-weight:1000;
-    }
-    .topic-list{
-      display:grid;
-      gap:8px;
-    }
-    .topic{
-      display:grid;
-      grid-template-columns:auto 1fr auto;
-      gap:8px;
-      align-items:center;
-      min-width:0;
-      border:1px solid var(--line);
-      border-radius:11px;
-      padding:9px;
-      color:var(--muted);
-      background:#fbfdff;
-      font-weight:900;
-    }
-    .topic span:nth-child(2){
-      min-width:0;
-      overflow-wrap:anywhere;
-    }
-    .topic.active{
-      border-color:#83bcec;
-      color:#0f4f8d;
-      background:#eef7ff;
-    }
-    .dot{
-      width:10px;
-      aspect-ratio:1;
-      border-radius:999px;
-      background:#cbd5e1;
-    }
+    .chips{display:flex;gap:8px;flex-wrap:wrap}
+    .chip{border-radius:999px;padding:6px 10px;background:#fff;border:1px solid #c7d8e8;color:#164e82;font-weight:900}
+    .copy{border-radius:12px;padding:12px;background:#111827;color:#fff;font-weight:900;line-height:1.7}
+    .nav{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:10px}
+    .nav button{padding:13px 10px;text-align:center;background:#fff}
+    .nav .primary{color:#fff;background:linear-gradient(135deg,#0f5faf,#1677c7);border-color:#0f5faf}
+    .side{display:grid;gap:10px;min-width:0;padding:12px;border:1px solid var(--line);border-radius:14px;background:#fff}
+    .mini-title{margin:0;font-size:18px;font-weight:1000}
+    .topic-list{display:grid;gap:8px}
+    .topic{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;min-width:0;border:1px solid var(--line);border-radius:11px;padding:9px;color:var(--muted);background:#fbfdff;font-weight:900}
+    .topic span:nth-child(2){min-width:0;overflow-wrap:anywhere}
+    .topic.active{border-color:#83bcec;color:#0f4f8d;background:#eef7ff}
+    .dot{width:10px;aspect-ratio:1;border-radius:999px;background:#cbd5e1}
     .topic.done .dot{background:var(--green)}
     .topic.wrong-done .dot{background:var(--red)}
-    .small{
-      margin:0;
-      color:var(--muted);
-      line-height:1.7;
-      font-weight:800;
-    }
-    .tools{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-    .tools button{
-      padding:9px 11px;
-      font-size:14px;
-    }
+    .small{margin:0;color:var(--muted);line-height:1.7;font-weight:800}
+    .tools{display:flex;gap:8px;flex-wrap:wrap}
+    .tools button{padding:9px 11px;font-size:14px}
     @media (min-width:820px){
-      .layout{grid-template-columns:minmax(0,1fr) 280px;align-items:start}
-      .question-card{min-width:0}
+      .layout{grid-template-columns:minmax(0,1fr) 285px;align-items:start}
       .side{position:sticky;top:12px}
     }
     @media (max-width:520px){
       main{padding:0}
       .app{min-height:100svh;border-radius:0;border:0}
-      header,
-      .status,
-      .layout{
-        width:100%;
-        max-width:390px;
-      }
+      header,.sets,.status,.layout{width:100%;max-width:390px}
       header{padding-top:calc(16px + env(safe-area-inset-top))}
       h1{font-size:30px}
       h2{font-size:26px}
       .sub{font-size:14px}
-      .status-row{
-        display:grid;
-        justify-content:start;
-        gap:5px;
-      }
+      .status-row{display:grid;justify-content:start;gap:5px}
       .layout{padding:12px}
-      .qtag{font-size:15px}
       .choice{grid-template-columns:36px 1fr}
       .badge{width:34px}
       .nav{position:sticky;bottom:0;padding-bottom:env(safe-area-inset-bottom);background:linear-gradient(180deg,rgba(238,243,246,0),#eef3f6 28%)}
@@ -354,16 +144,21 @@
 </head>
 <body>
   <main>
-    <section class="app" aria-label="設計ミス防止 5問復習">
+    <section class="app" aria-label="設計復習アプリ">
       <header>
-        <h1>設計ミス防止 5問復習</h1>
+        <h1>設計復習アプリ</h1>
         <p class="sub">問題だけ先に見る。答えた後に画像で確認する。</p>
       </header>
 
+      <section class="sets">
+        <div class="set-row" id="setRow"></div>
+        <p class="created" id="created">作成日</p>
+      </section>
+
       <section class="status">
         <div class="status-row">
-          <span id="counter">1 / 5</span>
-          <span id="score">正解 0 / 5</span>
+          <span id="counter">1 / 3</span>
+          <span id="score">正解 0 / 3</span>
         </div>
         <div class="progress" aria-label="進捗"><span id="bar"></span></div>
       </section>
@@ -388,21 +183,20 @@
             </div>
           </section>
 
-          <nav class="nav" aria-label="問題移動">
-            <button type="button" id="prev">前へ</button>
-            <button type="button" class="primary" id="check">答える</button>
-            <button type="button" id="next">次へ</button>
-          </nav>
+          <div class="nav">
+            <button id="prev" type="button">前へ</button>
+            <button id="check" class="primary" type="button">答える</button>
+            <button id="next" type="button">次へ</button>
+          </div>
         </section>
 
         <aside class="side">
-          <p class="mini-title">今日の5テーマ</p>
+          <p class="mini-title" id="setTitle">今日のテーマ</p>
           <div class="topic-list" id="topics"></div>
-          <p class="small">作成日：2026/06/16</p>
-          <p class="small">目的：現場で迷う判断を、短時間で思い出す。</p>
+          <p class="small" id="setNote"></p>
           <div class="tools">
-            <button type="button" id="reset">リセット</button>
-            <button type="button" id="install" hidden>ホーム画面</button>
+            <button id="reset" type="button">リセット</button>
+            <button id="install" type="button" hidden>追加</button>
           </div>
         </aside>
       </section>
@@ -410,91 +204,124 @@
   </main>
 
   <script>
-    const quiz = [
+    const quizSets = [
       {
-        tag:"SolidWorks",
-        question:"TB1を縦文字で入れる。安全な作り方は？",
-        choices:[
-          "TB1を1つのスケッチ文字で90度回転する",
-          "T・B・1を別々のスケッチ文字で縦に配置する",
-          "フォントを変えて縦書きに見せる"
-        ],
-        answer:1,
-        image:"assets/q1-solidworks-vertical-text.png",
-        alt:"T B 1を別々のスケッチ文字で縦に並べたSolidWorks風CAD画面",
-        chips:["1文字ずつ", "中心線で整列", "寸法管理"],
-        reason:"縦書きに見せたい時は、1つの文字枠で無理に回すより、T・B・1を分ける方が位置と間隔を管理しやすいです。",
-        fieldRule:"現場判断：刻印やカット用は、文字を分けてから中心線と等間隔寸法で固定する。"
+        id:"design-mistake",
+        title:"設計ミス防止 5問",
+        created:"2026/06/16",
+        note:"SolidWorks、仕上げ、3Dデータ、固定設計の基本確認。",
+        questions:[
+          {
+            tag:"SolidWorks",
+            question:"TB1を縦文字で入れる。安全な作り方は？",
+            choices:["TB1を1つのスケッチ文字で90度回転する","T・B・1を別々のスケッチ文字で縦に配置する","フォントを変えて縦書きに見せる"],
+            answer:1,
+            image:"assets/q1-solidworks-vertical-text.png",
+            alt:"SolidWorksでT B 1を別々に縦配置した画像",
+            chips:["文字は分ける","中心線で位置決め","後で崩れにくい"],
+            reason:"1つの文字列を無理に回すより、文字を分けて寸法管理する方がズレを確認しやすいです。",
+            fieldRule:"現場メモ：縦文字は、文字ごとに配置して中心線・寸法で固定する。"
+          },
+          {
+            tag:"Sketch Text",
+            question:"文字の間に大きな空白が出た。まず疑う原因は？",
+            choices:["Curvesに長い直線を選んでいる","板厚が薄すぎる","材料がSUSではない"],
+            answer:0,
+            image:"assets/q2-text-curve-blank-space.png",
+            alt:"スケッチ文字が長い曲線に沿って広がる画像",
+            chips:["Curves確認","文字枠を短く","不要な線を選ばない"],
+            reason:"スケッチ文字が選んだ線に沿って配置され、文字間が広がることがあります。",
+            fieldRule:"現場メモ：文字が離れる時は、まずCurvesの選択線を確認する。"
+          },
+          {
+            tag:"3D CAD調査",
+            question:"3D CADが見つからない。設計上の扱いは？",
+            choices:["型番が似ていれば3Dありとして進める","公式ページでCAD/STEPが見えるまで未確認扱いにする","検索結果に出ない時は廃番と決める"],
+            answer:1,
+            image:"assets/q3-cad-data-unconfirmed.png",
+            alt:"3D CAD未確認の調査フロー画像",
+            chips:["公式確認","未確認扱い","寸法表で仮置き"],
+            reason:"検索で見えないだけで、3Dなし・廃番とは決められません。公式で確認できるまで未確認です。",
+            fieldRule:"現場メモ：3Dデータは公式ページでCAD/STEPを確認してから確定する。"
+          },
+          {
+            tag:"表面仕上げ",
+            question:"HLや鏡面を図面で伝える。最低限必要な指示は？",
+            choices:["面・仕上げ種類・方向・番手","材料名だけ","表面粗さ記号だけ"],
+            answer:0,
+            image:"assets/q4-surface-finish-direction.png",
+            alt:"HL方向と鏡面番手の指示画像",
+            chips:["加工面","方向","番手"],
+            reason:"外観仕上げは、どの面か、どの方向か、どの番手かを分けると加工者が迷いにくいです。",
+            fieldRule:"現場メモ：指示面、HL方向、#150〜180などを分けて書く。"
+          },
+          {
+            tag:"固定設計",
+            question:"ラグ板を固定する。設計前に確認する組み合わせは？",
+            choices:["色だけ","穴径・スペーサー・タップ/溶接スタッド・締結高さ","部品名だけ"],
+            answer:1,
+            image:"assets/q5-lug-stud-spacer.png",
+            alt:"ラグ板、スペーサー、溶接スタッドの固定構造画像",
+            chips:["穴径","スペーサー","締結高さ"],
+            reason:"穴だけ合っても、スペーサー高さやねじの有効長が合わないと固定できません。",
+            fieldRule:"現場メモ：穴径、スペーサー、ねじ、干渉をセットで確認する。"
+          }
+        ]
       },
       {
-        tag:"Sketch Text",
-        question:"文字の間に大きな空白が出た。まず疑う原因は？",
-        choices:[
-          "Curvesに長い直線を選んでいる",
-          "板厚が薄すぎる",
-          "材料がSUSではない"
-        ],
-        answer:0,
-        image:"assets/q2-text-curve-blank-space.png",
-        alt:"長いスケッチ文字枠にT B 1が広がっているSolidWorks風CAD画面",
-        chips:["Curves確認", "長い基準線", "文字枠を小さく"],
-        reason:"スケッチ文字は、選んだ線やエッジに沿って配置されます。長い線を選ぶと、その全長に文字が広がります。",
-        fieldRule:"現場判断：空白が大きい時は、文字内容より先にCurves欄の選択線を外す。"
-      },
-      {
-        tag:"3D CAD調査",
-        question:"3D CADが見つからない。設計上の扱いは？",
-        choices:[
-          "型番が似ていれば3Dありとして進める",
-          "公式ページでCAD/STEPが見えるまで未確認扱いにする",
-          "検索結果に出ない時は廃番と決める"
-        ],
-        answer:1,
-        image:"assets/q3-cad-data-unconfirmed.png",
-        alt:"3D CAD未確認の検索画面とチェックリスト",
-        chips:["公式優先", "完全型番", "未確認扱い"],
-        reason:"商品ページやCAD欄が動的表示で確認できない時は、3Dデータありとは断定しない方が安全です。",
-        fieldRule:"現場判断：公式でSTEPや3D CAD欄を確認できるまで、モデル流用前提にしない。"
-      },
-      {
-        tag:"表面仕上げ",
-        question:"HLや鏡面を図面で伝える。最低限必要な指示は？",
-        choices:[
-          "面・仕上げ種類・方向・番手",
-          "材料名だけ",
-          "表面粗さ記号だけ"
-        ],
-        answer:0,
-        image:"assets/q4-surface-finish-direction.png",
-        alt:"板金図面とHL方向と鏡面サンプルを示す作業机",
-        chips:["加工面", "方向", "番手"],
-        reason:"HLは方向が大事です。鏡面#400/#500は番手の目安なので、加工する面と仕上げ内容を分けて書くと伝わりやすいです。",
-        fieldRule:"図面コメント例：指示面 HL方向記入部、#150〜180相当仕上げ。キズ・打痕なきこと。"
-      },
-      {
-        tag:"固定設計",
-        question:"ラグ板を固定する。設計前に確認する組み合わせは？",
-        choices:[
-          "色だけ",
-          "穴径・スペーサー・タップ/溶接スタッド・締結高さ",
-          "部品名だけ"
-        ],
-        answer:1,
-        image:"assets/q5-lug-stud-spacer.png",
-        alt:"ラグ板をスペーサーと溶接スタッドで固定する構造",
-        chips:["穴径", "スペーサー", "溶接スタッド"],
-        reason:"通し穴に対して、スペーサーやスタッド径が合うか、締めた時に基板や端子が干渉しないかを先に見ます。",
-        fieldRule:"現場判断：穴径だけで決めない。重なり順、逃げ、締結高さ、溶接可否まで確認する。"
+        id:"bakelite-board",
+        title:"ベーク板 3問",
+        created:"2026/06/17",
+        note:"ベーク板の材料名、紙ベーク/布ベーク、図面指示を確認する。",
+        questions:[
+          {
+            tag:"材質",
+            question:"ベーク板の正しい材料イメージは？",
+            choices:["鉄板に茶色塗装したもの","紙または布にフェノール樹脂をしみ込ませて固めた板","ゴムを硬くした板"],
+            answer:1,
+            image:"assets/bakelite-structure.svg",
+            alt:"ベーク板の断面構造",
+            chips:["フェノール樹脂","積層板","絶縁材料"],
+            reason:"ベーク板は、単体の『ベーク』という物質ではなく、紙や布の層にフェノール樹脂を含浸して固めた積層板です。",
+            fieldRule:"覚える一言：ベーク板 = 基材（紙/布） + フェノール樹脂。"
+          },
+          {
+            tag:"種類",
+            question:"紙ベークと布ベークの大きな違いは？",
+            choices:["色だけ違う","中の基材が紙か布かで、強さが変わる","どちらも金属板"],
+            answer:1,
+            image:"assets/bakelite-types.svg",
+            alt:"紙ベークと布ベークの比較",
+            chips:["紙ベーク","布ベーク","布の方が強め"],
+            reason:"紙ベークは紙基材、布ベークは布基材です。布ベークの方が機械強度を取りやすい場面があります。",
+            fieldRule:"設計メモ：強度や割れが気になる場所は、紙/布の指定を確認する。"
+          },
+          {
+            tag:"図面指示",
+            question:"図面に『ベーク t3』だけだと何が弱い？",
+            choices:["板厚が分からない","紙基材か布基材か、フェノール樹脂積層板かが曖昧","加工できない材料になる"],
+            answer:1,
+            image:"assets/bakelite-drawing-caution.svg",
+            alt:"ベーク板の図面指示と穴割れ注意",
+            chips:["正式名","基材指定","穴割れ注意"],
+            reason:"『ベーク』は現場略称なので、材質を誤解しないように正式名と基材を書いた方が安全です。",
+            fieldRule:"図面コメント例：紙基材フェノール樹脂積層板 t3.0"
+          }
+        ]
       }
     ];
 
+    const storageKey = "dm-review-v2";
+    const saved = JSON.parse(localStorage.getItem(storageKey) || "{}");
     const state = {
-      index: Number(localStorage.getItem("dm5-index") || 0),
-      selected: null,
-      answers: JSON.parse(localStorage.getItem("dm5-answers") || "[]")
+      setId: saved.setId || "bakelite-board",
+      index: saved.index || 0,
+      answers: saved.answers || {}
     };
 
     const el = {
+      setRow: document.getElementById("setRow"),
+      created: document.getElementById("created"),
       counter: document.getElementById("counter"),
       score: document.getElementById("score"),
       bar: document.getElementById("bar"),
@@ -509,35 +336,63 @@
       reason: document.getElementById("reason"),
       fieldRule: document.getElementById("fieldRule"),
       prev: document.getElementById("prev"),
-      next: document.getElementById("next"),
       check: document.getElementById("check"),
-      topics: document.getElementById("topics"),
+      next: document.getElementById("next"),
       reset: document.getElementById("reset"),
-      install: document.getElementById("install")
+      install: document.getElementById("install"),
+      topics: document.getElementById("topics"),
+      setTitle: document.getElementById("setTitle"),
+      setNote: document.getElementById("setNote")
     };
 
+    function activeSet(){
+      return quizSets.find(set => set.id === state.setId) || quizSets[0];
+    }
+
+    function answersForSet(){
+      if (!state.answers[state.setId]) state.answers[state.setId] = [];
+      return state.answers[state.setId];
+    }
+
     function save(){
-      localStorage.setItem("dm5-index", String(state.index));
-      localStorage.setItem("dm5-answers", JSON.stringify(state.answers));
+      localStorage.setItem(storageKey, JSON.stringify(state));
     }
 
     function score(){
-      return state.answers.filter((item, i) => item === quiz[i].answer).length;
+      const set = activeSet();
+      const answers = answersForSet();
+      return answers.filter((item, i) => item === set.questions[i].answer).length;
+    }
+
+    function renderSets(){
+      el.setRow.innerHTML = "";
+      quizSets.forEach(set => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "set-btn" + (set.id === state.setId ? " active" : "");
+        btn.textContent = set.title;
+        btn.addEventListener("click", () => {
+          state.setId = set.id;
+          state.index = 0;
+          save();
+          render();
+        });
+        el.setRow.appendChild(btn);
+      });
     }
 
     function renderTopics(){
+      const set = activeSet();
+      const answers = answersForSet();
       el.topics.innerHTML = "";
-      quiz.forEach((q, i) => {
+      set.questions.forEach((q, i) => {
         const item = document.createElement("button");
         item.type = "button";
         item.className = "topic" + (i === state.index ? " active" : "");
-        if (state.answers[i] !== undefined) {
-          item.className += state.answers[i] === q.answer ? " done" : " wrong-done";
-        }
-        item.innerHTML = `<span class="dot"></span><span>Q${i + 1} ${q.tag}</span><span>${state.answers[i] === undefined ? "未" : state.answers[i] === q.answer ? "○" : "△"}</span>`;
+        if (answers[i] !== undefined) item.className += answers[i] === q.answer ? " done" : " wrong-done";
+        item.innerHTML = `<span class="dot"></span><span>Q${i + 1} ${q.tag}</span><span>${answers[i] === undefined ? "未" : answers[i] === q.answer ? "○" : "△"}</span>`;
         item.addEventListener("click", () => {
           state.index = i;
-          state.selected = null;
           save();
           render();
         });
@@ -546,9 +401,11 @@
     }
 
     function showAnswer(selected){
-      const q = quiz[state.index];
+      const set = activeSet();
+      const q = set.questions[state.index];
+      const answers = answersForSet();
       const correct = selected === q.answer;
-      state.answers[state.index] = selected;
+      answers[state.index] = selected;
       save();
       el.answer.classList.add("show");
       el.result.textContent = correct ? "正解" : "確認";
@@ -574,63 +431,60 @@
         btn.type = "button";
         btn.className = "choice";
         btn.innerHTML = `<span class="badge">${String.fromCharCode(65 + i)}</span><span>${choice}</span>`;
-        btn.addEventListener("click", () => {
-          state.selected = i;
-          showAnswer(i);
-        });
+        btn.addEventListener("click", () => showAnswer(i));
         el.choices.appendChild(btn);
       });
     }
 
     function updateStatus(){
-      el.counter.textContent = `${state.index + 1} / ${quiz.length}`;
-      el.score.textContent = `正解 ${score()} / ${quiz.length}`;
-      el.bar.style.width = `${((state.index + 1) / quiz.length) * 100}%`;
+      const set = activeSet();
+      el.counter.textContent = `${state.index + 1} / ${set.questions.length}`;
+      el.score.textContent = `正解 ${score()} / ${set.questions.length}`;
+      el.bar.style.width = `${((state.index + 1) / set.questions.length) * 100}%`;
       el.prev.disabled = state.index === 0;
-      el.next.disabled = state.index === quiz.length - 1;
+      el.next.disabled = state.index === set.questions.length - 1;
     }
 
     function render(){
-      state.index = Math.max(0, Math.min(state.index, quiz.length - 1));
-      const q = quiz[state.index];
+      const set = activeSet();
+      state.index = Math.max(0, Math.min(state.index, set.questions.length - 1));
+      const q = set.questions[state.index];
+      el.created.textContent = `作成日 ${set.created}`;
+      el.setTitle.textContent = set.title;
+      el.setNote.textContent = set.note;
       el.qtag.textContent = `Q${state.index + 1} ${q.tag}`;
       el.question.textContent = q.question;
       el.answer.classList.remove("show");
       el.answerImage.removeAttribute("src");
+      renderSets();
       renderChoices(q);
       updateStatus();
       renderTopics();
-      if (state.answers[state.index] !== undefined) {
-        showAnswer(state.answers[state.index]);
-      }
+      const answers = answersForSet();
+      if (answers[state.index] !== undefined) showAnswer(answers[state.index]);
     }
 
     el.prev.addEventListener("click", () => {
-      if (state.index === 0) return;
       state.index -= 1;
-      state.selected = null;
       save();
       render();
     });
 
     el.next.addEventListener("click", () => {
-      if (state.index === quiz.length - 1) return;
       state.index += 1;
-      state.selected = null;
       save();
       render();
     });
 
     el.check.addEventListener("click", () => {
-      if (state.answers[state.index] !== undefined) return;
+      if (answersForSet()[state.index] !== undefined) return;
       const first = el.choices.querySelector(".choice");
       if (first) first.focus();
     });
 
     el.reset.addEventListener("click", () => {
+      state.answers[state.setId] = [];
       state.index = 0;
-      state.selected = null;
-      state.answers = [];
       save();
       render();
     });
@@ -650,9 +504,7 @@
     });
 
     if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./service-worker.js").catch(() => {});
-      });
+      navigator.serviceWorker.register("./service-worker.js").catch(() => {});
     }
 
     render();

@@ -1,7 +1,7 @@
 {
-  "name": "\u8a2d\u8a08\u30df\u30b9\u9632\u6b62 5\u554f\u5fa9\u7fd2",
-  "short_name": "\u8a2d\u8a085\u554f",
-  "description": "SolidWorks, surface finish, 3D CAD check, and fastening design review quiz.",
+  "name": "\u8a2d\u8a08\u5fa9\u7fd2\u30a2\u30d7\u30ea",
+  "short_name": "\u8a2d\u8a08\u5fa9\u7fd2",
+  "description": "Mechanical design review quiz sets with image explanations.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
