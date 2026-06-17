@@ -1,4 +1,4 @@
-const CACHE_NAME = "design-review-quiz-v6";
+const CACHE_NAME = "design-review-quiz-v7";
 const ASSETS = [
   "./",
   "./index.html",
@@ -20,7 +20,10 @@ const ASSETS = [
   "./assets/bakelite-q1-hd.png",
   "./assets/bakelite-q2-hd.png",
   "./assets/bakelite-q3-hd.png",
-  "./assets/bakelite-real-photo-strip.png"
+  "./assets/bakelite-real-photo-strip.png",
+  "./assets/bakelite-q1-new-material.png",
+  "./assets/bakelite-q2-new-types.png",
+  "./assets/bakelite-q3-new-drawing.png"
 ];
 
 self.addEventListener("install", (event) => {
