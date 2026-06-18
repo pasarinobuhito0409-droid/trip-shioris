@@ -9,33 +9,32 @@
   <title>設計復習アプリ</title>
   <style>
     :root{
-      --bg:#eef3f6;
+      --bg:#edf3f7;
       --paper:#fff;
       --ink:#111827;
-      --muted:#5b6777;
-      --line:#d7e2ea;
+      --muted:#5f6d7c;
+      --line:#d5e1eb;
       --blue:#0f5faf;
       --green:#16834f;
       --red:#c9342d;
-      --shadow:0 18px 50px rgba(13,35,56,.16);
+      --shadow:0 18px 50px rgba(14,39,62,.16);
+      font-family:"Yu Gothic","Meiryo",system-ui,sans-serif;
     }
-    *{box-sizing:border-box}
-    html,body{max-width:100%;overflow-x:hidden}
+    *{box-sizing:border-box;min-width:0}
+    html,body{margin:0;max-width:100%;overflow-x:hidden}
     body{
-      margin:0;
       min-height:100svh;
       color:var(--ink);
-      font-family:"Yu Gothic","Meiryo",system-ui,sans-serif;
       background:
-        radial-gradient(circle at 18% 4%,rgba(15,95,175,.15),transparent 34%),
+        radial-gradient(circle at 16% 0%,rgba(15,95,175,.18),transparent 34%),
         linear-gradient(180deg,#dce8f1 0%,var(--bg) 46%,#f8fafc 100%);
     }
-    main{width:min(960px,100%);margin:auto;padding:14px}
+    main{width:min(980px,100%);margin:auto;padding:14px}
     .app{
       overflow:hidden;
       border:1px solid #cbd7e2;
       border-radius:18px;
-      background:rgba(255,255,255,.86);
+      background:rgba(255,255,255,.9);
       box-shadow:var(--shadow);
     }
     header{
@@ -43,8 +42,8 @@
       color:#fff;
       background:linear-gradient(135deg,#123b66,#0f5faf 56%,#1677c7);
     }
-    h1{margin:0;font-size:clamp(28px,7vw,44px);line-height:1.15;letter-spacing:0}
-    .sub{margin:8px 0 0;font-weight:800;line-height:1.6;color:#dbeafe}
+    h1{margin:0;font-size:clamp(30px,7vw,46px);line-height:1.12;letter-spacing:0}
+    .sub{margin:8px 0 0;font-weight:900;line-height:1.6;color:#dbeafe}
     .sets{
       display:grid;
       gap:10px;
@@ -60,6 +59,9 @@
       color:#0f4f8d;
       background:#fff;
       border:1px solid #bfd8ee;
+      cursor:pointer;
+      font:inherit;
+      font-weight:1000;
     }
     .set-btn.active{color:#fff;background:#0f5faf;border-color:#0f5faf}
     .created{margin:0;color:var(--muted);font-weight:900;line-height:1.5}
@@ -70,15 +72,15 @@
       background:#fff;
       border-bottom:1px solid var(--line);
     }
-    .status-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-weight:900}
+    .status-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-weight:1000}
     .progress{height:12px;overflow:hidden;border-radius:999px;background:#d9e4ee}
     .progress span{display:block;width:0;height:100%;background:linear-gradient(90deg,#0f5faf,#19a56f);transition:width .25s ease}
-    .layout{display:grid;grid-template-columns:1fr;gap:14px;padding:14px;min-width:0}
-    .question-card{display:grid;gap:14px;min-width:0}
-    .qtag{width:max-content;max-width:100%;border-radius:999px;padding:7px 11px;background:#102a43;color:#fff;font-weight:900}
-    h2{margin:0;font-size:clamp(24px,6vw,38px);line-height:1.25;letter-spacing:0;overflow-wrap:anywhere}
+    .layout{display:grid;grid-template-columns:1fr;gap:14px;padding:14px}
+    .question-card{display:grid;gap:14px}
+    .qtag{width:max-content;max-width:100%;border-radius:999px;padding:7px 11px;background:#102a43;color:#fff;font-weight:1000}
+    h2{margin:0;font-size:clamp(25px,6vw,38px);line-height:1.28;letter-spacing:0;overflow-wrap:anywhere}
     .hint-lock{display:flex;gap:8px;align-items:center;color:var(--muted);font-weight:900;line-height:1.55}
-    .choices{display:grid;gap:10px;min-width:0}
+    .choices{display:grid;gap:10px}
     button{
       appearance:none;
       border:1px solid var(--line);
@@ -91,8 +93,8 @@
       letter-spacing:0;
     }
     button:active{transform:scale(.99)}
-    .choice{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:12px;min-width:0;padding:13px;text-align:left;line-height:1.55}
-    .choice span:last-child{min-width:0;overflow-wrap:anywhere}
+    .choice{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:12px;padding:13px;text-align:left;line-height:1.55}
+    .choice span:last-child{overflow-wrap:anywhere}
     .badge{display:grid;place-items:center;width:38px;aspect-ratio:1;border-radius:999px;background:#dbeafe;color:#0f4f8d;font-weight:1000;flex:none}
     .choice.correct{border-color:var(--green);background:#e9f8f0;color:#075f36}
     .choice.correct .badge{background:var(--green);color:#fff}
@@ -102,7 +104,7 @@
     .answer.show{display:block}
     .answer-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;background:#0f5faf;color:#fff;font-weight:1000;flex-wrap:wrap}
     .answer img{display:block;width:auto;max-width:100%;height:auto;max-height:430px;object-fit:contain;background:#e8eef5;margin:0 auto}
-    .answer-body{display:grid;gap:11px;padding:13px;line-height:1.7;font-weight:800}
+    .answer-body{display:grid;gap:11px;padding:13px;line-height:1.7;font-weight:900}
     .answer-body p{margin:0}
     .chips{display:flex;gap:8px;flex-wrap:wrap}
     .chip{border-radius:999px;padding:6px 10px;background:#fff;border:1px solid #c7d8e8;color:#164e82;font-weight:900}
@@ -110,16 +112,16 @@
     .nav{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:10px}
     .nav button{padding:13px 10px;text-align:center;background:#fff}
     .nav .primary{color:#fff;background:linear-gradient(135deg,#0f5faf,#1677c7);border-color:#0f5faf}
-    .side{display:grid;gap:10px;min-width:0;padding:12px;border:1px solid var(--line);border-radius:14px;background:#fff}
+    .side{display:grid;gap:10px;padding:12px;border:1px solid var(--line);border-radius:14px;background:#fff}
     .mini-title{margin:0;font-size:18px;font-weight:1000}
     .topic-list{display:grid;gap:8px}
-    .topic{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;min-width:0;border:1px solid var(--line);border-radius:11px;padding:9px;color:var(--muted);background:#fbfdff;font-weight:900}
-    .topic span:nth-child(2){min-width:0;overflow-wrap:anywhere}
+    .topic{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;border:1px solid var(--line);border-radius:11px;padding:9px;color:var(--muted);background:#fbfdff;font-weight:900;cursor:pointer}
+    .topic span:nth-child(2){overflow-wrap:anywhere}
     .topic.active{border-color:#83bcec;color:#0f4f8d;background:#eef7ff}
     .dot{width:10px;aspect-ratio:1;border-radius:999px;background:#cbd5e1}
     .topic.done .dot{background:var(--green)}
     .topic.wrong-done .dot{background:var(--red)}
-    .small{margin:0;color:var(--muted);line-height:1.7;font-weight:800}
+    .small{margin:0;color:var(--muted);line-height:1.7;font-weight:900}
     .tools{display:flex;gap:8px;flex-wrap:wrap}
     .tools button{padding:9px 11px;font-size:14px}
     @media (min-width:820px){
@@ -147,7 +149,7 @@
     <section class="app" aria-label="設計復習アプリ">
       <header>
         <h1>設計復習アプリ</h1>
-        <p class="sub">問題だけ先に見る。答えた後に画像で確認する。</p>
+        <p class="sub">問題だけ先に見る。答えた後に、実画像で確認する。</p>
       </header>
 
       <section class="sets">
@@ -196,7 +198,7 @@
           <p class="small" id="setNote"></p>
           <div class="tools">
             <button id="reset" type="button">リセット</button>
-            <button id="install" type="button" hidden>追加</button>
+            <button id="install" type="button" hidden>ホーム画面へ追加</button>
           </div>
         </aside>
       </section>
@@ -206,30 +208,71 @@
   <script>
     const quizSets = [
       {
+        id:"learning-20260618",
+        title:"2026/6/18 学び復習",
+        created:"2026/06/18",
+        note:"変更前提の設計、合致、失敗メモ改善を確認する。",
+        questions:[
+          {
+            tag:"変更前提",
+            question:"SolidWorksのアセンブリで、後から変更しやすくする基本は？",
+            choices:["見た目が合っていれば合致は少なくてよい","変更は必ずある前提で、合致と基準を考えて組む","最後に図面で寸法を直せばよい"],
+            answer:1,
+            image:"assets/q5-lug-stud-spacer.png",
+            alt:"スペーサーとスタッドを含む固定構造の実画像",
+            chips:["変更前提","基準を決める","あとで崩れにくい"],
+            reason:"大型アセンブリは後で変更が入ります。最初に基準面、固定する相手、逃がす方向を考えて合致すると、修正時に壊れにくくなります。",
+            fieldRule:"覚える一言：変更は絶対ある。今少し考えると、後で大きく楽になる。"
+          },
+          {
+            tag:"合致",
+            question:"部品を置く時に、やってはいけない考え方は？",
+            choices:["面・穴・中心線など、基準を使って合致する","とりあえず見た目で合わせ、後で困ったら直す","どこを基準にするか先に決める"],
+            answer:1,
+            image:"assets/q1-solidworks-vertical-text.png",
+            alt:"SolidWorks画面で位置を管理している実画像",
+            chips:["見た目合わせNG","合致で管理","基準を残す"],
+            reason:"見た目合わせは一瞬早いですが、変更時に位置関係が分からなくなります。合致は、後から直すためのメモでもあります。",
+            fieldRule:"覚える一言：見た目で置かない。合致で理由を残す。"
+          },
+          {
+            tag:"改善メモ",
+            question:"面倒な失敗をした時、次に一番効く行動は？",
+            choices:["忘れる前に、原因と次回ルールを1行で残す","気合いで次は気をつける","作業時間を全部やり直す"],
+            answer:0,
+            image:"assets/q3-cad-data-unconfirmed.png",
+            alt:"確認フローを示す実画像",
+            chips:["失敗メモ","次回ルール化","同じミス防止"],
+            reason:"同じ失敗を減らすには、気合いではなく仕組みが必要です。原因、次回見る場所、禁止する行動を短く残すと再発防止になります。",
+            fieldRule:"覚える一言：失敗したら、原因→次回ルール→チェック場所を残す。"
+          }
+        ]
+      },
+      {
         id:"design-mistake",
         title:"設計ミス防止 5問",
         created:"2026/06/16",
-        note:"SolidWorks、仕上げ、3Dデータ、固定設計の基本確認。",
+        note:"SolidWorks、文字、3Dデータ、表面仕上げ、固定設計の基本確認。",
         questions:[
           {
             tag:"SolidWorks",
             question:"TB1を縦文字で入れる。安全な作り方は？",
-            choices:["TB1を1つのスケッチ文字で90度回転する","T・B・1を別々のスケッチ文字で縦に配置する","フォントを変えて縦書きに見せる"],
+            choices:["TB1を1つのスケッチ文字で90度回転する","T・B・1を別々のスケッチ文字で縦に配置する","フォントだけ変えて縦書きに見せる"],
             answer:1,
             image:"assets/q1-solidworks-vertical-text.png",
             alt:"SolidWorksでT B 1を別々に縦配置した画像",
-            chips:["文字は分ける","中心線で位置決め","後で崩れにくい"],
+            chips:["文字を分ける","中心線で位置決め","後で崩れにくい"],
             reason:"1つの文字列を無理に回すより、文字を分けて寸法管理する方がズレを確認しやすいです。",
-            fieldRule:"現場メモ：縦文字は、文字ごとに配置して中心線・寸法で固定する。"
+            fieldRule:"現場メモ：縦文字は、文字ごとに配置して中心線と寸法で固定する。"
           },
           {
             tag:"Sketch Text",
             question:"文字の間に大きな空白が出た。まず疑う原因は？",
-            choices:["Curvesに長い直線を選んでいる","板厚が薄すぎる","材料がSUSではない"],
+            choices:["Curvesに長い補助線を選んでいる","板厚が薄すぎる","材料がSUSではない"],
             answer:0,
             image:"assets/q2-text-curve-blank-space.png",
-            alt:"スケッチ文字が長い曲線に沿って広がる画像",
-            chips:["Curves確認","文字枠を短く","不要な線を選ばない"],
+            alt:"スケッチ文字が長い基線に沿って広がる画像",
+            chips:["Curves確認","文字基準を短く","不要な線を選ばない"],
             reason:"スケッチ文字が選んだ線に沿って配置され、文字間が広がることがあります。",
             fieldRule:"現場メモ：文字が離れる時は、まずCurvesの選択線を確認する。"
           },
@@ -241,7 +284,7 @@
             image:"assets/q3-cad-data-unconfirmed.png",
             alt:"3D CAD未確認の調査フロー画像",
             chips:["公式確認","未確認扱い","寸法表で仮置き"],
-            reason:"検索で見えないだけで、3Dなし・廃番とは決められません。公式で確認できるまで未確認です。",
+            reason:"検索で見えないだけで、3Dなしや廃番とは決められません。公式確認まで未確認です。",
             fieldRule:"現場メモ：3Dデータは公式ページでCAD/STEPを確認してから確定する。"
           },
           {
@@ -263,7 +306,7 @@
             image:"assets/q5-lug-stud-spacer.png",
             alt:"ラグ板、スペーサー、溶接スタッドの固定構造画像",
             chips:["穴径","スペーサー","締結高さ"],
-            reason:"穴だけ合っても、スペーサー高さやねじの有効長が合わないと固定できません。",
+            reason:"穴が合っても、スペーサー高さやネジの有効長が合わないと固定できません。",
             fieldRule:"現場メモ：穴径、スペーサー、ねじ、干渉をセットで確認する。"
           }
         ]
@@ -277,21 +320,21 @@
           {
             tag:"材質",
             question:"ベーク板の正しい材料イメージは？",
-            choices:["鉄板に茶色塗装したもの","紙または布にフェノール樹脂をしみ込ませて固めた板","ゴムを硬くした板"],
+            choices:["鉄板に茶色塗装したもの","紙または布にフェノール樹脂を含浸させて固めた板","ゴムを硬くした材料"],
             answer:1,
             image:"assets/bakelite-q1-new-material.png",
-            alt:"積層板の断面が見える新規画像",
+            alt:"積層板の断面が見える画像",
             chips:["フェノール樹脂","積層板","絶縁材料"],
-            reason:"ベーク板は、単体の『ベーク』という物質ではなく、紙や布の層にフェノール樹脂を含浸して固めた積層板です。",
+            reason:"ベーク板は単体の『ベーク』ではなく、紙や布の層にフェノール樹脂を含浸して固めた積層板です。",
             fieldRule:"覚える一言：ベーク板 = 基材（紙/布） + フェノール樹脂。"
           },
           {
             tag:"種類",
             question:"紙ベークと布ベークの大きな違いは？",
-            choices:["色だけ違う","中の基材が紙か布かで、強さが変わる","どちらも金属板"],
+            choices:["色だけ","中の基材が紙か布かで、強さが変わる","どちらも金属材料"],
             answer:1,
             image:"assets/bakelite-q2-new-types.png",
-            alt:"紙基材と布基材の違いを示す新規画像",
+            alt:"紙基材と布基材の違いを示す画像",
             chips:["紙ベーク","布ベーク","布の方が強め"],
             reason:"紙ベークは紙基材、布ベークは布基材です。布ベークの方が機械強度を取りやすい場面があります。",
             fieldRule:"設計メモ：強度や割れが気になる場所は、紙/布の指定を確認する。"
@@ -302,7 +345,7 @@
             choices:["板厚が分からない","紙基材か布基材か、フェノール樹脂積層板かが曖昧","加工できない材料になる"],
             answer:1,
             image:"assets/bakelite-q3-new-drawing.png",
-            alt:"図面指示と穴割れ注意を示す新規画像",
+            alt:"図面指示と穴割れ注意を示す画像",
             chips:["正式名","基材指定","穴割れ注意"],
             reason:"『ベーク』は現場略称なので、材質を誤解しないように正式名と基材を書いた方が安全です。",
             fieldRule:"図面コメント例：紙基材フェノール樹脂積層板 t3.0"
@@ -311,11 +354,12 @@
       }
     ];
 
-    const storageKey = "dm-review-v2";
+    const params = new URLSearchParams(location.search);
+    const storageKey = "dm-review-v8";
     const saved = JSON.parse(localStorage.getItem(storageKey) || "{}");
     const state = {
-      setId: saved.setId || "bakelite-board",
-      index: saved.index || 0,
+      setId: params.get("set") || saved.setId || "learning-20260618",
+      index: Number(params.get("q") || saved.index || 0),
       answers: saved.answers || {}
     };
 
@@ -390,7 +434,7 @@
         item.type = "button";
         item.className = "topic" + (i === state.index ? " active" : "");
         if (answers[i] !== undefined) item.className += answers[i] === q.answer ? " done" : " wrong-done";
-        item.innerHTML = `<span class="dot"></span><span>Q${i + 1} ${q.tag}</span><span>${answers[i] === undefined ? "未" : answers[i] === q.answer ? "○" : "△"}</span>`;
+        item.innerHTML = `<span class="dot"></span><span>Q${i + 1} ${q.tag}</span><span>${answers[i] === undefined ? "未" : answers[i] === q.answer ? "○" : "×"}</span>`;
         item.addEventListener("click", () => {
           state.index = i;
           save();
@@ -477,9 +521,9 @@
     });
 
     el.check.addEventListener("click", () => {
-      if (answersForSet()[state.index] !== undefined) return;
-      const first = el.choices.querySelector(".choice");
-      if (first) first.focus();
+      const answers = answersForSet();
+      const q = activeSet().questions[state.index];
+      if (answers[state.index] === undefined) showAnswer(q.answer);
     });
 
     el.reset.addEventListener("click", () => {
@@ -508,6 +552,10 @@
     }
 
     render();
+    const autoAnswer = params.get("answer");
+    if (autoAnswer !== null) {
+      showAnswer(Number(autoAnswer));
+    }
   </script>
 </body>
 </html>
