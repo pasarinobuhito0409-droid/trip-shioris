@@ -1,4 +1,4 @@
-const CACHE_NAME = "design-review-quiz-v8";
+const CACHE_NAME = "design-review-quiz-v9";
 const ASSETS = [
   "./",
   "./index.html",
@@ -23,7 +23,12 @@ const ASSETS = [
   "./assets/bakelite-real-photo-strip.png",
   "./assets/bakelite-q1-new-material.png",
   "./assets/bakelite-q2-new-types.png",
-  "./assets/bakelite-q3-new-drawing.png"
+  "./assets/bakelite-q3-new-drawing.png",
+  "./assets/q20260626-pin-delivery.png",
+  "./assets/q20260626-paint-code.png",
+  "./assets/q20260626-dic-g298.png",
+  "./assets/q20260626-approx-color.png",
+  "./assets/q20260626-visual-rule.png"
 ];
 
 self.addEventListener("install", (event) => {

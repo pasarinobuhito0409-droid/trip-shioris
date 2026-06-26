@@ -208,6 +208,69 @@
   <script>
     const quizSets = [
       {
+        id:"paint-pin-visual-20260626",
+        title:"2026/6/26 塗装・ピン復習",
+        created:"2026/06/26",
+        note:"ピン納入、塗装仕様番号、DIC近似色、画像説明ルールを確認する。",
+        questions:[
+          {
+            tag:"ピン納入",
+            question:"客先が『ピンはどのような納入の仕方か』と聞く時、まず確認することは？",
+            choices:["ピンの材質だけ確認する","コネクタに入れて納入か、袋入り添付かを確認する","ピン数は図面から消す"],
+            answer:1,
+            image:"assets/q20260626-pin-delivery.png",
+            alt:"コネクタ取付済と袋入り添付の納入方法を比較した実物風画像",
+            chips:["取付済","袋入り添付","備考欄確認"],
+            reason:"客先は『ピンをコネクタに入れて渡すのか、別袋で添付するのか』を確認しています。",
+            fieldRule:"回答の芯：納入形態を決め、添付品は備考欄に明記する。"
+          },
+          {
+            tag:"塗装仕様",
+            question:"#301TB015_塗装 のような表記で一番安全な見方は？",
+            choices:["塗装仕様番号なので、色・艶・膜厚は仕様書で確認する","数字があるので寸法番号として扱う","塗装不要の意味として扱う"],
+            answer:0,
+            image:"assets/q20260626-paint-code.png",
+            alt:"#301TB015_塗装を塗装仕様番号として確認する実物風画像",
+            chips:["仕様番号","色・艶・膜厚","番号だけで判断しない"],
+            reason:"#301TB015 は塗装条件を呼び出す番号の可能性があります。番号だけで色や膜厚を決めるのは危険です。",
+            fieldRule:"図面確認：塗装仕様番号 → 仕様書 → 色・艶・膜厚。"
+          },
+          {
+            tag:"DIC近似色",
+            question:"DIC G-298 グレートーン近似色とは？",
+            choices:["完全に同じ色を必ず作る指定","黒色なら何でもよい指定","DIC G-298に近いグレー系で合わせる指定"],
+            answer:2,
+            image:"assets/q20260626-dic-g298.png",
+            alt:"DIC G-298の色見本と塗装サンプルを比較する実物風画像",
+            chips:["DIC G-298","グレー系","近似色"],
+            reason:"DIC G-298という色見本に近いグレーで合わせる、という意味です。画面表示だけでは判断しません。",
+            fieldRule:"図面コメント例：塗装色 DIC G-298 グレートーン近似色。"
+          },
+          {
+            tag:"近似色",
+            question:"『近似色』で一番大事な考え方は？",
+            choices:["完全一致ではなく、承認色板や色見本を優先して近づける","画面で似ていれば必ず合格","塗装者の好みで決めてよい"],
+            answer:0,
+            image:"assets/q20260626-approx-color.png",
+            alt:"基準色チップと塗装サンプルを色差確認する実物風画像",
+            chips:["完全一致ではない","承認色板優先","色差確認"],
+            reason:"近似色は『近い色』です。最終判断は色見本、承認色板、客先基準で確認するのが安全です。",
+            fieldRule:"迷ったら：画面色ではなく、実物色板で確認。"
+          },
+          {
+            tag:"画像解説",
+            question:"三輪さん向けの疑問解説で、今回強化したルールは？",
+            choices:["文字だけで短く終わればよい","リアル画像または高品質説明画像を先に出してから短く説明する","表だけ作れば画像は不要"],
+            answer:1,
+            image:"assets/q20260626-visual-rule.png",
+            alt:"画像から理解する技術説明と文字だけNGを比較した実物風画像",
+            chips:["画像から理解","文字だけNG","答えは短く"],
+            reason:"疑問解説は、文字だけで終わらせると理解がズレやすい。まず画像で見て、結論を短く確認します。",
+            fieldRule:"次回ルール：疑問解説 = 画像先行。画像なしなら未完了。"
+          }
+        ]
+      },
+      {
         id:"learning-20260618",
         title:"2026/6/18 学び復習",
         created:"2026/06/18",
@@ -355,10 +418,10 @@
     ];
 
     const params = new URLSearchParams(location.search);
-    const storageKey = "dm-review-v8";
+    const storageKey = "dm-review-v9";
     const saved = JSON.parse(localStorage.getItem(storageKey) || "{}");
     const state = {
-      setId: params.get("set") || saved.setId || "learning-20260618",
+      setId: params.get("set") || saved.setId || "paint-pin-visual-20260626",
       index: Number(params.get("q") || saved.index || 0),
       answers: saved.answers || {}
     };
@@ -505,7 +568,11 @@
       updateStatus();
       renderTopics();
       const answers = answersForSet();
-      if (answers[state.index] !== undefined) showAnswer(answers[state.index]);
+      if (answers[state.index] !== undefined) {
+        showAnswer(answers[state.index]);
+      } else if (params.get("answer") === "1") {
+        showAnswer(q.answer);
+      }
     }
 
     el.prev.addEventListener("click", () => {
