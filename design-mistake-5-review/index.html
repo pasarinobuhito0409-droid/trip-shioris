@@ -418,7 +418,7 @@
     ];
 
     const params = new URLSearchParams(location.search);
-    const storageKey = "dm-review-v9";
+    const storageKey = "dm-review-v10";
     const saved = JSON.parse(localStorage.getItem(storageKey) || "{}");
     const state = {
       setId: params.get("set") || saved.setId || "paint-pin-visual-20260626",
@@ -570,8 +570,6 @@
       const answers = answersForSet();
       if (answers[state.index] !== undefined) {
         showAnswer(answers[state.index]);
-      } else if (params.get("answer") === "1") {
-        showAnswer(q.answer);
       }
     }
 
@@ -619,10 +617,6 @@
     }
 
     render();
-    const autoAnswer = params.get("answer");
-    if (autoAnswer !== null) {
-      showAnswer(Number(autoAnswer));
-    }
   </script>
 </body>
 </html>
