@@ -538,9 +538,9 @@
           <span class="badge coral">個人名なし</span>
           <span class="badge gold">PCオフでも表示</span>
         </div>
-        <h2>最初は「ひろメンタル」へ相談。</h2>
-        <p>薬の相談を急ぐなら「はかた心療」も同時に控える。</p>
-        <p>佐賀側の保険候補は「ひまわりクリニック」。</p>
+        <h2>最初は「はかた心療」へ電話。</h2>
+        <p>予約が取れなければ「ひまわりクリニック」を確認。</p>
+        <p>「ひろメンタル」は相性確認してから。</p>
         <p>紹介状（前の病院から次の病院へ渡す手紙）は、取れるなら取る。</p>
       </div>
 
@@ -557,15 +557,15 @@
           <div class="route-step">
             <div class="route-no">2</div>
             <div class="route-text">
-              <strong>ひろメンタルへ初診相談</strong>
-              <span>再評価と困りごとの整理</span>
+              <strong>はかた心療へ初診相談</strong>
+              <span>薬相談と初診枠を確認</span>
             </div>
           </div>
           <div class="route-step">
             <div class="route-no">3</div>
             <div class="route-text">
-              <strong>薬重視なら予備へ</strong>
-              <span>はかた心療か佐賀候補を確認</span>
+              <strong>取れなければ佐賀候補へ</strong>
+              <span>ひまわりクリニックを確認</span>
             </div>
           </div>
         </div>
@@ -622,7 +622,8 @@
         <a href="https://hizen.hosp.go.jp/patient/outpatient/" target="_blank" rel="noopener">肥前精神医療センター 外来案内</a>
       </div>
       <p class="notice">
-        口コミ（通った人の感想）は参考材料です。
+        Google口コミは星の数ではなく、本文の具体性で見ています。
+        星5と星1は極端になりやすいため、本文の場面説明と低評価の共通点を重く見ます。
         最終判断は、公式情報と電話確認で行います。
         医師の診断や薬の可否は、診察後に決まります。
       </p>
@@ -639,11 +640,11 @@
         phone: "092-739-0303",
         official: "https://www.hiro-mentalclinic.com/",
         map: "https://www.google.com/maps/search/?api=1&query=%E3%81%B2%E3%82%8D%E3%83%A1%E3%83%B3%E3%82%BF%E3%83%AB%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF+%E7%A6%8F%E5%B2%A1",
-        base: 98,
-        scores: { balanced: 98, meds: 91, second: 99, near: 74, saga: 72 },
-        fit: "再評価に強い",
-        reason: "公式リストで成人ADHD、診断、発達検査、心理療法、投薬がそろう。困りごとの整理まで見やすい。",
-        tags: ["診断", "検査", "心理士", "投薬", "再評価"]
+        base: 82,
+        scores: { balanced: 82, meds: 80, second: 86, near: 74, saga: 72 },
+        fit: "相性確認が必要",
+        reason: "公式条件は強い。ただしGoogle口コミ本文では、ADHD検査や短い診察への具体的不満も出ている。",
+        tags: ["診断", "検査", "心理士", "投薬", "相性注意"]
       },
       {
         name: "はかた心療クリニック",
@@ -651,11 +652,11 @@
         phone: "092-401-0777",
         official: "https://hakata-shinryo-cl.com/consultation/adhd/",
         map: "https://www.google.com/maps/search/?api=1&query=%E3%81%AF%E3%81%8B%E3%81%9F%E5%BF%83%E7%99%82%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF",
-        base: 93,
-        scores: { balanced: 93, meds: 99, second: 80, near: 78, saga: 70 },
-        fit: "薬相談に強い",
-        reason: "公式ページで大人のADHDと薬の説明が明確。薬を具体的に相談したい時の強い候補。",
-        tags: ["薬相談", "駅近", "投薬", "成人ADHD"]
+        base: 96,
+        scores: { balanced: 96, meds: 99, second: 84, near: 82, saga: 70 },
+        fit: "薬相談の本命",
+        reason: "公式ページで大人のADHDと薬の説明が明確。口コミ本文では先生評価は比較的安定。ただし初診予約の取りにくさは注意。",
+        tags: ["薬相談", "駅近", "投薬", "予約注意"]
       },
       {
         name: "ひまわりクリニック",
@@ -663,11 +664,11 @@
         phone: "0952-97-4810",
         official: "https://himawari-cl.jp/medical/developmental_disorders.html",
         map: "https://www.google.com/maps/search/?api=1&query=%E3%81%B2%E3%81%BE%E3%82%8F%E3%82%8A%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF+%E5%B0%8F%E5%9F%8E%E5%B8%82",
-        base: 90,
-        scores: { balanced: 90, meds: 88, second: 91, near: 55, saga: 99 },
+        base: 92,
+        scores: { balanced: 92, meds: 91, second: 93, near: 55, saga: 99 },
         fit: "佐賀側の本命",
-        reason: "佐賀県公式一覧で詳細診断、薬物療法、カウンセリングがそろう。検査後の報告フローもある。",
-        tags: ["佐賀", "詳細診断", "薬物療法", "カウンセリング"]
+        reason: "佐賀県公式一覧で詳細診断、薬物療法、カウンセリングがそろう。Google口コミ本文は少なく、公式情報中心で判断。",
+        tags: ["佐賀", "詳細診断", "薬物療法", "口コミ少"]
       },
       {
         name: "太宰府病院",
@@ -675,11 +676,11 @@
         phone: "092-922-3137",
         official: "https://www.dazaifu-hsp.jp/guidance/outpatient/patient.html",
         map: "https://www.google.com/maps/search/?api=1&query=%E5%A4%AA%E5%AE%B0%E5%BA%9C%E7%97%85%E9%99%A2",
-        base: 86,
-        scores: { balanced: 86, meds: 86, second: 84, near: 99, saga: 74 },
-        fit: "近さと大病院",
-        reason: "福岡県公式リストで診断、発達検査、心理療法、投薬がそろう。紹介状が必須なので準備向き。",
-        tags: ["近い", "大病院", "紹介状必須", "投薬"]
+        base: 74,
+        scores: { balanced: 74, meds: 74, second: 70, near: 91, saga: 62 },
+        fit: "近いが注意",
+        reason: "公式条件はそろう。ただしGoogle口コミ本文で、大人の発達障害対応への具体的不満がある。",
+        tags: ["近い", "大病院", "紹介状必須", "注意"]
       },
       {
         name: "肥前精神医療センター",
@@ -687,11 +688,11 @@
         phone: "0952-52-3231",
         official: "https://hizen.hosp.go.jp/patient/outpatient/",
         map: "https://www.google.com/maps/search/?api=1&query=%E8%82%A5%E5%89%8D%E7%B2%BE%E7%A5%9E%E5%8C%BB%E7%99%82%E3%82%BB%E3%83%B3%E3%82%BF%E3%83%BC",
-        base: 84,
-        scores: { balanced: 84, meds: 85, second: 86, near: 48, saga: 94 },
-        fit: "佐賀の大病院",
-        reason: "佐賀県公式一覧で簡易診断、詳細診断、薬物療法、カウンセリングがそろう。大きい保険候補。",
-        tags: ["佐賀", "大病院", "薬物療法", "詳細診断"]
+        base: 78,
+        scores: { balanced: 78, meds: 79, second: 80, near: 48, saga: 91 },
+        fit: "大病院の保険候補",
+        reason: "公式条件は強い。一方で口コミ本文では、電話・受付・医師の当たり外れへの具体的不満が目立つ。",
+        tags: ["佐賀", "大病院", "薬物療法", "窓口注意"]
       },
       {
         name: "くすの木クリニック",
@@ -699,11 +700,11 @@
         phone: "092-921-8333",
         official: "https://k-mentalclinic.com/guide/",
         map: "https://www.google.com/maps/search/?api=1&query=%E3%81%8F%E3%81%99%E3%81%AE%E6%9C%A8%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF+%E5%A4%AA%E5%AE%B0%E5%BA%9C",
-        base: 80,
-        scores: { balanced: 80, meds: 78, second: 82, near: 96, saga: 68 },
-        fit: "近くで開始",
-        reason: "福岡県公式リストで成人ADHD、診断、発達検査、投薬に対応。近くで動き始めたい時の候補。",
-        tags: ["近い", "検査", "投薬", "太宰府"]
+        base: 72,
+        scores: { balanced: 72, meds: 72, second: 74, near: 94, saga: 64 },
+        fit: "近さの予備",
+        reason: "公式条件はある。Google口コミ本文は十分に取れず、星も低めなので電話確認前提。",
+        tags: ["近い", "検査", "投薬", "要確認"]
       }
     ];
 
