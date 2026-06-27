@@ -1,0 +1,16 @@
+{
+  "name": "成人ADHD セカンドオピニオン病院選び",
+  "short_name": "ADHD病院選び",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f7f6ef",
+  "theme_color": "#0f6f72",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
