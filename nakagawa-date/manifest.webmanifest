@@ -1,0 +1,18 @@
+{
+  "name": "CAPTAIN ROUTE | 那珂川 癒しデート",
+  "short_name": "CAPTAIN ROUTE",
+  "description": "喫茶キャプテンを起点に、那珂川周辺の癒しデートスポットを車で巡るスマホアプリ。",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f8f4ea",
+  "theme_color": "#10251d",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

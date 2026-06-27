@@ -1,239 +1,921 @@
 <!DOCTYPE html>
-<html lang="ja"><head><meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>那珂川 二人の一日 — 癒しデートコース</title>
-<meta name="description" content="福岡県那珂川市・喫茶キャプテンを起点に、一日の流れで巡る癒しのデートコース。スクロールで空が移ろう、車デートのための一本の映画。">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;800&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" rel="stylesheet">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:"Zen Kaku Gothic New",sans-serif;color:#f5efe6;line-height:1.9;background:#14142a;overflow-x:hidden}
-.serif{font-family:"Shippori Mincho",serif}
-#sky{position:fixed;inset:0;z-index:-3;transition:background .25s linear}
-#stars{position:fixed;inset:0;z-index:-2;opacity:0;transition:opacity .8s;pointer-events:none}
-.star{position:absolute;background:#fff;border-radius:50%;animation:tw 3s infinite ease-in-out}
-@keyframes tw{0%,100%{opacity:.25}50%{opacity:1}}
-#celestial{position:fixed;width:74px;height:74px;border-radius:50%;z-index:-2;left:0;top:0;transition:background .4s,box-shadow .4s;will-change:transform}
-#progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#f3c98a,#e0795f);z-index:60;width:0}
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>CAPTAIN ROUTE | 那珂川 癒しデート</title>
+  <meta name="description" content="福岡県那珂川市の喫茶キャプテンを起点に、車で巡る癒しデートアプリ。自然、神社、温泉、科学、美術、星、変わり種まで、地図・写真・公式リンクつき。">
+  <meta name="theme-color" content="#10251d">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #f8f4ea;
+      --mist: #e8efe9;
+      --ink: #16221e;
+      --deep: #10251d;
+      --forest: #1d5b43;
+      --river: #3d7f8b;
+      --gold: #c79b45;
+      --coral: #d97757;
+      --line: rgba(22, 34, 30, .13);
+      --shadow: 0 18px 52px rgba(18, 32, 27, .16);
+    }
 
-.tabs{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:55;display:flex;gap:6px;background:rgba(18,16,28,.5);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:5px}
-.tabs button{font-family:inherit;font-size:12.5px;color:#e8ddcb;background:transparent;border:0;border-radius:999px;padding:7px 15px;cursor:pointer;letter-spacing:.04em;transition:.25s}
-.tabs button.on{background:#f5efe6;color:#3a2e28;font-weight:500}
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Zen Kaku Gothic New", system-ui, sans-serif;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(61, 127, 139, .2), transparent 30%),
+        linear-gradient(180deg, #f5f1e7 0%, #ecf0ea 48%, #f9f5ec 100%);
+      color: var(--ink);
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
 
-section{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:88px 22px 60px;position:relative}
+    a { color: inherit; }
+    button { font: inherit; }
+    img { max-width: 100%; display: block; }
+    .serif { font-family: "Shippori Mincho", serif; }
+    .wrap { width: min(1120px, calc(100% - 32px)); margin: 0 auto; }
 
-.intro h1{font-size:clamp(40px,12vw,82px);font-weight:800;letter-spacing:.1em;text-shadow:0 4px 30px rgba(0,0,0,.4);text-align:center;line-height:1.3}
-.intro .lead{margin-top:8px;font-size:13px;letter-spacing:.42em;opacity:.92}
-.intro .poem{margin-top:30px;font-size:15px;letter-spacing:.18em;opacity:.95;text-align:center;line-height:2.4}
-.intro .hint{position:absolute;bottom:34px;font-size:11px;letter-spacing:.3em;opacity:.7;animation:bob 2.4s infinite}
-@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+    .appbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(18px);
+      background: rgba(248, 244, 234, .82);
+      border-bottom: 1px solid rgba(22, 34, 30, .12);
+    }
 
-.scene{width:100%;max-width:540px;background:rgba(16,14,24,.42);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.16);border-radius:26px;padding:34px 28px 30px;box-shadow:0 24px 60px rgba(0,0,0,.32);opacity:0;transform:translateY(34px);transition:opacity 1s,transform 1s}
-.scene.show{opacity:1;transform:none}
-.scene .no{font-size:11px;letter-spacing:.34em;color:#f3c98a}
-.scene .time{font-family:"Shippori Mincho",serif;font-size:14px;letter-spacing:.2em;opacity:.85;margin-top:4px}
-.scene h2{font-family:"Shippori Mincho",serif;font-size:clamp(28px,7vw,40px);font-weight:800;letter-spacing:.05em;margin:8px 0 2px}
-.scene .tag{display:inline-block;font-size:11px;letter-spacing:.16em;border:1px solid rgba(243,201,138,.5);color:#f3c98a;border-radius:999px;padding:3px 13px;margin-bottom:14px}
-.scene .feel{font-size:15.5px;line-height:2.2;letter-spacing:.04em;opacity:.96}
-.acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
-.acts a{flex:1;min-width:140px;text-align:center;text-decoration:none;font-size:14px;font-weight:500;padding:13px 16px;border-radius:14px;transition:.25s;letter-spacing:.04em}
-.map{background:#f5efe6;color:#2c2620}
-.map:hover{background:#fff;transform:translateY(-2px)}
-.pho{background:rgba(255,255,255,.1);color:#f5efe6;border:1px solid rgba(255,255,255,.25)}
-.pho:hover{background:rgba(255,255,255,.2)}
-.drive{margin-top:22px;font-size:12px;letter-spacing:.16em;opacity:.7;text-align:center}
+    .appbar .wrap {
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
 
-.finale .scene{text-align:center;background:rgba(10,9,20,.5)}
-.finale .msg{font-family:"Shippori Mincho",serif;font-size:clamp(20px,5.5vw,27px);font-weight:600;line-height:2.3;letter-spacing:.08em}
-.route{display:block;margin-top:26px;text-decoration:none;background:linear-gradient(100deg,#f3c98a,#e0795f);color:#2c1d16;font-weight:500;font-size:15.5px;padding:18px;border-radius:16px;letter-spacing:.06em;box-shadow:0 14px 36px rgba(224,121,95,.4);transition:.25s}
-.route:hover{transform:translateY(-3px);box-shadow:0 20px 48px rgba(224,121,95,.55)}
-.route small{display:block;font-size:11px;opacity:.7;margin-top:3px;letter-spacing:.1em}
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
 
-.info{max-width:540px;margin:30px auto 0;background:rgba(16,14,24,.4);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:20px 22px;font-size:12.5px;line-height:1.95;opacity:.9}
-.info b{color:#f3c98a;font-weight:500}
-.info .row{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.08)}
-.info .row:last-child{border:0}
-footer{text-align:center;padding:40px 18px 60px;font-size:11.5px;opacity:.6;letter-spacing:.06em}
-footer a{color:#e0c79a;text-decoration:none;border-bottom:1px dotted rgba(224,199,154,.5)}
-</style>
-</head><body>
+    .brand strong {
+      font-size: 14px;
+      letter-spacing: .16em;
+    }
 
-<div id="sky"></div>
-<div id="stars"></div>
-<div id="celestial"></div>
-<div id="progress"></div>
+    .brand span {
+      color: rgba(22, 34, 30, .62);
+      font-size: 11px;
+      letter-spacing: .08em;
+    }
 
-<div class="tabs" id="tabs">
-  <button data-c="定番" class="on">定番 · 癒し</button>
-  <button data-c="知と美">知と美</button>
-  <button data-c="雨の日">雨の日</button>
-</div>
+    .quick {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 8px 0;
+      scrollbar-width: none;
+    }
 
-<section class="intro">
-  <p class="lead">NAKAGAWA · A DAY FOR TWO</p>
-  <h1 class="serif">二人の一日</h1>
-  <p class="poem serif">急がなくていい。<br>朝の珈琲から、夕暮れの湯まで。<br>那珂川を、ゆっくり巡る。</p>
-  <p class="hint">SCROLL ↓ 空が流れる</p>
-</section>
+    .quick a {
+      text-decoration: none;
+      white-space: nowrap;
+      color: #fff;
+      background: var(--deep);
+      border-radius: 999px;
+      padding: 9px 13px;
+      font-size: 12px;
+      letter-spacing: .04em;
+    }
 
-<div id="stops"></div>
+    .hero {
+      min-height: calc(100svh - 64px);
+      display: grid;
+      align-items: end;
+      padding: 26px 0 24px;
+    }
 
-<section class="finale">
-  <div class="scene show">
-    <p class="no serif">FOR TWO</p>
-    <p class="msg serif" id="finaleMsg"></p>
-    <a class="route" id="routeBtn" href="#" target="_blank" rel="noopener">
-      このコースをGoogle Mapでナビ開始
-      <small>起点から終点まで、車ルートを一気に開く</small>
-    </a>
-    <div class="info" id="infoBox"></div>
-  </div>
-  <footer>
-    調査日 2026.06 ｜ 出典：
-    <a href="https://www.crossroadfukuoka.jp/areaguide/nakagawa-shi" target="_blank" rel="noopener">福岡県観光連盟</a> ·
-    <a href="https://slowflow-nakagawa.jp/" target="_blank" rel="noopener">那珂川市観光サイト</a> ·
-    <a href="https://umaga.net/shop/74123/" target="_blank" rel="noopener">UMAGA</a>
-    <br>那珂川 二人の一日 — 車デートのための癒しコース
-  </footer>
-</section>
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(300px, .92fr);
+      gap: 18px;
+      align-items: stretch;
+    }
 
-<script>
-const COURSES = {
-  "定番": {
-    msg: "急がなくていい。<br>水の音と、湯気と、夕暮れ。<br>それだけで、今日は満点。",
-    stops: [
-      {t:"09:30",tag:"起点",name:"喫茶キャプテン",feel:"船の中みたいな昭和レトロ。<br>ウインナー珈琲とナポリタンで、今日が静かに始まる。",q:"喫茶キャプテン 那珂川市松木",drive:"車8分 →"},
-      {t:"10:30",tag:"祈り",name:"現人神社",feel:"森に抱かれた縁結びの杜。<br>風鈴の音に、ふたりで足を止める。",q:"現人神社 那珂川市",drive:"車15分 →"},
-      {t:"11:30",tag:"自然",name:"中ノ島公園",feel:"川の中州をそのまま生かした公園。<br>せせらぎと珈琲片手に、なにもしない贅沢。",q:"中ノ島公園 那珂川市",drive:"車20分 →"},
-      {t:"13:30",tag:"渓谷",name:"筑紫耶馬渓",feel:"那珂川随一の渓谷美。<br>緑のトンネルを、ただ二人で歩く。",q:"筑紫耶馬渓 那珂川市",drive:"車20分 →"},
-      {t:"15:30",tag:"新体験",name:"五ケ山クロス",feel:"モンベルの拠点でカヌーやサイクリング。<br>いつもと違う二人になれる。",q:"五ケ山クロス 那珂川市",drive:"車25分 →"},
-      {t:"17:30",tag:"湯",name:"源泉野天風呂 那珂川 清滝",feel:"山あいの露天風呂。<br>夕暮れの湯気の向こうで、一日がほどける。",q:"源泉野天風呂 那珂川 清滝",drive:"フィナーレ"}
-    ]
-  },
-  "知と美": {
-    msg: "知らない時代に触れ、<br>静かな庭に座る。<br>二人の世界が、少し広がる。",
-    stops: [
-      {t:"09:30",tag:"起点",name:"喫茶キャプテン",feel:"船themeの喫茶店でウインナー珈琲。<br>一日の燃料を、ゆっくり満たす。",q:"喫茶キャプテン 那珂川市松木",drive:"車30分 →"},
-      {t:"10:40",tag:"美",name:"九州国立博物館",feel:"ガラスの大屋根の下、アジアへの時間旅行。<br>展示のあとはカフェでひと息。",q:"九州国立博物館",drive:"車10分 →"},
-      {t:"12:40",tag:"庭",name:"光明禅寺",feel:"苔と石の枯山水。<br>縁側に座って、ただ庭を眺める時間。",q:"光明禅寺 太宰府",drive:"車8分 →"},
-      {t:"14:00",tag:"祈り",name:"竈門神社",feel:"縁結びの杜。<br>紅葉と空の青、二人で見上げる。",q:"宝満宮竈門神社 太宰府",drive:"車30分 →"},
-      {t:"15:40",tag:"科学",name:"福岡市科学館",feel:"ドームシアターで宇宙へ。<br>童心にかえって、はしゃぐ二人。",q:"福岡市科学館 六本松",drive:"車30分 →"},
-      {t:"17:40",tag:"湯",name:"源泉野天風呂 那珂川 清滝",feel:"知の一日のしめは、山の露天。<br>夕闇の湯で、そっと余韻にひたる。",q:"源泉野天風呂 那珂川 清滝",drive:"フィナーレ"}
-    ]
-  },
-  "雨の日": {
-    msg: "雨の日も、悪くない。<br>濡れた苔は深く、<br>屋根の下の時間は、近い。",
-    stops: [
-      {t:"09:30",tag:"起点",name:"喫茶キャプテン",feel:"雨音と珈琲の湯気。<br>船の喫茶店は、雨の日こそ似合う。",q:"喫茶キャプテン 那珂川市松木",drive:"車30分 →"},
-      {t:"10:40",tag:"美",name:"九州国立博物館",feel:"丸ごと屋内。<br>雨を気にせず、アジアの宝に没入する。",q:"九州国立博物館",drive:"車8分 →"},
-      {t:"12:40",tag:"庭",name:"光明禅寺",feel:"雨に濡れた苔の庭は、晴れより美しい。<br>軒下から、静かに眺める。",q:"光明禅寺 太宰府",drive:"車12分 →"},
-      {t:"14:10",tag:"参道",name:"太宰府天満宮 参道",feel:"屋根のある参道で食べ歩き。<br>梅ヶ枝餅の湯気に、雨も似合う。",q:"太宰府天満宮 参道",drive:"車30分 →"},
-      {t:"15:50",tag:"科学",name:"福岡市科学館",feel:"屋内でドームシアター。<br>雨の午後を、宇宙で過ごす。",q:"福岡市科学館 六本松",drive:"車30分 →"},
-      {t:"17:50",tag:"湯",name:"源泉野天風呂 那珂川 清滝",feel:"雨の露天は、しっとり格別。<br>湯気と雨音に包まれて、一日を閉じる。",q:"源泉野天風呂 那珂川 清滝",drive:"フィナーレ"}
-    ]
-  }
-};
+    .hero-copy {
+      background: linear-gradient(160deg, rgba(16, 37, 29, .96), rgba(29, 91, 67, .94));
+      color: var(--paper);
+      border-radius: 8px;
+      padding: clamp(26px, 5vw, 56px);
+      min-height: 620px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
 
-const INFO = [
-  ["喫茶キャプテン","水曜休 / 10:00-18:00 / ☎092-953-0985 / 駐車12台"],
-  ["源泉野天風呂 清滝","木曜休 / 10:00-22:00（最終21:00）"],
-  ["九州国立博物館","月曜休 / 太宰府・車約30分"],
-  ["五ケ山クロス・各施設","季節と天候で変動・出発前に公式確認"]
-];
+    .hero-copy::after {
+      content: "CAPTAIN";
+      position: absolute;
+      right: -34px;
+      bottom: -22px;
+      font: 800 clamp(70px, 16vw, 190px) "Shippori Mincho", serif;
+      letter-spacing: .08em;
+      color: rgba(248, 244, 234, .045);
+      pointer-events: none;
+    }
 
-const enc = s => encodeURIComponent(s);
-const mapUrl = q => "https://www.google.com/maps/search/?api=1&query=" + enc(q);
-const phoUrl = q => "https://www.google.com/search?tbm=isch&q=" + enc(q);
+    .eyebrow {
+      color: #d8c28c;
+      font-size: 12px;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      margin: 0 0 18px;
+    }
 
-function render(courseName){
-  const c = COURSES[courseName];
-  const wrap = document.getElementById("stops");
-  wrap.innerHTML = c.stops.map((s,i) => `
-    <section>
-      <div class="scene">
-        <p class="no">${String(i+1).padStart(2,"0")} / ${String(c.stops.length).padStart(2,"0")}</p>
-        <p class="time">${s.t}</p>
-        <h2 class="serif">${s.name}</h2>
-        <span class="tag">${s.tag}</span>
-        <p class="feel">${s.feel}</p>
-        <div class="acts">
-          <a class="map" href="${mapUrl(s.q)}" target="_blank" rel="noopener">📍 Google Mapで開く</a>
-          <a class="pho" href="${phoUrl(s.q)}" target="_blank" rel="noopener">📷 写真を見る</a>
-        </div>
-        <p class="drive">${s.drive}</p>
+    h1 {
+      font-size: clamp(42px, 8vw, 92px);
+      line-height: 1.05;
+      letter-spacing: .05em;
+      margin: 0;
+    }
+
+    .lead {
+      width: min(560px, 100%);
+      margin: 26px 0 0;
+      color: rgba(248, 244, 234, .86);
+      font-size: clamp(15px, 2vw, 18px);
+    }
+
+    .today {
+      display: grid;
+      gap: 10px;
+      margin-top: 36px;
+    }
+
+    .today-line {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: 14px;
+      align-items: center;
+      border-top: 1px solid rgba(248, 244, 234, .16);
+      padding-top: 12px;
+      color: rgba(248, 244, 234, .9);
+    }
+
+    .today-line b {
+      color: #d8c28c;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: .12em;
+    }
+
+    .hero-photo {
+      border-radius: 8px;
+      min-height: 620px;
+      background:
+        linear-gradient(180deg, rgba(16, 37, 29, 0) 20%, rgba(16, 37, 29, .76) 100%),
+        url("https://naka-navi.info/wp-content/uploads/2020/12/CIMG1313-e1611270863630.jpg") center/cover;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: end;
+      padding: 22px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .photo-caption {
+      display: grid;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .caption-card {
+      border: 1px solid rgba(255,255,255,.24);
+      background: rgba(14, 28, 23, .62);
+      backdrop-filter: blur(12px);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .caption-card p {
+      margin: 0;
+      color: rgba(255,255,255,.86);
+      font-size: 13px;
+    }
+
+    .caption-card strong {
+      display: block;
+      font-size: 20px;
+      letter-spacing: .06em;
+      margin-bottom: 5px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      border-radius: 999px;
+      padding: 11px 16px;
+      border: 1px solid rgba(22, 34, 30, .15);
+      text-decoration: none;
+      background: white;
+      color: var(--deep);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: .04em;
+      cursor: pointer;
+    }
+
+    .btn.dark {
+      background: var(--deep);
+      color: white;
+      border-color: var(--deep);
+    }
+
+    .btn.gold {
+      background: linear-gradient(120deg, #d8b267, #b87d35);
+      color: #1b1309;
+      border: 0;
+    }
+
+    .section {
+      padding: 56px 0;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(26px, 4vw, 42px);
+      letter-spacing: .06em;
+    }
+
+    .section-head p {
+      margin: 0;
+      max-width: 480px;
+      color: rgba(22, 34, 30, .68);
+      font-size: 14px;
+    }
+
+    .course-tabs,
+    .filters {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 4px 0 12px;
+      scrollbar-width: none;
+    }
+
+    .course-tabs button,
+    .filters button {
+      border: 1px solid rgba(22, 34, 30, .14);
+      background: rgba(255,255,255,.72);
+      border-radius: 999px;
+      padding: 10px 15px;
+      white-space: nowrap;
+      cursor: pointer;
+      color: rgba(22, 34, 30, .74);
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .course-tabs button.active,
+    .filters button.active {
+      color: white;
+      border-color: var(--forest);
+      background: var(--forest);
+    }
+
+    .route-panel {
+      background: rgba(255,255,255,.78);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .route-visual {
+      min-height: 240px;
+      background:
+        linear-gradient(135deg, rgba(16,37,29,.72), rgba(61,127,139,.28)),
+        url("https://slowflow-nakagawa.jp/files/Spots/0c5845cb-5ee7-4581-9555-a13c0c82c3eb/%E7%8E%84%E9%96%A2%E5%A4%9C.webp") center/cover;
+      display: grid;
+      align-items: end;
+      padding: 22px;
+      color: white;
+    }
+
+    .route-visual h3 {
+      font-size: clamp(24px, 4vw, 40px);
+      margin: 0;
+      letter-spacing: .05em;
+    }
+
+    .route-visual p {
+      margin: 8px 0 0;
+      max-width: 660px;
+      color: rgba(255,255,255,.84);
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(180px, 1fr));
+      overflow-x: auto;
+      gap: 1px;
+      background: rgba(22, 34, 30, .1);
+    }
+
+    .stop {
+      background: rgba(255,255,255,.92);
+      padding: 18px;
+      min-height: 180px;
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+
+    .stop small {
+      color: var(--coral);
+      font-weight: 700;
+      letter-spacing: .12em;
+    }
+
+    .stop strong {
+      font-size: 17px;
+      line-height: 1.3;
+    }
+
+    .stop span {
+      color: rgba(22, 34, 30, .66);
+      font-size: 13px;
+    }
+
+    .rank-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+    }
+
+    .spot {
+      grid-column: span 4;
+      background: rgba(255,255,255,.83);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 10px 28px rgba(18, 32, 27, .09);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .spot.hidden { display: none; }
+
+    .spot.no1 {
+      grid-column: span 8;
+      display: grid;
+      grid-template-columns: minmax(260px, .95fr) minmax(0, 1.05fr);
+      min-height: 360px;
+    }
+
+    .spot-img {
+      min-height: 220px;
+      background: var(--forest) center/cover;
+      position: relative;
+    }
+
+    .spot.no1 .spot-img { min-height: 100%; }
+
+    .rank-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      color: #1b1309;
+      background: linear-gradient(120deg, #e2c77b, #b77d35);
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: .08em;
+    }
+
+    .spot-body {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .spot h3 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.32;
+      letter-spacing: .04em;
+    }
+
+    .spot .catch {
+      color: var(--forest);
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .spot .desc {
+      margin: 0;
+      color: rgba(22, 34, 30, .7);
+      font-size: 14px;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .metric {
+      border: 1px solid rgba(22, 34, 30, .1);
+      border-radius: 8px;
+      padding: 8px;
+      background: rgba(248,244,234,.7);
+    }
+
+    .metric b {
+      display: block;
+      font-size: 16px;
+      color: var(--deep);
+    }
+
+    .metric span {
+      font-size: 11px;
+      color: rgba(22, 34, 30, .62);
+    }
+
+    .spot-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .spot-actions a,
+    .spot-actions button {
+      flex: 1 1 82px;
+      min-height: 40px;
+      border-radius: 8px;
+      border: 1px solid rgba(22, 34, 30, .12);
+      background: #fff;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 10px;
+      color: var(--deep);
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .spot-actions button.saved {
+      background: var(--forest);
+      color: white;
+    }
+
+    .map-frame {
+      border: 0;
+      width: 100%;
+      height: 420px;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      background: white;
+    }
+
+    .notice {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .note {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      background: rgba(255,255,255,.76);
+    }
+
+    .note b {
+      color: var(--forest);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .note p {
+      margin: 0;
+      color: rgba(22, 34, 30, .68);
+      font-size: 13px;
+    }
+
+    footer {
+      padding: 42px 0 70px;
+      color: rgba(22, 34, 30, .6);
+      font-size: 12px;
+    }
+
+    footer .sources {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    footer a {
+      color: var(--forest);
+      text-decoration: none;
+      border-bottom: 1px dotted rgba(29,91,67,.35);
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-copy, .hero-photo { min-height: auto; }
+      .hero-copy { padding-bottom: 96px; }
+      .spot, .spot.no1 { grid-column: span 12; }
+      .spot.no1 { grid-template-columns: 1fr; }
+      .spot.no1 .spot-img { min-height: 260px; }
+      .notice { grid-template-columns: 1fr; }
+      .section-head { display: block; }
+      .section-head p { margin-top: 8px; }
+    }
+
+    @media (max-width: 560px) {
+      .wrap { width: min(100% - 22px, 1120px); }
+      .appbar .wrap { align-items: flex-start; flex-direction: column; gap: 2px; padding: 9px 0; }
+      .quick { width: 100%; }
+      .hero { padding-top: 12px; }
+      .hero-copy { padding: 24px 18px 82px; }
+      .hero-photo { min-height: 360px; padding: 14px; }
+      .today-line { grid-template-columns: 58px 1fr; gap: 10px; }
+      .timeline { grid-template-columns: repeat(6, 78vw); }
+      .metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .spot-actions a, .spot-actions button { flex-basis: calc(50% - 4px); }
+      .map-frame { height: 340px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="appbar">
+    <div class="wrap">
+      <div class="brand">
+        <strong>CAPTAIN ROUTE</strong>
+        <span>那珂川 癒しデート</span>
       </div>
-    </section>`).join("");
+      <nav class="quick" aria-label="クイックナビ">
+        <a href="#route">今日のルート</a>
+        <a href="#ranking">癒し番付</a>
+        <a href="#map">地図</a>
+        <a href="#check">行く前確認</a>
+      </nav>
+    </div>
+  </header>
 
-  document.getElementById("finaleMsg").innerHTML = c.msg;
-  const origin = c.stops[0].q, dest = c.stops[c.stops.length-1].q;
-  const way = c.stops.slice(1,-1).map(s=>enc(s.q)).join("%7C");
-  document.getElementById("routeBtn").href =
-    `https://www.google.com/maps/dir/?api=1&travelmode=driving&origin=${enc(origin)}&destination=${enc(dest)}&waypoints=${way}`;
-  document.getElementById("infoBox").innerHTML =
-    `<div style="color:#f3c98a;letter-spacing:.16em;margin-bottom:8px">行く前に確認</div>` +
-    INFO.map(r=>`<div class="row"><b>${r[0]}</b><span>${r[1]}</span></div>`).join("");
+  <main>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <div>
+            <p class="eyebrow">Nakagawa healing drive</p>
+            <h1 class="serif">二人の<br>呼吸が戻る日。</h1>
+            <p class="lead">
+              喫茶キャプテンを起点に、川音、神社、森、温泉、星、科学、美術まで。
+              36歳の二人が車で無理なく巡れる、仕事疲れをほどくデートコースです。
+            </p>
+            <div class="actions">
+              <a class="btn gold" id="heroRoute" href="#" target="_blank" rel="noopener">本命ルートを開く</a>
+              <a class="btn" href="#ranking">番付を見る</a>
+            </div>
+          </div>
+          <div class="today" aria-label="今日の結論">
+            <div class="today-line"><b>起点</b><span>喫茶キャプテン。レトロ喫茶で一日のテンポを落とす。</span></div>
+            <div class="today-line"><b>芯</b><span>現人神社、中ノ島公園、五ケ山クロスで自然と会話を戻す。</span></div>
+            <div class="today-line"><b>締め</b><span>那珂川清滝。最後に体から仕事の疲れを抜く。</span></div>
+          </div>
+        </div>
 
-  observe();
-}
+        <aside class="hero-photo" aria-label="喫茶キャプテンの写真">
+          <div class="photo-caption">
+            <div class="caption-card">
+              <strong class="serif">喫茶キャプテン</strong>
+              <p>那珂川市松木1-1。10:00から18:00。水曜休み。駐車場あり。</p>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
 
-let io;
-function observe(){
-  if(io) io.disconnect();
-  io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("show"); }}),{threshold:.18});
-  document.querySelectorAll(".scene").forEach(s=>{ if(!s.classList.contains("show")) io.observe(s); });
-}
+    <section class="section" id="route">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">best route</p>
+            <h2 class="serif">今日のデート設計</h2>
+          </div>
+          <p>気分で切り替えられる3コース。地図ボタンは選んだコースの車ルートに変わります。</p>
+        </div>
 
-// ---- evolving sky ----
-const KEYS = [
-  [[246,201,160],[184,138,154]], // dawn
-  [[207,224,232],[243,217,176]], // morning
-  [[188,217,232],[232,238,240]], // noon
-  [[244,207,148],[224,154,106]], // golden
-  [[224,121,95],[110,74,106]],   // dusk
-  [[42,42,74],[20,20,42]]        // night
-];
-const lerp=(a,b,t)=>Math.round(a+(b-a)*t);
-const mix=(c1,c2,t)=>`rgb(${lerp(c1[0],c2[0],t)},${lerp(c1[1],c2[1],t)},${lerp(c1[2],c2[2],t)})`;
+        <div class="course-tabs" id="courseTabs" aria-label="コース選択"></div>
+        <article class="route-panel">
+          <div class="route-visual">
+            <div>
+              <h3 class="serif" id="courseTitle"></h3>
+              <p id="courseCopy"></p>
+              <div class="actions">
+                <a class="btn gold" id="courseRoute" href="#" target="_blank" rel="noopener">Googleマップで車ルート</a>
+                <a class="btn" id="coursePhotos" href="#" target="_blank" rel="noopener">写真で雰囲気を見る</a>
+              </div>
+            </div>
+          </div>
+          <div class="timeline" id="timeline"></div>
+        </article>
+      </div>
+    </section>
 
-const sky=document.getElementById("sky"),cel=document.getElementById("celestial"),
-      bar=document.getElementById("progress"),stars=document.getElementById("stars");
+    <section class="section" id="ranking">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">healing ranking</p>
+            <h2 class="serif">癒し番付</h2>
+          </div>
+          <p>癒し度、会話のしやすさ、車移動の楽さ、新しさで採点。人気より「疲れが抜けるか」を優先しました。</p>
+        </div>
+        <div class="filters" id="filters" aria-label="スポット分類"></div>
+        <div class="rank-grid" id="spots"></div>
+      </div>
+    </section>
 
-function onScroll(){
-  const max=document.body.scrollHeight-window.innerHeight;
-  const p=max>0?Math.min(1,Math.max(0,window.scrollY/max)):0;
-  bar.style.width=(p*100)+"%";
-  const seg=p*(KEYS.length-1), i=Math.min(KEYS.length-2,Math.floor(seg)), f=seg-i;
-  const top=mix(KEYS[i][0],KEYS[i+1][0],f), bot=mix(KEYS[i][1],KEYS[i+1][1],f);
-  sky.style.background=`linear-gradient(165deg,${top} 0%,${bot} 100%)`;
-  // celestial arc
-  const x=8+p*84, y=78-Math.sin(p*Math.PI)*64;
-  cel.style.transform=`translate(${x}vw,${y}vh)`;
-  const isMoon=p>0.78;
-  cel.style.background=isMoon?"radial-gradient(circle at 38% 38%,#fdfbf2,#cfd3e0)":"radial-gradient(circle at 38% 38%,#fff4d6,#f3b65a)";
-  cel.style.boxShadow=isMoon?"0 0 40px rgba(220,224,240,.6)":"0 0 60px rgba(243,182,90,.7)";
-  stars.style.opacity=Math.max(0,(p-0.7)/0.3);
-}
+    <section class="section" id="map">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">map</p>
+            <h2 class="serif">地図で見る</h2>
+          </div>
+          <p>地図は那珂川エリアの全体感用。実際の運転は上のGoogleマップ車ルートから開くのが一番早いです。</p>
+        </div>
+        <iframe class="map-frame" title="那珂川デートスポット地図" loading="lazy" src="https://www.google.com/maps?q=%E5%96%AB%E8%8C%B6%E3%82%AD%E3%83%A3%E3%83%97%E3%83%86%E3%83%B3%20%E7%8F%BE%E4%BA%BA%E7%A5%9E%E7%A4%BE%20%E4%B8%AD%E3%83%8E%E5%B3%B6%E5%85%AC%E5%9C%92%20%E4%BA%94%E3%82%B1%E5%B1%B1%E3%82%AF%E3%83%AD%E3%82%B9%20%E9%82%A3%E7%8F%82%E5%B7%9D%E6%B8%85%E6%BB%9D&output=embed"></iframe>
+      </div>
+    </section>
 
-(function makeStars(){
-  let h="";
-  for(let i=0;i<70;i++){const s=Math.random()*2+1;h+=`<div class="star" style="left:${Math.random()*100}%;top:${Math.random()*70}%;width:${s}px;height:${s}px;animation-delay:${Math.random()*3}s"></div>`;}
-  stars.innerHTML=h;
-})();
+    <section class="section" id="check">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">before you go</p>
+            <h2 class="serif">行く前確認</h2>
+          </div>
+          <p>営業時間、季節イベント、雨、駐車場は当日変わることがあります。出発前にここだけ見れば迷いにくいです。</p>
+        </div>
+        <div class="notice">
+          <div class="note"><b>喫茶キャプテン</b><p>水曜休み。10:00から18:00。電話番号は 092-953-0985。最新は電話かInstagram確認。</p></div>
+          <div class="note"><b>現人神社</b><p>風鈴回廊は例年7月上旬から9月中旬。季節装飾は天候や時期で変わります。</p></div>
+          <div class="note"><b>清滝と五ケ山</b><p>温泉、キャンプ、川遊びは営業時間や天候影響あり。当日の公式確認が安心です。</p></div>
+        </div>
+      </div>
+    </section>
+  </main>
 
-document.getElementById("tabs").addEventListener("click",e=>{
-  const b=e.target.closest("button"); if(!b) return;
-  document.querySelectorAll("#tabs button").forEach(x=>x.classList.remove("on"));
-  b.classList.add("on");
-  render(b.dataset.c);
-  window.scrollTo({top:0,behavior:"smooth"});
-  setTimeout(onScroll,60);
-});
+  <footer>
+    <div class="wrap">
+      <strong>調査・更新: 2026年6月27日</strong>
+      <div class="sources">
+        <a href="https://naka-navi.info/food/1484/" target="_blank" rel="noopener">喫茶キャプテン</a>
+        <a href="https://umaga.net/shop/74123/" target="_blank" rel="noopener">UMAGA</a>
+        <a href="https://www.instagram.com/captain_nakagawa/" target="_blank" rel="noopener">キャプテンInstagram</a>
+        <a href="https://arahito.com/" target="_blank" rel="noopener">現人神社</a>
+        <a href="https://www.crossroadfukuoka.jp/event/11993" target="_blank" rel="noopener">現人神社 風鈴回廊</a>
+        <a href="https://www.city.nakagawa.lg.jp/soshiki/35/nakanoshima-park.html" target="_blank" rel="noopener">中ノ島公園</a>
+        <a href="https://slowflow-nakagawa.jp/spots/detail/a4b79581-c347-4c8a-bc59-a61d46b80603" target="_blank" rel="noopener">那珂川清滝</a>
+        <a href="https://www.crossroadfukuoka.jp/spot/11873" target="_blank" rel="noopener">五ケ山クロス</a>
+        <a href="https://www.city.kasuga.fukuoka.jp/shisetsu/bunka/bunka/1008452/1002113.html" target="_blank" rel="noopener">星の館</a>
+        <a href="https://bu9t-sm.wixsite.com/html" target="_blank" rel="noopener">不思議博物館</a>
+        <a href="https://www.fukuokacity-kagakukan.jp/" target="_blank" rel="noopener">福岡市科学館</a>
+        <a href="https://www.fukuoka-art-museum.jp/" target="_blank" rel="noopener">福岡市美術館</a>
+        <a href="https://slowflow-nakagawa.jp/spots/detail/f7e708cf-3e7b-4aad-96b0-c080d54f5e1b" target="_blank" rel="noopener">ウェーブG</a>
+      </div>
+    </div>
+  </footer>
 
-window.addEventListener("scroll",onScroll,{passive:true});
-window.addEventListener("resize",onScroll);
-render("定番");
-onScroll();
-</script>
-</body></html>
+  <script>
+    const img = {
+      captain: "https://naka-navi.info/wp-content/uploads/2020/12/CIMG1313-e1611270863630.jpg",
+      arahito: "https://www.crossroadfukuoka.jp/storage/tourism_attractions/11993/responsive_images/c7meqarT9Gzf27gBZ11DMWdZuvwx6XAQ3DsxbIci__1713_1142.jpg",
+      nakanoshima: "https://www.city.nakagawa.lg.jp/uploaded/image/1387.jpg",
+      seiryu: "https://slowflow-nakagawa.jp/files/Spots/0c5845cb-5ee7-4581-9555-a13c0c82c3eb/%E7%8E%84%E9%96%A2%E5%A4%9C.webp",
+      gokayama: "https://www.crossroadfukuoka.jp/storage/tourism_attractions/11873/responsive_images/WY4jAFlWvFv4bmkr5KPW5gy84ste7en4w8IJIKNZ__1636_1089.jpg",
+      stars: "https://www.city.kasuga.fukuoka.jp/_res/projects/default_project/_page_/001/002/113/hosinoyakata.jpg",
+      kagakukan: "https://www.fukuokacity-kagakukan.jp/88908d59ae9af76b467f9c1966b60337307f677f.jpg",
+      museum: "https://www.fukuoka-art-museum.jp/assets/images/og.jpg",
+      fushigi: "https://static.wixstatic.com/media/d5c866_1cbd7bc40ffa46cd8f26dd4496cf483b~mv2.jpeg/v1/fill/w_404,h_209,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/d5c866_1cbd7bc40ffa46cd8f26dd4496cf483b~mv2.jpeg",
+      waveg: "https://slowflow-nakagawa.jp/files/Spots/2edf0ef5-6a22-46f0-ad6b-9471e4970825/WaveG_002.webp"
+    };
+
+    const sources = {
+      captain: "https://naka-navi.info/food/1484/",
+      captain2: "https://umaga.net/shop/74123/",
+      arahito: "https://arahito.com/",
+      nakanoshima: "https://www.city.nakagawa.lg.jp/soshiki/35/nakanoshima-park.html",
+      seiryu: "https://slowflow-nakagawa.jp/spots/detail/a4b79581-c347-4c8a-bc59-a61d46b80603",
+      gokayama: "https://www.crossroadfukuoka.jp/spot/11873",
+      stars: "https://www.city.kasuga.fukuoka.jp/shisetsu/bunka/bunka/1008452/1002113.html",
+      fushigi: "https://bu9t-sm.wixsite.com/html",
+      kagakukan: "https://www.fukuokacity-kagakukan.jp/",
+      museum: "https://www.fukuoka-art-museum.jp/",
+      waveg: "https://slowflow-nakagawa.jp/spots/detail/f7e708cf-3e7b-4aad-96b0-c080d54f5e1b"
+    };
+
+    const q = (text) => encodeURIComponent(text);
+    const map = (text) => `https://www.google.com/maps/search/?api=1&query=${q(text)}`;
+    const photos = (text) => `https://www.google.com/search?tbm=isch&q=${q(text)}`;
+
+    const courses = [
+      {
+        id: "classic",
+        label: "本命 癒し",
+        title: "キャプテンから清滝へ、体をほどく王道",
+        copy: "喫茶、神社、川、森、温泉。移動の負担を抑えながら、仕事モードを少しずつ落とすルートです。",
+        stops: [
+          ["10:00", "喫茶キャプテン", "ウインナー珈琲とナポリタンで静かに開始", "喫茶キャプテン 那珂川市松木"],
+          ["11:10", "現人神社", "風鈴や季節装飾で気持ちを切り替える", "現人神社 那珂川市"],
+          ["12:10", "中ノ島公園", "川音と緑で会話のテンポを落とす", "中ノ島公園 那珂川市"],
+          ["14:00", "五ケ山クロス", "山とダムで視界を広げる", "五ケ山クロス 那珂川市"],
+          ["16:30", "那珂川清滝", "露天風呂で一日を着地させる", "源泉野天風呂 那珂川 清滝"]
+        ]
+      },
+      {
+        id: "curious",
+        label: "知と美",
+        title: "科学と美術を混ぜる、大人の刺激ルート",
+        copy: "自然だけで終わらせず、科学、美術、星を混ぜます。新しい話題がほしい日に強いコースです。",
+        stops: [
+          ["10:00", "喫茶キャプテン", "レトロ喫茶で今日の作戦会議", "喫茶キャプテン 那珂川市松木"],
+          ["11:10", "福岡市科学館", "ドームシアターや展示で童心を戻す", "福岡市科学館"],
+          ["13:40", "福岡市美術館", "大濠公園とセットで静かな余白を作る", "福岡市美術館"],
+          ["16:20", "白水大池公園 星の館", "夕方から星の気配へ寄せる", "白水大池公園 星の館"],
+          ["18:00", "那珂川清滝", "最後は湯で整える", "源泉野天風呂 那珂川 清滝"]
+        ]
+      },
+      {
+        id: "rain",
+        label: "雨の日",
+        title: "雨でも崩れない、屋内多めの回復ルート",
+        copy: "雨の日は無理に自然へ寄せず、喫茶、科学館、変わり種、温泉で近い距離の濃い時間にします。",
+        stops: [
+          ["10:00", "喫茶キャプテン", "雨音と珈琲で出発をゆっくり", "喫茶キャプテン 那珂川市松木"],
+          ["11:20", "福岡市科学館", "屋内で宇宙と科学に浸る", "福岡市科学館"],
+          ["14:30", "不思議博物館", "変わり種の会話が生まれる", "不思議博物館 那珂川"],
+          ["16:30", "那珂川清滝", "雨の露天でしっとり終える", "源泉野天風呂 那珂川 清滝"]
+        ]
+      }
+    ];
+
+    const spots = [
+      {rank:1, cat:"湯", name:"源泉野天風呂 那珂川 清滝", catch:"仕事疲れを抜く力が一番強い", desc:"山あいの露天風呂。最後にここを置くと、ただの観光が回復の一日に変わります。", image:img.seiryu, query:"源泉野天風呂 那珂川 清滝", official:sources.seiryu, score:[98,94,82]},
+      {rank:2, cat:"喫茶", name:"喫茶キャプテン", catch:"一日のテンポを落とす船着き場", desc:"那珂川市松木1-1。10時から18時、水曜休み。レトロ喫茶の空気で会話を始めやすい起点です。", image:img.captain, query:"喫茶キャプテン 那珂川市松木", official:sources.captain, source2:sources.captain2, score:[90,96,92]},
+      {rank:3, cat:"神社", name:"現人神社", catch:"仕事運と縁結びの気持ちいい切替点", desc:"仕事運向上、縁結びで知られる神社。季節の回廊装飾があり、写真と会話が自然に生まれます。", image:img.arahito, query:"現人神社 那珂川市", official:sources.arahito, score:[91,89,86]},
+      {rank:4, cat:"自然", name:"中ノ島公園", catch:"川音で頭を休ませる低負荷スポット", desc:"那珂川の自然を短時間で感じられる公園。歩きすぎず、ぼーっとしやすいのが強みです。", image:img.nakanoshima, query:"中ノ島公園 那珂川市", official:sources.nakanoshima, score:[88,87,91]},
+      {rank:5, cat:"自然", name:"五ケ山クロス", catch:"視界が開くアーバンアウトドア", desc:"福岡都市圏から近い自然没入エリア。ダム、川、アウトドア要素で、いつもと違う日にできます。", image:img.gokayama, query:"五ケ山クロス 那珂川市", official:sources.gokayama, score:[86,84,78]},
+      {rank:6, cat:"星", name:"白水大池公園 星の館", catch:"夜の会話が深くなる星スポット", desc:"天文台のある公園施設。科学好き、宇宙好きの二人なら夜の余韻づくりに相性が良いです。", image:img.stars, query:"白水大池公園 星の館", official:sources.stars, score:[82,92,80]},
+      {rank:7, cat:"科学", name:"福岡市科学館", catch:"童心に戻れる知的デート", desc:"展示とドームシアターで、自然だけではない新しい刺激を入れられます。雨の日にも強いです。", image:img.kagakukan, query:"福岡市科学館", official:sources.kagakukan, score:[79,95,74]},
+      {rank:8, cat:"美術", name:"福岡市美術館", catch:"大濠公園と合わせる静かな大人時間", desc:"美術館、大濠公園、日本庭園を組み合わせると、街中でも深呼吸できるルートになります。", image:img.museum, query:"福岡市美術館 大濠公園", official:sources.museum, score:[78,90,72]},
+      {rank:9, cat:"変わり種", name:"不思議博物館", catch:"新しいこと枠の本命", desc:"好みが合えばかなり記憶に残る変わり種。開館日が限られるため、行く前確認必須です。", image:img.fushigi, query:"不思議博物館 那珂川", official:sources.fushigi, score:[74,98,68]},
+      {rank:10, cat:"工芸", name:"ウェーブG グラス工房", catch:"手仕事とアートを足す隠し味", desc:"南畑エリアのガラス工房。自然ルートに工芸の手触りを混ぜたい日に向きます。", image:img.waveg, query:"ウェーブG グラス工房 那珂川", official:sources.waveg, score:[76,88,73]}
+    ];
+
+    const categories = ["全部", ...Array.from(new Set(spots.map(s => s.cat)))];
+    const savedKey = "captain-route-saved";
+    let activeCourse = courses[0].id;
+    let activeFilter = "全部";
+    let saved = new Set(JSON.parse(localStorage.getItem(savedKey) || "[]"));
+
+    function routeUrl(stops) {
+      const origin = stops[0][3];
+      const destination = stops[stops.length - 1][3];
+      const waypoints = stops.slice(1, -1).map(s => q(s[3])).join("%7C");
+      return `https://www.google.com/maps/dir/?api=1&travelmode=driving&origin=${q(origin)}&destination=${q(destination)}&waypoints=${waypoints}`;
+    }
+
+    function renderCourses() {
+      const tabs = document.getElementById("courseTabs");
+      tabs.innerHTML = courses.map(c => `<button class="${c.id === activeCourse ? "active" : ""}" data-course="${c.id}">${c.label}</button>`).join("");
+      const course = courses.find(c => c.id === activeCourse);
+      document.getElementById("courseTitle").textContent = course.title;
+      document.getElementById("courseCopy").textContent = course.copy;
+      document.getElementById("courseRoute").href = routeUrl(course.stops);
+      document.getElementById("heroRoute").href = routeUrl(courses[0].stops);
+      document.getElementById("coursePhotos").href = photos(course.stops.map(s => s[1]).join(" "));
+      document.getElementById("timeline").innerHTML = course.stops.map(s => `
+        <article class="stop">
+          <small>${s[0]}</small>
+          <strong>${s[1]}</strong>
+          <span>${s[2]}</span>
+          <a class="btn" href="${map(s[3])}" target="_blank" rel="noopener">地図</a>
+        </article>
+      `).join("");
+    }
+
+    function renderFilters() {
+      document.getElementById("filters").innerHTML = categories.map(cat => `<button class="${cat === activeFilter ? "active" : ""}" data-filter="${cat}">${cat}</button>`).join("");
+    }
+
+    function renderSpots() {
+      document.getElementById("spots").innerHTML = spots.map(s => {
+        const hidden = activeFilter !== "全部" && activeFilter !== s.cat;
+        const isSaved = saved.has(s.name);
+        return `
+          <article class="spot ${s.rank === 1 ? "no1" : ""} ${hidden ? "hidden" : ""}">
+            <div class="spot-img" style="background-image:url('${s.image}')">
+              <span class="rank-badge">第${s.rank}位</span>
+            </div>
+            <div class="spot-body">
+              <div>
+                <p class="catch">${s.cat} / ${s.catch}</p>
+                <h3 class="serif">${s.name}</h3>
+              </div>
+              <p class="desc">${s.desc}</p>
+              <div class="metrics" aria-label="採点">
+                <div class="metric"><b>${s.score[0]}</b><span>癒し</span></div>
+                <div class="metric"><b>${s.score[1]}</b><span>会話</span></div>
+                <div class="metric"><b>${s.score[2]}</b><span>楽さ</span></div>
+              </div>
+              <div class="spot-actions">
+                <a href="${map(s.query)}" target="_blank" rel="noopener">地図</a>
+                <a href="${s.official}" target="_blank" rel="noopener">公式</a>
+                <a href="${photos(s.query)}" target="_blank" rel="noopener">写真</a>
+                <button class="${isSaved ? "saved" : ""}" data-save="${s.name}">${isSaved ? "保存済み" : "行きたい"}</button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    document.addEventListener("click", (event) => {
+      const courseButton = event.target.closest("[data-course]");
+      if (courseButton) {
+        activeCourse = courseButton.dataset.course;
+        renderCourses();
+      }
+
+      const filterButton = event.target.closest("[data-filter]");
+      if (filterButton) {
+        activeFilter = filterButton.dataset.filter;
+        renderFilters();
+        renderSpots();
+      }
+
+      const saveButton = event.target.closest("[data-save]");
+      if (saveButton) {
+        const name = saveButton.dataset.save;
+        if (saved.has(name)) saved.delete(name);
+        else saved.add(name);
+        localStorage.setItem(savedKey, JSON.stringify(Array.from(saved)));
+        renderSpots();
+      }
+    });
+
+    renderCourses();
+    renderFilters();
+    renderSpots();
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
