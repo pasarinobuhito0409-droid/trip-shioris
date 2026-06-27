@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>整いの一湯 — 太宰府発 静かなサウナ温泉</title>
-<meta name="description" content="太宰府を起点に、福岡・佐賀・長崎・山口で人が少なく自然に癒される、サウナ付きの静かな温泉を口コミの言葉から厳選した番付アプリ。地図・サ活・写真リンクつき。">
+<title>整いの一湯 — 太宰府発 静かなサウナ温泉管理</title>
+<meta name="description" content="太宰府を起点に、福岡・佐賀・長崎・山口で人が少なく自然に癒される、サウナ付きの静かな温泉を管理できるPWA。地図・公式・写真・訪問チェック・メモつき。">
 <meta name="theme-color" content="#0f1a1c">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
@@ -22,8 +22,8 @@ body{font-family:"Zen Kaku Gothic New",sans-serif;color:#eef2ef;line-height:1.9;
 #celestial{position:fixed;width:70px;height:70px;border-radius:50%;z-index:-2;left:0;top:0;transition:background .4s,box-shadow .4s;will-change:transform}
 #progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#8fd6c2,#e0a45a);z-index:60;width:0}
 
-.tabs{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:55;display:flex;flex-wrap:wrap;justify-content:center;gap:5px;max-width:94vw;background:rgba(12,20,22,.55);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:5px}
-.tabs button{font-family:inherit;font-size:12px;color:#dfe8e3;background:transparent;border:0;border-radius:999px;padding:7px 13px;cursor:pointer;letter-spacing:.03em;transition:.25s}
+.tabs{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:55;display:flex;flex-wrap:nowrap;justify-content:flex-start;gap:5px;width:calc(100vw - 24px);max-width:560px;overflow-x:auto;scrollbar-width:none;background:rgba(12,20,22,.55);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:5px}
+.tabs button{font-family:inherit;flex:0 0 auto;font-size:12px;color:#dfe8e3;background:transparent;border:0;border-radius:999px;padding:7px 13px;cursor:pointer;letter-spacing:.03em;transition:.25s}
 .tabs button.on{background:#eef2ef;color:#16302c;font-weight:500}
 
 .intro{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:90px 22px 60px;position:relative}
@@ -34,9 +34,30 @@ body{font-family:"Zen Kaku Gothic New",sans-serif;color:#eef2ef;line-height:1.9;
 .intro .hint{position:absolute;bottom:32px;font-size:11px;letter-spacing:.3em;opacity:.7;animation:bob 2.4s infinite}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
 
-.list{max-width:560px;margin:0 auto;padding:30px 20px 10px}
+.manager{max-width:560px;margin:-34px auto 18px;padding:0 20px;position:relative;z-index:2}
+.panel{background:rgba(12,20,22,.58);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:18px;box-shadow:0 18px 48px rgba(0,0,0,.3)}
+.panelTop{display:flex;align-items:flex-end;justify-content:space-between;gap:14px}
+.panelTop p{font-size:11px;letter-spacing:.16em;color:#9fe0cd}
+.panelTop strong{font-family:"Shippori Mincho",serif;font-size:30px;line-height:1.1}
+.barTrack{height:9px;background:rgba(255,255,255,.11);border-radius:99px;overflow:hidden;margin:14px 0 12px}
+.barTrack i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8fd6c2,#e0a45a);border-radius:99px;transition:width .35s}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.stat{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:10px 8px;text-align:center}
+.stat span{display:block;font-size:20px;font-weight:700;line-height:1.1}
+.stat em{display:block;font-style:normal;font-size:10px;opacity:.68;margin-top:4px}
+.filterline{display:flex;gap:7px;overflow-x:auto;padding:12px 0 0;scrollbar-width:none}
+.filterline button,.backupBtn{font-family:inherit;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:#eaf3ee;border-radius:999px;padding:8px 12px;font-size:12px;white-space:nowrap;cursor:pointer}
+.filterline button.on{background:#eef2ef;color:#16302c;border-color:#eef2ef}
+.backup{display:none;width:100%;min-height:92px;margin-top:12px;border:1px solid rgba(255,255,255,.16);border-radius:12px;background:rgba(255,255,255,.08);color:#eaf3ee;padding:10px;font-family:ui-monospace,Consolas,monospace;font-size:11px}
+.list{max-width:560px;margin:0 auto;padding:18px 20px 10px}
 .card{position:relative;background:rgba(12,20,22,.46);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.15);border-radius:22px;padding:24px 22px 22px;margin-bottom:18px;box-shadow:0 18px 46px rgba(0,0,0,.32);opacity:0;transform:translateY(28px);transition:opacity .8s,transform .8s}
 .card.show{opacity:1;transform:none}
+.card.done{border-color:rgba(143,214,194,.42);box-shadow:0 18px 46px rgba(10,58,47,.32)}
+.card.revisit{border-color:rgba(224,164,90,.58)}
+.photo{height:122px;border-radius:16px;margin:-4px 0 16px;background:linear-gradient(135deg,rgba(143,214,194,.24),rgba(224,164,90,.16));overflow:hidden;position:relative}
+.photo img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.92) contrast(.96)}
+.photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(12,20,22,.58))}
+.statusBadge{position:absolute;right:16px;top:16px;z-index:2;background:rgba(238,242,239,.92);color:#16302c;border-radius:999px;padding:5px 10px;font-size:11px;font-weight:700;letter-spacing:.06em}
 .crow{display:flex;align-items:center;gap:12px}
 .rank{width:42px;height:42px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"Shippori Mincho",serif;font-weight:800;font-size:19px;background:rgba(255,255,255,.1);color:#cdd8d2}
 .rank.t1{background:linear-gradient(150deg,#f0d290,#cda23f);color:#2c2208}
@@ -55,19 +76,23 @@ body{font-family:"Zen Kaku Gothic New",sans-serif;color:#eef2ef;line-height:1.9;
 .note{margin-top:10px;font-size:11.5px;opacity:.62;line-height:1.6}
 .acts{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
 .acts a{flex:1;min-width:96px;text-align:center;text-decoration:none;font-size:13px;font-weight:500;padding:11px 12px;border-radius:13px;transition:.25s;letter-spacing:.03em}
+.acts a.official{background:rgba(224,164,90,.16);color:#f0c084;border:1px solid rgba(224,164,90,.38)}
 .map{background:#eef2ef;color:#16302c}
 .map:hover{background:#fff;transform:translateY(-2px)}
 .sa{background:rgba(143,214,194,.14);color:#9fe0cd;border:1px solid rgba(143,214,194,.35)}
 .sa:hover{background:rgba(143,214,194,.26)}
 .pho{background:rgba(255,255,255,.08);color:#eef2ef;border:1px solid rgba(255,255,255,.22)}
 .pho:hover{background:rgba(255,255,255,.18)}
-.chk{font-family:inherit;cursor:pointer;flex:1;min-width:96px;background:rgba(255,255,255,.08);color:#eef2ef;border:1px solid rgba(255,255,255,.22);border-radius:13px;font-size:13px;font-weight:500;padding:11px 12px;transition:.25s}
-.chk:hover{transform:translateY(-2px)}
-.chk.on{background:#9fe0cd;color:#16302c;border-color:#9fe0cd}
-.card.done{border-color:rgba(143,214,194,.55)}
-.card.done .cname{opacity:.68}
-.card.done::after{content:"✓ 制覇";position:absolute;top:14px;right:16px;font-size:10.5px;color:#16302c;background:#9fe0cd;border-radius:999px;padding:3px 10px;font-weight:500;letter-spacing:.08em}
-#prog{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:56;background:rgba(12,20,22,.74);backdrop-filter:blur(10px);border:1px solid rgba(143,214,194,.45);color:#9fe0cd;border-radius:999px;padding:9px 18px;font-size:13px;letter-spacing:.1em;font-family:"Shippori Mincho",serif;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.manage{margin-top:14px;border-top:1px solid rgba(255,255,255,.12);padding-top:14px}
+.checkline{display:flex;align-items:center;gap:10px;background:rgba(143,214,194,.12);border:1px solid rgba(143,214,194,.28);border-radius:14px;padding:11px 12px;font-size:13px;font-weight:700;cursor:pointer}
+.checkline input{width:20px;height:20px;accent-color:#8fd6c2}
+.toggles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+.toggles button{font-family:inherit;border:1px solid rgba(255,255,255,.15);border-radius:13px;padding:10px;color:#eef2ef;background:rgba(255,255,255,.08);cursor:pointer;font-size:12px}
+.toggles button.on{background:rgba(224,164,90,.2);border-color:rgba(224,164,90,.46);color:#f0c084}
+.fields{display:grid;gap:8px;margin-top:9px}
+.fields input,.fields textarea{width:100%;border:1px solid rgba(255,255,255,.15);border-radius:12px;background:rgba(255,255,255,.08);color:#eef2ef;padding:10px 11px;font-family:inherit;font-size:13px}
+.fields textarea{min-height:76px;resize:vertical}
+.empty{max-width:560px;margin:18px auto;padding:18px 20px;text-align:center;opacity:.78}
 
 .finale{padding:50px 22px 30px;max-width:560px;margin:0 auto;text-align:center}
 .finale .msg{font-family:"Shippori Mincho",serif;font-size:clamp(19px,5vw,25px);font-weight:600;line-height:2.3;letter-spacing:.08em}
@@ -84,13 +109,14 @@ footer a{color:#a9d8c8;text-decoration:none;border-bottom:1px dotted rgba(169,21
 <div id="stars"></div>
 <div id="celestial"></div>
 <div id="progress"></div>
-<div id="prog"></div>
 
 <div class="tabs" id="tabs">
   <button data-a="すべて" class="on">すべて</button>
+  <button data-a="本命">本命</button>
   <button data-a="福岡">福岡</button>
   <button data-a="佐賀">佐賀</button>
   <button data-a="長崎">長崎</button>
+  <button data-a="山口">山口</button>
   <button data-a="特別">特別枠</button>
 </div>
 
@@ -98,8 +124,34 @@ footer a{color:#a9d8c8;text-decoration:none;border-bottom:1px dotted rgba(169,21
   <p class="lead">DAZAIFU · QUIET SAUNA ONSEN</p>
   <h1 class="serif">整いの一湯</h1>
   <p class="poem serif">人の少ない湯で、<br>自然に抱かれて、ととのう。<br>太宰府から、静けさを探しに。</p>
-  <p class="meta">福岡 · 佐賀 · 長崎 ＋ 山口遠征 ｜ 口コミの言葉で厳選</p>
+  <p class="meta">福岡 · 佐賀 · 長崎 · 山口 ｜ 訪問チェックとメモで管理</p>
   <p class="hint">SCROLL ↓ 湯けむりの先へ</p>
+</section>
+
+<section class="manager" id="manager" aria-label="訪問管理">
+  <div class="panel">
+    <div class="panelTop">
+      <div>
+        <p>VISIT LOG</p>
+        <strong><span id="doneCount">0</span>/<span id="totalCount">13</span></strong>
+      </div>
+      <button class="backupBtn" id="backupBtn" type="button">バックアップ</button>
+    </div>
+    <div class="barTrack"><i id="doneBar"></i></div>
+    <div class="statgrid">
+      <div class="stat"><span id="leftCount">13</span><em>未訪問</em></div>
+      <div class="stat"><span id="revisitCount">0</span><em>また行く</em></div>
+      <div class="stat"><span id="memoCount">0</span><em>メモあり</em></div>
+    </div>
+    <div class="filterline" id="statusFilters">
+      <button data-s="all" class="on" type="button">全部</button>
+      <button data-s="left" type="button">未訪問</button>
+      <button data-s="done" type="button">行った</button>
+      <button data-s="revisit" type="button">また行きたい</button>
+      <button data-s="memo" type="button">メモあり</button>
+    </div>
+    <textarea class="backup" id="backupText" readonly aria-label="チェックデータのバックアップ"></textarea>
+  </div>
 </section>
 
 <div class="list" id="list"></div>
@@ -109,10 +161,10 @@ footer a{color:#a9d8c8;text-decoration:none;border-bottom:1px dotted rgba(169,21
 
   <div class="honest">
     <p style="color:#9fe0cd;letter-spacing:.14em;margin-bottom:8px">正直な申し送り</p>
-    <p>※ <b>雲仙福田屋・青雲荘</b>は宿メイン。日帰りサウナ可否は電話確認が確実。</p>
-    <p>※ <b>山口・長門湯本</b>は太宰府から車3時間超。泊まり遠征向け。</p>
-    <p>※ <b>八女茶ウナ／真名子木の香</b>は温泉でなく川サウナ（テント）。自然の癒しが図抜けて入れた。</p>
-    <p>※ 番付の根拠＝静けさ・人の少なさ × サウナの質 × 自然 × 泉質。星でなく口コミ本文で選定。</p>
+    <p>※ チェック・日付・メモは、このスマホの中に保存される。</p>
+    <p>※ 機種変更や別スマホで使う時は、バックアップをコピーしておくと安心。</p>
+    <p>※ 特別枠は、予算・距離・混雑のどれかが条件外。でも感動枠として残した。</p>
+    <p>※ 番付の根拠＝静けさ・人の少なさ × サウナの質 × 自然 × 日帰りしやすさ。</p>
   </div>
 
   <div class="install">📱 スマホで「ホーム画面に追加」すれば、1タップで開くアプリになる。</div>
@@ -125,41 +177,103 @@ footer a{color:#a9d8c8;text-decoration:none;border-bottom:1px dotted rgba(169,21
 
 <script>
 const SPOTS = [
-  {rank:1,tier:"S",area:"佐賀",pref:"佐賀",place:"古湯温泉",name:"みはらしの宿 杉乃家",dist:"太宰府から約1h",spec:["バレルサウナ85℃","ぬる湯","外気浴インフィニティ"],quote:"古湯の町並みと緑の山々のパノラマ絶景。静かで1日ゆっくりできた。",sa:"https://sauna-ikitai.com/saunas/78405",q:"古湯温泉 杉乃家 佐賀"},
-  {rank:2,tier:"S",area:"佐賀",pref:"佐賀",place:"七山",name:"鳴神温泉 ななのゆ",dist:"太宰府から約1h",spec:["サウナ・水風呂・露天","pH10.0 高アルカリ","森の中"],quote:"森の中の温泉がコンセプト。七山産の杉と檜、pH10.0は佐賀県内No.1。",sa:"https://sauna-ikitai.com/search?keyword=%E3%81%AA%E3%81%AA%E3%81%AE%E3%82%86",q:"鳴神温泉 ななのゆ 七山"},
-  {rank:3,tier:"S",area:"佐賀",pref:"佐賀",place:"熊の川温泉",name:"ちどりの湯",dist:"太宰府から約1h",spec:["サウナ83℃/水16℃","ラドンぬる湯","ロウリュ外気浴"],quote:"山のふもと、車通りも少なくゆったり。静かな環境で独り占めできることが多い。",sa:"https://sauna-ikitai.com/saunas/3839",q:"熊の川温泉 ちどりの湯 佐賀"},
-  {rank:4,tier:"S",area:"福岡",pref:"福岡",place:"脇田温泉・宮若",name:"湯乃禅の里（楠水閣）",dist:"太宰府から約50分",spec:["遠赤外線95〜100℃","露天9つ","犬鳴川のせせらぎ"],quote:"犬鳴川のせせらぎが館内に響く。都会の喧騒を忘れる、福岡の奥座敷。",sa:"https://sauna-ikitai.com/saunas/3736",q:"脇田温泉 湯乃禅の里 宮若"},
-  {rank:5,tier:"A",area:"福岡",pref:"福岡",place:"原鶴温泉・朝倉",name:"原鶴温泉 泰泉閣",dist:"太宰府から約50分",spec:["サウナ98℃/水20℃","ロウリュ外気浴","筑後川沿い"],quote:"ジャングル風呂でととのった〜。筑後川のかっぱの湯。立ち寄り湯1000円。",sa:"https://sauna-ikitai.com/saunas/3843",q:"原鶴温泉 泰泉閣 朝倉"},
-  {rank:6,tier:"A",area:"福岡",pref:"福岡",place:"糸島",name:"伊都の湯どころ",dist:"太宰府から約1h",spec:["天然水の水風呂","ロウリュ/瞑想サウナ","田園の外気浴"],quote:"丘の上、地下の天然水を使った水風呂。外気浴スペースから田園風景が広がる。",sa:"https://sauna-ikitai.com/search?keyword=%E4%BC%8A%E9%83%BD%E3%81%AE%E6%B9%AF%E3%81%A9%E3%81%93%E3%82%8D",q:"伊都の湯どころ 糸島"},
-  {rank:7,tier:"A",area:"長崎",pref:"長崎",place:"雲仙温泉",name:"民芸モダンの宿 雲仙福田屋",dist:"太宰府から約2h",spec:["ロウリュサウナ","水風呂19℃","硫黄の白濁湯"],quote:"昼は入浴客おらず独り占め。テレビついてなくて静か。硫黄の白濁でお肌とぅるんとぅるん。",note:"宿メイン・日帰りサウナ可否は要電話確認",sa:"https://sauna-ikitai.com/saunas/4060",q:"雲仙福田屋 長崎"},
-  {rank:8,tier:"A",area:"長崎",pref:"長崎",place:"雲仙温泉",name:"青雲荘",dist:"太宰府から約2h",spec:["自家源泉","白濁かけ流し","日帰り予約不要"],quote:"自家源泉の白濁かけ流し。浸かった瞬間に深呼吸したくなる、開放的な露天。",note:"サウナ有無は念のため電話確認推奨",sa:"https://sauna-ikitai.com/search?keyword=%E9%9D%92%E9%9B%B2%E8%8D%98",q:"雲仙温泉 青雲荘"},
-  {rank:9,tier:"A",area:"長崎",pref:"長崎",place:"雲仙",name:"みかどサウナ",dist:"太宰府から約2h",spec:["完全個室","セルフロウリュ","檜の香り"],quote:"自分だけのプライベート空間。檜で設えた室内に良い香りが漂う。二人で貸切。",sa:"https://mikado-sauna.com/",q:"みかどサウナ 雲仙"},
-  {rank:10,tier:"特別",area:"特別",pref:"福岡",place:"八女・星野川",name:"八女茶ウナ（川サウナ）",dist:"太宰府から約1h",spec:["テント120℃","八女茶ロウリュ","星野川が水風呂"],quote:"星野川が優しく身体を包み込む。水流が気持ちよく、子供の頃の川遊びを思い出した。",note:"温泉でなく自然の川テントサウナ",sa:"https://sauna-ikitai.com/saunas/79557",q:"八女茶ウナ 八女"},
-  {rank:11,tier:"特別",area:"特別",pref:"福岡",place:"糸島・二丈",name:"真名子木の香ランド（川サウナ）",dist:"太宰府から約1h",spec:["貸切テント","清流セルフロウリュ","森と川"],quote:"森の香りと川のせせらぎに包まれながら、ゆったりできる。",note:"温泉でなく自然の川テントサウナ",sa:"https://kinoka-rand.jp/sauna/",q:"真名子木の香ランド 糸島"},
-  {rank:12,tier:"特別",area:"特別",pref:"佐賀",place:"武雄・御船山",name:"らかんの湯（御船山楽園）",dist:"太宰府から約1.5h",spec:["薪・薬草・ドライ","サウナシュラン殿堂入り","世界最高峰"],quote:"地元の恵みを活かしたドライ・薬草・薪の三拍子。穴場ではないが一生に一度の別格。",note:"超人気・要予約・高価格",sa:"https://sauna-ikitai.com/search?keyword=%E3%82%89%E3%81%8B%E3%82%93%E3%81%AE%E6%B9%AF",q:"御船山楽園ホテル らかんの湯 武雄"},
-  {rank:13,tier:"特別",area:"特別",pref:"山口",place:"長門湯本",name:"畔のサウナ / SOIL（山口遠征）",dist:"太宰府から約3h+",spec:["音信川の外気浴","香りロウリュ","泊まり遠征向け"],quote:"川に寝転ぶと、せせらぎが頭から体をすぅーっと抜ける。水は透き通ってとても綺麗。",note:"太宰府から遠い・泊まり前提の特別枠",sa:"https://yumotoonsen.com/genre_event/%E7%95%94%E3%81%AE%E3%82%B5%E3%82%A6%E3%83%8A/",q:"長門湯本温泉 畔のサウナ"}
+  {id:"chidori",rank:1,tier:"S",kind:"本命",area:"佐賀",pref:"佐賀",place:"熊の川温泉",name:"ちどりの湯",dist:"太宰府から約1h",price:"大人600円目安",spec:["サウナ","水風呂","露天","ラドンぬる湯"],quote:"安い・近い・自然・静けさのバランスが一番いい。土日は朝か夕方が狙い目。",note:"混雑が苦手なら、開店直後か夕方寄りで試す。",official:"https://www.fuji-spa.com/onsen/kumanokawa/tidorinoyu/",sa:"https://sauna-ikitai.com/saunas/3839",q:"熊の川温泉 ちどりの湯 佐賀"},
+  {id:"toshoka",rank:2,tier:"S",kind:"本命",area:"佐賀",pref:"佐賀",place:"熊の川温泉",name:"湯泉郷 温泉館 湯招花",dist:"太宰府から約1h",price:"大人1,400円目安",spec:["サウナ","水風呂","露天","川沿い"],quote:"静かに長く休むなら最有力。料金は少し上がるが、癒しの密度が高い。",note:"休館日とサウナ運用は公式確認が安心。",official:"https://toshoka.net/",sa:"https://sauna-ikitai.com/search?keyword=%E6%B9%AF%E6%8B%9B%E8%8A%B1",q:"湯招花 熊の川温泉 佐賀"},
+  {id:"suginoya",rank:3,tier:"S",kind:"本命",area:"佐賀",pref:"佐賀",place:"古湯温泉",name:"みはらしの宿 杉乃家",dist:"太宰府から約1h",price:"日帰り1,500円目安",spec:["バレルサウナ","ぬる湯","山の眺め"],quote:"穴場感と景色の強さがある。静かに深く抜けたい日に強い。",note:"利用時間・日帰り条件は公式確認。",official:"https://www.furuyu-suginoya.com/",sa:"https://sauna-ikitai.com/saunas/78405",photo:"https://www.furuyu-suginoya.com/wp-content/uploads/2022/11/sns.jpg",q:"古湯温泉 杉乃家 佐賀"},
+  {id:"yamabiko",rank:4,tier:"A",kind:"本命",area:"佐賀",pref:"佐賀",place:"三瀬",name:"三瀬温泉 やまびこの湯",dist:"太宰府から約1h",price:"大人650円目安",spec:["高温サウナ","水風呂","外気浴","山道ドライブ"],quote:"条件はかなり揃う。三瀬の山道も含めて、仕事脳を切る力がある。",note:"人気日あり。土日は午前か夕方で混雑回避。",official:"https://www.souyu.co.jp/shisetsu/yamabiko",sa:"https://sauna-ikitai.com/search?keyword=%E3%82%84%E3%81%BE%E3%81%B3%E3%81%93%E3%81%AE%E6%B9%AF",q:"三瀬温泉 やまびこの湯 佐賀"},
+  {id:"nanonoyu",rank:5,tier:"A",kind:"本命",area:"佐賀",pref:"佐賀",place:"七山",name:"鳴神温泉 ななのゆ",dist:"太宰府から約1h",price:"大人600円目安",spec:["サウナ","水風呂","露天","森の中"],quote:"森・露天・泉質の気持ちよさが強い。山の中でぼーっとする候補。",note:"家族連れの時間帯は避けると静けさが出る。",official:"https://www.7noyu.jp/onsen.html",sa:"https://sauna-ikitai.com/search?keyword=%E3%81%AA%E3%81%AA%E3%81%AE%E3%82%86",photo:"https://www.7noyu.jp/image/ogp-image.jpg",q:"鳴神温泉 ななのゆ 七山"},
+  {id:"genjii",rank:6,tier:"A",kind:"候補",area:"福岡",pref:"福岡",place:"赤村",name:"源じいの森温泉",dist:"太宰府から約1.5h",price:"大人700円目安",spec:["サウナ","水風呂","露天","森と川"],quote:"森・川・水風呂の気持ちよさが強い。自然回復力は高い。",note:"常連感や時間帯リスクあり。静けさ重視なら早めがよい。",official:"https://www.genjii.com/spa",sa:"https://sauna-ikitai.com/search?keyword=%E6%BA%90%E3%81%98%E3%81%84%E3%81%AE%E6%A3%AE%E6%B8%A9%E6%B3%89",q:"源じいの森温泉 福岡"},
+  {id:"mamushi",rank:7,tier:"A",kind:"候補",area:"福岡",pref:"福岡",place:"糸島",name:"まむしの湯",dist:"太宰府から約1h",price:"大人700円台目安",spec:["サウナ","水風呂","露天","糸島ドライブ"],quote:"糸島の山側で、気張らず寄れる。帰り道の食事まで含めると満足度が出る。",note:"水風呂は冷たさ目的より休憩目的で見る。",official:"http://www.mamushi-spa.co.jp/spa.html",sa:"https://sauna-ikitai.com/search?keyword=%E3%81%BE%E3%82%80%E3%81%97%E3%81%AE%E6%B9%AF",q:"まむしの湯 糸島"},
+  {id:"hasami",rank:8,tier:"A",kind:"候補",area:"長崎",pref:"長崎",place:"波佐見",name:"はさみ温泉 湯治楼",dist:"太宰府から約1.5〜2h",price:"大人700円目安",spec:["サウナ","水風呂","外気浴","川沿い"],quote:"人が少ない時間に当たると、かなり理想に近い。長崎方面の本命候補。",note:"下道だと時間が伸びる。高速を少し使う前提なら強い。",official:"https://www.373nodenen.com/spa",sa:"https://sauna-ikitai.com/search?keyword=%E6%B9%AF%E6%B2%BB%E6%A5%BC",q:"はさみ温泉 湯治楼 長崎"},
+  {id:"yunozen",rank:9,tier:"A",kind:"候補",area:"福岡",pref:"福岡",place:"脇田温泉",name:"湯乃禅の里（楠水閣）",dist:"太宰府から約50分",price:"大人1,100円目安",spec:["サウナ","水風呂","露天","犬鳴川"],quote:"川音と露天の種類が強い。近場で気分を変えたい日に向く。",note:"人気施設なので、静けさ最優先の日は時間帯を選ぶ。",official:"https://www.nansuikaku.com/",sa:"https://sauna-ikitai.com/saunas/3736",photo:"https://www.nansuikaku.com/ogpimage.png",q:"湯乃禅の里 楠水閣 宮若"},
+  {id:"ito",rank:10,tier:"B",kind:"候補",area:"福岡",pref:"福岡",place:"糸島",name:"伊都の湯どころ",dist:"太宰府から約1h",price:"大人850円目安",spec:["天然水の水風呂","複数サウナ","露天","田園"],quote:"施設力は高い。穴場というより、混雑を読んで使う便利枠。",note:"土日は人が増えやすい。静かさ狙いなら平日寄り。",official:"https://genki-ito.jp/",sa:"https://sauna-ikitai.com/search?keyword=%E4%BC%8A%E9%83%BD%E3%81%AE%E6%B9%AF%E3%81%A9%E3%81%93%E3%82%8D",q:"伊都の湯どころ 糸島"},
+  {id:"nishinoichi",rank:11,tier:"B",kind:"遠征",area:"山口",pref:"山口",place:"豊田町",name:"西ノ市温泉 蛍の湯",dist:"太宰府から約2.5〜3h",price:"大人700円台目安",spec:["サウナ","水風呂","露天","山口遠征"],quote:"山口枠では癒し感がある。ただし太宰府からは日帰り遠征。",note:"2時間条件からは外れる。泊まりや丸一日向け。",official:"https://toyota-hotaru.com/pages/hotspring",sa:"https://sauna-ikitai.com/search?keyword=%E8%9B%8D%E3%81%AE%E6%B9%AF",photo:"https://toyota-hotaru.com/cdn/shop/files/OGP_c4f9c4fa-b02e-4c4fa-b02e-4b12-b6d963cd1402.jpg?v=1695778655",q:"西ノ市温泉 蛍の湯 山口"},
+  {id:"rakan",rank:12,tier:"特別",kind:"特別",area:"特別",pref:"佐賀",place:"武雄",name:"らかんの湯（御船山楽園）",dist:"太宰府から約1.5h",price:"高価格・要予約",spec:["薪サウナ","薬草サウナ","別格体験"],quote:"穴場でも安くもない。でも一度は記憶に残る、感動枠。",note:"予算3,000円条件から外れる。特別な日用。",official:"https://www.mifuneyamarakuen.jp/",sa:"https://sauna-ikitai.com/search?keyword=%E3%82%89%E3%81%8B%E3%82%93%E3%81%AE%E6%B9%AF",q:"御船山楽園ホテル らかんの湯 武雄"},
+  {id:"yamechauna",rank:13,tier:"特別",kind:"特別",area:"特別",pref:"福岡",place:"八女",name:"八女茶ウナ（川サウナ）",dist:"太宰府から約1h",price:"プラン確認",spec:["川サウナ","八女茶ロウリュ","自然体験"],quote:"温泉ではない。でも自然に包まれて疲れを抜く力はかなり強い。",note:"温泉条件から外れる。わくわく体験枠。",official:"https://yamechauna.com/",sa:"https://sauna-ikitai.com/saunas/79557",q:"八女茶ウナ 八女"}
 ];
 
+const STORE_KEY = "totonoi-no-ichiyu-visits-v2";
+const LEGACY_VISITED_KEY = "totonoi-visited";
 const enc = s => encodeURIComponent(s);
 const mapUrl = q => "https://www.google.com/maps/search/?api=1&query=" + enc(q);
 const phoUrl = q => "https://www.google.com/search?tbm=isch&q=" + enc(q);
 const pcls = p => p==="福岡"?"p-fuku":p==="佐賀"?"p-saga":p==="長崎"?"p-naga":"p-spec";
+let currentArea = "すべて";
+let currentStatus = "all";
+let visitState = loadState();
 
-const VKEY = "totonoi-visited";
-let visited = new Set(JSON.parse(localStorage.getItem(VKEY) || "[]"));
-function updateProg(){
-  const n = visited.size;
-  document.getElementById("prog").textContent = `♨ 制覇 ${n} / ${SPOTS.length}`;
+function loadState(){
+  let data = {};
+  try{data = JSON.parse(localStorage.getItem(STORE_KEY) || "{}") || {};}
+  catch{data = {};}
+  try{
+    const legacy = JSON.parse(localStorage.getItem(LEGACY_VISITED_KEY) || "[]");
+    if(Array.isArray(legacy)){
+      SPOTS.forEach(s=>{
+        if(legacy.includes(s.name) && !data[s.id]){
+          data[s.id] = {done:true,revisit:false,date:"",memo:"旧チェックから引き継ぎ"};
+        }
+      });
+    }
+  }catch{}
+  return data;
+}
+function saveState(){localStorage.setItem(STORE_KEY,JSON.stringify(visitState));}
+function escapeHtml(v){
+  return String(v ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));
+}
+function todayLocal(){
+  const d = new Date();
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0,10);
+}
+function recFor(id){return visitState[id] || {done:false,revisit:false,date:"",memo:""};}
+function areaMatch(s){
+  if(currentArea==="すべて") return true;
+  if(currentArea==="本命") return s.kind==="本命";
+  return s.area===currentArea;
+}
+function statusMatch(s){
+  const r = recFor(s.id);
+  if(currentStatus==="left") return !r.done;
+  if(currentStatus==="done") return !!r.done;
+  if(currentStatus==="revisit") return !!r.revisit;
+  if(currentStatus==="memo") return !!(r.memo || "").trim();
+  return true;
+}
+function updateDashboard(){
+  const done = SPOTS.filter(s=>recFor(s.id).done).length;
+  const revisit = SPOTS.filter(s=>recFor(s.id).revisit).length;
+  const memo = SPOTS.filter(s=>(recFor(s.id).memo || "").trim()).length;
+  const total = SPOTS.length;
+  document.getElementById("doneCount").textContent = done;
+  document.getElementById("totalCount").textContent = total;
+  document.getElementById("leftCount").textContent = total - done;
+  document.getElementById("revisitCount").textContent = revisit;
+  document.getElementById("memoCount").textContent = memo;
+  document.getElementById("doneBar").style.width = Math.round(done / total * 100) + "%";
 }
 
-function render(area){
-  const items = SPOTS.filter(s => area==="すべて" || s.area===area);
-  document.getElementById("list").innerHTML = items.map(s => {
+function render(){
+  const items = SPOTS.filter(s => areaMatch(s) && statusMatch(s));
+  const list = document.getElementById("list");
+  if(!items.length){
+    list.innerHTML = `<div class="empty">この条件では、まだ表示する温泉がない。</div>`;
+    updateDashboard();
+    return;
+  }
+  list.innerHTML = items.map(s => {
+    const r = recFor(s.id);
     const rc = s.rank===1?"t1":s.rank===2?"t2":s.rank===3?"t3":"";
-    const id = s.name;
-    const done = visited.has(id);
+    const checked = r.done ? "checked" : "";
+    const revisitOn = r.revisit ? "on" : "";
+    const cardState = `${r.done ? "done" : ""} ${r.revisit ? "revisit" : ""}`;
+    const badge = r.revisit ? "また行く" : r.done ? "訪問済み" : s.kind;
+    const photo = s.photo ? `<div class="photo"><img loading="lazy" src="${s.photo}" alt="${escapeHtml(s.name)}の写真" onerror="this.closest('.photo').remove()"></div>` : "";
     return `
-    <div class="card${done?' done':''}" data-id="${id}">
+    <div class="card ${cardState}" data-id="${s.id}">
+      <div class="statusBadge">${badge}</div>
+      ${photo}
       <div class="crow">
         <div class="rank ${rc}">${s.rank}</div>
         <div class="ctop">
@@ -167,20 +281,31 @@ function render(area){
           <div class="cname">${s.name}</div>
         </div>
       </div>
-      <div class="spec">${s.spec.map(x=>`<span>◦ ${x}</span>`).join("")}</div>
+      <div class="spec">${s.spec.map(x=>`<span>◦ ${x}</span>`).join("")}<span>◦ ${s.price}</span></div>
       <div class="quote">${s.quote}</div>
       ${s.note?`<div class="note">※ ${s.note}</div>`:""}
       <div class="acts">
-        <a class="map" href="${mapUrl(s.q)}" target="_blank" rel="noopener">📍 地図</a>
-        <a class="sa" href="${s.sa}" target="_blank" rel="noopener">🔥 サ活</a>
-        <a class="pho" href="${phoUrl(s.q)}" target="_blank" rel="noopener">📷 写真</a>
-        <button class="chk${done?' on':''}" data-id="${id}">${done?'✓ 行った':'□ 行った'}</button>
+        <a class="map" href="${mapUrl(s.q)}" target="_blank" rel="noopener">地図</a>
+        <a class="official" href="${s.official}" target="_blank" rel="noopener">公式</a>
+        <a class="sa" href="${s.sa}" target="_blank" rel="noopener">サ活</a>
+        <a class="pho" href="${phoUrl(s.q)}" target="_blank" rel="noopener">写真</a>
       </div>
-      <div style="margin-top:10px;font-size:11px;opacity:.6;letter-spacing:.1em">${s.dist}</div>
+      <div style="margin-top:10px;font-size:11px;opacity:.65;letter-spacing:.08em">${s.dist}</div>
+      <div class="manage">
+        <label class="checkline"><input class="visit-check" type="checkbox" ${checked}> 行ったらチェック</label>
+        <div class="toggles">
+          <button type="button" data-action="revisit" class="${revisitOn}">また行きたい</button>
+          <button type="button" data-action="today">今日行った</button>
+        </div>
+        <div class="fields">
+          <input class="visit-date" type="date" value="${escapeHtml(r.date || "")}" aria-label="行った日">
+          <textarea class="memo-field" placeholder="混雑・水風呂・外気浴・また行く理由をメモ">${escapeHtml(r.memo || "")}</textarea>
+        </div>
+      </div>
     </div>`;
   }).join("");
   observe();
-  updateProg();
+  updateDashboard();
 }
 
 let io;
@@ -224,30 +349,81 @@ function onScroll(){
   stars.innerHTML=h;
 })();
 
-document.getElementById("list").addEventListener("click",e=>{
-  const btn=e.target.closest(".chk"); if(!btn) return;
-  const id=btn.dataset.id;
-  if(visited.has(id)) visited.delete(id); else visited.add(id);
-  localStorage.setItem(VKEY,JSON.stringify([...visited]));
-  const done=visited.has(id), card=btn.closest(".card");
-  card.classList.toggle("done",done);
-  btn.classList.toggle("on",done);
-  btn.textContent=done?"✓ 行った":"□ 行った";
-  updateProg();
-});
-
 document.getElementById("tabs").addEventListener("click",e=>{
   const b=e.target.closest("button"); if(!b) return;
   document.querySelectorAll("#tabs button").forEach(x=>x.classList.remove("on"));
   b.classList.add("on");
-  render(b.dataset.a);
-  window.scrollTo({top:0,behavior:"smooth"});
+  currentArea = b.dataset.a;
+  render();
+  document.getElementById("manager").scrollIntoView({behavior:"smooth",block:"start"});
   setTimeout(onScroll,60);
+});
+
+document.getElementById("statusFilters").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  document.querySelectorAll("#statusFilters button").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on");
+  currentStatus = b.dataset.s;
+  render();
+});
+
+document.getElementById("list").addEventListener("change",e=>{
+  const card = e.target.closest(".card"); if(!card) return;
+  const id = card.dataset.id;
+  const r = recFor(id);
+  if(e.target.classList.contains("visit-check")){
+    r.done = e.target.checked;
+    if(r.done && !r.date) r.date = todayLocal();
+  }
+  if(e.target.classList.contains("visit-date")){
+    r.date = e.target.value;
+    if(r.date) r.done = true;
+  }
+  visitState[id] = r;
+  saveState();
+  render();
+});
+
+document.getElementById("list").addEventListener("input",e=>{
+  if(!e.target.classList.contains("memo-field")) return;
+  const card = e.target.closest(".card"); if(!card) return;
+  const r = recFor(card.dataset.id);
+  r.memo = e.target.value;
+  visitState[card.dataset.id] = r;
+  saveState();
+  updateDashboard();
+});
+
+document.getElementById("list").addEventListener("click",e=>{
+  const b = e.target.closest("button[data-action]"); if(!b) return;
+  const card = b.closest(".card");
+  const id = card.dataset.id;
+  const r = recFor(id);
+  if(b.dataset.action==="revisit") r.revisit = !r.revisit;
+  if(b.dataset.action==="today"){
+    r.done = true;
+    r.date = todayLocal();
+  }
+  visitState[id] = r;
+  saveState();
+  render();
+});
+
+document.getElementById("backupBtn").addEventListener("click",()=>{
+  const box = document.getElementById("backupText");
+  const payload = JSON.stringify({app:"整いの一湯",updated:new Date().toISOString(),data:visitState},null,2);
+  box.style.display = "block";
+  box.value = payload;
+  box.focus();
+  box.select();
+  navigator.clipboard?.writeText(payload).catch(()=>{});
+  document.getElementById("backupBtn").textContent = "コピー済み";
+  setTimeout(()=>{document.getElementById("backupBtn").textContent = "バックアップ";},1600);
 });
 
 window.addEventListener("scroll",onScroll,{passive:true});
 window.addEventListener("resize",onScroll);
-render("すべて");
+render();
 onScroll();
 
 if("serviceWorker" in navigator){
