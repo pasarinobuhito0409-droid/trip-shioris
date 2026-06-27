@@ -1,4 +1,4 @@
-const CACHE_NAME = "captain-route-v1";
+const CACHE_NAME = "futari-no-ichinichi-v2";
 const ASSETS = [
   "./",
   "./index.html",
