@@ -183,6 +183,127 @@
       position: relative;
     }
 
+    .route-progress {
+      margin-top: 14px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .progress-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+
+    .progress-bar {
+      height: 10px;
+      border-radius: 999px;
+      background: #e8ede9;
+      overflow: hidden;
+      border: 1px solid var(--line);
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--teal), var(--gold));
+      transition: width 0.2s ease;
+    }
+
+    .micro-checklist {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .micro-group {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdfb;
+      overflow: hidden;
+    }
+
+    .micro-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      width: 100%;
+      min-height: 48px;
+      border: 0;
+      background: #fff;
+      color: var(--ink);
+      padding: 10px;
+      text-align: left;
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    .micro-head span {
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .micro-items {
+      display: grid;
+      gap: 6px;
+      padding: 10px;
+      border-top: 1px solid var(--line);
+    }
+
+    .micro-item {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 8px;
+      align-items: start;
+      min-height: 42px;
+      padding: 8px;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid #edf0ec;
+      cursor: pointer;
+    }
+
+    .micro-item.done {
+      background: var(--teal-soft);
+      border-color: #aedbd6;
+    }
+
+    .micro-item input {
+      width: 20px;
+      height: 20px;
+      margin: 4px 0 0;
+      accent-color: var(--teal);
+    }
+
+    .micro-item strong {
+      display: block;
+      line-height: 1.45;
+    }
+
+    .micro-item small {
+      display: block;
+      color: var(--muted);
+      line-height: 1.45;
+      margin-top: 2px;
+    }
+
+    .reset-small {
+      min-height: 38px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+      font-weight: 800;
+      cursor: pointer;
+    }
+
     .route-step {
       display: grid;
       grid-template-columns: 34px 1fr;
@@ -569,6 +690,17 @@
             </div>
           </div>
         </div>
+        <div class="route-progress">
+          <div class="progress-head">
+            <span>チェック進捗</span>
+            <span id="routeProgressText">0 / 0</span>
+          </div>
+          <div class="progress-bar" aria-hidden="true">
+            <div class="progress-fill" id="routeProgressFill"></div>
+          </div>
+        </div>
+        <div class="micro-checklist" id="routeChecklist"></div>
+        <button class="reset-small" id="resetRouteChecks" type="button">チェックをリセット</button>
       </aside>
     </section>
 
@@ -713,6 +845,54 @@
     const toast = document.querySelector("#toast");
     let currentMode = localStorage.getItem("adhdHospitalMode") || "balanced";
 
+    const routeChecks = [
+      {
+        title: "1 前の病院へ電話",
+        items: [
+          ["old-phone", "前の病院の電話番号を確認", "朝倉記念病院の代表番号か受付時間を見る"],
+          ["ask-wais", "WAIS（知能検査）の結果コピーを頼む", "紙かPDFでもらえるか聞く"],
+          ["ask-adhd", "ADHD検査の結果コピーを頼む", "検査名も一緒に確認する"],
+          ["ask-letter", "紹介状（次の病院への手紙）を頼む", "宛先は、はかた心療で一旦相談"],
+          ["pickup-day", "受け取り日をメモする", "郵送か来院受け取りか確認する"]
+        ]
+      },
+      {
+        title: "2 はかた心療へ初診相談",
+        items: [
+          ["hakata-time", "初診予約の受付時間を見る", "電話が混みやすいので先に確認"],
+          ["hakata-call", "電話文をコピーして電話する", "下の電話文を使う"],
+          ["hakata-meds", "薬の相談ができるか聞く", "成人ADHDの薬相談と伝える"],
+          ["hakata-eval", "再評価ができるか聞く", "前回検査結果があると伝える"],
+          ["hakata-date", "初診日時をカレンダーに入れる", "忘れ防止のため、その場で入れる"]
+        ]
+      },
+      {
+        title: "3 取れなければ佐賀候補へ",
+        items: [
+          ["himawari-call", "ひまわりクリニックへ電話", "佐賀まで行ける前提で確認"],
+          ["himawari-detail", "詳細診断（細かい診断）が可能か聞く", "公式リストでは対応あり"],
+          ["himawari-meds", "薬物療法（薬の治療）が可能か聞く", "薬相談の目的を伝える"],
+          ["himawari-letter", "紹介状の宛先変更が必要か確認", "前の病院へ頼む前ならここで決める"],
+          ["route-time", "移動時間を地図で確認", "通える距離か最後に見る"]
+        ]
+      },
+      {
+        title: "4 受診前の持ち物",
+        items: [
+          ["bring-wais", "WAIS結果を入れる", "知能検査の紙"],
+          ["bring-adhd", "ADHD検査結果を入れる", "前回の検査資料"],
+          ["bring-letter", "紹介状を入れる", "封筒は開けない"],
+          ["bring-money", "お金の困りごとメモを書く", "計算、支払い、使いすぎなど"],
+          ["bring-history", "薬と通院歴をメモする", "薬名が不明なら分かる範囲でOK"]
+        ]
+      }
+    ];
+
+    const routeChecklist = document.querySelector("#routeChecklist");
+    const routeProgressText = document.querySelector("#routeProgressText");
+    const routeProgressFill = document.querySelector("#routeProgressFill");
+    const resetRouteChecks = document.querySelector("#resetRouteChecks");
+
     function render(mode) {
       currentMode = mode;
       localStorage.setItem("adhdHospitalMode", mode);
@@ -780,6 +960,75 @@
         localStorage.setItem(key, input.checked ? "1" : "0");
       });
     });
+
+    function routeKey(id) {
+      return `adhdRouteCheck:${id}`;
+    }
+
+    function updateRouteProgress() {
+      const inputs = [...document.querySelectorAll("#routeChecklist input")];
+      const done = inputs.filter(input => input.checked).length;
+      const total = inputs.length;
+      const percent = total ? Math.round((done / total) * 100) : 0;
+      routeProgressText.textContent = `${done} / ${total}`;
+      routeProgressFill.style.width = `${percent}%`;
+      inputs.forEach(input => {
+        input.closest(".micro-item").classList.toggle("done", input.checked);
+      });
+    }
+
+    function renderRouteChecklist() {
+      routeChecklist.innerHTML = routeChecks.map((group, index) => `
+        <section class="micro-group">
+          <button class="micro-head" type="button" data-group="${index}">
+            ${group.title}
+            <span data-count="${index}">0/${group.items.length}</span>
+          </button>
+          <div class="micro-items">
+            ${group.items.map(([id, label, hint]) => `
+              <label class="micro-item">
+                <input type="checkbox" data-route-check="${id}">
+                <span>
+                  <strong>${label}</strong>
+                  <small>${hint}</small>
+                </span>
+              </label>
+            `).join("")}
+          </div>
+        </section>
+      `).join("");
+
+      document.querySelectorAll("[data-route-check]").forEach(input => {
+        input.checked = localStorage.getItem(routeKey(input.dataset.routeCheck)) === "1";
+        input.addEventListener("change", () => {
+          localStorage.setItem(routeKey(input.dataset.routeCheck), input.checked ? "1" : "0");
+          updateGroupCounts();
+          updateRouteProgress();
+        });
+      });
+
+      updateGroupCounts();
+      updateRouteProgress();
+    }
+
+    function updateGroupCounts() {
+      routeChecks.forEach((group, index) => {
+        const ids = group.items.map(item => item[0]);
+        const done = ids.filter(id => localStorage.getItem(routeKey(id)) === "1").length;
+        const count = document.querySelector(`[data-count="${index}"]`);
+        if (count) count.textContent = `${done}/${ids.length}`;
+      });
+    }
+
+    resetRouteChecks.addEventListener("click", () => {
+      routeChecks.flatMap(group => group.items).forEach(([id]) => {
+        localStorage.removeItem(routeKey(id));
+      });
+      renderRouteChecklist();
+      showToast("チェックをリセットしました");
+    });
+
+    renderRouteChecklist();
 
     let deferredPrompt = null;
     const installBtn = document.querySelector("#installBtn");

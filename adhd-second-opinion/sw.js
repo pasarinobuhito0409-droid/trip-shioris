@@ -1,4 +1,4 @@
-const CACHE_NAME = "adhd-second-opinion-v2";
+const CACHE_NAME = "adhd-second-opinion-v3";
 const ASSETS = [
   "./",
   "./index.html",
