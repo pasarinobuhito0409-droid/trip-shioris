@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>那珂川 二人の一日 — 癒しデートコース</title>
+<meta name="description" content="福岡県那珂川市・喫茶キャプテンを起点に、一日の流れで巡る癒しのデートコース。スクロールで空が移ろう、車デートのための一本の映画。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;800&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Zen Kaku Gothic New",sans-serif;color:#f5efe6;line-height:1.9;background:#14142a;overflow-x:hidden}
+.serif{font-family:"Shippori Mincho",serif}
+#sky{position:fixed;inset:0;z-index:-3;transition:background .25s linear}
+#stars{position:fixed;inset:0;z-index:-2;opacity:0;transition:opacity .8s;pointer-events:none}
+.star{position:absolute;background:#fff;border-radius:50%;animation:tw 3s infinite ease-in-out}
+@keyframes tw{0%,100%{opacity:.25}50%{opacity:1}}
+#celestial{position:fixed;width:74px;height:74px;border-radius:50%;z-index:-2;left:0;top:0;transition:background .4s,box-shadow .4s;will-change:transform}
+#progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#f3c98a,#e0795f);z-index:60;width:0}
+
+.tabs{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:55;display:flex;gap:6px;background:rgba(18,16,28,.5);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:5px}
+.tabs button{font-family:inherit;font-size:12.5px;color:#e8ddcb;background:transparent;border:0;border-radius:999px;padding:7px 15px;cursor:pointer;letter-spacing:.04em;transition:.25s}
+.tabs button.on{background:#f5efe6;color:#3a2e28;font-weight:500}
+
+section{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:88px 22px 60px;position:relative}
+
+.intro h1{font-size:clamp(40px,12vw,82px);font-weight:800;letter-spacing:.1em;text-shadow:0 4px 30px rgba(0,0,0,.4);text-align:center;line-height:1.3}
+.intro .lead{margin-top:8px;font-size:13px;letter-spacing:.42em;opacity:.92}
+.intro .poem{margin-top:30px;font-size:15px;letter-spacing:.18em;opacity:.95;text-align:center;line-height:2.4}
+.intro .hint{position:absolute;bottom:34px;font-size:11px;letter-spacing:.3em;opacity:.7;animation:bob 2.4s infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+
+.scene{width:100%;max-width:540px;background:rgba(16,14,24,.42);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.16);border-radius:26px;padding:34px 28px 30px;box-shadow:0 24px 60px rgba(0,0,0,.32);opacity:0;transform:translateY(34px);transition:opacity 1s,transform 1s}
+.scene.show{opacity:1;transform:none}
+.scene .no{font-size:11px;letter-spacing:.34em;color:#f3c98a}
+.scene .time{font-family:"Shippori Mincho",serif;font-size:14px;letter-spacing:.2em;opacity:.85;margin-top:4px}
+.scene h2{font-family:"Shippori Mincho",serif;font-size:clamp(28px,7vw,40px);font-weight:800;letter-spacing:.05em;margin:8px 0 2px}
+.scene .tag{display:inline-block;font-size:11px;letter-spacing:.16em;border:1px solid rgba(243,201,138,.5);color:#f3c98a;border-radius:999px;padding:3px 13px;margin-bottom:14px}
+.scene .feel{font-size:15.5px;line-height:2.2;letter-spacing:.04em;opacity:.96}
+.acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.acts a{flex:1;min-width:140px;text-align:center;text-decoration:none;font-size:14px;font-weight:500;padding:13px 16px;border-radius:14px;transition:.25s;letter-spacing:.04em}
+.map{background:#f5efe6;color:#2c2620}
+.map:hover{background:#fff;transform:translateY(-2px)}
+.pho{background:rgba(255,255,255,.1);color:#f5efe6;border:1px solid rgba(255,255,255,.25)}
+.pho:hover{background:rgba(255,255,255,.2)}
+.drive{margin-top:22px;font-size:12px;letter-spacing:.16em;opacity:.7;text-align:center}
+
+.finale .scene{text-align:center;background:rgba(10,9,20,.5)}
+.finale .msg{font-family:"Shippori Mincho",serif;font-size:clamp(20px,5.5vw,27px);font-weight:600;line-height:2.3;letter-spacing:.08em}
+.route{display:block;margin-top:26px;text-decoration:none;background:linear-gradient(100deg,#f3c98a,#e0795f);color:#2c1d16;font-weight:500;font-size:15.5px;padding:18px;border-radius:16px;letter-spacing:.06em;box-shadow:0 14px 36px rgba(224,121,95,.4);transition:.25s}
+.route:hover{transform:translateY(-3px);box-shadow:0 20px 48px rgba(224,121,95,.55)}
+.route small{display:block;font-size:11px;opacity:.7;margin-top:3px;letter-spacing:.1em}
+
+.info{max-width:540px;margin:30px auto 0;background:rgba(16,14,24,.4);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:20px 22px;font-size:12.5px;line-height:1.95;opacity:.9}
+.info b{color:#f3c98a;font-weight:500}
+.info .row{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.info .row:last-child{border:0}
+footer{text-align:center;padding:40px 18px 60px;font-size:11.5px;opacity:.6;letter-spacing:.06em}
+footer a{color:#e0c79a;text-decoration:none;border-bottom:1px dotted rgba(224,199,154,.5)}
+</style>
+</head><body>
+
+<div id="sky"></div>
+<div id="stars"></div>
+<div id="celestial"></div>
+<div id="progress"></div>
+
+<div class="tabs" id="tabs">
+  <button data-c="定番" class="on">定番 · 癒し</button>
+  <button data-c="知と美">知と美</button>
+  <button data-c="雨の日">雨の日</button>
+</div>
+
+<section class="intro">
+  <p class="lead">NAKAGAWA · A DAY FOR TWO</p>
+  <h1 class="serif">二人の一日</h1>
+  <p class="poem serif">急がなくていい。<br>朝の珈琲から、夕暮れの湯まで。<br>那珂川を、ゆっくり巡る。</p>
+  <p class="hint">SCROLL ↓ 空が流れる</p>
+</section>
+
+<div id="stops"></div>
+
+<section class="finale">
+  <div class="scene show">
+    <p class="no serif">FOR TWO</p>
+    <p class="msg serif" id="finaleMsg"></p>
+    <a class="route" id="routeBtn" href="#" target="_blank" rel="noopener">
+      このコースをGoogle Mapでナビ開始
+      <small>起点から終点まで、車ルートを一気に開く</small>
+    </a>
+    <div class="info" id="infoBox"></div>
+  </div>
+  <footer>
+    調査日 2026.06 ｜ 出典：
+    <a href="https://www.crossroadfukuoka.jp/areaguide/nakagawa-shi" target="_blank" rel="noopener">福岡県観光連盟</a> ·
+    <a href="https://slowflow-nakagawa.jp/" target="_blank" rel="noopener">那珂川市観光サイト</a> ·
+    <a href="https://umaga.net/shop/74123/" target="_blank" rel="noopener">UMAGA</a>
+    <br>那珂川 二人の一日 — 車デートのための癒しコース
+  </footer>
+</section>
+
+<script>
+const COURSES = {
+  "定番": {
+    msg: "急がなくていい。<br>水の音と、湯気と、夕暮れ。<br>それだけで、今日は満点。",
+    stops: [
+      {t:"09:30",tag:"起点",name:"喫茶キャプテン",feel:"船の中みたいな昭和レトロ。<br>ウインナー珈琲とナポリタンで、今日が静かに始まる。",q:"喫茶キャプテン 那珂川市松木",drive:"車8分 →"},
+      {t:"10:30",tag:"祈り",name:"現人神社",feel:"森に抱かれた縁結びの杜。<br>風鈴の音に、ふたりで足を止める。",q:"現人神社 那珂川市",drive:"車15分 →"},
+      {t:"11:30",tag:"自然",name:"中ノ島公園",feel:"川の中州をそのまま生かした公園。<br>せせらぎと珈琲片手に、なにもしない贅沢。",q:"中ノ島公園 那珂川市",drive:"車20分 →"},
+      {t:"13:30",tag:"渓谷",name:"筑紫耶馬渓",feel:"那珂川随一の渓谷美。<br>緑のトンネルを、ただ二人で歩く。",q:"筑紫耶馬渓 那珂川市",drive:"車20分 →"},
+      {t:"15:30",tag:"新体験",name:"五ケ山クロス",feel:"モンベルの拠点でカヌーやサイクリング。<br>いつもと違う二人になれる。",q:"五ケ山クロス 那珂川市",drive:"車25分 →"},
+      {t:"17:30",tag:"湯",name:"源泉野天風呂 那珂川 清滝",feel:"山あいの露天風呂。<br>夕暮れの湯気の向こうで、一日がほどける。",q:"源泉野天風呂 那珂川 清滝",drive:"フィナーレ"}
+    ]
+  },
+  "知と美": {
+    msg: "知らない時代に触れ、<br>静かな庭に座る。<br>二人の世界が、少し広がる。",
+    stops: [
+      {t:"09:30",tag:"起点",name:"喫茶キャプテン",feel:"船themeの喫茶店でウインナー珈琲。<br>一日の燃料を、ゆっくり満たす。",q:"喫茶キャプテン 那珂川市松木",drive:"車30分 →"},
+      {t:"10:40",tag:"美",name:"九州国立博物館",feel:"ガラスの大屋根の下、アジアへの時間旅行。<br>展示のあとはカフェでひと息。",q:"九州国立博物館",drive:"車10分 →"},
+      {t:"12:40",tag:"庭",name:"光明禅寺",feel:"苔と石の枯山水。<br>縁側に座って、ただ庭を眺める時間。",q:"光明禅寺 太宰府",drive:"車8分 →"},
+      {t:"14:00",tag:"祈り",name:"竈門神社",feel:"縁結びの杜。<br>紅葉と空の青、二人で見上げる。",q:"宝満宮竈門神社 太宰府",drive:"車30分 →"},
+      {t:"15:40",tag:"科学",name:"福岡市科学館",feel:"ドームシアターで宇宙へ。<br>童心にかえって、はしゃぐ二人。",q:"福岡市科学館 六本松",drive:"車30分 →"},
+      {t:"17:40",tag:"湯",name:"源泉野天風呂 那珂川 清滝",feel:"知の一日のしめは、山の露天。<br>夕闇の湯で、そっと余韻にひたる。",q:"源泉野天風呂 那珂川 清滝",drive:"フィナーレ"}
+    ]
+  },
+  "雨の日": {
+    msg: "雨の日も、悪くない。<br>濡れた苔は深く、<br>屋根の下の時間は、近い。",
+    stops: [
+      {t:"09:30",tag:"起点",name:"喫茶キャプテン",feel:"雨音と珈琲の湯気。<br>船の喫茶店は、雨の日こそ似合う。",q:"喫茶キャプテン 那珂川市松木",drive:"車30分 →"},
+      {t:"10:40",tag:"美",name:"九州国立博物館",feel:"丸ごと屋内。<br>雨を気にせず、アジアの宝に没入する。",q:"九州国立博物館",drive:"車8分 →"},
+      {t:"12:40",tag:"庭",name:"光明禅寺",feel:"雨に濡れた苔の庭は、晴れより美しい。<br>軒下から、静かに眺める。",q:"光明禅寺 太宰府",drive:"車12分 →"},
+      {t:"14:10",tag:"参道",name:"太宰府天満宮 参道",feel:"屋根のある参道で食べ歩き。<br>梅ヶ枝餅の湯気に、雨も似合う。",q:"太宰府天満宮 参道",drive:"車30分 →"},
+      {t:"15:50",tag:"科学",name:"福岡市科学館",feel:"屋内でドームシアター。<br>雨の午後を、宇宙で過ごす。",q:"福岡市科学館 六本松",drive:"車30分 →"},
+      {t:"17:50",tag:"湯",name:"源泉野天風呂 那珂川 清滝",feel:"雨の露天は、しっとり格別。<br>湯気と雨音に包まれて、一日を閉じる。",q:"源泉野天風呂 那珂川 清滝",drive:"フィナーレ"}
+    ]
+  }
+};
+
+const INFO = [
+  ["喫茶キャプテン","水曜休 / 10:00-18:00 / ☎092-953-0985 / 駐車12台"],
+  ["源泉野天風呂 清滝","木曜休 / 10:00-22:00（最終21:00）"],
+  ["九州国立博物館","月曜休 / 太宰府・車約30分"],
+  ["五ケ山クロス・各施設","季節と天候で変動・出発前に公式確認"]
+];
+
+const enc = s => encodeURIComponent(s);
+const mapUrl = q => "https://www.google.com/maps/search/?api=1&query=" + enc(q);
+const phoUrl = q => "https://www.google.com/search?tbm=isch&q=" + enc(q);
+
+function render(courseName){
+  const c = COURSES[courseName];
+  const wrap = document.getElementById("stops");
+  wrap.innerHTML = c.stops.map((s,i) => `
+    <section>
+      <div class="scene">
+        <p class="no">${String(i+1).padStart(2,"0")} / ${String(c.stops.length).padStart(2,"0")}</p>
+        <p class="time">${s.t}</p>
+        <h2 class="serif">${s.name}</h2>
+        <span class="tag">${s.tag}</span>
+        <p class="feel">${s.feel}</p>
+        <div class="acts">
+          <a class="map" href="${mapUrl(s.q)}" target="_blank" rel="noopener">📍 Google Mapで開く</a>
+          <a class="pho" href="${phoUrl(s.q)}" target="_blank" rel="noopener">📷 写真を見る</a>
+        </div>
+        <p class="drive">${s.drive}</p>
+      </div>
+    </section>`).join("");
+
+  document.getElementById("finaleMsg").innerHTML = c.msg;
+  const origin = c.stops[0].q, dest = c.stops[c.stops.length-1].q;
+  const way = c.stops.slice(1,-1).map(s=>enc(s.q)).join("%7C");
+  document.getElementById("routeBtn").href =
+    `https://www.google.com/maps/dir/?api=1&travelmode=driving&origin=${enc(origin)}&destination=${enc(dest)}&waypoints=${way}`;
+  document.getElementById("infoBox").innerHTML =
+    `<div style="color:#f3c98a;letter-spacing:.16em;margin-bottom:8px">行く前に確認</div>` +
+    INFO.map(r=>`<div class="row"><b>${r[0]}</b><span>${r[1]}</span></div>`).join("");
+
+  observe();
+}
+
+let io;
+function observe(){
+  if(io) io.disconnect();
+  io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("show"); }}),{threshold:.18});
+  document.querySelectorAll(".scene").forEach(s=>{ if(!s.classList.contains("show")) io.observe(s); });
+}
+
+// ---- evolving sky ----
+const KEYS = [
+  [[246,201,160],[184,138,154]], // dawn
+  [[207,224,232],[243,217,176]], // morning
+  [[188,217,232],[232,238,240]], // noon
+  [[244,207,148],[224,154,106]], // golden
+  [[224,121,95],[110,74,106]],   // dusk
+  [[42,42,74],[20,20,42]]        // night
+];
+const lerp=(a,b,t)=>Math.round(a+(b-a)*t);
+const mix=(c1,c2,t)=>`rgb(${lerp(c1[0],c2[0],t)},${lerp(c1[1],c2[1],t)},${lerp(c1[2],c2[2],t)})`;
+
+const sky=document.getElementById("sky"),cel=document.getElementById("celestial"),
+      bar=document.getElementById("progress"),stars=document.getElementById("stars");
+
+function onScroll(){
+  const max=document.body.scrollHeight-window.innerHeight;
+  const p=max>0?Math.min(1,Math.max(0,window.scrollY/max)):0;
+  bar.style.width=(p*100)+"%";
+  const seg=p*(KEYS.length-1), i=Math.min(KEYS.length-2,Math.floor(seg)), f=seg-i;
+  const top=mix(KEYS[i][0],KEYS[i+1][0],f), bot=mix(KEYS[i][1],KEYS[i+1][1],f);
+  sky.style.background=`linear-gradient(165deg,${top} 0%,${bot} 100%)`;
+  // celestial arc
+  const x=8+p*84, y=78-Math.sin(p*Math.PI)*64;
+  cel.style.transform=`translate(${x}vw,${y}vh)`;
+  const isMoon=p>0.78;
+  cel.style.background=isMoon?"radial-gradient(circle at 38% 38%,#fdfbf2,#cfd3e0)":"radial-gradient(circle at 38% 38%,#fff4d6,#f3b65a)";
+  cel.style.boxShadow=isMoon?"0 0 40px rgba(220,224,240,.6)":"0 0 60px rgba(243,182,90,.7)";
+  stars.style.opacity=Math.max(0,(p-0.7)/0.3);
+}
+
+(function makeStars(){
+  let h="";
+  for(let i=0;i<70;i++){const s=Math.random()*2+1;h+=`<div class="star" style="left:${Math.random()*100}%;top:${Math.random()*70}%;width:${s}px;height:${s}px;animation-delay:${Math.random()*3}s"></div>`;}
+  stars.innerHTML=h;
+})();
+
+document.getElementById("tabs").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  document.querySelectorAll("#tabs button").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on");
+  render(b.dataset.c);
+  window.scrollTo({top:0,behavior:"smooth"});
+  setTimeout(onScroll,60);
+});
+
+window.addEventListener("scroll",onScroll,{passive:true});
+window.addEventListener("resize",onScroll);
+render("定番");
+onScroll();
+</script>
+</body></html>
