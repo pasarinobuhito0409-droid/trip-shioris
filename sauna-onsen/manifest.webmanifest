@@ -1,0 +1,18 @@
+{
+  "name": "整いの一湯 | 太宰府発 静かなサウナ温泉",
+  "short_name": "整いの一湯",
+  "description": "太宰府を起点に、福岡・佐賀・長崎・山口で人が少なく自然に癒されるサウナ付き温泉を口コミの言葉で厳選した番付アプリ。",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0f1a1c",
+  "theme_color": "#0f1a1c",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
