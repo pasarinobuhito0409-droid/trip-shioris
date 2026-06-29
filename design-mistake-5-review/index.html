@@ -208,6 +208,58 @@
   <script>
     const quizSets = [
       {
+        id:"receptacle-plug-20260629",
+        title:"2026/6/29 レセ・プラグ復習",
+        created:"2026/06/29",
+        note:"社内ではレセプタクルを組付け、プラグは添付品とする判断を確認する。",
+        questions:[
+          {
+            tag:"組付け対象",
+            question:"社内で組付けるのはどちら？",
+            choices:["プラグを社内で組付ける","レセプタクルを社内で組付ける","両方とも何も組付けない"],
+            answer:1,
+            image:"assets/q20260629-receptacle-assembled-plug-attached.png",
+            alt:"レセプタクルを社内で組付け、プラグを添付品にする実物風説明画像",
+            chips:["レセプタクル","社内組付け","固定側"],
+            reason:"社内で組むのはレセプタクルです。機器やパネル側に固定される側なので、製品側に組付けます。",
+            fieldRule:"覚え方：固定側＝レセプタクル＝社内で組む。"
+          },
+          {
+            tag:"添付品",
+            question:"プラグはどう扱う？",
+            choices:["レセに差した状態で出荷する","添付品として袋入り・同梱にする","不要なので外す"],
+            answer:1,
+            image:"assets/q20260629-ok-ng-plug-attached.png",
+            alt:"プラグを差して出荷するNG例と、袋入り添付のOK例を示す実物風説明画像",
+            chips:["プラグ","添付品","袋入り確認"],
+            reason:"プラグは添付品です。レセプタクルへ差し込んだ状態ではなく、袋入り・同梱で確認します。",
+            fieldRule:"指示が「添付」なら、差し込まず袋入り・同梱で確認。"
+          },
+          {
+            tag:"図面コメント",
+            question:"図面や社内指示に書くなら一番安全なのは？",
+            choices:["レセプタクルは社内組付け、プラグは添付品とする","プラグもレセも現場判断とする","コネクタあり、とだけ書く"],
+            answer:0,
+            image:"assets/q20260629-drawing-note-receptacle-plug.png",
+            alt:"図面・社内指示でレセプタクル社内組付け、プラグ添付品と明記する実物風説明画像",
+            chips:["図面コメント","備考欄","明記"],
+            reason:"相手が迷わないように、レセプタクルを組付けることと、プラグを添付品にすることを分けて書きます。",
+            fieldRule:"コメント例：レセプタクルは社内組付け、プラグは添付品とする。"
+          },
+          {
+            tag:"見分け方",
+            question:"一般的な見分け方として正しいのは？",
+            choices:["プラグは受ける側、レセプタクルは差し込む側","プラグは差し込む側、レセプタクルは受ける側","名前だけではなく色で決める"],
+            answer:1,
+            image:"assets/q20260629-plug-vs-receptacle-identify.png",
+            alt:"プラグは差し込む側、レセプタクルは受ける側を示す実物風説明画像",
+            chips:["プラグ","レセプタクル","見分け方"],
+            reason:"基本は、プラグが差し込む側、レセプタクルが受ける側です。ただし最終判断はメーカーのカタログ名称を優先します。",
+            fieldRule:"注意：オス/メス端子と、プラグ/レセプタクル名称は別で考える。"
+          }
+        ]
+      },
+      {
         id:"paint-pin-visual-20260626",
         title:"2026/6/26 塗装・ピン復習",
         created:"2026/06/26",
@@ -418,10 +470,10 @@
     ];
 
     const params = new URLSearchParams(location.search);
-    const storageKey = "dm-review-v10";
+    const storageKey = "dm-review-v11";
     const saved = JSON.parse(localStorage.getItem(storageKey) || "{}");
     const state = {
-      setId: params.get("set") || saved.setId || "paint-pin-visual-20260626",
+      setId: params.get("set") || saved.setId || "receptacle-plug-20260629",
       index: Number(params.get("q") || saved.index || 0),
       answers: saved.answers || {}
     };

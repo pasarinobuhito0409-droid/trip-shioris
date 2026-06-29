@@ -1,4 +1,4 @@
-const CACHE_NAME = "design-review-quiz-v10";
+const CACHE_NAME = "design-review-quiz-v11";
 const ASSETS = [
   "./",
   "./index.html",
@@ -28,7 +28,11 @@ const ASSETS = [
   "./assets/q20260626-paint-code.png",
   "./assets/q20260626-dic-g298.png",
   "./assets/q20260626-approx-color.png",
-  "./assets/q20260626-visual-rule.png"
+  "./assets/q20260626-visual-rule.png",
+  "./assets/q20260629-receptacle-assembled-plug-attached.png",
+  "./assets/q20260629-ok-ng-plug-attached.png",
+  "./assets/q20260629-drawing-note-receptacle-plug.png",
+  "./assets/q20260629-plug-vs-receptacle-identify.png"
 ];
 
 self.addEventListener("install", (event) => {
