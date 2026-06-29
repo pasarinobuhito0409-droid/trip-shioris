@@ -106,6 +106,19 @@
     .answer img{display:block;width:auto;max-width:100%;height:auto;max-height:430px;object-fit:contain;background:#e8eef5;margin:0 auto}
     .answer-body{display:grid;gap:11px;padding:13px;line-height:1.7;font-weight:900}
     .answer-body p{margin:0}
+    .motion{display:none;margin:0 12px 12px;overflow:hidden;border:1px solid #9cc6e9;border-radius:14px;background:#071526;box-shadow:0 10px 26px rgba(15,54,90,.18)}
+    .motion.show{display:block}
+    .motion-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;background:#0b3d70;color:#fff;font-size:14px;font-weight:1000}
+    .motion-replay{padding:7px 10px;border:1px solid rgba(255,255,255,.45);border-radius:999px;background:rgba(255,255,255,.12);color:#fff;font-size:13px}
+    .motion-stage{position:relative;overflow:hidden;aspect-ratio:16/9;background:#0f172a}
+    .motion-frame{position:absolute;inset:0;width:100%!important;height:100%!important;max-height:none!important;object-fit:cover;margin:0!important;background:#0f172a;opacity:0}
+    .motion.run .motion-step-1{animation:motionStep1 5.4s infinite}
+    .motion.run .motion-step-2{animation:motionStep2 5.4s infinite}
+    .motion.run .motion-step-3{animation:motionStep3 5.4s infinite}
+    .motion-caption{position:absolute;left:10px;right:10px;bottom:10px;border-radius:12px;padding:9px 10px;background:rgba(7,21,38,.86);color:#fff;font-size:14px;font-weight:1000;line-height:1.55}
+    @keyframes motionStep1{0%,28%{opacity:1}34%,100%{opacity:0}}
+    @keyframes motionStep2{0%,28%{opacity:0}34%,62%{opacity:1}68%,100%{opacity:0}}
+    @keyframes motionStep3{0%,62%{opacity:0}68%,100%{opacity:1}}
     .chips{display:flex;gap:8px;flex-wrap:wrap}
     .chip{border-radius:999px;padding:6px 10px;background:#fff;border:1px solid #c7d8e8;color:#164e82;font-weight:900}
     .copy{border-radius:12px;padding:12px;background:#111827;color:#fff;font-weight:900;line-height:1.7}
@@ -178,6 +191,18 @@
               <span id="answer-topic">画像解説</span>
             </div>
             <img id="answerImage" src="" alt="">
+            <div class="motion" id="motion" aria-label="実画像アニメ">
+              <div class="motion-head">
+                <span>実画像アニメ</span>
+                <button class="motion-replay" id="motionReplay" type="button">もう一回</button>
+              </div>
+              <div class="motion-stage">
+                <img class="motion-frame motion-step-1" id="motionFrame1" src="" alt="">
+                <img class="motion-frame motion-step-2" id="motionFrame2" src="" alt="">
+                <img class="motion-frame motion-step-3" id="motionFrame3" src="" alt="">
+                <div class="motion-caption" id="motionCaption"></div>
+              </div>
+            </div>
             <div class="answer-body">
               <div class="chips" id="chips"></div>
               <p id="reason"></p>
@@ -255,7 +280,15 @@
             alt:"プラグは差し込む側、レセプタクルは受ける側を示す実物風説明画像",
             chips:["プラグ","レセプタクル","見分け方"],
             reason:"基本は、プラグが差し込む側、レセプタクルが受ける側です。ただし最終判断はメーカーのカタログ名称を優先します。",
-            fieldRule:"注意：オス/メス端子と、プラグ/レセプタクル名称は別で考える。"
+            fieldRule:"注意：オス/メス端子と、プラグ/レセプタクル名称は別で考える。",
+            motion:{
+              frames:[
+                "assets/q20260629-plug-motion-base.png",
+                "assets/q20260629-plug-motion-step2.png",
+                "assets/q20260629-plug-motion-step3.png"
+              ],
+              caption:"動きの理解用：プラグは差し込む側、レセプタクルは受ける側。実務の納入は、プラグを差したままにせず添付品で確認。"
+            }
           }
         ]
       },
@@ -491,6 +524,12 @@
       result: document.getElementById("result"),
       answerTopic: document.getElementById("answer-topic"),
       answerImage: document.getElementById("answerImage"),
+      motion: document.getElementById("motion"),
+      motionReplay: document.getElementById("motionReplay"),
+      motionFrame1: document.getElementById("motionFrame1"),
+      motionFrame2: document.getElementById("motionFrame2"),
+      motionFrame3: document.getElementById("motionFrame3"),
+      motionCaption: document.getElementById("motionCaption"),
       chips: document.getElementById("chips"),
       reason: document.getElementById("reason"),
       fieldRule: document.getElementById("fieldRule"),
@@ -571,6 +610,7 @@
       el.answerTopic.textContent = q.tag + " 画像解説";
       el.answerImage.src = q.image;
       el.answerImage.alt = q.alt;
+      renderMotion(q);
       el.chips.innerHTML = q.chips.map(chip => `<span class="chip">${chip}</span>`).join("");
       el.reason.textContent = q.reason;
       el.fieldRule.textContent = q.fieldRule;
@@ -581,6 +621,31 @@
       });
       updateStatus();
       renderTopics();
+    }
+
+    function restartMotion(){
+      el.motion.classList.remove("run");
+      void el.motion.offsetWidth;
+      el.motion.classList.add("run");
+    }
+
+    function renderMotion(q){
+      if (!q.motion) {
+        el.motion.classList.remove("show", "run");
+        [el.motionFrame1, el.motionFrame2, el.motionFrame3].forEach(img => img.removeAttribute("src"));
+        el.motionCaption.textContent = "";
+        return;
+      }
+      const frames = q.motion.frames;
+      el.motionFrame1.src = frames[0];
+      el.motionFrame2.src = frames[1];
+      el.motionFrame3.src = frames[2];
+      el.motionFrame1.alt = "プラグとレセプタクルが離れている実画像";
+      el.motionFrame2.alt = "プラグがレセプタクルへ途中まで差し込まれている実画像";
+      el.motionFrame3.alt = "プラグがレセプタクルへ差し込み完了した実画像";
+      el.motionCaption.textContent = q.motion.caption;
+      el.motion.classList.add("show");
+      restartMotion();
     }
 
     function renderChoices(q){
@@ -615,6 +680,7 @@
       el.question.textContent = q.question;
       el.answer.classList.remove("show");
       el.answerImage.removeAttribute("src");
+      renderMotion({});
       renderSets();
       renderChoices(q);
       updateStatus();
@@ -642,6 +708,8 @@
       const q = activeSet().questions[state.index];
       if (answers[state.index] === undefined) showAnswer(q.answer);
     });
+
+    el.motionReplay.addEventListener("click", restartMotion);
 
     el.reset.addEventListener("click", () => {
       state.answers[state.setId] = [];
