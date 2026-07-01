@@ -233,6 +233,80 @@
   <script>
     const quizSets = [
       {
+        id:"solidworks-20260701",
+        title:"2026/7/1 SolidWorks復習",
+        created:"2026/07/01",
+        note:"板金ベンド、厚みゼロ、診断ツール、円弧拘束、縮尺、Windows録画をまとめて確認する。",
+        questions:[
+          {
+            tag:"板金ベンド",
+            question:"SOLIDWORKSで「1つまたはいくつかのベンドが作成できません」と出た時、最初に疑うべきことは？",
+            choices:["青い線が赤いエラー線なので、その線を全部消す","固定面・リップ・リリーフ・閉じた形状のどれかで、板金として展開しにくい","板厚を必ず0.2mmにすれば直る"],
+            answer:1,
+            image:"assets/q20260701-sheetmetal-bend-error.png",
+            alt:"SOLIDWORKS板金ベンドエラーの実画面を赤枠で示した説明画像",
+            chips:["固定面","リップ","リリーフ","閉じた形状"],
+            reason:"ベンドエラーは、1か所だけでなく複数の条件が重なって出ます。青い線は選択状態で、エラーそのものではありません。",
+            fieldRule:"見る順番：固定面 → リップ → リリーフ → それでも無理なら分割板金。"
+          },
+          {
+            tag:"厚みゼロ",
+            question:"厚みがゼロのジオメトリとは、どんな状態？",
+            choices:["材料の厚みが0.0mmで指定されている状態","面ではなく線や点だけで接して、ソリッドとして成立しない状態","表示が薄く見えているだけの状態"],
+            answer:1,
+            image:"assets/q20260701-zero-thickness-geometry.png",
+            alt:"厚みゼロジオメトリのOK例とNG例を示したリアルCAD説明画像",
+            chips:["線だけ接触","点だけ接触","穴に正接カット","非マニホールド"],
+            reason:"ソリッドのエッジは基本的に2つの面で共有されます。線や点だけで接すると、境界が正しく定義できずエラーになります。",
+            fieldRule:"直し方：少し材料を残す、少し切り離す、またはマージ解除で別ボディにする。"
+          },
+          {
+            tag:"診断ツール",
+            question:"診断ツールで「No active document」と出た時の意味は？",
+            choices:["SOLIDWORKSが壊れている","診断したい部品ファイルがアクティブになっていない","板金部品ではないので必ず失敗する"],
+            answer:1,
+            image:"assets/q20260701-no-active-document.png",
+            alt:"No active document の診断結果を赤枠で示した説明画像",
+            chips:["Active document","部品をクリック","bat再実行"],
+            reason:"ツールはSOLIDWORKSで今選ばれている部品を見に行きます。対象SLDPRTをクリックして前面にしてから実行します。",
+            fieldRule:"手順：エラーOK → 対象部品を1回クリック → batを管理者として再実行。"
+          },
+          {
+            tag:"円弧拘束",
+            question:"同一円弧と等しい値の違いとして正しいのは？",
+            choices:["同一円弧は中心＋R、等しい値は円弧同士ならRだけ同じ","同一円弧はRだけ、等しい値は中心だけ同じ","どちらも完全に同じ意味"],
+            answer:0,
+            image:"assets/q20260701-arc-relations.png",
+            alt:"同一円弧、正接、同心円、等しい値の違いを示したSOLIDWORKS実画面ベースの図解",
+            chips:["同一円弧","正接","同心円","等しい値"],
+            reason:"同一円弧は同じ円の上に乗せる拘束です。等しい値は円弧同士ならRだけをそろえます。中心は別でもよいです。",
+            fieldRule:"今回の判断：同じ円の上に乗せたいなら同一円弧。端だけ滑らかなら正接。"
+          },
+          {
+            tag:"縮尺1:4",
+            question:"図面の縮尺が1:4で、CAD寸法値として27と表示されている。実寸は？",
+            choices:["27mm","108mm","6.75mm"],
+            answer:0,
+            image:"assets/q20260701-scale-1-4.png",
+            alt:"図面縮尺1対4の寸法値と紙で測った長さの違いを示すリアル説明画像",
+            chips:["CAD寸法値","紙で測った長さ","実寸"],
+            reason:"CADや図面に記入されている寸法値は、縮尺に関係なく実寸です。紙を定規で測った長さだけ、縮尺倍率を掛けます。",
+            fieldRule:"覚え方：寸法値27 = 実寸27。紙を実測した27mmなら 27×4=108mm。"
+          },
+          {
+            tag:"Windows録画",
+            question:"Windowsで画面録画を開始・停止するショートカットは？",
+            choices:["Win + G","Win + Alt + R","Ctrl + Shift + S"],
+            answer:1,
+            image:"assets/q20260701-windows-recording.png",
+            alt:"Windows録画ショートカットをキーボードとGame Barで示したリアル説明画像",
+            chips:["Win + G","Win + Alt + R","Game Bar"],
+            reason:"Win + G はゲームバーを開く操作です。すぐ録画開始・停止するのは Win + Alt + R です。",
+            fieldRule:"会社PCでは、保存先と社内ルールを確認してから録画する。"
+          }
+        ]
+      },
+      {
         id:"receptacle-plug-20260629",
         title:"2026/6/29 レセ・プラグ復習",
         created:"2026/06/29",
@@ -500,10 +574,10 @@
     ];
 
     const params = new URLSearchParams(location.search);
-    const storageKey = "dm-review-v11";
+    const storageKey = "dm-review-v16";
     const saved = JSON.parse(localStorage.getItem(storageKey) || "{}");
     const state = {
-      setId: params.get("set") || saved.setId || "receptacle-plug-20260629",
+      setId: params.get("set") || saved.setId || "solidworks-20260701",
       index: Number(params.get("q") || saved.index || 0),
       answers: saved.answers || {}
     };

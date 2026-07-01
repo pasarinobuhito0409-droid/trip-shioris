@@ -1,10 +1,16 @@
-const CACHE_NAME = "design-review-quiz-v14";
+const CACHE_NAME = "design-review-quiz-v16";
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
   "./icon.svg",
   "./assets/preview.png",
+  "./assets/q20260701-sheetmetal-bend-error.png",
+  "./assets/q20260701-zero-thickness-geometry.png",
+  "./assets/q20260701-no-active-document.png",
+  "./assets/q20260701-arc-relations.png",
+  "./assets/q20260701-scale-1-4.png",
+  "./assets/q20260701-windows-recording.png",
   "./assets/q1-solidworks-vertical-text.png",
   "./assets/q2-text-curve-blank-space.png",
   "./assets/q3-cad-data-unconfirmed.png",
