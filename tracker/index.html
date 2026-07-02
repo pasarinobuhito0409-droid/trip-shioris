@@ -212,6 +212,18 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700;color:#fff}
 .record-summary .meta{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;font-size:11px;color:var(--muted)}
 .record-summary .meta div{text-align:center;padding:8px 4px;background:rgba(255,255,255,.06);border-radius:8px;border:1px solid var(--glass-border)}
 .record-summary .meta div b{display:block;font-size:18px;font-weight:900;color:#fff;margin-bottom:2px}
+.rec-cats{display:flex;flex-direction:column;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08)}
+.rec-cat{display:grid;grid-template-columns:36px 1fr 56px;gap:8px;align-items:center;font-size:11px}
+.rec-cat .rc-name{font-weight:800;color:rgba(255,255,255,.75)}
+.rec-cat .rc-bar{height:7px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
+.rec-cat .rc-bar i{display:block;height:100%;border-radius:999px;transition:width .3s}
+.rec-cat .rc-n{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums;font-weight:700}
+.rec-log{background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--glass-border);border-radius:12px;padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+.rec-log:active{transform:scale(.99);background:rgba(255,255,255,.15)}
+.rec-log .rl-date{font-size:13px;font-weight:900;color:#fff;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center}
+.rec-log .rl-date small{font-size:10px;color:var(--muted);font-weight:700}
+.rec-log .rl-chips{display:flex;flex-wrap:wrap;gap:5px}
+.rec-log .rl-chip{font-size:11px;font-weight:700;color:#fff;padding:4px 10px;border-radius:999px;display:inline-flex;align-items:center;gap:4px;border:1px solid rgba(255,255,255,.15)}
 
 .record-diary{background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--glass-border);border-radius:12px;padding:12px;margin-bottom:8px;cursor:pointer;transition:all .15s}
 .record-diary:active{transform:scale(.99);background:rgba(255,255,255,.15)}
@@ -857,6 +869,20 @@ function renderPrevCarry(m){
 function renderRecord(){
   const t = tally(currentMonth);
   const pct = t.totalPlan ? Math.round(100*t.totalDone/t.totalPlan) : 0;
+  const catDefs=[
+    {k:'morning',name:'朝',col:'#5ab4ff'},
+    {k:'lunch',name:'昼',col:'#a99cff'},
+    {k:'night',name:'夜',col:'#c850dc'},
+    {k:'daily',name:'毎日',col:'#34c759'},
+    {k:'special',name:'特別',col:'#76b347'},
+    {k:'custom',name:'自分',col:'#d898e8'},
+  ];
+  const catBars=catDefs.map(c=>{
+    const dn=t.cats[c.k][0], pl=t.cats[c.k][1];
+    if(!pl) return '';
+    const p=Math.round(100*dn/pl);
+    return `<div class="rec-cat"><span class="rc-name">${c.name}</span><span class="rc-bar"><i style="width:${p}%;background:${c.col}"></i></span><span class="rc-n">${dn}/${pl}</span></div>`;
+  }).join('');
   const summary = `<div class="record-summary">
     <h3>📊 ${currentMonth}月 サマリー</h3>
     <div class="pct">${pct}%<small>(${t.totalDone}/${t.totalPlan})</small></div>
@@ -866,6 +892,7 @@ function renderRecord(){
       <div><b>${t.actDay["特別"]}/${t.planDay["特別"]}</b>特別日</div>
       <div><b>${t.planDay["チート"]}</b>チート日</div>
     </div>
+    <div class="rec-cats">${catBars}</div>
   </div>`;
 
   // 月総括3欄
@@ -908,8 +935,24 @@ function renderRecord(){
     </div>`;
   }).join("") : `<div class="empty" style="background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:30px;text-align:center;color:var(--muted);font-size:13px">この月はまだ日記なし<br><small>リストビューで日付タップして書ける</small></div>`;
 
-  return `<div class="record-view">${summary}${monthReview}<div class="record-section-title">📝 日記（新しい順）</div>${diaryHtml}</div>`;
+  const doneLog = days.slice().sort((a,b)=>b.d-a.d).map(x=>{
+    const s=getDayState(currentMonth,x.d);
+    const items=[];
+    visibleTasksOf(x,currentMonth).forEach(tk=>{ if(s[tk.id]) items.push({label:tk.label,cat:tk.cat}); });
+    (s.__custom__||[]).forEach(tc=>{ if(s[tc.id]) items.push({label:tc.label,cat:'custom',color:tc.color}); });
+    if(!items.length) return '';
+    const wd=WD_JP[x.wd];
+    const chips=items.map(it=>{
+      const col=it.color||DOT_COLORS[it.cat]||'#8e44ad';
+      return `<span class="rl-chip" style="background:linear-gradient(135deg,${col}dd,${col}99)">✓ ${esc(it.label)}</span>`;
+    }).join('');
+    return `<div class="rec-log" onclick="jumpToDay(${x.d})"><div class="rl-date"><span>${currentMonth}/${x.d}（${wd}）</span><small>${items.length}件・タップでその日へ</small></div><div class="rl-chips">${chips}</div></div>`;
+  }).filter(Boolean).join('');
+  const doneLogSection = `<div class="record-section-title">✅ 完了ログ（✓した内容・新しい順）</div>` + (doneLog || `<div class="empty" style="background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:24px;text-align:center;color:var(--muted);font-size:13px">まだ✓なし<br><small>カレンダーの◯や予定をタップすると、ここに残る</small></div>`);
+
+  return `<div class="record-view">${summary}${doneLogSection}${monthReview}<div class="record-section-title">📝 日記（新しい順）</div>${diaryHtml}</div>`;
 }
+function jumpToDay(d){ selDay=d; dvKeepScroll=false; setView('cal2'); }
 
 // 引き継ぎカードを継続日バナー直下の専用枠に描画（記録ビューの時だけ）
 function renderCarryBanner(){
