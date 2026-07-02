@@ -1,0 +1,18 @@
+{
+  "name": "整いの一湯 | 太宰府発 静かなサウナ温泉管理",
+  "short_name": "整いの一湯",
+  "description": "太宰府を起点に、静かなサウナ付き温泉を訪問チェック・メモ・再訪候補で管理するPWA。",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0f1a1c",
+  "theme_color": "#0f1a1c",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -6,138 +6,81 @@
   <meta name="theme-color" content="#0f4f8d">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <title>設計ミス防止 5問復習</title>
+  <title>設計復習アプリ</title>
   <style>
     :root{
-      --bg:#eef3f6;
-      --paper:#ffffff;
+      --bg:#edf3f7;
+      --paper:#fff;
       --ink:#111827;
-      --muted:#5b6777;
-      --line:#d7e2ea;
+      --muted:#5f6d7c;
+      --line:#d5e1eb;
       --blue:#0f5faf;
-      --blue2:#e9f4ff;
       --green:#16834f;
       --red:#c9342d;
-      --amber:#b76512;
-      --shadow:0 18px 50px rgba(13,35,56,.16);
-    }
-    *{box-sizing:border-box}
-    html{
-      max-width:100%;
-      overflow-x:hidden;
-    }
-    body{
-      margin:0;
-      min-height:100svh;
-      max-width:100%;
-      overflow-x:hidden;
-      color:var(--ink);
+      --shadow:0 18px 50px rgba(14,39,62,.16);
       font-family:"Yu Gothic","Meiryo",system-ui,sans-serif;
+    }
+    *{box-sizing:border-box;min-width:0}
+    html,body{margin:0;max-width:100%;overflow-x:hidden}
+    body{
+      min-height:100svh;
+      color:var(--ink);
       background:
-        radial-gradient(circle at 16% 5%,rgba(15,95,175,.16),transparent 36%),
-        linear-gradient(180deg,#dde9f2 0%,var(--bg) 45%,#f7fafc 100%);
+        radial-gradient(circle at 16% 0%,rgba(15,95,175,.18),transparent 34%),
+        linear-gradient(180deg,#dce8f1 0%,var(--bg) 46%,#f8fafc 100%);
     }
-    main{
-      width:min(940px,100%);
-      max-width:100%;
-      margin:auto;
-      padding:14px;
-    }
+    main{width:min(980px,100%);margin:auto;padding:14px}
     .app{
-      max-width:100%;
       overflow:hidden;
       border:1px solid #cbd7e2;
       border-radius:18px;
-      background:rgba(255,255,255,.82);
+      background:rgba(255,255,255,.9);
       box-shadow:var(--shadow);
-      backdrop-filter:blur(10px);
     }
     header{
       padding:18px 16px 14px;
       color:#fff;
-      background:linear-gradient(135deg,#123b66,#0f5faf 55%,#1677c7);
+      background:linear-gradient(135deg,#123b66,#0f5faf 56%,#1677c7);
     }
-    h1{
-      margin:0;
-      font-size:clamp(25px,7vw,44px);
-      line-height:1.15;
-      letter-spacing:0;
+    h1{margin:0;font-size:clamp(30px,7vw,46px);line-height:1.12;letter-spacing:0}
+    .sub{margin:8px 0 0;font-weight:900;line-height:1.6;color:#dbeafe}
+    .sets{
+      display:grid;
+      gap:10px;
+      padding:13px 16px;
+      background:#f8fbfe;
+      border-bottom:1px solid var(--line);
     }
-    .sub{
-      margin:8px 0 0;
-      font-weight:800;
-      line-height:1.6;
-      color:#dbeafe;
+    .set-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+    .set-btn{
+      flex:0 0 auto;
+      padding:10px 12px;
+      border-radius:999px;
+      color:#0f4f8d;
+      background:#fff;
+      border:1px solid #bfd8ee;
+      cursor:pointer;
+      font:inherit;
+      font-weight:1000;
     }
+    .set-btn.active{color:#fff;background:#0f5faf;border-color:#0f5faf}
+    .created{margin:0;color:var(--muted);font-weight:900;line-height:1.5}
     .status{
       display:grid;
       gap:10px;
       padding:14px 16px;
-      background:#f8fbfe;
+      background:#fff;
       border-bottom:1px solid var(--line);
     }
-    .status-row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
-      font-weight:900;
-    }
-    .progress{
-      height:12px;
-      overflow:hidden;
-      border-radius:999px;
-      background:#d9e4ee;
-    }
-    .progress span{
-      display:block;
-      width:0;
-      height:100%;
-      background:linear-gradient(90deg,#0f5faf,#19a56f);
-      transition:width .25s ease;
-    }
-    .layout{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:14px;
-      padding:14px;
-      min-width:0;
-    }
-    .question-card{
-      display:grid;
-      gap:14px;
-      min-width:0;
-      max-width:100%;
-    }
-    .qtag{
-      width:max-content;
-      border-radius:999px;
-      padding:7px 11px;
-      background:#102a43;
-      color:#fff;
-      font-weight:900;
-    }
-    h2{
-      margin:0;
-      font-size:clamp(23px,6vw,38px);
-      line-height:1.25;
-      letter-spacing:0;
-      overflow-wrap:anywhere;
-    }
-    .hint-lock{
-      display:flex;
-      gap:8px;
-      align-items:center;
-      color:var(--muted);
-      font-weight:900;
-      line-height:1.55;
-    }
-    .choices{
-      display:grid;
-      gap:10px;
-      min-width:0;
-    }
+    .status-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-weight:1000}
+    .progress{height:12px;overflow:hidden;border-radius:999px;background:#d9e4ee}
+    .progress span{display:block;width:0;height:100%;background:linear-gradient(90deg,#0f5faf,#19a56f);transition:width .25s ease}
+    .layout{display:grid;grid-template-columns:1fr;gap:14px;padding:14px}
+    .question-card{display:grid;gap:14px}
+    .qtag{width:max-content;max-width:100%;border-radius:999px;padding:7px 11px;background:#102a43;color:#fff;font-weight:1000}
+    h2{margin:0;font-size:clamp(25px,6vw,38px);line-height:1.28;letter-spacing:0;overflow-wrap:anywhere}
+    .hint-lock{display:flex;gap:8px;align-items:center;color:var(--muted);font-weight:900;line-height:1.55}
+    .choices{display:grid;gap:10px}
     button{
       appearance:none;
       border:1px solid var(--line);
@@ -150,202 +93,61 @@
       letter-spacing:0;
     }
     button:active{transform:scale(.99)}
-    .choice{
-      display:grid;
-      grid-template-columns:auto 1fr;
-      align-items:center;
-      gap:12px;
-      min-width:0;
-      padding:13px;
-      text-align:left;
-      line-height:1.55;
-    }
-    .choice span:last-child{
-      min-width:0;
-      overflow-wrap:anywhere;
-    }
-    .badge{
-      display:grid;
-      place-items:center;
-      width:38px;
-      aspect-ratio:1;
-      border-radius:999px;
-      background:#dbeafe;
-      color:#0f4f8d;
-      font-weight:1000;
-      flex:none;
-    }
-    .choice.correct{
-      border-color:var(--green);
-      background:#e9f8f0;
-      color:#075f36;
-    }
+    .choice{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:12px;padding:13px;text-align:left;line-height:1.55}
+    .choice span:last-child{overflow-wrap:anywhere}
+    .badge{display:grid;place-items:center;width:38px;aspect-ratio:1;border-radius:999px;background:#dbeafe;color:#0f4f8d;font-weight:1000;flex:none}
+    .choice.correct{border-color:var(--green);background:#e9f8f0;color:#075f36}
     .choice.correct .badge{background:var(--green);color:#fff}
-    .choice.wrong{
-      border-color:var(--red);
-      background:#fff0ef;
-      color:#8d1f18;
-    }
+    .choice.wrong{border-color:var(--red);background:#fff0ef;color:#8d1f18}
     .choice.wrong .badge{background:var(--red);color:#fff}
-    .answer{
-      display:none;
-      max-width:100%;
-      overflow:hidden;
-      border:2px solid #b9d8f1;
-      border-radius:15px;
-      background:#f1f8ff;
-    }
+    .answer{display:none;overflow:hidden;border:2px solid #b9d8f1;border-radius:15px;background:#f1f8ff}
     .answer.show{display:block}
-    .answer-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding:11px 12px;
-      background:#0f5faf;
-      color:#fff;
-      font-weight:1000;
-      flex-wrap:wrap;
-    }
-    .answer img{
-      display:block;
-      width:100%;
-      max-height:430px;
-      object-fit:contain;
-      background:#e8eef5;
-    }
-    .answer-body{
-      display:grid;
-      gap:11px;
-      padding:13px;
-      line-height:1.7;
-      font-weight:800;
-    }
+    .answer-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;background:#0f5faf;color:#fff;font-weight:1000;flex-wrap:wrap}
+    .answer img{display:block;width:auto;max-width:100%;height:auto;max-height:430px;object-fit:contain;background:#e8eef5;margin:0 auto}
+    .answer-body{display:grid;gap:11px;padding:13px;line-height:1.7;font-weight:900}
     .answer-body p{margin:0}
-    .chips{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-    .chip{
-      border-radius:999px;
-      padding:6px 10px;
-      background:#fff;
-      border:1px solid #c7d8e8;
-      color:#164e82;
-      font-weight:900;
-    }
-    .copy{
-      border-radius:12px;
-      padding:12px;
-      background:#111827;
-      color:#fff;
-      font-weight:900;
-      line-height:1.7;
-    }
-    .nav{
-      display:grid;
-      grid-template-columns:1fr 1.2fr 1fr;
-      gap:10px;
-    }
-    .nav button{
-      padding:13px 10px;
-      text-align:center;
-      background:#fff;
-    }
-    .nav .primary{
-      color:#fff;
-      background:linear-gradient(135deg,#0f5faf,#1677c7);
-      border-color:#0f5faf;
-    }
-    .side{
-      display:grid;
-      gap:10px;
-      min-width:0;
-      padding:12px;
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:#fff;
-    }
-    .mini-title{
-      margin:0;
-      font-size:18px;
-      font-weight:1000;
-    }
-    .topic-list{
-      display:grid;
-      gap:8px;
-    }
-    .topic{
-      display:grid;
-      grid-template-columns:auto 1fr auto;
-      gap:8px;
-      align-items:center;
-      min-width:0;
-      border:1px solid var(--line);
-      border-radius:11px;
-      padding:9px;
-      color:var(--muted);
-      background:#fbfdff;
-      font-weight:900;
-    }
-    .topic span:nth-child(2){
-      min-width:0;
-      overflow-wrap:anywhere;
-    }
-    .topic.active{
-      border-color:#83bcec;
-      color:#0f4f8d;
-      background:#eef7ff;
-    }
-    .dot{
-      width:10px;
-      aspect-ratio:1;
-      border-radius:999px;
-      background:#cbd5e1;
-    }
+    .motion{display:none;margin:0 12px 12px;overflow:hidden;border:1px solid #9cc6e9;border-radius:14px;background:#071526;box-shadow:0 10px 26px rgba(15,54,90,.18)}
+    .motion.show{display:block}
+    .motion-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;background:#0b3d70;color:#fff;font-size:14px;font-weight:1000}
+    .motion-replay{padding:7px 10px;border:1px solid rgba(255,255,255,.45);border-radius:999px;background:rgba(255,255,255,.12);color:#fff;font-size:13px}
+    .motion-stage{--motion-progress:0;--plug-x:-44%;position:relative;overflow:hidden;aspect-ratio:16/9;background:#0f172a}
+    .motion-bg{position:absolute;inset:0;width:100%!important;height:100%!important;max-height:none!important;object-fit:cover;margin:0!important;background:#0f172a}
+    .motion-plug{position:absolute;left:0;top:10%;width:72%!important;max-width:none!important;height:auto!important;max-height:none!important;margin:0!important;background:transparent!important;filter:drop-shadow(0 18px 18px rgba(2,8,23,.34));transform:translate3d(var(--plug-x), 5%, 0) scale(.76);will-change:transform}
+    .motion-caption{position:absolute;left:10px;right:10px;bottom:10px;border-radius:12px;padding:9px 10px;background:rgba(7,21,38,.86);color:#fff;font-size:14px;font-weight:1000;line-height:1.55}
+    .motion-slider{display:grid;gap:7px;padding:10px;background:#081c33;color:#dbeafe;font-size:13px;font-weight:1000}
+    .motion-slider input{width:100%;accent-color:#38bdf8}
+    .chips{display:flex;gap:8px;flex-wrap:wrap}
+    .chip{border-radius:999px;padding:6px 10px;background:#fff;border:1px solid #c7d8e8;color:#164e82;font-weight:900}
+    .copy{border-radius:12px;padding:12px;background:#111827;color:#fff;font-weight:900;line-height:1.7}
+    .nav{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:10px}
+    .nav button{padding:13px 10px;text-align:center;background:#fff}
+    .nav .primary{color:#fff;background:linear-gradient(135deg,#0f5faf,#1677c7);border-color:#0f5faf}
+    .side{display:grid;gap:10px;padding:12px;border:1px solid var(--line);border-radius:14px;background:#fff}
+    .mini-title{margin:0;font-size:18px;font-weight:1000}
+    .topic-list{display:grid;gap:8px}
+    .topic{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;border:1px solid var(--line);border-radius:11px;padding:9px;color:var(--muted);background:#fbfdff;font-weight:900;cursor:pointer}
+    .topic span:nth-child(2){overflow-wrap:anywhere}
+    .topic.active{border-color:#83bcec;color:#0f4f8d;background:#eef7ff}
+    .dot{width:10px;aspect-ratio:1;border-radius:999px;background:#cbd5e1}
     .topic.done .dot{background:var(--green)}
     .topic.wrong-done .dot{background:var(--red)}
-    .small{
-      margin:0;
-      color:var(--muted);
-      line-height:1.7;
-      font-weight:800;
-    }
-    .tools{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-    .tools button{
-      padding:9px 11px;
-      font-size:14px;
-    }
+    .small{margin:0;color:var(--muted);line-height:1.7;font-weight:900}
+    .tools{display:flex;gap:8px;flex-wrap:wrap}
+    .tools button{padding:9px 11px;font-size:14px}
     @media (min-width:820px){
-      .layout{grid-template-columns:minmax(0,1fr) 280px;align-items:start}
-      .question-card{min-width:0}
+      .layout{grid-template-columns:minmax(0,1fr) 285px;align-items:start}
       .side{position:sticky;top:12px}
     }
     @media (max-width:520px){
       main{padding:0}
       .app{min-height:100svh;border-radius:0;border:0}
-      header,
-      .status,
-      .layout{
-        width:100%;
-        max-width:390px;
-      }
+      header,.sets,.status,.layout{width:100%;max-width:390px}
       header{padding-top:calc(16px + env(safe-area-inset-top))}
       h1{font-size:30px}
       h2{font-size:26px}
       .sub{font-size:14px}
-      .status-row{
-        display:grid;
-        justify-content:start;
-        gap:5px;
-      }
+      .status-row{display:grid;justify-content:start;gap:5px}
       .layout{padding:12px}
-      .qtag{font-size:15px}
       .choice{grid-template-columns:36px 1fr}
       .badge{width:34px}
       .nav{position:sticky;bottom:0;padding-bottom:env(safe-area-inset-bottom);background:linear-gradient(180deg,rgba(238,243,246,0),#eef3f6 28%)}
@@ -354,16 +156,21 @@
 </head>
 <body>
   <main>
-    <section class="app" aria-label="設計ミス防止 5問復習">
+    <section class="app" aria-label="設計復習アプリ">
       <header>
-        <h1>設計ミス防止 5問復習</h1>
-        <p class="sub">問題だけ先に見る。答えた後に画像で確認する。</p>
+        <h1>設計復習アプリ</h1>
+        <p class="sub">問題だけ先に見る。答えた後に、実画像で確認する。</p>
       </header>
+
+      <section class="sets">
+        <div class="set-row" id="setRow"></div>
+        <p class="created" id="created">作成日</p>
+      </section>
 
       <section class="status">
         <div class="status-row">
-          <span id="counter">1 / 5</span>
-          <span id="score">正解 0 / 5</span>
+          <span id="counter">1 / 3</span>
+          <span id="score">正解 0 / 3</span>
         </div>
         <div class="progress" aria-label="進捗"><span id="bar"></span></div>
       </section>
@@ -381,6 +188,21 @@
               <span id="answer-topic">画像解説</span>
             </div>
             <img id="answerImage" src="" alt="">
+            <div class="motion" id="motion" aria-label="実画像アニメ">
+              <div class="motion-head">
+                <span>実画像アニメ</span>
+                <button class="motion-replay" id="motionReplay" type="button">もう一回</button>
+              </div>
+              <div class="motion-stage">
+                <img class="motion-bg" id="motionBg" src="" alt="">
+                <img class="motion-plug" id="motionPlug" src="" alt="">
+                <div class="motion-caption" id="motionCaption"></div>
+              </div>
+              <label class="motion-slider">
+                <span>指で差し込み位置を動かす</span>
+                <input id="motionSlider" type="range" min="0" max="100" value="0">
+              </label>
+            </div>
             <div class="answer-body">
               <div class="chips" id="chips"></div>
               <p id="reason"></p>
@@ -388,21 +210,20 @@
             </div>
           </section>
 
-          <nav class="nav" aria-label="問題移動">
-            <button type="button" id="prev">前へ</button>
-            <button type="button" class="primary" id="check">答える</button>
-            <button type="button" id="next">次へ</button>
-          </nav>
+          <div class="nav">
+            <button id="prev" type="button">前へ</button>
+            <button id="check" class="primary" type="button">答える</button>
+            <button id="next" type="button">次へ</button>
+          </div>
         </section>
 
         <aside class="side">
-          <p class="mini-title">今日の5テーマ</p>
+          <p class="mini-title" id="setTitle">今日のテーマ</p>
           <div class="topic-list" id="topics"></div>
-          <p class="small">作成日：2026/06/16</p>
-          <p class="small">目的：現場で迷う判断を、短時間で思い出す。</p>
+          <p class="small" id="setNote"></p>
           <div class="tools">
-            <button type="button" id="reset">リセット</button>
-            <button type="button" id="install" hidden>ホーム画面</button>
+            <button id="reset" type="button">リセット</button>
+            <button id="install" type="button" hidden>ホーム画面へ追加</button>
           </div>
         </aside>
       </section>
@@ -410,91 +231,360 @@
   </main>
 
   <script>
-    const quiz = [
+    const quizSets = [
       {
-        tag:"SolidWorks",
-        question:"TB1を縦文字で入れる。安全な作り方は？",
-        choices:[
-          "TB1を1つのスケッチ文字で90度回転する",
-          "T・B・1を別々のスケッチ文字で縦に配置する",
-          "フォントを変えて縦書きに見せる"
-        ],
-        answer:1,
-        image:"assets/q1-solidworks-vertical-text.png",
-        alt:"T B 1を別々のスケッチ文字で縦に並べたSolidWorks風CAD画面",
-        chips:["1文字ずつ", "中心線で整列", "寸法管理"],
-        reason:"縦書きに見せたい時は、1つの文字枠で無理に回すより、T・B・1を分ける方が位置と間隔を管理しやすいです。",
-        fieldRule:"現場判断：刻印やカット用は、文字を分けてから中心線と等間隔寸法で固定する。"
+        id:"solidworks-20260701",
+        title:"2026/7/1 SolidWorks復習",
+        created:"2026/07/01",
+        note:"板金ベンド、厚みゼロ、診断ツール、円弧拘束、縮尺、Windows録画をまとめて確認する。",
+        questions:[
+          {
+            tag:"板金ベンド",
+            question:"SOLIDWORKSで「1つまたはいくつかのベンドが作成できません」と出た時、最初に疑うべきことは？",
+            choices:["青い線が赤いエラー線なので、その線を全部消す","固定面・リップ・リリーフ・閉じた形状のどれかで、板金として展開しにくい","板厚を必ず0.2mmにすれば直る"],
+            answer:1,
+            image:"assets/q20260701-sheetmetal-bend-error.png",
+            alt:"SOLIDWORKS板金ベンドエラーの実画面を赤枠で示した説明画像",
+            chips:["固定面","リップ","リリーフ","閉じた形状"],
+            reason:"ベンドエラーは、1か所だけでなく複数の条件が重なって出ます。青い線は選択状態で、エラーそのものではありません。",
+            fieldRule:"見る順番：固定面 → リップ → リリーフ → それでも無理なら分割板金。"
+          },
+          {
+            tag:"厚みゼロ",
+            question:"厚みがゼロのジオメトリとは、どんな状態？",
+            choices:["材料の厚みが0.0mmで指定されている状態","面ではなく線や点だけで接して、ソリッドとして成立しない状態","表示が薄く見えているだけの状態"],
+            answer:1,
+            image:"assets/q20260701-zero-thickness-geometry.png",
+            alt:"厚みゼロジオメトリのOK例とNG例を示したリアルCAD説明画像",
+            chips:["線だけ接触","点だけ接触","穴に正接カット","非マニホールド"],
+            reason:"ソリッドのエッジは基本的に2つの面で共有されます。線や点だけで接すると、境界が正しく定義できずエラーになります。",
+            fieldRule:"直し方：少し材料を残す、少し切り離す、またはマージ解除で別ボディにする。"
+          },
+          {
+            tag:"診断ツール",
+            question:"診断ツールで「No active document」と出た時の意味は？",
+            choices:["SOLIDWORKSが壊れている","診断したい部品ファイルがアクティブになっていない","板金部品ではないので必ず失敗する"],
+            answer:1,
+            image:"assets/q20260701-no-active-document.png",
+            alt:"No active document の診断結果を赤枠で示した説明画像",
+            chips:["Active document","部品をクリック","bat再実行"],
+            reason:"ツールはSOLIDWORKSで今選ばれている部品を見に行きます。対象SLDPRTをクリックして前面にしてから実行します。",
+            fieldRule:"手順：エラーOK → 対象部品を1回クリック → batを管理者として再実行。"
+          },
+          {
+            tag:"円弧拘束",
+            question:"同一円弧と等しい値の違いとして正しいのは？",
+            choices:["同一円弧は中心＋R、等しい値は円弧同士ならRだけ同じ","同一円弧はRだけ、等しい値は中心だけ同じ","どちらも完全に同じ意味"],
+            answer:0,
+            image:"assets/q20260701-arc-relations.png",
+            alt:"同一円弧、正接、同心円、等しい値の違いを示したSOLIDWORKS実画面ベースの図解",
+            chips:["同一円弧","正接","同心円","等しい値"],
+            reason:"同一円弧は同じ円の上に乗せる拘束です。等しい値は円弧同士ならRだけをそろえます。中心は別でもよいです。",
+            fieldRule:"今回の判断：同じ円の上に乗せたいなら同一円弧。端だけ滑らかなら正接。"
+          },
+          {
+            tag:"縮尺1:4",
+            question:"図面の縮尺が1:4で、CAD寸法値として27と表示されている。実寸は？",
+            choices:["27mm","108mm","6.75mm"],
+            answer:0,
+            image:"assets/q20260701-scale-1-4.png",
+            alt:"図面縮尺1対4の寸法値と紙で測った長さの違いを示すリアル説明画像",
+            chips:["CAD寸法値","紙で測った長さ","実寸"],
+            reason:"CADや図面に記入されている寸法値は、縮尺に関係なく実寸です。紙を定規で測った長さだけ、縮尺倍率を掛けます。",
+            fieldRule:"覚え方：寸法値27 = 実寸27。紙を実測した27mmなら 27×4=108mm。"
+          },
+          {
+            tag:"Windows録画",
+            question:"Windowsで画面録画を開始・停止するショートカットは？",
+            choices:["Win + G","Win + Alt + R","Ctrl + Shift + S"],
+            answer:1,
+            image:"assets/q20260701-windows-recording.png",
+            alt:"Windows録画ショートカットをキーボードとGame Barで示したリアル説明画像",
+            chips:["Win + G","Win + Alt + R","Game Bar"],
+            reason:"Win + G はゲームバーを開く操作です。すぐ録画開始・停止するのは Win + Alt + R です。",
+            fieldRule:"会社PCでは、保存先と社内ルールを確認してから録画する。"
+          }
+        ]
       },
       {
-        tag:"Sketch Text",
-        question:"文字の間に大きな空白が出た。まず疑う原因は？",
-        choices:[
-          "Curvesに長い直線を選んでいる",
-          "板厚が薄すぎる",
-          "材料がSUSではない"
-        ],
-        answer:0,
-        image:"assets/q2-text-curve-blank-space.png",
-        alt:"長いスケッチ文字枠にT B 1が広がっているSolidWorks風CAD画面",
-        chips:["Curves確認", "長い基準線", "文字枠を小さく"],
-        reason:"スケッチ文字は、選んだ線やエッジに沿って配置されます。長い線を選ぶと、その全長に文字が広がります。",
-        fieldRule:"現場判断：空白が大きい時は、文字内容より先にCurves欄の選択線を外す。"
+        id:"receptacle-plug-20260629",
+        title:"2026/6/29 レセ・プラグ復習",
+        created:"2026/06/29",
+        note:"社内ではレセプタクルを組付け、プラグは添付品とする判断を確認する。",
+        questions:[
+          {
+            tag:"組付け対象",
+            question:"社内で組付けるのはどちら？",
+            choices:["プラグを社内で組付ける","レセプタクルを社内で組付ける","両方とも何も組付けない"],
+            answer:1,
+            image:"assets/q20260629-receptacle-assembled-plug-attached.png",
+            alt:"レセプタクルを社内で組付け、プラグを添付品にする実物風説明画像",
+            chips:["レセプタクル","社内組付け","固定側"],
+            reason:"社内で組むのはレセプタクルです。機器やパネル側に固定される側なので、製品側に組付けます。",
+            fieldRule:"覚え方：固定側＝レセプタクル＝社内で組む。"
+          },
+          {
+            tag:"添付品",
+            question:"プラグはどう扱う？",
+            choices:["レセに差した状態で出荷する","添付品として袋入り・同梱にする","不要なので外す"],
+            answer:1,
+            image:"assets/q20260629-ok-ng-plug-attached.png",
+            alt:"プラグを差して出荷するNG例と、袋入り添付のOK例を示す実物風説明画像",
+            chips:["プラグ","添付品","袋入り確認"],
+            reason:"プラグは添付品です。レセプタクルへ差し込んだ状態ではなく、袋入り・同梱で確認します。",
+            fieldRule:"指示が「添付」なら、差し込まず袋入り・同梱で確認。"
+          },
+          {
+            tag:"図面コメント",
+            question:"図面や社内指示に書くなら一番安全なのは？",
+            choices:["レセプタクルは社内組付け、プラグは添付品とする","プラグもレセも現場判断とする","コネクタあり、とだけ書く"],
+            answer:0,
+            image:"assets/q20260629-drawing-note-receptacle-plug.png",
+            alt:"図面・社内指示でレセプタクル社内組付け、プラグ添付品と明記する実物風説明画像",
+            chips:["図面コメント","備考欄","明記"],
+            reason:"相手が迷わないように、レセプタクルを組付けることと、プラグを添付品にすることを分けて書きます。",
+            fieldRule:"コメント例：レセプタクルは社内組付け、プラグは添付品とする。"
+          },
+          {
+            tag:"見分け方",
+            question:"一般的な見分け方として正しいのは？",
+            choices:["プラグは受ける側、レセプタクルは差し込む側","プラグは差し込む側、レセプタクルは受ける側","名前だけではなく色で決める"],
+            answer:1,
+            image:"assets/q20260629-plug-vs-receptacle-identify.png",
+            alt:"プラグは差し込む側、レセプタクルは受ける側を示す実物風説明画像",
+            chips:["プラグ","レセプタクル","見分け方"],
+            reason:"基本は、プラグが差し込む側、レセプタクルが受ける側です。ただし最終判断はメーカーのカタログ名称を優先します。",
+            fieldRule:"注意：オス/メス端子と、プラグ/レセプタクル名称は別で考える。",
+            motion:{
+              background:"assets/q20260629-plug-smooth-bg.png",
+              plug:"assets/q20260629-plug-smooth-plug.png",
+              caption:"滑らか理解用：プラグだけが動いて、レセプタクルに差し込まれる。実務の納入は、プラグを差したままにせず添付品で確認。"
+            }
+          }
+        ]
       },
       {
-        tag:"3D CAD調査",
-        question:"3D CADが見つからない。設計上の扱いは？",
-        choices:[
-          "型番が似ていれば3Dありとして進める",
-          "公式ページでCAD/STEPが見えるまで未確認扱いにする",
-          "検索結果に出ない時は廃番と決める"
-        ],
-        answer:1,
-        image:"assets/q3-cad-data-unconfirmed.png",
-        alt:"3D CAD未確認の検索画面とチェックリスト",
-        chips:["公式優先", "完全型番", "未確認扱い"],
-        reason:"商品ページやCAD欄が動的表示で確認できない時は、3Dデータありとは断定しない方が安全です。",
-        fieldRule:"現場判断：公式でSTEPや3D CAD欄を確認できるまで、モデル流用前提にしない。"
+        id:"paint-pin-visual-20260626",
+        title:"2026/6/26 塗装・ピン復習",
+        created:"2026/06/26",
+        note:"ピン納入、塗装仕様番号、DIC近似色、画像説明ルールを確認する。",
+        questions:[
+          {
+            tag:"ピン納入",
+            question:"客先が『ピンはどのような納入の仕方か』と聞く時、まず確認することは？",
+            choices:["ピンの材質だけ確認する","コネクタに入れて納入か、袋入り添付かを確認する","ピン数は図面から消す"],
+            answer:1,
+            image:"assets/q20260626-pin-delivery.png",
+            alt:"コネクタ取付済と袋入り添付の納入方法を比較した実物風画像",
+            chips:["取付済","袋入り添付","備考欄確認"],
+            reason:"客先は『ピンをコネクタに入れて渡すのか、別袋で添付するのか』を確認しています。",
+            fieldRule:"回答の芯：納入形態を決め、添付品は備考欄に明記する。"
+          },
+          {
+            tag:"塗装仕様",
+            question:"#301TB015_塗装 のような表記で一番安全な見方は？",
+            choices:["塗装仕様番号なので、色・艶・膜厚は仕様書で確認する","数字があるので寸法番号として扱う","塗装不要の意味として扱う"],
+            answer:0,
+            image:"assets/q20260626-paint-code.png",
+            alt:"#301TB015_塗装を塗装仕様番号として確認する実物風画像",
+            chips:["仕様番号","色・艶・膜厚","番号だけで判断しない"],
+            reason:"#301TB015 は塗装条件を呼び出す番号の可能性があります。番号だけで色や膜厚を決めるのは危険です。",
+            fieldRule:"図面確認：塗装仕様番号 → 仕様書 → 色・艶・膜厚。"
+          },
+          {
+            tag:"DIC近似色",
+            question:"DIC G-298 グレートーン近似色とは？",
+            choices:["完全に同じ色を必ず作る指定","黒色なら何でもよい指定","DIC G-298に近いグレー系で合わせる指定"],
+            answer:2,
+            image:"assets/q20260626-dic-g298.png",
+            alt:"DIC G-298の色見本と塗装サンプルを比較する実物風画像",
+            chips:["DIC G-298","グレー系","近似色"],
+            reason:"DIC G-298という色見本に近いグレーで合わせる、という意味です。画面表示だけでは判断しません。",
+            fieldRule:"図面コメント例：塗装色 DIC G-298 グレートーン近似色。"
+          },
+          {
+            tag:"近似色",
+            question:"『近似色』で一番大事な考え方は？",
+            choices:["完全一致ではなく、承認色板や色見本を優先して近づける","画面で似ていれば必ず合格","塗装者の好みで決めてよい"],
+            answer:0,
+            image:"assets/q20260626-approx-color.png",
+            alt:"基準色チップと塗装サンプルを色差確認する実物風画像",
+            chips:["完全一致ではない","承認色板優先","色差確認"],
+            reason:"近似色は『近い色』です。最終判断は色見本、承認色板、客先基準で確認するのが安全です。",
+            fieldRule:"迷ったら：画面色ではなく、実物色板で確認。"
+          },
+          {
+            tag:"画像解説",
+            question:"三輪さん向けの疑問解説で、今回強化したルールは？",
+            choices:["文字だけで短く終わればよい","リアル画像または高品質説明画像を先に出してから短く説明する","表だけ作れば画像は不要"],
+            answer:1,
+            image:"assets/q20260626-visual-rule.png",
+            alt:"画像から理解する技術説明と文字だけNGを比較した実物風画像",
+            chips:["画像から理解","文字だけNG","答えは短く"],
+            reason:"疑問解説は、文字だけで終わらせると理解がズレやすい。まず画像で見て、結論を短く確認します。",
+            fieldRule:"次回ルール：疑問解説 = 画像先行。画像なしなら未完了。"
+          }
+        ]
       },
       {
-        tag:"表面仕上げ",
-        question:"HLや鏡面を図面で伝える。最低限必要な指示は？",
-        choices:[
-          "面・仕上げ種類・方向・番手",
-          "材料名だけ",
-          "表面粗さ記号だけ"
-        ],
-        answer:0,
-        image:"assets/q4-surface-finish-direction.png",
-        alt:"板金図面とHL方向と鏡面サンプルを示す作業机",
-        chips:["加工面", "方向", "番手"],
-        reason:"HLは方向が大事です。鏡面#400/#500は番手の目安なので、加工する面と仕上げ内容を分けて書くと伝わりやすいです。",
-        fieldRule:"図面コメント例：指示面 HL方向記入部、#150〜180相当仕上げ。キズ・打痕なきこと。"
+        id:"learning-20260618",
+        title:"2026/6/18 学び復習",
+        created:"2026/06/18",
+        note:"変更前提の設計、合致、失敗メモ改善を確認する。",
+        questions:[
+          {
+            tag:"変更前提",
+            question:"SolidWorksのアセンブリで、後から変更しやすくする基本は？",
+            choices:["見た目が合っていれば合致は少なくてよい","変更は必ずある前提で、合致と基準を考えて組む","最後に図面で寸法を直せばよい"],
+            answer:1,
+            image:"assets/q5-lug-stud-spacer.png",
+            alt:"スペーサーとスタッドを含む固定構造の実画像",
+            chips:["変更前提","基準を決める","あとで崩れにくい"],
+            reason:"大型アセンブリは後で変更が入ります。最初に基準面、固定する相手、逃がす方向を考えて合致すると、修正時に壊れにくくなります。",
+            fieldRule:"覚える一言：変更は絶対ある。今少し考えると、後で大きく楽になる。"
+          },
+          {
+            tag:"合致",
+            question:"部品を置く時に、やってはいけない考え方は？",
+            choices:["面・穴・中心線など、基準を使って合致する","とりあえず見た目で合わせ、後で困ったら直す","どこを基準にするか先に決める"],
+            answer:1,
+            image:"assets/q1-solidworks-vertical-text.png",
+            alt:"SolidWorks画面で位置を管理している実画像",
+            chips:["見た目合わせNG","合致で管理","基準を残す"],
+            reason:"見た目合わせは一瞬早いですが、変更時に位置関係が分からなくなります。合致は、後から直すためのメモでもあります。",
+            fieldRule:"覚える一言：見た目で置かない。合致で理由を残す。"
+          },
+          {
+            tag:"改善メモ",
+            question:"面倒な失敗をした時、次に一番効く行動は？",
+            choices:["忘れる前に、原因と次回ルールを1行で残す","気合いで次は気をつける","作業時間を全部やり直す"],
+            answer:0,
+            image:"assets/q3-cad-data-unconfirmed.png",
+            alt:"確認フローを示す実画像",
+            chips:["失敗メモ","次回ルール化","同じミス防止"],
+            reason:"同じ失敗を減らすには、気合いではなく仕組みが必要です。原因、次回見る場所、禁止する行動を短く残すと再発防止になります。",
+            fieldRule:"覚える一言：失敗したら、原因→次回ルール→チェック場所を残す。"
+          }
+        ]
       },
       {
-        tag:"固定設計",
-        question:"ラグ板を固定する。設計前に確認する組み合わせは？",
-        choices:[
-          "色だけ",
-          "穴径・スペーサー・タップ/溶接スタッド・締結高さ",
-          "部品名だけ"
-        ],
-        answer:1,
-        image:"assets/q5-lug-stud-spacer.png",
-        alt:"ラグ板をスペーサーと溶接スタッドで固定する構造",
-        chips:["穴径", "スペーサー", "溶接スタッド"],
-        reason:"通し穴に対して、スペーサーやスタッド径が合うか、締めた時に基板や端子が干渉しないかを先に見ます。",
-        fieldRule:"現場判断：穴径だけで決めない。重なり順、逃げ、締結高さ、溶接可否まで確認する。"
+        id:"design-mistake",
+        title:"設計ミス防止 5問",
+        created:"2026/06/16",
+        note:"SolidWorks、文字、3Dデータ、表面仕上げ、固定設計の基本確認。",
+        questions:[
+          {
+            tag:"SolidWorks",
+            question:"TB1を縦文字で入れる。安全な作り方は？",
+            choices:["TB1を1つのスケッチ文字で90度回転する","T・B・1を別々のスケッチ文字で縦に配置する","フォントだけ変えて縦書きに見せる"],
+            answer:1,
+            image:"assets/q1-solidworks-vertical-text.png",
+            alt:"SolidWorksでT B 1を別々に縦配置した画像",
+            chips:["文字を分ける","中心線で位置決め","後で崩れにくい"],
+            reason:"1つの文字列を無理に回すより、文字を分けて寸法管理する方がズレを確認しやすいです。",
+            fieldRule:"現場メモ：縦文字は、文字ごとに配置して中心線と寸法で固定する。"
+          },
+          {
+            tag:"Sketch Text",
+            question:"文字の間に大きな空白が出た。まず疑う原因は？",
+            choices:["Curvesに長い補助線を選んでいる","板厚が薄すぎる","材料がSUSではない"],
+            answer:0,
+            image:"assets/q2-text-curve-blank-space.png",
+            alt:"スケッチ文字が長い基線に沿って広がる画像",
+            chips:["Curves確認","文字基準を短く","不要な線を選ばない"],
+            reason:"スケッチ文字が選んだ線に沿って配置され、文字間が広がることがあります。",
+            fieldRule:"現場メモ：文字が離れる時は、まずCurvesの選択線を確認する。"
+          },
+          {
+            tag:"3D CAD調査",
+            question:"3D CADが見つからない。設計上の扱いは？",
+            choices:["型番が似ていれば3Dありとして進める","公式ページでCAD/STEPが見えるまで未確認扱いにする","検索結果に出ない時は廃番と決める"],
+            answer:1,
+            image:"assets/q3-cad-data-unconfirmed.png",
+            alt:"3D CAD未確認の調査フロー画像",
+            chips:["公式確認","未確認扱い","寸法表で仮置き"],
+            reason:"検索で見えないだけで、3Dなしや廃番とは決められません。公式確認まで未確認です。",
+            fieldRule:"現場メモ：3Dデータは公式ページでCAD/STEPを確認してから確定する。"
+          },
+          {
+            tag:"表面仕上げ",
+            question:"HLや鏡面を図面で伝える。最低限必要な指示は？",
+            choices:["面・仕上げ種類・方向・番手","材料名だけ","表面粗さ記号だけ"],
+            answer:0,
+            image:"assets/q4-surface-finish-direction.png",
+            alt:"HL方向と鏡面番手の指示画像",
+            chips:["加工面","方向","番手"],
+            reason:"外観仕上げは、どの面か、どの方向か、どの番手かを分けると加工者が迷いにくいです。",
+            fieldRule:"現場メモ：指示面、HL方向、#150〜180などを分けて書く。"
+          },
+          {
+            tag:"固定設計",
+            question:"ラグ板を固定する。設計前に確認する組み合わせは？",
+            choices:["色だけ","穴径・スペーサー・タップ/溶接スタッド・締結高さ","部品名だけ"],
+            answer:1,
+            image:"assets/q5-lug-stud-spacer.png",
+            alt:"ラグ板、スペーサー、溶接スタッドの固定構造画像",
+            chips:["穴径","スペーサー","締結高さ"],
+            reason:"穴が合っても、スペーサー高さやネジの有効長が合わないと固定できません。",
+            fieldRule:"現場メモ：穴径、スペーサー、ねじ、干渉をセットで確認する。"
+          }
+        ]
+      },
+      {
+        id:"bakelite-board",
+        title:"ベーク板 3問",
+        created:"2026/06/17",
+        note:"ベーク板の材料名、紙ベーク/布ベーク、図面指示を確認する。",
+        questions:[
+          {
+            tag:"材質",
+            question:"ベーク板の正しい材料イメージは？",
+            choices:["鉄板に茶色塗装したもの","紙または布にフェノール樹脂を含浸させて固めた板","ゴムを硬くした材料"],
+            answer:1,
+            image:"assets/bakelite-q1-new-material.png",
+            alt:"積層板の断面が見える画像",
+            chips:["フェノール樹脂","積層板","絶縁材料"],
+            reason:"ベーク板は単体の『ベーク』ではなく、紙や布の層にフェノール樹脂を含浸して固めた積層板です。",
+            fieldRule:"覚える一言：ベーク板 = 基材（紙/布） + フェノール樹脂。"
+          },
+          {
+            tag:"種類",
+            question:"紙ベークと布ベークの大きな違いは？",
+            choices:["色だけ","中の基材が紙か布かで、強さが変わる","どちらも金属材料"],
+            answer:1,
+            image:"assets/bakelite-q2-new-types.png",
+            alt:"紙基材と布基材の違いを示す画像",
+            chips:["紙ベーク","布ベーク","布の方が強め"],
+            reason:"紙ベークは紙基材、布ベークは布基材です。布ベークの方が機械強度を取りやすい場面があります。",
+            fieldRule:"設計メモ：強度や割れが気になる場所は、紙/布の指定を確認する。"
+          },
+          {
+            tag:"図面指示",
+            question:"図面に『ベーク t3』だけだと何が弱い？",
+            choices:["板厚が分からない","紙基材か布基材か、フェノール樹脂積層板かが曖昧","加工できない材料になる"],
+            answer:1,
+            image:"assets/bakelite-q3-new-drawing.png",
+            alt:"図面指示と穴割れ注意を示す画像",
+            chips:["正式名","基材指定","穴割れ注意"],
+            reason:"『ベーク』は現場略称なので、材質を誤解しないように正式名と基材を書いた方が安全です。",
+            fieldRule:"図面コメント例：紙基材フェノール樹脂積層板 t3.0"
+          }
+        ]
       }
     ];
 
+    const params = new URLSearchParams(location.search);
+    const storageKey = "dm-review-v16";
+    const saved = JSON.parse(localStorage.getItem(storageKey) || "{}");
     const state = {
-      index: Number(localStorage.getItem("dm5-index") || 0),
-      selected: null,
-      answers: JSON.parse(localStorage.getItem("dm5-answers") || "[]")
+      setId: params.get("set") || saved.setId || "solidworks-20260701",
+      index: Number(params.get("q") || saved.index || 0),
+      answers: saved.answers || {}
     };
 
     const el = {
+      setRow: document.getElementById("setRow"),
+      created: document.getElementById("created"),
       counter: document.getElementById("counter"),
       score: document.getElementById("score"),
       bar: document.getElementById("bar"),
@@ -505,39 +595,75 @@
       result: document.getElementById("result"),
       answerTopic: document.getElementById("answer-topic"),
       answerImage: document.getElementById("answerImage"),
+      motion: document.getElementById("motion"),
+      motionReplay: document.getElementById("motionReplay"),
+      motionBg: document.getElementById("motionBg"),
+      motionPlug: document.getElementById("motionPlug"),
+      motionSlider: document.getElementById("motionSlider"),
+      motionCaption: document.getElementById("motionCaption"),
       chips: document.getElementById("chips"),
       reason: document.getElementById("reason"),
       fieldRule: document.getElementById("fieldRule"),
       prev: document.getElementById("prev"),
-      next: document.getElementById("next"),
       check: document.getElementById("check"),
-      topics: document.getElementById("topics"),
+      next: document.getElementById("next"),
       reset: document.getElementById("reset"),
-      install: document.getElementById("install")
+      install: document.getElementById("install"),
+      topics: document.getElementById("topics"),
+      setTitle: document.getElementById("setTitle"),
+      setNote: document.getElementById("setNote")
     };
 
+    let motionRaf = 0;
+
+    function activeSet(){
+      return quizSets.find(set => set.id === state.setId) || quizSets[0];
+    }
+
+    function answersForSet(){
+      if (!state.answers[state.setId]) state.answers[state.setId] = [];
+      return state.answers[state.setId];
+    }
+
     function save(){
-      localStorage.setItem("dm5-index", String(state.index));
-      localStorage.setItem("dm5-answers", JSON.stringify(state.answers));
+      localStorage.setItem(storageKey, JSON.stringify(state));
     }
 
     function score(){
-      return state.answers.filter((item, i) => item === quiz[i].answer).length;
+      const set = activeSet();
+      const answers = answersForSet();
+      return answers.filter((item, i) => item === set.questions[i].answer).length;
+    }
+
+    function renderSets(){
+      el.setRow.innerHTML = "";
+      quizSets.forEach(set => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "set-btn" + (set.id === state.setId ? " active" : "");
+        btn.textContent = set.title;
+        btn.addEventListener("click", () => {
+          state.setId = set.id;
+          state.index = 0;
+          save();
+          render();
+        });
+        el.setRow.appendChild(btn);
+      });
     }
 
     function renderTopics(){
+      const set = activeSet();
+      const answers = answersForSet();
       el.topics.innerHTML = "";
-      quiz.forEach((q, i) => {
+      set.questions.forEach((q, i) => {
         const item = document.createElement("button");
         item.type = "button";
         item.className = "topic" + (i === state.index ? " active" : "");
-        if (state.answers[i] !== undefined) {
-          item.className += state.answers[i] === q.answer ? " done" : " wrong-done";
-        }
-        item.innerHTML = `<span class="dot"></span><span>Q${i + 1} ${q.tag}</span><span>${state.answers[i] === undefined ? "未" : state.answers[i] === q.answer ? "○" : "△"}</span>`;
+        if (answers[i] !== undefined) item.className += answers[i] === q.answer ? " done" : " wrong-done";
+        item.innerHTML = `<span class="dot"></span><span>Q${i + 1} ${q.tag}</span><span>${answers[i] === undefined ? "未" : answers[i] === q.answer ? "○" : "×"}</span>`;
         item.addEventListener("click", () => {
           state.index = i;
-          state.selected = null;
           save();
           render();
         });
@@ -546,15 +672,18 @@
     }
 
     function showAnswer(selected){
-      const q = quiz[state.index];
+      const set = activeSet();
+      const q = set.questions[state.index];
+      const answers = answersForSet();
       const correct = selected === q.answer;
-      state.answers[state.index] = selected;
+      answers[state.index] = selected;
       save();
       el.answer.classList.add("show");
       el.result.textContent = correct ? "正解" : "確認";
       el.answerTopic.textContent = q.tag + " 画像解説";
       el.answerImage.src = q.image;
       el.answerImage.alt = q.alt;
+      renderMotion(q);
       el.chips.innerHTML = q.chips.map(chip => `<span class="chip">${chip}</span>`).join("");
       el.reason.textContent = q.reason;
       el.fieldRule.textContent = q.fieldRule;
@@ -567,6 +696,52 @@
       renderTopics();
     }
 
+    function restartMotion(){
+      cancelAnimationFrame(motionRaf);
+      const start = performance.now();
+      const duration = 4300;
+      const tick = (now) => {
+        const raw = Math.min(1, (now - start) / duration);
+        const eased = raw < .5 ? 2 * raw * raw : 1 - Math.pow(-2 * raw + 2, 2) / 2;
+        setMotionProgress(Math.round(eased * 100));
+        if (raw < 1) motionRaf = requestAnimationFrame(tick);
+      };
+      setMotionProgress(0);
+      motionRaf = requestAnimationFrame(tick);
+    }
+
+    function setMotionProgress(value){
+      const progress = Math.max(0, Math.min(100, Number(value) || 0));
+      const plugX = -44 + progress * .9;
+      const motionStage = el.motion.querySelector(".motion-stage");
+      el.motion.style.setProperty("--motion-progress", progress);
+      el.motion.style.setProperty("--plug-x", `${plugX}%`);
+      if(motionStage){
+        motionStage.style.setProperty("--motion-progress", progress);
+        motionStage.style.setProperty("--plug-x", `${plugX}%`);
+      }
+      el.motionSlider.value = String(progress);
+    }
+
+    function renderMotion(q){
+      if (!q.motion) {
+        cancelAnimationFrame(motionRaf);
+        el.motion.classList.remove("show");
+        el.motionBg.removeAttribute("src");
+        el.motionPlug.removeAttribute("src");
+        el.motionCaption.textContent = "";
+        setMotionProgress(0);
+        return;
+      }
+      el.motionBg.src = q.motion.background;
+      el.motionPlug.src = q.motion.plug;
+      el.motionBg.alt = "レセプタクルだけを写した実画像背景";
+      el.motionPlug.alt = "滑らかに差し込むための透明プラグ実画像";
+      el.motionCaption.textContent = q.motion.caption;
+      el.motion.classList.add("show");
+      restartMotion();
+    }
+
     function renderChoices(q){
       el.choices.innerHTML = "";
       q.choices.forEach((choice, i) => {
@@ -574,63 +749,70 @@
         btn.type = "button";
         btn.className = "choice";
         btn.innerHTML = `<span class="badge">${String.fromCharCode(65 + i)}</span><span>${choice}</span>`;
-        btn.addEventListener("click", () => {
-          state.selected = i;
-          showAnswer(i);
-        });
+        btn.addEventListener("click", () => showAnswer(i));
         el.choices.appendChild(btn);
       });
     }
 
     function updateStatus(){
-      el.counter.textContent = `${state.index + 1} / ${quiz.length}`;
-      el.score.textContent = `正解 ${score()} / ${quiz.length}`;
-      el.bar.style.width = `${((state.index + 1) / quiz.length) * 100}%`;
+      const set = activeSet();
+      el.counter.textContent = `${state.index + 1} / ${set.questions.length}`;
+      el.score.textContent = `正解 ${score()} / ${set.questions.length}`;
+      el.bar.style.width = `${((state.index + 1) / set.questions.length) * 100}%`;
       el.prev.disabled = state.index === 0;
-      el.next.disabled = state.index === quiz.length - 1;
+      el.next.disabled = state.index === set.questions.length - 1;
     }
 
     function render(){
-      state.index = Math.max(0, Math.min(state.index, quiz.length - 1));
-      const q = quiz[state.index];
+      const set = activeSet();
+      state.index = Math.max(0, Math.min(state.index, set.questions.length - 1));
+      const q = set.questions[state.index];
+      el.created.textContent = `作成日 ${set.created}`;
+      el.setTitle.textContent = set.title;
+      el.setNote.textContent = set.note;
       el.qtag.textContent = `Q${state.index + 1} ${q.tag}`;
       el.question.textContent = q.question;
       el.answer.classList.remove("show");
       el.answerImage.removeAttribute("src");
+      renderMotion({});
+      renderSets();
       renderChoices(q);
       updateStatus();
       renderTopics();
-      if (state.answers[state.index] !== undefined) {
-        showAnswer(state.answers[state.index]);
+      const answers = answersForSet();
+      if (answers[state.index] !== undefined) {
+        showAnswer(answers[state.index]);
       }
     }
 
     el.prev.addEventListener("click", () => {
-      if (state.index === 0) return;
       state.index -= 1;
-      state.selected = null;
       save();
       render();
     });
 
     el.next.addEventListener("click", () => {
-      if (state.index === quiz.length - 1) return;
       state.index += 1;
-      state.selected = null;
       save();
       render();
     });
 
     el.check.addEventListener("click", () => {
-      if (state.answers[state.index] !== undefined) return;
-      const first = el.choices.querySelector(".choice");
-      if (first) first.focus();
+      const answers = answersForSet();
+      const q = activeSet().questions[state.index];
+      if (answers[state.index] === undefined) showAnswer(q.answer);
+    });
+
+    el.motionReplay.addEventListener("click", restartMotion);
+
+    el.motionSlider.addEventListener("input", () => {
+      cancelAnimationFrame(motionRaf);
+      setMotionProgress(el.motionSlider.value);
     });
 
     el.reset.addEventListener("click", () => {
+      state.answers[state.setId] = [];
       state.index = 0;
-      state.selected = null;
-      state.answers = [];
       save();
       render();
     });
@@ -650,9 +832,7 @@
     });
 
     if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./service-worker.js").catch(() => {});
-      });
+      navigator.serviceWorker.register("./service-worker.js").catch(() => {});
     }
 
     render();

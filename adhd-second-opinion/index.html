@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大人のADHD 病院番付【めくる版】─ 佐賀・福岡 / 太宰府発</title>
+<meta name="theme-color" content="#0f6e56">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ADHD病院選び">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#222018; --sub:#6b675c; --line:#e3ddd0;
+    --paper:#f7f4ec; --card:#ffffff; --green:#0f6e56; --green-d:#0b5443;
+    --gold:#b07c1a; --cream:#efe9dc; --warnbg:#f7eed6; --warnink:#8a6512;
+    --good:#2f7d4f; --bad:#b5562f; --alert:#a9381f; --alertbg:#f8e7e0;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--paper); color:var(--ink);
+    font-family:"Noto Sans JP",sans-serif; line-height:1.85;
+    -webkit-font-smoothing:antialiased; padding-bottom:30px;}
+  .wrap{max-width:680px; margin:0 auto; padding:0 20px;}
+  strong{font-weight:700;}
+
+  .progress{position:sticky; top:0; z-index:50; background:rgba(247,244,236,.96); backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line); padding:11px 20px; margin-bottom:0;}
+  .progress .row{display:flex; align-items:center; gap:10px; max-width:680px; margin:0 auto;}
+  .progress .lbl{font-size:12px; color:var(--green-d); font-weight:700; white-space:nowrap;}
+  .bar{flex:1; height:9px; background:var(--cream); border-radius:6px; overflow:hidden;}
+  .bar .fill{height:100%; width:0%; background:var(--green); border-radius:6px; transition:width .4s ease;}
+  .progress .reset{font-size:11px; color:var(--sub); background:none; border:1px solid var(--line); border-radius:14px; padding:3px 10px; cursor:pointer;}
+
+  /* screen switching */
+  .screen{display:none; animation:fade .35s ease;}
+  .screen.active{display:block;}
+  @keyframes fade{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
+
+  /* HOME */
+  .cover{position:relative; border-radius:14px; overflow:hidden; background:var(--green); min-height:200px; display:flex; align-items:flex-end; margin:20px 0 18px;}
+  .cover .pic{position:absolute; inset:0; background:repeating-linear-gradient(135deg, rgba(255,255,255,.05) 0 18px, rgba(255,255,255,0) 18px 36px), var(--green);}
+  .cover .ico{position:absolute; right:-6px; bottom:-26px; font-size:180px; line-height:1; opacity:.12;}
+  .cover .txt{position:relative; padding:24px 22px;}
+  .cover .label{font-size:12px; letter-spacing:3px; color:#9fe1cb; text-transform:uppercase; margin-bottom:9px;}
+  .cover h1{font-family:"Noto Serif JP",serif; font-weight:600; font-size:31px; color:#fff; line-height:1.25;}
+  .cover h1 em{font-style:italic; font-weight:500; color:#ffe7b3;}
+  .cover .sub{color:#d8efe6; font-size:12.5px; margin-top:10px;}
+
+  .hint{font-size:13px; color:#4a463c; line-height:1.9; margin-bottom:16px;}
+  .hint b{color:var(--green-d); font-weight:700;}
+
+  .box.gold{background:#fff; border:1px solid var(--line); border-left:4px solid var(--gold); border-radius:0 12px 12px 0; padding:14px 16px; margin:0 0 20px;}
+  .box.gold h3{font-size:13px; font-weight:700; color:var(--gold); margin-bottom:8px;}
+  .box.gold p{font-size:12.5px; color:#4a463c; line-height:1.85;}
+
+  .list-title{font-size:13px; color:var(--sub); font-weight:700; letter-spacing:1px; margin:0 0 12px;}
+  .hcard{display:flex; align-items:center; gap:13px; background:#fff; border:1px solid var(--line); border-radius:13px; padding:13px 15px; margin-bottom:11px; cursor:pointer; transition:.18s;}
+  .hcard:hover{border-color:var(--green); transform:translateX(2px);}
+  .hcard.done{background:#eef5ef; border-color:#bcd9c4;}
+  .hcard.alert{border-color:#e3b9a9;}
+  .hcard .no{font-family:"Noto Serif JP",serif; font-size:30px; font-weight:600; color:#cfc7b4; min-width:34px; text-align:center;}
+  .hcard.win .no{color:var(--gold);}
+  .hcard .mid{flex:1; min-width:0;}
+  .hcard .rk{font-size:10.5px; letter-spacing:1px; color:var(--green); font-weight:700;}
+  .hcard.win .rk{color:var(--gold);}
+  .hcard.alert .rk{color:var(--alert);}
+  .hcard .nm{font-family:"Noto Serif JP",serif; font-size:16.5px; font-weight:600; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .hcard .ar{font-size:11.5px; color:var(--sub);}
+  .hcard .go{font-size:11px; color:var(--green); white-space:nowrap;}
+  .hcard .tick{font-size:16px; color:var(--green);}
+
+  /* DETAIL */
+  .navbar{display:flex; align-items:center; justify-content:space-between; gap:8px; margin:16px 0 14px;}
+  .navbtn{flex:1; font-size:13px; font-weight:500; text-align:center; padding:11px 0; border-radius:11px; border:1px solid var(--line); background:#fff; color:var(--ink); cursor:pointer; transition:.15s;}
+  .navbtn:hover{border-color:var(--green); color:var(--green-d);}
+  .navbtn:disabled{opacity:.35; cursor:default;}
+  .navbtn.home{flex:0 0 auto; padding:11px 16px; background:var(--green); color:#fff; border-color:var(--green);}
+  .pageno{flex:0 0 auto; font-size:12px; color:var(--sub); padding:0 4px;}
+
+  .d-rank{font-size:12px; letter-spacing:1.5px; font-weight:700; color:var(--green); margin-bottom:4px;}
+  .d-rank.win{color:var(--gold);} .d-rank.alert{color:var(--alert);}
+  .d-name{font-family:"Noto Serif JP",serif; font-size:25px; font-weight:600; line-height:1.3;}
+  .d-meta{font-size:12.5px; color:var(--sub); margin-top:4px;}
+
+  .scores{display:grid; grid-template-columns:1fr 1fr; gap:6px 16px; margin:15px 0 0; padding:13px 14px; background:var(--cream); border-radius:11px;}
+  .sc{display:flex; justify-content:space-between; font-size:12.5px;}
+  .sc .k{color:var(--sub);}
+  .sc .v{color:#caa53a; letter-spacing:1px;}
+
+  .rev{margin:14px 0 0; padding:13px 14px; background:#faf8f2; border:1px solid var(--line); border-radius:11px; font-size:12.5px; line-height:1.85;}
+  .rev .hd{display:flex; flex-wrap:wrap; gap:6px; justify-content:space-between; align-items:center; margin-bottom:8px; padding-bottom:8px; border-bottom:1px dashed var(--line);}
+  .rev .avg{font-weight:700;}
+  .rev .trust{font-size:10.5px; padding:2px 9px; border-radius:12px; background:#e7f1ec; color:var(--green-d);}
+  .rev .trust.low{background:var(--warnbg); color:var(--warnink);}
+  .rev .trust.bad{background:var(--alertbg); color:var(--alert);}
+  .rev .g{color:var(--good); font-weight:500;}
+  .rev .b{color:var(--bad); font-weight:500;}
+  .rev .line{margin-top:6px;}
+
+  .map{border:0; width:100%; height:170px; border-radius:12px; margin:14px 0 0; background:#e8e3d6;}
+  .photo-link{display:inline-flex; gap:5px; font-size:11.5px; color:var(--sub); margin-top:7px; text-decoration:none;}
+  .desc{font-size:14px; color:#3a372f; margin:14px 0 12px; line-height:1.95;}
+
+  .tags{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:15px;}
+  .tag{font-size:11.5px; padding:3px 11px; border-radius:20px; background:#e7f1ec; color:var(--green-d);}
+  .tag.warn{background:var(--warnbg); color:var(--warnink);}
+  .tag.alert{background:var(--alertbg); color:var(--alert);}
+  .acts{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:4px;}
+  .btn{font-size:14px; text-decoration:none; padding:11px 18px; border-radius:11px; letter-spacing:.5px;}
+  .btn.call{background:var(--green); color:#fff;}
+  .btn.ghost{background:#fff; border:1px solid var(--line); color:var(--ink);}
+
+  .chk{display:flex; align-items:center; gap:10px; margin-top:16px; padding:14px; border:1px dashed var(--green); border-radius:12px; cursor:pointer; user-select:none; background:#fff;}
+  .chk.on{background:#eef5ef; border-style:solid;}
+  .chk .box-ui{width:26px; height:26px; border:2px solid var(--green); border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:16px; color:#fff; background:#fff; flex:0 0 auto;}
+  .chk.on .box-ui{background:var(--green);}
+  .chk.on .box-ui::after{content:"✓";}
+  .chk .t{font-size:13.5px; color:var(--green-d); font-weight:500;}
+
+  .foot{font-size:11px; color:#a39d8e; border-top:1px solid var(--line); margin-top:22px; padding-top:18px; line-height:1.85;}
+  @media(max-width:480px){ .cover h1{font-size:26px;} .d-name{font-size:21px;} }
+</style>
+</head>
+<body>
+
+<div class="progress">
+  <div class="row">
+    <span class="lbl">進捗 <span id="cnt">0</span>/9院</span>
+    <div class="bar"><div class="fill" id="fill"></div></div>
+    <button class="reset" id="reset">リセット</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- HOME -->
+  <section id="home" class="screen active">
+    <div class="cover">
+      <div class="pic"></div>
+      <div class="ico">🩺</div>
+      <div class="txt">
+        <div class="label">Second Opinion</div>
+        <h1>大人のADHD<br>病院、<em>えらび直す。</em></h1>
+        <div class="sub">佐賀・福岡 ／ 太宰府から通える病院 9院</div>
+      </div>
+    </div>
+
+    <p class="hint">下の病院を<b>タップ</b>すると、その病院だけの画面が開きます。<br>画面の<b>◀ ▶</b>で1院ずつめくれます。口コミは低評価まで読んで正直に採点。</p>
+
+    <div class="box gold">
+      <h3>◆ 口コミの読み方（採点ポリシー）</h3>
+      <p>星の平均だけで決めない（星5ばかりはサクラ＝やらせ疑い）。星3〜4＋具体的コメント重視。低評価も必ず読む。件数少・未確認は信頼度を下げて正直に表示。</p>
+    </div>
+
+    <p class="list-title">▼ タップして1院ずつ見る</p>
+    <div id="homeList"></div>
+
+    <div class="foot">
+      ※ 2026年6月時点の各院サイト・福岡県／佐賀県の公開資料・口コミサイト（カルー／エキテン）より作成。感じ方には個人差があります。最後は必ず自分で電話・受診して確かめてください。チェックはこのブラウザに保存されます。
+    </div>
+  </section>
+
+  <!-- DETAIL -->
+  <section id="detail" class="screen">
+    <div class="navbar">
+      <button class="navbtn home" id="btnHome">🏠 一覧</button>
+      <button class="navbtn" id="btnPrev">◀ 前へ</button>
+      <span class="pageno" id="pageno">1 / 9</span>
+      <button class="navbtn" id="btnNext">次へ ▶</button>
+    </div>
+    <div id="detailBody"></div>
+    <div class="navbar">
+      <button class="navbtn" id="btnPrev2">◀ 前の病院</button>
+      <button class="navbtn" id="btnNext2">次の病院 ▶</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+var DATA=[
+  {id:"sakurazaka",rank:"Best Pick ─ 横綱",cls:"win",name:"メンタルクリニック桜坂",area:"福岡市中央区警固 ─ 約25分",
+   sc:["★★★★☆","★★★★★","★★★★☆","★★★★★"],
+   avg:"カルー4.69（6件）/ エキテン",trust:"信頼度：中（件数少なめ）",trustCls:"low",
+   good:"「話を遮らずじっくり聞いてくれた」「いきなり無理な減薬はしない」「患者想いで優しい」。前医で薬を増やされるだけだった人が原因を見抜いてもらい改善。",
+   bad:"口コミ件数は少なめ（6件ほど）で星5寄り。サンプルが小さいので<strong>自分でも電話で印象を確かめて</strong>。",
+   desc:"「知能検査の結果だけでADHDとは決めない」と明言する慎重な姿勢。公認心理師（国家資格の心理専門家）がカウンセリング。グレーで納得いかなかった人にこそ向く。",
+   tags:[["慎重な診断",""],["口コミ具体的◎",""],["再診断向き",""]],
+   tel:"092-725-7900",telnum:"0927257900",site:"https://www.mentalsakura.com/",
+   mapq:"メンタルクリニック桜坂 福岡市中央区警固3-6-1",photoq:"メンタルクリニック桜坂 警固"},
+
+  {id:"tesla",rank:"大関（事実が強い・最新検査）",cls:"",
+   name:"テスラクリニック",area:"福岡市中央区大手門 ─ 約25分",
+   sc:["★★★★★","─ 未知数","★★★★★","★★★★★"],
+   avg:"口コミ：まだ無し",trust:"信頼度：未知数（新しい）",trustCls:"low",
+   good:"WAIS-Ⅳ・WISC-Ⅴ（最新版のIQ・発達検査）に対応。夜20時（金21時）・土日・当日OK。設備が新しい。",
+   bad:"新しめで口コミがほぼ無く、<strong>評判は実際に行って確かめる前提</strong>。検査の手厚さ＝事実で高評価、対応＝未知数。",
+   desc:"最新版の検査を受けたいならここ。夜間・土日・当日対応で、仕事しながらでも一番動きやすい。",
+   tags:[["最新WAIS-Ⅳ",""],["夜間・土日OK",""],["当日予約OK",""]],
+   tel:"092-791-4643",telnum:"0927914643",site:"https://tesla-clinic.jp/developmental-disorders/",
+   mapq:"テスラクリニック 福岡市中央区大手門2-1-11",photoq:"テスラクリニック 大手門"},
+
+  {id:"nozomi",rank:"関脇（丁寧な体制・近め）",cls:"",
+   name:"希みが丘クリニック",area:"小郡市（おごおりし） ─ 車で約25分",
+   sc:["★★★★★","★★★☆☆","★★★☆☆","★★★★★"],
+   avg:"カルー3.72（2件）",trust:"信頼度：低（件数2・やや古い）",trustCls:"low",
+   good:"「問診と診察が別で、女性カウンセラーがじっくり話を聞いた後に医師の診察」「弱めの薬を出してくれた」＝丁寧で押しつけない体制。",
+   bad:"口コミが2件・5年以上前で数が少ない。検査の幅は広いが、最近の評判は<strong>電話で確認を</strong>。",
+   desc:"知能検査・ADHD検査・自閉症検査など検査の種類が豊富。医師＋臨床心理士のチーム。予約制で待ち時間ゼロ、院内処方。成人ADHD・診断書も対応。",
+   tags:[["検査の幅◎",""],["問診と診察を分ける",""],["診断書OK",""]],
+   tel:"0942-75-3030",telnum:"0942753030",site:"https://www.nozomigaoka.com/medical.html",
+   mapq:"希みが丘クリニック 小郡市希みが丘2-19-12",photoq:"希みが丘クリニック 小郡市"},
+
+  {id:"kyudai",rank:"小結（最高権威・最も精密）",cls:"",
+   name:"九州大学病院",area:"福岡市東区馬出 ─ 約35分",
+   sc:["★★★★★","★★★★☆","★★☆☆☆","★★★★☆"],
+   avg:"制度的信頼（県の拠点病院）",trust:"信頼度：高（公的）",trustCls:"",
+   good:"福岡県が指定した「発達障がい者支援 拠点病院」。一番くわしく精密。口コミより<strong>公的な裏づけ</strong>が信頼の根拠。",
+   bad:"紹介状＋予約が必要で、待ちが長め。まず近所のクリニックで紹介状をもらう流れ。",
+   desc:"「いちばんくわしく診てほしい」ならここ。じっくり時間をかけて精密に診断したい人向け。",
+   tags:[["県の拠点病院",""],["最も精密",""],["紹介状が必要","warn"]],
+   tel:"",telnum:"",site:"https://www.hosp.kyushu-u.ac.jp/",
+   mapq:"九州大学病院 福岡市東区馬出3-1-1",photoq:"九州大学病院"},
+
+  {id:"kurumedai",rank:"前頭（大学病院の精密）",cls:"",
+   name:"久留米大学病院",area:"久留米市旭町 ─ 約45分",
+   sc:["★★★★★","★★★★☆","★★☆☆☆","★★★★☆"],
+   avg:"制度的信頼（大学病院）",trust:"信頼度：高（公的）",trustCls:"",
+   good:"大学病院の精神神経科。青年期〜成人の発達障害に対応。大学病院ならではの精密診断。",
+   bad:"紹介状が必要（初診は午前11時まで）。太宰府からは少し遠い。",
+   desc:"大学病院でしっかり診てほしい人向け。久留米寄りに住む人にも。",
+   tags:[["大学病院の精密",""],["紹介状が必要","warn"]],
+   tel:"精神科外来 0942-31-7613",telnum:"0942317613",site:"https://www.hosp.kurume-u.ac.jp/medical/internal/psyco/",
+   mapq:"久留米大学病院 久留米市旭町67",photoq:"久留米大学病院"},
+
+  {id:"kusunoki",rank:"前頭（地元・最寄り・入口）",cls:"",
+   name:"くすの木クリニック",area:"太宰府市 ─ 都府楼前駅 徒歩2分",
+   sc:["★★★☆☆","★★★☆☆","★★★★★","★★★★☆"],
+   avg:"口コミ少なめ",trust:"信頼度：低（件数少）",trustCls:"low",
+   good:"太宰府市内・徒歩2分の地元。予約不要で直接行ける。まず相談する「入口」に最適。",
+   bad:"WAIS等の精密検査をどこまでやるかは要確認。紹介状をもらう入口として使うのが現実的。",
+   desc:"「まず近くで話を聞いてほしい」「大学病院への紹介状がほしい」時の第一歩。発達障害（ADHD・ASD）対応。",
+   tags:[["地元・徒歩2分",""],["予約不要",""],["入口に最適",""]],
+   tel:"092-921-8333",telnum:"0929218333",site:"https://k-mentalclinic.com/",
+   mapq:"くすの木クリニック 太宰府市通古賀3-11-11",photoq:"くすの木クリニック 太宰府"},
+
+  {id:"kawakami",rank:"前頭（集計は高いが本文未確認）",cls:"",
+   name:"川上クリニック",area:"福岡市中央区舞鶴（天神・赤坂 徒歩5分） ─ 約25分",
+   sc:["★★★☆☆","★★★☆☆","★★★★☆","★★★★☆"],
+   avg:"カルー集計4.48（約10件）",trust:"信頼度：保留（本文は要確認）",trustCls:"low",
+   good:"集計の星評価は高め（4.48）。天神・赤坂から徒歩5分でアクセス良好。ADHD診療に対応。",
+   bad:"個々の口コミ本文・低評価まで<strong>こちらで読み切れていない</strong>。良し悪しは自分でGoogle/カルーの本文を読んで確かめて。精密検査の中身も要確認。",
+   desc:"アクセスが良く集計評価も高いが、中身はあなた自身の目で口コミ本文を確認してから判断するのが安全。",
+   tags:[["アクセス◎",""],["口コミ本文は要確認","warn"],["検査内容は要確認","warn"]],
+   tel:"092-734-6686",telnum:"0927346686",site:"https://www.kawakami-mentalclinic.com/",
+   mapq:"川上クリニック 福岡市中央区舞鶴1-2-1 天神陽明ビル",photoq:"川上クリニック 舞鶴 天神 口コミ"},
+
+  {id:"himawari",rank:"前頭（佐賀枠・多職種チーム）",cls:"",
+   name:"こころと発達の ひまわりクリニック",area:"佐賀県小城市 ─ 車で約50分",
+   sc:["★★★★☆","★★★☆☆","★★☆☆☆","★★★★☆"],
+   avg:"口コミ少なめ",trust:"信頼度：低（件数少）",trustCls:"low",
+   good:"佐賀大学・肥前精神医療センター等と連携。医師・公認心理師・保健師など多職種チームで支える。",
+   bad:"太宰府からは約50分とやや遠い。口コミ件数は少なめ。佐賀寄りに住む人や、チーム診療を求める人向け。",
+   desc:"佐賀の選択肢。大人になってから診断される発達障害（ASD・ADHD）に対応。",
+   tags:[["成人発達障害",""],["多職種チーム",""]],
+   tel:"0952-97-4810",telnum:"0952974810",site:"https://himawari-cl.jp/medical/developmental_disorders.html",
+   mapq:"ひまわりクリニック 小城市三日月町堀江305",photoq:"ひまわりクリニック 小城市"},
+
+  {id:"chihiro",rank:"⚠ 要注意（検査は手厚いが口コミに地雷）",cls:"alert",
+   name:"ちひろ心クリニック",area:"福岡市中央区天神 ─ 西鉄で約20分",
+   sc:["★★★★★","★★☆☆☆","★★★★☆","★★★★☆"],
+   avg:"カルー平均2.86（17件・低評価10件）",trust:"信頼度：低評価が多い",trustCls:"bad",
+   good:"検査には時間をかけ丁寧、という声もある（合う人には合う）。<strong>合う・合わないが極端に分かれる</strong>。",
+   bad:"「意見を否定され抑え込まれる」「<strong>怒鳴られた</strong>」「『薬に頼らない』と言うのに毎回薬が出る」「<strong>予約から3時間待ち</strong>・診察は約10分」。",
+   desc:"公式サイトは充実していて精密検査は手厚いが、口コミの低評価が具体的で多い。選ぶなら、合わないと感じたら別へ移る前提で。最初の本命にはしにくい。",
+   tags:[["精密検査◎",""],["口コミ低評価多い","alert"],["対応に当たり外れ","alert"]],
+   tel:"092-736-1611",telnum:"0927361611",site:"https://www.chihiro-kokoro.com/symptom/development.html",
+   mapq:"ちひろ心クリニック 福岡市中央区天神2-8-38",photoq:"ちひろ心クリニック 天神 口コミ"}
+];
+
+var KEY='adhd_hospital_checks_v1';
+var saved={}; try{saved=JSON.parse(localStorage.getItem(KEY))||{};}catch(e){saved={};}
+var cur=0;
+var homeEl=document.getElementById('home');
+var detailEl=document.getElementById('detail');
+var homeList=document.getElementById('homeList');
+var detailBody=document.getElementById('detailBody');
+var fill=document.getElementById('fill');
+var cnt=document.getElementById('cnt');
+var labels=["精密さ","口コミ質","通いやすさ","成人対応"];
+
+function countDone(){var n=0;DATA.forEach(function(d){if(saved[d.id])n++;});return n;}
+function updateProgress(){var n=countDone();cnt.textContent=n;fill.style.width=Math.round(n/DATA.length*100)+'%';}
+
+function buildHome(){
+  homeList.innerHTML='';
+  DATA.forEach(function(d,i){
+    var done=saved[d.id]?' done':'';
+    var ac=d.cls==='alert'?' alert':(d.cls==='win'?' win':'');
+    var div=document.createElement('div');
+    div.className='hcard'+ac+done;
+    div.innerHTML='<div class="no">'+(i+1)+'</div>'+
+      '<div class="mid"><div class="rk">'+d.rank+'</div>'+
+      '<div class="nm">'+d.name+'</div><div class="ar">'+d.area+'</div></div>'+
+      (saved[d.id]?'<div class="tick">✓</div>':'<div class="go">開く ▶</div>');
+    div.addEventListener('click',function(){openDetail(i);});
+    homeList.appendChild(div);
+  });
+}
+
+function openDetail(i){
+  cur=i; renderDetail();
+  homeEl.classList.remove('active'); detailEl.classList.add('active');
+  window.scrollTo(0,0);
+}
+function goHome(){
+  detailEl.classList.remove('active'); homeEl.classList.add('active');
+  buildHome(); window.scrollTo(0,0);
+}
+
+function renderDetail(){
+  var d=DATA[cur];
+  var rc=d.cls==='alert'?' alert':(d.cls==='win'?' win':'');
+  var scHtml='';
+  for(var k=0;k<4;k++){scHtml+='<div class="sc"><span class="k">'+labels[k]+'</span><span class="v">'+d.sc[k]+'</span></div>';}
+  var tagHtml='';
+  d.tags.forEach(function(t){tagHtml+='<span class="tag'+(t[1]?' '+t[1]:'')+'">'+t[0]+'</span>';});
+  var telHtml=d.telnum?'<a class="btn call" href="tel:'+d.telnum+'">📞 '+d.tel+'</a>':'';
+  var on=saved[d.id]?' on':'';
+  var goodHtml=(d.cls==='alert')
+    ? '<div class="line"><span class="b">⚠ 低評価の中身：</span>'+d.bad+'</div><div class="line"><span class="g">◎ 良い面：</span>'+d.good+'</div>'
+    : '<div class="line"><span class="g">◎ 良い口コミ：</span>'+d.good+'</div><div class="line"><span class="b">△ 気になる点：</span>'+d.bad+'</div>';
+  detailBody.innerHTML=
+    '<div class="d-rank'+rc+'">'+d.rank+'</div>'+
+    '<div class="d-name">'+d.name+'</div>'+
+    '<div class="d-meta">📍 '+d.area+'</div>'+
+    '<div class="scores">'+scHtml+'</div>'+
+    '<div class="rev"><div class="hd"><span class="avg">★ '+d.avg+'</span><span class="trust '+d.trustCls+'">'+d.trust+'</span></div>'+goodHtml+'</div>'+
+    '<iframe class="map" loading="lazy" src="https://maps.google.com/maps?q='+encodeURIComponent(d.mapq)+'&z=15&output=embed"></iframe>'+
+    '<a class="photo-link" target="_blank" href="https://www.google.com/maps/search/'+encodeURIComponent(d.photoq)+'">📷 Googleで外観・口コミを見る →</a>'+
+    '<p class="desc">'+d.desc+'</p>'+
+    '<div class="tags">'+tagHtml+'</div>'+
+    '<div class="acts">'+telHtml+'<a class="btn ghost" target="_blank" href="'+d.site+'">🌐 公式サイト</a></div>'+
+    '<div class="chk'+on+'" id="chkBtn"><span class="box-ui"></span><span class="t">この病院をチェック（気になる／確認した）</span></div>';
+  document.getElementById('pageno').textContent=(cur+1)+' / '+DATA.length;
+  document.getElementById('btnPrev').disabled=(cur===0);
+  document.getElementById('btnNext').disabled=(cur===DATA.length-1);
+  document.getElementById('btnPrev2').disabled=(cur===0);
+  document.getElementById('btnNext2').disabled=(cur===DATA.length-1);
+  document.getElementById('chkBtn').addEventListener('click',function(){
+    var id=DATA[cur].id;
+    if(saved[id]){delete saved[id];}else{saved[id]=true;}
+    localStorage.setItem(KEY,JSON.stringify(saved));
+    updateProgress(); renderDetail();
+  });
+}
+
+function prev(){if(cur>0){cur--;renderDetail();window.scrollTo(0,0);}}
+function next(){if(cur<DATA.length-1){cur++;renderDetail();window.scrollTo(0,0);}}
+
+document.getElementById('btnHome').addEventListener('click',goHome);
+document.getElementById('btnPrev').addEventListener('click',prev);
+document.getElementById('btnNext').addEventListener('click',next);
+document.getElementById('btnPrev2').addEventListener('click',prev);
+document.getElementById('btnNext2').addEventListener('click',next);
+document.getElementById('reset').addEventListener('click',function(){saved={};localStorage.removeItem(KEY);updateProgress();buildHome();if(detailEl.classList.contains('active'))renderDetail();});
+document.addEventListener('keydown',function(e){if(detailEl.classList.contains('active')){if(e.key==='ArrowLeft')prev();if(e.key==='ArrowRight')next();}});
+
+buildHome(); updateProgress();
+</script>
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').catch(function(){});});}
+</script>
+</body>
+</html>

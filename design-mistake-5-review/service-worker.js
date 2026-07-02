@@ -1,15 +1,46 @@
-const CACHE_NAME = "design-mistake-5-review-v1";
+const CACHE_NAME = "design-review-quiz-v16";
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
   "./icon.svg",
   "./assets/preview.png",
+  "./assets/q20260701-sheetmetal-bend-error.png",
+  "./assets/q20260701-zero-thickness-geometry.png",
+  "./assets/q20260701-no-active-document.png",
+  "./assets/q20260701-arc-relations.png",
+  "./assets/q20260701-scale-1-4.png",
+  "./assets/q20260701-windows-recording.png",
   "./assets/q1-solidworks-vertical-text.png",
   "./assets/q2-text-curve-blank-space.png",
   "./assets/q3-cad-data-unconfirmed.png",
   "./assets/q4-surface-finish-direction.png",
-  "./assets/q5-lug-stud-spacer.png"
+  "./assets/q5-lug-stud-spacer.png",
+  "./assets/bakelite-structure.svg",
+  "./assets/bakelite-types.svg",
+  "./assets/bakelite-drawing-caution.svg",
+  "./assets/bakelite-real-visual.png",
+  "./assets/bakelite-q1-real.png",
+  "./assets/bakelite-q2-real.png",
+  "./assets/bakelite-q3-real.png",
+  "./assets/bakelite-q1-hd.png",
+  "./assets/bakelite-q2-hd.png",
+  "./assets/bakelite-q3-hd.png",
+  "./assets/bakelite-real-photo-strip.png",
+  "./assets/bakelite-q1-new-material.png",
+  "./assets/bakelite-q2-new-types.png",
+  "./assets/bakelite-q3-new-drawing.png",
+  "./assets/q20260626-pin-delivery.png",
+  "./assets/q20260626-paint-code.png",
+  "./assets/q20260626-dic-g298.png",
+  "./assets/q20260626-approx-color.png",
+  "./assets/q20260626-visual-rule.png",
+  "./assets/q20260629-receptacle-assembled-plug-attached.png",
+  "./assets/q20260629-ok-ng-plug-attached.png",
+  "./assets/q20260629-drawing-note-receptacle-plug.png",
+  "./assets/q20260629-plug-vs-receptacle-identify.png",
+  "./assets/q20260629-plug-smooth-bg.png",
+  "./assets/q20260629-plug-smooth-plug.png"
 ];
 
 self.addEventListener("install", (event) => {
@@ -28,5 +59,9 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
+  if (event.request.mode === "navigate" || event.request.destination === "document") {
+    event.respondWith(fetch(event.request).catch(() => caches.match("./index.html")));
+    return;
+  }
   event.respondWith(caches.match(event.request).then((cached) => cached || fetch(event.request)));
 });

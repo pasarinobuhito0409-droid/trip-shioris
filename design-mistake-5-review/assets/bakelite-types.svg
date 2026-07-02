@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#f2f6f8"/>
+      <stop offset="1" stop-color="#d7e1e7"/>
+    </linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="14" stdDeviation="16" flood-opacity=".25"/></filter>
+    <pattern id="cloth" width="32" height="32" patternUnits="userSpaceOnUse">
+      <rect width="32" height="32" fill="#7b4425"/>
+      <path d="M0 8h32M0 24h32M8 0v32M24 0v32" stroke="#b4773e" stroke-width="5" opacity=".65"/>
+    </pattern>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <rect x="0" y="560" width="1280" height="160" fill="#d7c9b7" opacity=".5"/>
+  <g font-family="Yu Gothic, Meiryo, sans-serif" font-weight="900">
+    <text x="58" y="74" font-size="42" fill="#102a43">紙ベークと布ベーク</text>
+    <g transform="translate(95 140)" filter="url(#shadow)">
+      <rect x="0" y="0" width="500" height="330" rx="24" fill="#fff"/>
+      <rect x="45" y="65" width="410" height="150" rx="12" fill="#65351d" stroke="#24130b" stroke-width="4"/>
+      <g>
+        <rect x="70" y="92" width="360" height="8" fill="#c98a4a"/>
+        <rect x="70" y="120" width="360" height="8" fill="#2f1b10"/>
+        <rect x="70" y="148" width="360" height="8" fill="#c98a4a"/>
+        <rect x="70" y="176" width="360" height="8" fill="#2f1b10"/>
+      </g>
+      <text x="45" y="286" font-size="40" fill="#0f5faf">紙ベーク</text>
+      <text x="235" y="286" font-size="28" fill="#334155">紙 + 樹脂</text>
+    </g>
+    <g transform="translate(685 140)" filter="url(#shadow)">
+      <rect x="0" y="0" width="500" height="330" rx="24" fill="#fff"/>
+      <rect x="45" y="65" width="410" height="150" rx="12" fill="url(#cloth)" stroke="#24130b" stroke-width="4"/>
+      <rect x="70" y="104" width="360" height="12" fill="#2f1b10" opacity=".75"/>
+      <rect x="70" y="165" width="360" height="12" fill="#2f1b10" opacity=".75"/>
+      <text x="45" y="286" font-size="40" fill="#16834f">布ベーク</text>
+      <text x="235" y="286" font-size="28" fill="#334155">布 + 樹脂</text>
+    </g>
+    <rect x="290" y="550" width="700" height="72" rx="18" fill="#102a43"/>
+    <text x="336" y="596" font-size="34" fill="#fff">強度が必要なら基材の指定を確認</text>
+  </g>
+</svg>
