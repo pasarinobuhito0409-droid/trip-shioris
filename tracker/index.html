@@ -50,6 +50,8 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700;color:#fff}
 .view-toggle{display:flex;gap:5px;margin-left:auto}
 .jump-today{background:linear-gradient(135deg,#0a84ff,#5ac8fa);color:#fff;border:none;font-size:12px;font-weight:800;padding:8px 12px;border-radius:999px;cursor:pointer;box-shadow:0 2px 12px rgba(10,132,255,.4);transition:transform .1s;display:flex;align-items:center;gap:3px;white-space:nowrap}
 .jump-today:active{transform:scale(.94)}
+button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.month-pager button,.month-pager .mp-label{touch-action:manipulation}
+.ds input,.ds .cbox,.ds .es-line,.ds .es-del-line,.ds .es-toggle{touch-action:manipulation}
 
 /* === iPhone風カレンダー === */
 .ical{padding:0 10px 24px}
@@ -150,9 +152,9 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700;color:#fff}
 
 /* === 予定編集シート（iPhone式） === */
 .es-topbar{display:flex;align-items:center;justify-content:space-between;margin:-4px -2px 14px;padding:0 2px}
-.es-topbar .es-cancel{background:none;border:none;color:#5ac8fa;font:inherit;font-size:15px;font-weight:500;cursor:pointer;padding:6px 2px}
+.es-topbar .es-cancel{background:none;border:none;color:#5ac8fa;font:inherit;font-size:15px;font-weight:500;cursor:pointer;padding:6px 10px;min-height:44px;min-width:44px;display:flex;align-items:center}
 .es-topbar .es-title{font-size:15px;font-weight:800;color:#fff}
-.es-topbar .es-savebtn{background:none;border:none;color:#5ac8fa;font:inherit;font-size:15px;font-weight:800;cursor:pointer;padding:6px 2px}
+.es-topbar .es-savebtn{background:none;border:none;color:#5ac8fa;font:inherit;font-size:15px;font-weight:800;cursor:pointer;padding:6px 10px;min-height:44px;min-width:44px;display:flex;align-items:center}
 .es-card{background:rgba(255,255,255,.07);border:1px solid var(--glass-border);border-radius:14px;margin-bottom:14px;overflow:hidden}
 .es-card .es-line{display:flex;align-items:center;gap:10px;min-height:44px;padding:10px 14px;position:relative}
 .es-card .es-line+.es-line::before{content:"";position:absolute;left:14px;right:0;top:0;height:.5px;background:rgba(255,255,255,.14)}
@@ -164,10 +166,12 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700;color:#fff}
 .es-line .es-val{flex:1;text-align:right;font-size:15px;color:rgba(255,255,255,.55);font-weight:600}
 .es-line input[type=time]{border:none;background:rgba(255,255,255,.1);border-radius:8px;padding:6px 8px;font:inherit;font-size:15px;color:#5ac8fa;font-weight:700;color-scheme:dark;margin-left:auto}
 .es-colors{display:flex;gap:10px;overflow-x:auto;padding:4px 2px;flex:1;-webkit-overflow-scrolling:touch}
-.es-colors .cbox{width:30px;height:30px;flex:0 0 auto;border-radius:50%;border:3px solid transparent;cursor:pointer;transition:transform .1s;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.es-colors .cbox{width:30px;height:30px;flex:0 0 auto;border-radius:50%;border:3px solid transparent;cursor:pointer;transition:transform .1s;box-shadow:0 2px 8px rgba(0,0,0,.3);position:relative}
+.es-colors .cbox::after{content:"";position:absolute;left:50%;top:50%;width:44px;height:44px;transform:translate(-50%,-50%)}
 .es-colors .cbox:active{transform:scale(.88)}
 .es-colors .cbox.sel{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.5),0 0 12px rgba(100,160,255,.4)}
 .es-toggle{position:relative;display:inline-block;width:48px;height:28px;flex:0 0 auto;border-radius:999px;background:rgba(255,255,255,.2);border:none;cursor:pointer;transition:background .2s}
+.es-toggle::before{content:"";position:absolute;left:-8px;right:-8px;top:-9px;bottom:-9px}
 .es-toggle.on{background:#30d158}
 .es-toggle::after{content:"";position:absolute;top:2px;left:2px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.3);transition:transform .2s}
 .es-toggle.on::after{transform:translateX(20px)}
@@ -617,6 +621,7 @@ let currentMonth = new Date().getMonth()+1;
 let currentView = "record";
 
 function setView(v){
+  if(v==="cal2" && currentView!=="cal2") dvWantAutoScroll=true;
   currentView = v;
   document.getElementById("vList").classList.toggle("active", v==="list");
   document.getElementById("vCal2").classList.toggle("active", v==="cal2");
@@ -728,6 +733,8 @@ function renderCharts(){
 }
 
 function renderContent(){
+  const prevScroll = document.getElementById('dvScroll');
+  if(prevScroll) dvSavedScrollTop = prevScroll.scrollTop;
   const el = document.getElementById("content");
   const isCal2 = currentView==="cal2";
   ["streakBanner","carryBanner","summary","charts"].forEach(id=>{
@@ -1006,7 +1013,7 @@ function renderRecord(){
 
   return `<div class="record-view">${summary}${doneLogSection}${monthReview}<div class="record-section-title">📝 日記（新しい順）</div>${diaryHtml}</div>`;
 }
-function jumpToDay(d){ selDay=d; dvKeepScroll=false; setView('cal2'); }
+function jumpToDay(d){ selDay=d; dvWantAutoScroll=true; setView('cal2'); }
 
 // 引き継ぎカードを継続日バナー直下の専用枠に描画（記録ビューの時だけ）
 function renderCarryBanner(){
@@ -1279,15 +1286,14 @@ function changeDay(delta){
     renderContent();
   }
 }
-let dvKeepScroll=false;
-let dvKeepScrollTop=null;
+let dvWantAutoScroll=false;
+let dvSavedScrollTop=null;
 function dvSlideIn(dir){
   selectedEv=null;
   const nx = addDaysYMD(curYear, currentMonth, selDay, dir);
   const crossesMonth = (nx.y!==curYear || nx.m!==currentMonth);
   if(crossesMonth){ curYear=nx.y; currentMonth=nx.m; renderTabs(); }
   selDay=nx.d;
-  dvKeepScroll=true;
   renderContent();
   const sw=document.getElementById('dvSwipe');
   const el=sw&&sw.querySelector('.dv-gridwrap');
@@ -1302,11 +1308,11 @@ function dvSlideIn(dir){
 function pickDay(d,m,y){
   selectedEv=null;
   if(m!==undefined && y!==undefined && (m!==currentMonth || y!==curYear)){
-    curYear=y; currentMonth=m; selDay=d; dvKeepScroll=true;
+    curYear=y; currentMonth=m; selDay=d;
     render();
     return;
   }
-  selDay=d; dvKeepScroll=true; renderContent();
+  selDay=d; renderContent();
 }
 
 function layoutOverlaps(evs){
@@ -1412,16 +1418,17 @@ function afterDayViewRender(){
   if(hdr&&head) head.style.top=(hdr.offsetHeight-1)+'px';
   sizeDvScroll();
   bindDvScrollGuard();
-  const keep=dvKeepScroll; const keepPos=dvKeepScrollTop; dvKeepScroll=false; dvKeepScrollTop=null;
+  const want=dvWantAutoScroll; const savedPos=dvSavedScrollTop; dvWantAutoScroll=false; dvSavedScrollTop=null;
   const today=new Date();
   const isTd=isTodayYMD(curYear, currentMonth, selDay);
   const targetMin=isTd?Math.max(0,(today.getHours()*60+today.getMinutes())-90):6*60;
+  if(!want && savedPos!=null) scroll.scrollTop=savedPos;
   setTimeout(()=>{
-    if(keepPos!=null){
-      scroll.scrollTop=keepPos;
-    } else if(!keep){
+    if(want){
       const scrollTarget=Math.max(0,(targetMin/60*HOUR_PX));
       scroll.scrollTo({top:scrollTarget,behavior:'smooth'});
+    } else if(savedPos!=null && Math.abs(scroll.scrollTop-savedPos)>1){
+      scroll.scrollTop=savedPos;
     }
     setupResize(); setupLongPress(); setupDaySwipe(); setupWeekSwipe(); setupPinchZoom();
   },50);
@@ -1575,7 +1582,11 @@ let rsz=null;
 let drag=null;
 let selectedEv=null; // {id,kind}
 let pinching=false;
-let suppressNextClick=false;
+let suppressClickInfo=null;
+function markSuppressClick(ev){
+  const pt=(ev.changedTouches&&ev.changedTouches[0])?ev.changedTouches[0]:ev;
+  suppressClickInfo={t:Date.now(), x:pt.clientX, y:pt.clientY};
+}
 const IS_TOUCH = ('ontouchstart' in window) || navigator.maxTouchPoints>0;
 let dvScrolling=false, dvScrollEndTimer=null;
 function bindDvScrollGuard(){
@@ -1591,8 +1602,6 @@ function bindDvScrollGuard(){
 function clearSelection(){
   if(!selectedEv) return;
   selectedEv=null;
-  const sc=document.getElementById('dvScroll');
-  dvKeepScrollTop = sc ? sc.scrollTop : null;
   renderContent();
 }
 
@@ -1627,13 +1636,21 @@ function setupResize(){
       const dx0=Math.abs((ev.touches?ev.touches[0].clientX:ev.clientX)-drag.x0);
       if(Math.abs(dy)>10||dx0>10) drag.tapCancelled=true;
       if(drag.isChk) return; // ◯は完了タップ専用。ドラッグ移動させない
-      if(!drag.active && Math.abs(dy)<6 && dx0<6) return;
-      if(!drag.active){ drag.active=true; drag.el.classList.add('dragging'); clearTimeout(lpTimer); }
-      let newStart=drag.origStart+dy/HOUR_PX*60;
-      newStart=Math.round(newStart/5)*5;
+      if(!drag.active){
+        if(lpFired||drag.wasSelected){
+          if(Math.abs(dy)<6 && dx0<6) return;
+          drag.active=true; drag.el.classList.add('dragging'); clearTimeout(lpTimer);
+        } else {
+          if(Math.abs(dy)>10||dx0>10){ drag=null; return; }
+          return;
+        }
+      }
+      let rawStart=drag.origStart+dy/HOUR_PX*60;
+      rawStart=Math.max(0,Math.min(1440-drag.dur,rawStart));
+      let newStart=Math.round(rawStart/15)*15;
       newStart=Math.max(0,Math.min(1440-drag.dur,newStart));
       const newEnd=newStart+drag.dur;
-      drag.el.style.top=(newStart/60*HOUR_PX)+'px';
+      drag.el.style.top=(rawStart/60*HOUR_PX)+'px';
       drag.el.querySelector('.tm').textContent=`${min2hm(newStart)}–${min2hm(newEnd)}`;
       drag.curStart=newStart; drag.curEnd=newEnd;
       ev.preventDefault();
@@ -1643,10 +1660,8 @@ function setupResize(){
     if(rsz){
       setEventTime(currentMonth, selDay, rsz.id, rsz.kind, rsz.curStart, rsz.curEnd);
       rsz=null;
-      const sc=document.getElementById('dvScroll');
-      dvKeepScrollTop = sc ? sc.scrollTop : null;
       renderContent(); diaryToast("✓ 時間を変更");
-      suppressNextClick=true;
+      markSuppressClick(ev);
       return;
     }
     if(drag){
@@ -1654,30 +1669,29 @@ function setupResize(){
       clearTimeout(lpTimer);
       if(!drag.active){
         // タップ扱い：タッチ端末はここで確定判定、PCはclickイベントに任せる
-        const did=drag.id, dkind=drag.kind, isChk=drag.isChk, wasSelected=drag.wasSelected;
+        const did=drag.id, dkind=drag.kind, isChk=drag.isChk, wasSelected=drag.wasSelected, wasLpFired=lpFired;
         const tapOk = !drag.tapCancelled && !drag.touches2 && (Date.now()-drag.t0)<500 && !dvScrolling && !lpFired;
         drag=null;
         if(IS_TOUCH && tapOk){
           if(isChk){
             toggleTask(ev, currentMonth, selDay, did);
-            suppressNextClick=true;
+            markSuppressClick(ev);
           } else if(!wasSelected){
             openEvent(did, dkind);
-            suppressNextClick=true;
+            markSuppressClick(ev);
           }
+        } else if(wasLpFired){
+          // 長押しで選択状態に入ったが指が動かなかった：選択表示のまま再描画
+          renderContent();
+          markSuppressClick(ev);
         }
         return;
       }
       setEventTime(currentMonth, selDay, drag.id, drag.kind, drag.curStart, drag.curEnd);
-      const wasSelected=drag.wasSelected;
       diaryToast("✓ 移動した");
       drag=null;
-      if(wasSelected){
-        const sc=document.getElementById('dvScroll');
-        dvKeepScrollTop = sc ? sc.scrollTop : null;
-      }
       renderContent();
-      suppressNextClick=true;
+      markSuppressClick(ev);
     }
   };
   document.addEventListener('mousemove',onMove);
@@ -1698,16 +1712,20 @@ function setupLongPress(){
     const evBlock=ev.target.closest('.dv-ev');
     lpMoved=false; lpFired=false;
     if(evBlock){
-      // .dv-ev本体の長押し→選択モード（移動はstartResize側のdragが担当）
+      // .dv-ev本体の長押し→選択モード＋そのまま持ち上げて移動継続（指を離さず一体化）
       lpTimer=setTimeout(()=>{
         if(lpMoved||drag&&drag.active) return;
         lpFired=true;
         if(navigator.vibrate) navigator.vibrate(10);
-        const sc=document.getElementById('dvScroll');
-        dvKeepScrollTop = sc ? sc.scrollTop : null;
         selectedEv={id:evBlock.dataset.id, kind:evBlock.dataset.kind};
-        drag=null;
-        renderContent();
+        evBlock.classList.add('selected');
+        if(!evBlock.querySelector('.dv-handle')){
+          evBlock.insertAdjacentHTML('beforeend','<div class="dv-handle top" data-dir="top"></div><div class="dv-handle bot" data-dir="bot"></div>');
+        }
+        if(drag && !drag.isChk){
+          drag.active=true;
+          drag.el.classList.add('dragging');
+        }
       },400);
       return;
     }
@@ -1733,6 +1751,7 @@ function setupLongPress(){
 document.addEventListener('mousedown',startResize,true);
 document.addEventListener('touchstart',startResize,{capture:true,passive:false});
 document.addEventListener('contextmenu',function(ev){
+  if(ev.target.closest && ev.target.closest('#dsBg')) return;
   const evBlock=ev.target.closest&&ev.target.closest('.dv-ev');
   if(evBlock && document.getElementById('dvGrid')){
     ev.preventDefault();
@@ -1741,7 +1760,10 @@ document.addEventListener('contextmenu',function(ev){
   }
 });
 document.addEventListener('click',function(ev){
-  if(suppressNextClick){ suppressNextClick=false; ev.stopPropagation(); ev.preventDefault(); return; }
+  if(suppressClickInfo && (Date.now()-suppressClickInfo.t)<400 && Math.hypot(ev.clientX-suppressClickInfo.x, ev.clientY-suppressClickInfo.y)<24){
+    suppressClickInfo=null; ev.stopPropagation(); ev.preventDefault(); return;
+  }
+  if(ev.target.closest && ev.target.closest('#dsBg')) return;
   const grid=document.getElementById('dvGrid');
   if(!grid){ return; }
   const evBlock=ev.target.closest&&ev.target.closest('.dv-ev');
@@ -1766,6 +1788,7 @@ document.addEventListener('click',function(ev){
   }
 },true);
 document.addEventListener('mousedown',function(ev){
+  if(ev.target.closest && ev.target.closest('#dsBg')) return;
   if(!selectedEv) return;
   const grid=document.getElementById('dvGrid');
   if(!grid) return;
@@ -1773,6 +1796,7 @@ document.addEventListener('mousedown',function(ev){
   if(!grid.contains(ev.target)) clearSelection();
 },true);
 function startResize(ev){
+  if(ev.target.closest && ev.target.closest('#dsBg')) return;
   const handle=ev.target.closest&&ev.target.closest('.dv-handle');
   if(handle){
     ev.stopPropagation(); ev.preventDefault();
@@ -1833,6 +1857,7 @@ function openEvent(id, kind, presetStart){
   })();
   evCtx.color = curColor;
   evCtx.done = done;
+  evCtx.prevStart = start;
   const colorSwatches = EV_PALETTE.map(c=>`<div class="cbox ${c.color===curColor?'sel':''}" style="background:${c.color}" onclick="pickEvColor('${c.color}')" title="${c.name}"></div>`).join('');
   const delLabel = isPreset ? 'この日の予定から外す' : '予定を削除';
   document.getElementById("dsBody").innerHTML=`
@@ -1845,7 +1870,7 @@ function openEvent(id, kind, presetStart){
       <div class="es-line"><input id="evName" type="text" placeholder="予定名（例：歯医者）" value="${esc(name)}" ${isPreset?'readonly':''}></div>
     </div>
     <div class="es-card">
-      <div class="es-line"><span class="es-lbl">開始</span><span class="es-val">${currentMonth}月${selDay}日</span><input id="evStart" type="time" value="${min2hm(start)}"></div>
+      <div class="es-line"><span class="es-lbl">開始</span><span class="es-val">${currentMonth}月${selDay}日</span><input id="evStart" type="time" value="${min2hm(start)}" onchange="evStartChanged()"></div>
       <div class="es-line"><span class="es-lbl">終了</span><input id="evEnd" type="time" value="${min2hm(end)}" style="margin-left:auto"></div>
     </div>
     <div class="es-card">
@@ -1861,7 +1886,6 @@ function openEvent(id, kind, presetStart){
 function closeDaySheet(){
   evCtx=null;
   document.getElementById("dsBg").classList.remove("show");
-  if(currentView==="cal2" && evOpenScrollTop!=null) dvKeepScrollTop=evOpenScrollTop;
   evOpenScrollTop=null;
   renderContent();
 }
@@ -1895,6 +1919,19 @@ function pickEvColor(c){
   // re-render swatches for reliability
   const swatches=EV_PALETTE.map(p=>`<div class="cbox ${p.color===c?'sel':''}" style="background:${p.color}" onclick="pickEvColor('${p.color}')" title="${p.name}"></div>`).join('');
   document.getElementById('evColors').innerHTML=swatches;
+}
+function evStartChanged(){
+  if(!evCtx) return;
+  const stEl=document.getElementById('evStart'), enEl=document.getElementById('evEnd');
+  if(!stEl||!enEl) return;
+  const ns=hm2min(stEl.value);
+  if(ns==null||isNaN(ns)) return;
+  const prev=(evCtx.prevStart!=null)?evCtx.prevStart:ns;
+  const ce=hm2min(enEl.value);
+  let dur=(ce!=null&&!isNaN(ce))?(ce-prev):60;
+  if(dur<=0) dur=60;
+  enEl.value=min2hm(ns+dur);
+  evCtx.prevStart=ns;
 }
 function evSave(){
   const name=(document.getElementById('evName').value||'').trim();
@@ -2052,7 +2089,7 @@ function jumpToTodayInDayView(){
   selectedEv=null;
   curYear = y; currentMonth = m;
   selDay = today.getDate();
-  dvKeepScroll=false; dvKeepScrollTop=null;
+  dvWantAutoScroll=true;
   if(changedMonth) renderTabs();
   renderContent();
 }
