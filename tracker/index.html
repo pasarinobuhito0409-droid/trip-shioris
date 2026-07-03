@@ -97,7 +97,7 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700;color:#fff}
 /* === iPhone式 日ビュー（縦タイムライン） === */
 .dv{padding:0 0 24px}
 .dv-head{position:sticky;top:86px;z-index:9;background:rgba(16,14,32,.8);backdrop-filter:blur(28px) saturate(1.5);-webkit-backdrop-filter:blur(28px) saturate(1.5);border-bottom:1px solid rgba(255,255,255,.1);box-shadow:0 10px 30px rgba(0,0,0,.3)}
-.dv-week{display:grid;grid-template-columns:repeat(7,1fr);padding:6px 8px 0;gap:2px}
+.dv-week{display:grid;grid-template-columns:repeat(7,1fr);padding:6px 8px 0;gap:2px;touch-action:pan-y}
 .dv-week .dw{display:flex;flex-direction:column;align-items:center;gap:2px;background:transparent;border:none;cursor:pointer;font:inherit;padding:3px 0;color:var(--text)}
 .dv-week .dw .w{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:1px}
 .dv-week .dw .w.sun{color:#ff7b72}
@@ -111,29 +111,36 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700;color:#fff}
 .dv-date .dnum{font-size:15px;font-weight:800;color:#fff;margin-right:2px}
 .dv-date .back{background:var(--glass);border:1px solid var(--glass-border);border-radius:999px;padding:6px 11px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;color:rgba(255,255,255,.75)}
 .dv-date .back:active{transform:scale(.94)}
+.dv-date .back.today{background:linear-gradient(135deg,#0a84ff,#5ac8fa);color:#fff;border-color:transparent}
 .dv-allday{display:flex;flex-wrap:wrap;gap:5px;padding:0 14px 10px}
 .dv-allday .ad-label{font-size:10px;font-weight:800;color:var(--muted);width:100%;margin-bottom:2px}
+.dv-scroll{overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;touch-action:pan-y}
 .dv-swipe{overflow:hidden;touch-action:pan-y}
 .dv-gridwrap{position:relative;will-change:transform}
 .dv-gridwrap.dv-anim{transition:transform .26s cubic-bezier(.32,.72,.28,1)}
 .dv-grid{position:relative;margin-left:58px}
 .dv-hline{position:absolute;left:0;right:0;height:0;border-top:1px solid rgba(255,255,255,.07)}
 .dv-hlabel{position:absolute;left:-58px;width:48px;text-align:right;font-size:10px;color:rgba(255,255,255,.35);transform:translateY(-50%);font-variant-numeric:tabular-nums}
-.dv-ev{position:absolute;border-radius:9px;padding:4px 28px 4px 9px;font-size:12px;font-weight:600;color:#fff;overflow:hidden;cursor:pointer;border:1px solid rgba(255,255,255,.16);border-left:3px solid rgba(255,255,255,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 2px 10px rgba(0,0,0,.28)}
+.dv-ev{position:absolute;border-radius:9px;padding:4px 28px 4px 9px;font-size:12px;font-weight:600;color:#fff;overflow:hidden;cursor:pointer;border:1px solid rgba(255,255,255,.16);border-left:3px solid rgba(255,255,255,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 2px 10px rgba(0,0,0,.28);transition:transform .15s,box-shadow .15s}
 .dv-ev .tm{font-size:10px;opacity:.85;font-weight:600;display:block;line-height:1.25;font-variant-numeric:tabular-nums}
 .dv-ev .nm{display:block;line-height:1.3;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.25)}
 .dv-ev.sm{padding:2px 24px 2px 7px}
 .dv-ev.sm .tm{display:none}
 .dv-ev.done{opacity:.45}
 .dv-ev.done .nm{text-decoration:line-through;text-decoration-color:rgba(0,0,0,.55);text-decoration-thickness:2.5px}
-.dv-chk{position:absolute;right:5px;top:50%;transform:translateY(-50%);width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(255,255,255,.6);background:rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;z-index:3;cursor:pointer}
+.dv-chk{position:absolute;right:5px;top:50%;transform:translateY(-50%);width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(255,255,255,.6);background:rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;z-index:3;pointer-events:none}
 .dv-ev.sm .dv-chk{width:17px;height:17px;font-size:10px;right:4px}
 .dv-ev.done .dv-chk{background:#30d158;border-color:#30d158;box-shadow:0 0 10px rgba(48,209,88,.7)}
-.dv-chk:active{transform:translateY(-50%) scale(.85)}
-.dv-ev .rsz{position:absolute;left:0;right:0;bottom:0;height:14px;display:flex;align-items:flex-end;justify-content:center;cursor:ns-resize;touch-action:none}
-.dv-ev .rsz::after{content:"";width:24px;height:3px;border-radius:2px;background:rgba(255,255,255,.35);margin-bottom:2px}
-.dv-ev .rsz-top{position:absolute;left:0;right:26px;top:0;height:12px;cursor:ns-resize;touch-action:none}
-.dv-ev.dragging{opacity:.75;z-index:8;box-shadow:0 8px 32px rgba(0,0,0,.45)}
+.dv-ev.dragging{opacity:.8;z-index:8;box-shadow:0 8px 32px rgba(0,0,0,.45)}
+.dv-ev.selected{transform:scale(1.02);box-shadow:0 10px 34px rgba(0,0,0,.5);z-index:9;border-color:rgba(255,255,255,.4)}
+.dv-handle{position:absolute;left:50%;width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid #0a84ff;box-shadow:0 2px 8px rgba(0,0,0,.4);transform:translate(-50%,-50%);z-index:10;touch-action:none;cursor:ns-resize}
+.dv-handle.top{top:0}
+.dv-handle.bot{top:100%}
+.dv-tools{position:absolute;right:0;top:-42px;display:flex;flex-direction:row;gap:6px;z-index:10;white-space:nowrap}
+.dv-tools.below{top:100%;margin-top:8px}
+.dv-tools button{appearance:none;border:1px solid var(--glass-border);background:rgba(30,30,46,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#fff;font:inherit;font-size:12px;font-weight:700;padding:7px 12px;border-radius:999px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.35);display:flex;align-items:center;gap:4px}
+.dv-tools button:active{transform:scale(.94)}
+.dv-tools button.dv-tool-del{color:#ff8a80}
 .dv-now{position:absolute;left:0;right:0;height:0;border-top:2px solid #ff453a;z-index:5;pointer-events:none}
 .dv-now::before{content:"";position:absolute;left:-5px;top:-5px;width:9px;height:9px;border-radius:50%;background:#ff453a;box-shadow:0 0 8px rgba(255,69,58,.6)}
 .dv-now::after{content:attr(data-t);position:absolute;left:-52px;top:-7px;font-size:10px;font-weight:800;color:#ff453a;font-variant-numeric:tabular-nums}
@@ -691,8 +698,13 @@ function renderCharts(){
 
 function renderContent(){
   const el = document.getElementById("content");
+  const isCal2 = currentView==="cal2";
+  ["streakBanner","carryBanner","summary","charts"].forEach(id=>{
+    const node=document.getElementById(id);
+    if(node) node.style.display = isCal2 ? "none" : "";
+  });
   if(currentView==="record") el.innerHTML = renderRecord();
-  else if(currentView==="cal2"){ el.innerHTML = renderDayView(); afterDayViewRender(); }
+  else if(isCal2){ el.innerHTML = renderDayView(); afterDayViewRender(); }
   else el.innerHTML = renderList();
 }
 
@@ -1144,7 +1156,13 @@ const EV_PALETTE = [
   {name:"えんじ",color:"#a02040"},
   {name:"黒",   color:"#1d1d1f"},
 ];
-const HOUR_PX = 52;
+const HOUR_PX_MIN = 32, HOUR_PX_MAX = 130;
+let HOUR_PX = (function(){
+  const v = parseFloat(localStorage.getItem('trackerHourPx'));
+  if(!isNaN(v)) return Math.max(HOUR_PX_MIN, Math.min(HOUR_PX_MAX, v));
+  return 52;
+})();
+function saveHourPx(){ localStorage.setItem('trackerHourPx', String(HOUR_PX)); }
 const PRESET_TIME = {
   morning:["06:30","07:30"], lunch:["12:00","12:40"],
   night:["20:00","21:30"], daily:["21:30","22:00"],
@@ -1203,6 +1221,7 @@ function setEventTime(m,d,id,kind,startMin,endMin){
   saveState(state);
 }
 function changeDay(delta){
+  selectedEv=null;
   const total = daysInMonth(currentMonth);
   const nd = Math.max(1, Math.min(total, selDay+delta));
   if(nd===selDay) return;
@@ -1215,7 +1234,9 @@ function changeDay(delta){
   } else { selDay=nd; renderContent(); }
 }
 let dvKeepScroll=false;
+let dvKeepScrollTop=null;
 function dvSlideIn(dir){
+  selectedEv=null;
   const total=daysInMonth(currentMonth);
   selDay=Math.max(1,Math.min(total,selDay+dir));
   dvKeepScroll=true;
@@ -1230,7 +1251,7 @@ function dvSlideIn(dir){
     el.style.transform='translateX(0)';
   });});
 }
-function pickDay(d){ selDay=d; dvKeepScroll=true; renderContent(); }
+function pickDay(d){ selectedEv=null; selDay=d; dvKeepScroll=true; renderContent(); }
 
 function layoutOverlaps(evs){
   const sorted=[...evs].sort((a,b)=>a.start-b.start||b.end-a.end);
@@ -1284,8 +1305,8 @@ function renderDayView(){
   let lines='';
   for(let h=0;h<=24;h++){
     const y=h*HOUR_PX;
-    lines += `<div class="dv-hline" style="top:${y}px"></div>`;
-    if(h<24) lines += `<div class="dv-hlabel" style="top:${y}px">${pad2(h)}:00</div>`;
+    lines += `<div class="dv-hline" data-h="${h}" style="top:${y}px"></div>`;
+    if(h<24) lines += `<div class="dv-hlabel" data-h="${h}" style="top:${y}px">${pad2(h)}:00</div>`;
   }
   const posMap=layoutOverlaps(timed);
   const blocks = timed.map(e=>{
@@ -1293,56 +1314,70 @@ function renderDayView(){
     const h=Math.max(22,(e.end-e.start)/60*HOUR_PX);
     const col=e.color||DOT_COLORS[e.cat]||'#8e44ad';
     const p=posMap[e.kind+'_'+e.id]||{left:0,width:100};
-    return `<div class="dv-ev ${e.done?'done':''} ${h<36?'sm':''}" style="top:${top}px;height:${h}px;left:calc(${p.left}% + 2px);width:calc(${p.width}% - 5px);background:linear-gradient(160deg,${col}cc,${col}7a)" data-start="${e.start}" data-end="${e.end}" data-id="${e.id}" data-kind="${e.kind}" onclick="if(!event.target.closest('.dv-chk'))openEvent('${e.id}','${e.kind}')">
-      <div class="rsz-top" data-id="${e.id}" data-kind="${e.kind}" data-dir="top"></div>
+    const isSel = selectedEv && selectedEv.id===e.id && selectedEv.kind===e.kind;
+    const toolsHTML = isSel ? `<div class="dv-tools ${top<48?'below':''}">
+        <button class="dv-tool-edit" onclick="event.stopPropagation();selEditTap()">✎ 編集</button>
+        <button class="dv-tool-del" onclick="event.stopPropagation();selDeleteTap()">🗑 削除</button>
+      </div>` : '';
+    const handlesHTML = isSel ? `<div class="dv-handle top" data-dir="top"></div><div class="dv-handle bot" data-dir="bot"></div>` : '';
+    return `<div class="dv-ev ${e.done?'done':''} ${h<36?'sm':''} ${isSel?'selected':''}" style="top:${top}px;height:${h}px;left:calc(${p.left}% + 2px);width:calc(${p.width}% - 5px);background:linear-gradient(160deg,${col}cc,${col}7a)" data-start="${e.start}" data-end="${e.end}" data-id="${e.id}" data-kind="${e.kind}">
       <span class="tm">${min2hm(e.start)}–${min2hm(e.end)}</span>
       <span class="nm">${esc(e.label)}</span>
-      <span class="dv-chk" onclick="event.stopPropagation();toggleTask(event,${currentMonth},${selDay},'${e.id}')">${e.done?'✓':''}</span>
-      <div class="rsz" data-id="${e.id}" data-kind="${e.kind}" data-dir="bot"></div>
+      <span class="dv-chk">${e.done?'✓':''}</span>
+      ${handlesHTML}${toolsHTML}
     </div>`;
   }).join("");
   let nowLine='';
   if(isToday(selDay)){
     const nm=today.getHours()*60+today.getMinutes();
-    nowLine=`<div class="dv-now" data-t="${min2hm(nm)}" style="top:${nm/60*HOUR_PX}px"></div>`;
+    nowLine=`<div class="dv-now" data-t="${min2hm(nm)}" data-min="${nm}" style="top:${nm/60*HOUR_PX}px"></div>`;
   }
   const allDayHTML = allDay.length ? `<div class="dv-allday"><span class="ad-label">終日</span>${allDay.map(e=>`<button class="chip cat-${e.cat} ${e.done?'done':''}" onclick="toggleTask(event,${currentMonth},${selDay},'${e.id}')"><span class="check">${e.done?'✓':''}</span><span class="label">${esc(e.label)}</span></button>`).join('')}</div>` : '';
   const wd = WD_JP[x.wd];
+  const todayBtn = isToday(selDay) ? '' : `<button class="back today" onclick="jumpToTodayInDayView()">今日</button> `;
   return `<div class="dv">
     <div class="dv-head" id="dvHead">
-      <div class="dv-week">${strip}</div>
-      <div class="dv-date"><span><span class="dnum">${currentMonth}月${selDay}日（${wd}）</span>${x.type}日</span><span><button class="back" onclick="changeDay(-1)">‹</button> <button class="back" onclick="openEvent(null,'custom')">＋ 予定</button> <button class="back" onclick="changeDay(1)">›</button></span></div>
+      <div class="dv-week" id="dvWeekStrip">${strip}</div>
+      <div class="dv-date"><span><span class="dnum">${currentMonth}月${selDay}日（${wd}）</span>${x.type}日</span><span>${todayBtn}<button class="back" onclick="changeDay(-1)">‹</button> <button class="back" onclick="openEvent(null,'custom')">＋ 予定</button> <button class="back" onclick="changeDay(1)">›</button></span></div>
       ${allDayHTML}
     </div>
-    <div class="dv-swipe" id="dvSwipe"><div class="dv-gridwrap"><div class="dv-grid" id="dvGrid" style="height:${24*HOUR_PX}px" onclick="dvEmptyTap(event)">${lines}${blocks}${nowLine}</div></div></div>
+    <div class="dv-scroll" id="dvScroll"><div class="dv-swipe" id="dvSwipe"><div class="dv-gridwrap"><div class="dv-grid" id="dvGrid" style="height:${24*HOUR_PX}px">${lines}${blocks}${nowLine}</div></div></div></div>
   </div>`;
 }
-function dvEmptyTap(ev){
-  if(ev.target.id!=='dvGrid') return;
-  const rect=ev.currentTarget.getBoundingClientRect();
-  let startMin=Math.round(((ev.clientY-rect.top)/HOUR_PX*60)/60)*60;
-  startMin=Math.max(0,Math.min(1380,startMin));
-  openEvent(null,'custom',startMin);
+function sizeDvScroll(){
+  const scroll=document.getElementById('dvScroll');
+  const head=document.getElementById('dvHead');
+  const hdr=document.querySelector('header');
+  if(!scroll) return;
+  const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  const used = (hdr?hdr.offsetHeight:0)+(head?head.offsetHeight:0);
+  scroll.style.height = Math.max(160, vh-used)+'px';
 }
 function afterDayViewRender(){
-  const wrap=document.querySelector('.dv-gridwrap');
-  if(!wrap) return;
+  const scroll=document.getElementById('dvScroll');
+  if(!scroll) return;
   const hdr=document.querySelector('header');
   const head=document.getElementById('dvHead');
   if(hdr&&head) head.style.top=(hdr.offsetHeight-1)+'px';
-  const keep=dvKeepScroll; dvKeepScroll=false;
+  sizeDvScroll();
+  const keep=dvKeepScroll; const keepPos=dvKeepScrollTop; dvKeepScroll=false; dvKeepScrollTop=null;
   const today=new Date();
   const isTd=today.getFullYear()===2026 && today.getMonth()+1===currentMonth && today.getDate()===selDay;
   const targetMin=isTd?Math.max(0,(today.getHours()*60+today.getMinutes())-90):6*60;
   setTimeout(()=>{
-    if(!keep){
-      const off=(hdr?hdr.offsetHeight:0)+(head?head.offsetHeight:0);
-      const gridTop=wrap.getBoundingClientRect().top+window.scrollY;
-      const scrollTarget=Math.max(0,gridTop+(targetMin/60*HOUR_PX)-off);
-      window.scrollTo({top:scrollTarget,behavior:'smooth'});
+    if(keepPos!=null){
+      scroll.scrollTop=keepPos;
+    } else if(!keep){
+      const scrollTarget=Math.max(0,(targetMin/60*HOUR_PX));
+      scroll.scrollTo({top:scrollTarget,behavior:'smooth'});
     }
-    setupResize(); setupLongPress(); setupDaySwipe();
+    setupResize(); setupLongPress(); setupDaySwipe(); setupWeekSwipe(); setupPinchZoom();
   },50);
+  if(!afterDayViewRender._resizeBound){
+    afterDayViewRender._resizeBound=true;
+    window.addEventListener('resize', sizeDvScroll);
+    if(window.visualViewport) window.visualViewport.addEventListener('resize', sizeDvScroll);
+  }
 }
 function setupDaySwipe(){
   const sw=document.getElementById('dvSwipe');
@@ -1350,11 +1385,12 @@ function setupDaySwipe(){
   sw._ready=true;
   let sx=0,sy=0,dx=0,mode=null;
   sw.addEventListener('touchstart',e=>{
-    if(rsz||drag){ mode='v'; return; }
+    if(e.touches.length>1){ mode='v'; return; }
+    if(rsz||drag||selectedEv||pinching){ mode='v'; return; }
     sx=e.touches[0].clientX; sy=e.touches[0].clientY; dx=0; mode=null;
   },{passive:true});
   sw.addEventListener('touchmove',e=>{
-    if(mode==='v'||rsz||drag) return;
+    if(mode==='v'||rsz||drag||selectedEv||pinching||e.touches.length>1) return;
     const mx=e.touches[0].clientX-sx, my=e.touches[0].clientY-sy;
     if(!mode){
       if(Math.abs(mx)>12&&Math.abs(mx)>Math.abs(my)*1.4) mode='h';
@@ -1385,13 +1421,151 @@ function setupDaySwipe(){
     mode=null; dx=0;
   },{passive:true});
 }
+function renderTimelineOnly(){
+  const grid=document.getElementById('dvGrid');
+  if(!grid) return;
+  grid.style.height=(24*HOUR_PX)+'px';
+  grid.querySelectorAll('.dv-hline').forEach(el=>{
+    const h=parseInt(el.getAttribute('data-h'));
+    el.style.top=(h*HOUR_PX)+'px';
+  });
+  grid.querySelectorAll('.dv-hlabel').forEach(el=>{
+    const h=parseInt(el.getAttribute('data-h'));
+    el.style.top=(h*HOUR_PX)+'px';
+  });
+  grid.querySelectorAll('.dv-ev').forEach(el=>{
+    const st=parseInt(el.dataset.start), en=parseInt(el.dataset.end);
+    if(isNaN(st)||isNaN(en)) return;
+    const top=st/60*HOUR_PX;
+    const h=Math.max(22,(en-st)/60*HOUR_PX);
+    el.style.top=top+'px';
+    el.style.height=h+'px';
+    el.classList.toggle('sm', h<36);
+  });
+  const nowEl=grid.querySelector('.dv-now');
+  if(nowEl){
+    const nm=parseInt(nowEl.getAttribute('data-min'));
+    if(!isNaN(nm)) nowEl.style.top=(nm/60*HOUR_PX)+'px';
+  }
+}
+function setupPinchZoom(){
+  const scroll=document.getElementById('dvScroll');
+  if(!scroll||scroll._pinchReady) return;
+  scroll._pinchReady=true;
+  let pz=null, rafId=null, lastTouches=null;
+  function dist(t0,t1){ const dx=t1.clientX-t0.clientX, dy=t1.clientY-t0.clientY; return Math.hypot(dx,dy); }
+  scroll.addEventListener('touchstart',e=>{
+    if(e.touches.length!==2) return;
+    clearTimeout(lpTimer);
+    drag=null; rsz=null;
+    const t0=e.touches[0], t1=e.touches[1];
+    const cy=(t0.clientY+t1.clientY)/2;
+    const rect=scroll.getBoundingClientRect();
+    const centerMin=((cy-rect.top+scroll.scrollTop)/HOUR_PX)*60;
+    const centerOffsetInViewport=cy-rect.top;
+    pz={ d0:dist(t0,t1), baseHourPx:HOUR_PX, centerMin, centerOffsetInViewport };
+    pinching=true;
+  },{passive:true});
+  scroll.addEventListener('touchmove',e=>{
+    if(!pz||e.touches.length!==2) return;
+    e.preventDefault();
+    lastTouches=[e.touches[0],e.touches[1]];
+    const d=dist(e.touches[0],e.touches[1]);
+    const raw=pz.baseHourPx*(d/pz.d0);
+    HOUR_PX=Math.max(HOUR_PX_MIN,Math.min(HOUR_PX_MAX,raw));
+    if(rafId) return;
+    rafId=requestAnimationFrame(()=>{
+      rafId=null;
+      renderTimelineOnly();
+      scroll.scrollTop = Math.max(0,(pz.centerMin/60*HOUR_PX) - pz.centerOffsetInViewport);
+    });
+  },{passive:false});
+  const end=()=>{
+    if(!pz) return;
+    pz=null; pinching=false; lastTouches=null;
+    saveHourPx();
+  };
+  scroll.addEventListener('touchend',e=>{ if(e.touches.length<2) end(); },{passive:true});
+  scroll.addEventListener('touchcancel',()=>end(),{passive:true});
+}
+function setupWeekSwipe(){
+  const strip=document.getElementById('dvWeekStrip');
+  if(!strip||strip._ready) return;
+  strip._ready=true;
+  let sx=0,sy=0,mode=null;
+  strip.addEventListener('touchstart',e=>{
+    if(e.touches.length>1||selectedEv||pinching){ mode='x'; return; }
+    sx=e.touches[0].clientX; sy=e.touches[0].clientY; mode=null;
+  },{passive:true});
+  strip.addEventListener('touchmove',e=>{
+    if(mode==='x'||selectedEv||pinching||e.touches.length>1) return;
+    const mx=e.touches[0].clientX-sx, my=e.touches[0].clientY-sy;
+    if(!mode){
+      if(Math.abs(mx)>16&&Math.abs(mx)>Math.abs(my)*1.4) mode='h';
+      else if(Math.abs(my)>10) mode='x';
+    }
+  },{passive:true});
+  strip.addEventListener('touchend',e=>{
+    if(mode!=='h'){ mode=null; return; }
+    const ex=(e.changedTouches&&e.changedTouches[0])?e.changedTouches[0].clientX:sx;
+    const dx=ex-sx;
+    mode=null;
+    if(Math.abs(dx)<24) return;
+    const total=daysInMonth(currentMonth);
+    selectedEv=null;
+    const nd=Math.max(1,Math.min(total, selDay+(dx<0?7:-7)));
+    if(nd===selDay) return;
+    selDay=nd;
+    renderContent();
+  },{passive:true});
+}
 
 let rsz=null;
 let drag=null;
+let selectedEv=null; // {id,kind}
+let pinching=false;
+let suppressNextClick=false;
+const IS_TOUCH = ('ontouchstart' in window) || navigator.maxTouchPoints>0;
+
+function selEditTap(){
+  if(!selectedEv) return;
+  const id=selectedEv.id, kind=selectedEv.kind;
+  selectedEv=null;
+  openEvent(id,kind);
+}
+function selDeleteTap(){
+  if(!selectedEv) return;
+  const id=selectedEv.id, kind=selectedEv.kind;
+  if(kind==='custom'){
+    if(!confirm('この予定を削除？')) return;
+    delCustomTask(currentMonth, selDay, id);
+  } else {
+    const days=buildMonth(currentMonth); const x=days.find(k=>k.d===selDay);
+    const tk=tasksOf(x).find(t=>t.id===id);
+    if(!confirm(`「${tk?tk.label:id}」を消す？\n（達成率の計算からも外れる。あとで戻せる）`)) { return; }
+    const s=getDayState(currentMonth, selDay);
+    if(!s.__hidden__) s.__hidden__=[];
+    if(!s.__hidden__.includes(id)) s.__hidden__.push(id);
+    delete s[id];
+    saveState(state);
+  }
+  selectedEv=null;
+  renderContent();
+  diaryToast("✓ 削除した");
+}
+function clearSelection(){
+  if(!selectedEv) return;
+  selectedEv=null;
+  const sc=document.getElementById('dvScroll');
+  dvKeepScrollTop = sc ? sc.scrollTop : null;
+  renderContent();
+}
+
 function setupResize(){
   if(setupResize._done) return;
   setupResize._done=true;
   const onMove=(ev)=>{
+    if(pinching) return;
     const cy=(ev.touches?ev.touches[0].clientY:ev.clientY);
     if(rsz){
       if(rsz.dir==='top'){
@@ -1414,8 +1588,8 @@ function setupResize(){
     }
     if(drag){
       const dy=cy-drag.y0;
-      if(!drag.active && Math.abs(dy)<10) return;
-      if(!drag.active){ drag.active=true; drag.el.classList.add('dragging'); }
+      if(!drag.active && Math.abs(dy)<6 && Math.abs((ev.touches?ev.touches[0].clientX:ev.clientX)-drag.x0)<6) return;
+      if(!drag.active){ drag.active=true; drag.el.classList.add('dragging'); clearTimeout(lpTimer); }
       let newStart=drag.origStart+dy/HOUR_PX*60;
       newStart=Math.round(newStart/5)*5;
       newStart=Math.max(0,Math.min(1440-drag.dur,newStart));
@@ -1426,22 +1600,39 @@ function setupResize(){
       ev.preventDefault();
     }
   };
-  const onUp=()=>{
+  const onUp=(ev)=>{
     if(rsz){
       setEventTime(currentMonth, selDay, rsz.id, rsz.kind, rsz.curStart, rsz.curEnd);
-      rsz=null; renderContent(); diaryToast("✓ 時間を変更");
+      rsz=null;
+      const sc=document.getElementById('dvScroll');
+      dvKeepScrollTop = sc ? sc.scrollTop : null;
+      renderContent(); diaryToast("✓ 時間を変更");
+      suppressNextClick=true;
+      return;
     }
     if(drag){
       drag.el.classList.remove('dragging');
+      clearTimeout(lpTimer);
       if(!drag.active){
-        const did=drag.id, dkind=drag.kind;
+        // タップ扱い：タッチ端末はここで完了トグル、PCはclickイベントに任せる
+        const did=drag.id, wasSelected=drag.wasSelected;
         drag=null;
-        openEvent(did, dkind);
+        if(IS_TOUCH && !wasSelected && !lpFired){
+          toggleTask(ev, currentMonth, selDay, did);
+          suppressNextClick=true;
+        }
         return;
       }
       setEventTime(currentMonth, selDay, drag.id, drag.kind, drag.curStart, drag.curEnd);
+      const wasSelected=drag.wasSelected;
       diaryToast("✓ 移動した");
-      drag=null; renderContent();
+      drag=null;
+      if(wasSelected){
+        const sc=document.getElementById('dvScroll');
+        dvKeepScrollTop = sc ? sc.scrollTop : null;
+      }
+      renderContent();
+      suppressNextClick=true;
     }
   };
   document.addEventListener('mousemove',onMove);
@@ -1449,54 +1640,121 @@ function setupResize(){
   document.addEventListener('touchmove',onMove,{passive:false});
   document.addEventListener('touchend',onUp);
 }
-// === 長押しで予定追加（iPhone風） ===
-let lpTimer=null, lpMoved=false;
+
+// === 長押し=選択モード／空き長押し=追加（iPhone風） ===
+let lpTimer=null, lpMoved=false, lpFired=false;
 function setupLongPress(){
   const grid=document.getElementById('dvGrid');
-  if(!grid) return;
+  if(!grid || grid._lpReady) return;
+  grid._lpReady=true;
   grid.addEventListener('touchstart',function(ev){
-    if(ev.target.closest('.dv-ev')||ev.target.closest('.rsz')) return;
-    lpMoved=false;
+    if(ev.touches.length>1) return;
+    if(ev.target.closest('.dv-handle')||ev.target.closest('.dv-tools')) return;
+    const evBlock=ev.target.closest('.dv-ev');
+    lpMoved=false; lpFired=false;
+    if(evBlock){
+      // .dv-ev本体の長押し→選択モード（移動はstartResize側のdragが担当）
+      lpTimer=setTimeout(()=>{
+        if(lpMoved||drag&&drag.active) return;
+        lpFired=true;
+        if(navigator.vibrate) navigator.vibrate(10);
+        const sc=document.getElementById('dvScroll');
+        dvKeepScrollTop = sc ? sc.scrollTop : null;
+        selectedEv={id:evBlock.dataset.id, kind:evBlock.dataset.kind};
+        drag=null;
+        renderContent();
+      },400);
+      return;
+    }
+    // 空きスペースの長押し→追加
+    const rect=grid.getBoundingClientRect();
+    const scrollEl=document.getElementById('dvScroll');
+    const scrollTop = scrollEl?scrollEl.scrollTop:0;
+    const clientY=ev.touches[0].clientY;
     lpTimer=setTimeout(()=>{
       if(lpMoved) return;
-      const rect=grid.getBoundingClientRect();
-      let startMin=Math.round(((ev.touches[0].clientY-rect.top+grid.closest('.dv-gridwrap').scrollTop)/HOUR_PX*60)/60)*60;
+      lpFired=true;
+      let startMin=Math.round(((clientY-rect.top)/HOUR_PX*60)/30)*30;
       startMin=Math.max(0,Math.min(1380,startMin));
       if(navigator.vibrate) navigator.vibrate(30);
       openEvent(null,'custom',startMin);
-    },500);
+    },400);
   },{passive:true});
   grid.addEventListener('touchmove',function(){ lpMoved=true; clearTimeout(lpTimer); },{passive:true});
   grid.addEventListener('touchend',function(){ clearTimeout(lpTimer); },{passive:true});
+  grid.addEventListener('touchcancel',function(){ clearTimeout(lpTimer); },{passive:true});
 }
+
 document.addEventListener('mousedown',startResize,true);
 document.addEventListener('touchstart',startResize,{capture:true,passive:false});
+document.addEventListener('contextmenu',function(ev){
+  const evBlock=ev.target.closest&&ev.target.closest('.dv-ev');
+  if(evBlock && document.getElementById('dvGrid')){
+    ev.preventDefault();
+    selectedEv={id:evBlock.dataset.id, kind:evBlock.dataset.kind};
+    renderContent();
+  }
+});
+document.addEventListener('click',function(ev){
+  if(suppressNextClick){ suppressNextClick=false; ev.stopPropagation(); ev.preventDefault(); return; }
+  const grid=document.getElementById('dvGrid');
+  if(!grid){ return; }
+  const evBlock=ev.target.closest&&ev.target.closest('.dv-ev');
+  const handle=ev.target.closest&&ev.target.closest('.dv-handle');
+  const tools=ev.target.closest&&ev.target.closest('.dv-tools');
+  if(handle||tools) return;
+  if(evBlock){
+    if(selectedEv && selectedEv.id===evBlock.dataset.id && selectedEv.kind===evBlock.dataset.kind) return;
+    if(!IS_TOUCH){
+      // PCクリック：完了トグル（タッチ端末はtouchend側で既に処理済み）
+      toggleTask(ev, currentMonth, selDay, evBlock.dataset.id);
+    }
+    return;
+  }
+  if(selectedEv && grid.contains(ev.target)){
+    clearSelection();
+  }
+},true);
+document.addEventListener('mousedown',function(ev){
+  if(!selectedEv) return;
+  const grid=document.getElementById('dvGrid');
+  if(!grid) return;
+  if(ev.target.closest&&(ev.target.closest('.dv-ev')||ev.target.closest('.dv-handle')||ev.target.closest('.dv-tools'))) return;
+  if(!grid.contains(ev.target)) clearSelection();
+},true);
 function startResize(ev){
-  const handle=ev.target.closest&&(ev.target.closest('.rsz')||ev.target.closest('.rsz-top'));
+  const handle=ev.target.closest&&ev.target.closest('.dv-handle');
   if(handle){
     ev.stopPropagation(); ev.preventDefault();
-    const block=handle.parentElement;
+    const block=handle.closest('.dv-ev');
     const dir=handle.dataset.dir||'bot';
-    rsz={ id:handle.dataset.id, kind:handle.dataset.kind, el:block, dir,
+    rsz={ id:block.dataset.id, kind:block.dataset.kind, el:block, dir,
       y0:(ev.touches?ev.touches[0].clientY:ev.clientY),
       origStart:parseInt(block.dataset.start), origEnd:parseInt(block.dataset.end),
       curStart:parseInt(block.dataset.start), curEnd:parseInt(block.dataset.end) };
     return;
   }
+  if(ev.target.closest && ev.target.closest('.dv-tools')) return;
   const evBlock=ev.target.closest&&ev.target.closest('.dv-ev');
-  if(evBlock && !ev.target.closest('.rsz') && !ev.target.closest('.rsz-top')){
+  if(evBlock){
     const startMin=parseInt(evBlock.dataset.start);
     const endMin=parseInt(evBlock.dataset.end);
     if(isNaN(startMin)||isNaN(endMin)) return;
+    const isSel = !!(selectedEv && selectedEv.id===evBlock.dataset.id && selectedEv.kind===evBlock.dataset.kind);
     drag={ id:evBlock.dataset.id, kind:evBlock.dataset.kind, el:evBlock,
       y0:(ev.touches?ev.touches[0].clientY:ev.clientY),
+      x0:(ev.touches?ev.touches[0].clientX:ev.clientX),
       origStart:startMin, origEnd:endMin, dur:endMin-startMin,
-      curStart:startMin, curEnd:endMin, active:false };
+      curStart:startMin, curEnd:endMin, active:false, wasSelected:isSel };
   }
 }
 
 let evCtx=null;
+let evOpenScrollTop=null;
 function openEvent(id, kind, presetStart){
+  selectedEv=null;
+  const dvScrollEl=document.getElementById('dvScroll');
+  if(dvScrollEl) evOpenScrollTop=dvScrollEl.scrollTop;
   const s=getDayState(currentMonth, selDay);
   if(id==='null') id=null;
   let name,start,end,done,isPreset;
@@ -1545,6 +1803,8 @@ function openEvent(id, kind, presetStart){
 function closeDaySheet(){
   evCtx=null;
   document.getElementById("dsBg").classList.remove("show");
+  if(currentView==="cal2" && evOpenScrollTop!=null) dvKeepScrollTop=evOpenScrollTop;
+  evOpenScrollTop=null;
   renderContent();
 }
 function renderDaySheetIfOpen(){}
@@ -1720,6 +1980,20 @@ function jumpToToday(){
       todayEl.scrollIntoView({behavior:'smooth', block:'center'});
     }
   }, 150);
+}
+function jumpToTodayInDayView(){
+  const today = new Date();
+  const y = today.getFullYear();
+  const m = today.getMonth()+1;
+  if(y !== 2026 || ![4,5,6,7].includes(m)){
+    alert("今日は対応月（2026/4〜7）外です");
+    return;
+  }
+  selectedEv=null;
+  if(currentMonth !== m) currentMonth = m;
+  selDay = today.getDate();
+  dvKeepScroll=false; dvKeepScrollTop=null;
+  renderContent();
 }
 
 // ===== 更新ボタン＆Pull-to-refresh =====
