@@ -33,7 +33,14 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:
 .dv, .dv *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .dv input, .dv textarea, .dv select{-webkit-user-select:text;user-select:text}
 body{background:linear-gradient(135deg,#0f0f1a 0%,#1a1040 30%,#0d2137 60%,#0f1a2e 100%);background-attachment:fixed;min-height:100vh}
-body.cal2-lock{overflow:hidden;position:fixed;inset:0;width:100%}
+body.cal2-lock{overflow:hidden;position:fixed;inset:0;width:100%;background:transparent}
+#sky{position:fixed;inset:0;z-index:-3;transition:background .25s linear;display:none}
+#sky::after{content:"";position:absolute;inset:0;background:rgba(8,8,20,.35)}
+#stars{position:fixed;inset:0;z-index:-2;opacity:0;transition:opacity .8s;pointer-events:none;display:none}
+.star{position:absolute;background:#fff;border-radius:50%;animation:tw 3s infinite ease-in-out}
+@keyframes tw{0%,100%{opacity:.25}50%{opacity:1}}
+#celestial{position:fixed;width:70px;height:70px;border-radius:50%;z-index:-2;left:0;top:0;transition:background .4s,box-shadow .4s;will-change:transform;display:none;pointer-events:none}
+body.cal2-lock #sky,body.cal2-lock #stars,body.cal2-lock #celestial{display:block}
 @keyframes sparkle{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(0);opacity:0}}
 .sparkle-dot{position:fixed;width:8px;height:8px;border-radius:50%;pointer-events:none;z-index:999;animation:sparkle .6s cubic-bezier(.25,.46,.45,.94) forwards;box-shadow:0 0 6px currentColor}
 
@@ -143,6 +150,7 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 .dv-ev.done .dv-chk{background:#30d158;border-color:#30d158;box-shadow:0 0 10px rgba(48,209,88,.7)}
 .dv-ev.dragging{opacity:.8;z-index:8;box-shadow:0 8px 32px rgba(0,0,0,.45)}
 .dv-ev.selected{transform:scale(1.02);box-shadow:0 10px 34px rgba(0,0,0,.5);z-index:9;border-color:rgba(255,255,255,.4)}
+.dv-ev.ghost{opacity:.8;border:1.5px dashed rgba(255,255,255,.7);border-left:3px solid rgba(255,255,255,.9);background:linear-gradient(160deg,rgba(10,132,255,.6),rgba(90,200,250,.38));box-shadow:0 12px 34px rgba(10,132,255,.45);z-index:8;pointer-events:none}
 .dv-handle{position:absolute;left:50%;width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid #0a84ff;box-shadow:0 2px 8px rgba(0,0,0,.4);transform:translate(-50%,-50%);z-index:10;touch-action:none;cursor:ns-resize}
 .dv-handle.top{top:0}
 .dv-handle.bot{top:100%}
@@ -397,6 +405,10 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 </style>
 </head>
 <body>
+
+<div id="sky"></div>
+<div id="stars"></div>
+<div id="celestial"></div>
 
 <header>
   <h1>2026 活動トラッカー</h1>
@@ -733,6 +745,7 @@ function renderCharts(){
 }
 
 function renderContent(){
+  removeGhost();
   const prevScroll = document.getElementById('dvScroll');
   if(prevScroll) dvSavedScrollTop = prevScroll.scrollTop;
   const el = document.getElementById("content");
@@ -1409,6 +1422,7 @@ function sizeDvScroll(){
   const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
   const used = (hdr?hdr.offsetHeight:0)+(head?head.offsetHeight:0);
   scroll.style.height = Math.max(160, vh-used)+'px';
+  skyUpdate();
 }
 function afterDayViewRender(){
   const scroll=document.getElementById('dvScroll');
@@ -1423,6 +1437,8 @@ function afterDayViewRender(){
   const isTd=isTodayYMD(curYear, currentMonth, selDay);
   const targetMin=isTd?Math.max(0,(today.getHours()*60+today.getMinutes())-90):6*60;
   if(!want && savedPos!=null) scroll.scrollTop=savedPos;
+  scroll.addEventListener('scroll',skyOnScroll,{passive:true});
+  skyUpdate();
   setTimeout(()=>{
     if(want){
       const scrollTarget=Math.max(0,(targetMin/60*HOUR_PX));
@@ -1445,11 +1461,11 @@ function setupDaySwipe(){
   let sx=0,sy=0,dx=0,mode=null;
   sw.addEventListener('touchstart',e=>{
     if(e.touches.length>1){ mode='v'; return; }
-    if(rsz||drag||selectedEv||pinching){ mode='v'; return; }
+    if(rsz||drag||ghost||selectedEv||pinching){ mode='v'; return; }
     sx=e.touches[0].clientX; sy=e.touches[0].clientY; dx=0; mode=null;
   },{passive:true});
   sw.addEventListener('touchmove',e=>{
-    if(mode==='v'||rsz||drag||selectedEv||pinching||e.touches.length>1) return;
+    if(mode==='v'||rsz||drag||ghost||selectedEv||pinching||e.touches.length>1) return;
     const mx=e.touches[0].clientX-sx, my=e.touches[0].clientY-sy;
     if(!mode){
       if(Math.abs(mx)>16&&Math.abs(mx)>Math.abs(my)*1.8) mode='h';
@@ -1516,6 +1532,7 @@ function setupPinchZoom(){
     if(e.touches.length!==2) return;
     clearTimeout(lpTimer);
     drag=null; rsz=null;
+    removeGhost();
     const t0=e.touches[0], t1=e.touches[1];
     const cy=(t0.clientY+t1.clientY)/2;
     const rect=scroll.getBoundingClientRect();
@@ -1542,6 +1559,7 @@ function setupPinchZoom(){
     if(!pz) return;
     pz=null; pinching=false; lastTouches=null;
     saveHourPx();
+    skyUpdate();
   };
   scroll.addEventListener('touchend',e=>{ if(e.touches.length<2) end(); },{passive:true});
   scroll.addEventListener('touchcancel',()=>end(),{passive:true});
@@ -1578,10 +1596,87 @@ function setupWeekSwipe(){
   },{passive:true});
 }
 
+const SKY_KEYS=[
+  [0,[8,10,24],[5,7,18]],
+  [270,[20,24,48],[30,26,50]],
+  [360,[56,52,92],[140,90,90]],
+  [480,[52,86,130],[90,130,160]],
+  [720,[50,100,160],[100,150,190]],
+  [990,[70,80,130],[180,110,80]],
+  [1110,[60,45,90],[150,70,90]],
+  [1200,[24,26,56],[40,32,64]],
+  [1440,[8,10,24],[5,7,18]]
+];
+const skyLerp=(a,b,t)=>Math.round(a+(b-a)*t);
+const skyMix=(c1,c2,t)=>`rgb(${skyLerp(c1[0],c2[0],t)},${skyLerp(c1[1],c2[1],t)},${skyLerp(c1[2],c2[2],t)})`;
+let skyRaf=null;
+function skyMakeStars(){
+  const stars=document.getElementById('stars');
+  if(!stars||stars.childElementCount) return;
+  let h='';
+  for(let i=0;i<70;i++){
+    const sz=Math.random()*2+1;
+    h+=`<div class="star" style="left:${Math.random()*100}%;top:${Math.random()*70}%;width:${sz}px;height:${sz}px;animation-delay:${Math.random()*3}s"></div>`;
+  }
+  stars.innerHTML=h;
+}
+function skyUpdate(){
+  if(!document.body.classList.contains('cal2-lock')) return;
+  const scroll=document.getElementById('dvScroll');
+  const sky=document.getElementById('sky'), cel=document.getElementById('celestial'), stars=document.getElementById('stars');
+  if(!scroll||!sky||!cel||!stars) return;
+  skyMakeStars();
+  let min=((scroll.scrollTop+scroll.clientHeight/2)/HOUR_PX)*60;
+  min=Math.max(0,Math.min(1440,min));
+  let i=0;
+  while(i<SKY_KEYS.length-2 && min>SKY_KEYS[i+1][0]) i++;
+  const k0=SKY_KEYS[i], k1=SKY_KEYS[i+1];
+  const f=Math.max(0,Math.min(1,(min-k0[0])/((k1[0]-k0[0])||1)));
+  sky.style.background=`linear-gradient(165deg,${skyMix(k0[1],k1[1],f)} 0%,${skyMix(k0[2],k1[2],f)} 100%)`;
+  const sunP=(min-360)/765;
+  const moonP=(min>=1170?min-1170:min+270)/600;
+  let p=null, isMoon=false;
+  if(sunP>=0&&sunP<=1){ p=sunP; }
+  else if(moonP>=0&&moonP<=1){ p=moonP; isMoon=true; }
+  if(p==null){
+    cel.style.opacity='0';
+  } else {
+    cel.style.opacity='1';
+    const x=8+p*76, y=86-Math.sin(p*Math.PI)*46;
+    cel.style.transform=`translate(${x}vw,${y}vh)`;
+    cel.style.background=isMoon?'radial-gradient(circle at 38% 38%,#fdfbf2,#cfd9da)':'radial-gradient(circle at 38% 38%,#fdf1d4,#e8b463)';
+    cel.style.boxShadow=isMoon?'0 0 40px rgba(220,228,228,.55)':'0 0 56px rgba(232,180,99,.65)';
+  }
+  let so=0;
+  if(min>=1140) so=Math.min(1,(min-1140)/90);
+  else if(min<=270) so=1;
+  else if(min<=360) so=1-(min-270)/90;
+  stars.style.opacity=so;
+}
+function skyOnScroll(){
+  if(skyRaf) return;
+  skyRaf=requestAnimationFrame(()=>{ skyRaf=null; skyUpdate(); });
+}
+
 let rsz=null;
 let drag=null;
 let selectedEv=null; // {id,kind}
 let pinching=false;
+let ghost=null;
+function spawnGhost(startMin, clientY){
+  removeGhost();
+  const grid=document.getElementById('dvGrid');
+  if(!grid) return;
+  const dur=60;
+  startMin=Math.max(0,Math.min(1440-dur,startMin));
+  grid.insertAdjacentHTML('beforeend',`<div class="dv-ev ghost" id="dv-ghost" style="top:${startMin/60*HOUR_PX}px;height:${dur/60*HOUR_PX}px;left:2px;right:8px"><span class="tm">${min2hm(startMin)}–${min2hm(startMin+dur)}</span><span class="nm">新規予定</span></div>`);
+  ghost={ el:document.getElementById('dv-ghost'), y0:clientY, origStart:startMin, curStart:startMin, dur };
+}
+function removeGhost(){
+  ghost=null;
+  const g=document.getElementById('dv-ghost');
+  if(g) g.remove();
+}
 let suppressClickInfo=null;
 function markSuppressClick(ev){
   const pt=(ev.changedTouches&&ev.changedTouches[0])?ev.changedTouches[0]:ev;
@@ -1611,6 +1706,19 @@ function setupResize(){
   const onMove=(ev)=>{
     if(pinching) return;
     const cy=(ev.touches?ev.touches[0].clientY:ev.clientY);
+    if(ghost&&ghost.el){
+      if(ev.touches&&ev.touches.length>1){ removeGhost(); return; }
+      const gdy=cy-ghost.y0;
+      let rawStart=ghost.origStart+gdy/HOUR_PX*60;
+      rawStart=Math.max(0,Math.min(1440-ghost.dur,rawStart));
+      let newStart=Math.round(rawStart/15)*15;
+      newStart=Math.max(0,Math.min(1440-ghost.dur,newStart));
+      ghost.el.style.top=(rawStart/60*HOUR_PX)+'px';
+      ghost.el.querySelector('.tm').textContent=`${min2hm(newStart)}–${min2hm(newStart+ghost.dur)}`;
+      ghost.curStart=newStart;
+      ev.preventDefault();
+      return;
+    }
     if(rsz){
       if(rsz.dir==='top'){
         let startMin=rsz.origStart+(cy-rsz.y0)/HOUR_PX*60;
@@ -1657,6 +1765,19 @@ function setupResize(){
     }
   };
   const onUp=(ev)=>{
+    if(ghost){
+      clearTimeout(lpTimer);
+      const gs=ghost.curStart, ge=gs+ghost.dur;
+      if(ghost.el){
+        ghost.el.style.top=(gs/60*HOUR_PX)+'px';
+        const gtm=ghost.el.querySelector('.tm');
+        if(gtm) gtm.textContent=`${min2hm(gs)}–${min2hm(ge)}`;
+      }
+      ghost=null;
+      markSuppressClick(ev);
+      openEvent(null,'custom',gs,ge);
+      return;
+    }
     if(rsz){
       setEventTime(currentMonth, selDay, rsz.id, rsz.kind, rsz.curStart, rsz.curEnd);
       rsz=null;
@@ -1698,6 +1819,7 @@ function setupResize(){
   document.addEventListener('mouseup',onUp);
   document.addEventListener('touchmove',onMove,{passive:false});
   document.addEventListener('touchend',onUp);
+  document.addEventListener('touchcancel',function(){ if(ghost) removeGhost(); });
 }
 
 // === 長押し=選択モード／空き長押し=追加（iPhone風） ===
@@ -1737,10 +1859,10 @@ function setupLongPress(){
     lpTimer=setTimeout(()=>{
       if(lpMoved) return;
       lpFired=true;
-      let startMin=Math.round(((clientY-rect.top)/HOUR_PX*60)/30)*30;
+      let startMin=Math.round(((clientY-rect.top)/HOUR_PX*60)/15)*15;
       startMin=Math.max(0,Math.min(1380,startMin));
       if(navigator.vibrate) navigator.vibrate(30);
-      openEvent(null,'custom',startMin);
+      spawnGhost(startMin, clientY);
     },400);
   },{passive:true});
   grid.addEventListener('touchmove',function(){ lpMoved=true; clearTimeout(lpTimer); },{passive:true});
@@ -1810,6 +1932,7 @@ function startResize(ev){
   }
   const evBlock=ev.target.closest&&ev.target.closest('.dv-ev');
   if(evBlock){
+    if(evBlock.id==='dv-ghost') return;
     const isChk = !!(ev.target.closest && ev.target.closest('.dv-chk'));
     const startMin=parseInt(evBlock.dataset.start);
     const endMin=parseInt(evBlock.dataset.end);
@@ -1826,7 +1949,7 @@ function startResize(ev){
 
 let evCtx=null;
 let evOpenScrollTop=null;
-function openEvent(id, kind, presetStart){
+function openEvent(id, kind, presetStart, presetEnd){
   selectedEv=null;
   const dvScrollEl=document.getElementById('dvScroll');
   if(dvScrollEl) evOpenScrollTop=dvScrollEl.scrollTop;
@@ -1835,7 +1958,7 @@ function openEvent(id, kind, presetStart){
   let name,start,end,done,isPreset;
   if(!id){
     evCtx={ id:null, kind:'custom', isNew:true };
-    name=''; start=(presetStart!=null?presetStart:9*60); end=start+60; done=false; isPreset=false;
+    name=''; start=(presetStart!=null?presetStart:9*60); end=(presetEnd!=null?presetEnd:start+60); done=false; isPreset=false;
   } else if(kind==='custom'){
     const t=(s.__custom__||[]).find(t=>t.id===id);
     if(!t) return;
@@ -1885,6 +2008,7 @@ function openEvent(id, kind, presetStart){
 }
 function closeDaySheet(){
   evCtx=null;
+  removeGhost();
   document.getElementById("dsBg").classList.remove("show");
   evOpenScrollTop=null;
   renderContent();
