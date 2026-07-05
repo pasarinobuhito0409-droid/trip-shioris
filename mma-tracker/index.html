@@ -35,7 +35,7 @@ input,textarea{user-select:text;-webkit-user-select:text}
 button,.notselect{user-select:none;-webkit-user-select:none}
 button{touch-action:manipulation;font-family:inherit}
 
-.arena{position:fixed;inset:0;z-index:-10;overflow:hidden;pointer-events:none}
+.arena{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:var(--ink)}
 
 .arena .crowd{
   position:absolute;left:0;right:0;top:0;height:42%;
@@ -149,7 +149,7 @@ button{touch-action:manipulation;font-family:inherit}
   0%,100%{opacity:.9}
   50%{opacity:.35}
 }
-.vignette{position:fixed;inset:0;z-index:-9;pointer-events:none;
+.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
   box-shadow:inset 0 0 110px 34px rgba(0,0,0,.94);
 }
 
@@ -164,7 +164,7 @@ body.scr-s4 .ray.center{opacity:.55}
 body.scr-s4 .ray.left,body.scr-s4 .ray.right{opacity:.5}
 body.scr-s4 .wash{background:linear-gradient(180deg, rgba(22,16,20,.3) 0%, rgba(10,8,10,.5) 45%, #0a0808 90%)}
 
-.app{position:relative;z-index:1;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+.app{position:relative;z-index:2;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
 .screen{display:none;flex:1;flex-direction:column;padding:max(18px,env(safe-area-inset-top)) 18px calc(24px + env(safe-area-inset-bottom))}
 .screen.active{display:flex}
 
