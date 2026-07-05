@@ -628,8 +628,8 @@ function tally(m){
     if(s.__custom__ && s.__custom__.length){
       s.__custom__.forEach(t=>{
         if(!s[t.id]) return;
-        const label = t.label||"";
-        if(/wt|ウェイト|筋トレ|ベンチ|スクワット|デッド/i.test(label)) nightTypesDone.add("WT");
+        const label = (t.label||"").normalize('NFKC');
+        if(/wt|ウェイト|ウエイト|筋トレ|ベンチ|スクワット|デッド/i.test(label)) nightTypesDone.add("WT");
         else if(/mma|スパー|総合|柔術|グラップ/i.test(label)) nightTypesDone.add("MMA");
         else if(/ハンド/.test(label)) nightTypesDone.add("ハンド");
       });
