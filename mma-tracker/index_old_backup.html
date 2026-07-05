@@ -1,0 +1,2058 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#c850dc">
+<title>MMA練習ログ</title>
+<style>
+:root{
+  --c-strike:#ff6b6b;
+  --c-clinch:#f59e3c;
+  --c-ground:#c850dc;
+  --c-spar:#0a84ff;
+  --c-strategy:#1aa56a;
+  --c-memo:#6b6b73;
+  --bg:#f5f5f7;
+  --card:#ffffff;
+  --line:#e3e3e8;
+  --text:#1d1d1f;
+  --muted:#6b6b73;
+  --done:#34c759;
+  --gold:#ffb300;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,"Hiragino Sans","Yu Gothic UI","Segoe UI",sans-serif;font-size:15px;line-height:1.5}
+
+header{position:sticky;top:0;z-index:10;background:var(--bg);padding:12px 14px 6px;border-bottom:1px solid var(--line)}
+h1{margin:0 0 4px;font-size:18px;font-weight:800}
+.today{font-size:12px;color:var(--muted);font-weight:500}
+
+.today-part{margin:12px 14px;padding:16px;border-radius:16px;
+  background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#3a1c5a 100%);
+  color:#fff;box-shadow:0 4px 16px rgba(58,28,90,.3);position:relative;overflow:hidden}
+.today-part::before{content:"";position:absolute;top:-30px;right:-30px;width:100px;height:100px;
+  background:radial-gradient(circle,rgba(255,179,0,.3) 0%,transparent 70%)}
+.today-part .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:11px;font-weight:700;opacity:.85;letter-spacing:.05em}
+.today-part .pcount{background:rgba(255,255,255,.15);padding:3px 9px;border-radius:999px;font-size:10px}
+.today-part .cat-tag{display:inline-block;font-size:10px;font-weight:800;padding:3px 9px;border-radius:6px;color:#fff;margin-bottom:8px}
+.today-part .cat-tag.strike{background:var(--c-strike)}
+.today-part .cat-tag.clinch{background:var(--c-clinch)}
+.today-part .cat-tag.ground{background:var(--c-ground)}
+.today-part .cat-tag.strategy{background:var(--c-strategy)}
+.today-part .name{font-size:22px;font-weight:900;line-height:1.2;margin-bottom:4px;cursor:pointer;text-decoration:underline;text-decoration-color:rgba(255,179,0,.4);text-underline-offset:4px}
+.today-part .desc{font-size:13px;opacity:.85;line-height:1.5;margin-bottom:14px}
+.today-part .actions{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:6px}
+.today-part .actions button{
+  appearance:none;border:none;border-radius:10px;padding:11px 4px;
+  font:inherit;font-weight:800;font-size:12px;cursor:pointer;
+  transition:transform .1s
+}
+.today-part .actions button:active{transform:scale(.95)}
+.today-part .btn-detail{background:#fff;color:#1a1a2e}
+.today-part .btn-complete{background:var(--done);color:#fff}
+.today-part .btn-progress{background:var(--gold);color:#fff}
+.today-part .btn-skip{background:rgba(255,255,255,.18);color:#fff}
+.today-part.all-done{background:linear-gradient(135deg,#0a84ff 0%,#34c759 100%)}
+
+/* === 今日の1個カード内のチェックリスト（朝1発で意識） === */
+.today-part .inline-checks{margin:14px 0 4px;padding-top:14px;border-top:1px dashed rgba(255,255,255,.25)}
+.today-part .inline-checks .ichead{font-size:11px;font-weight:800;opacity:.9;margin-bottom:8px;letter-spacing:.03em}
+.today-part .inline-checks .icitem{display:flex;align-items:flex-start;gap:10px;padding:9px 10px;background:rgba(255,255,255,.08);border-radius:8px;border:1px solid rgba(255,255,255,.15);cursor:pointer;margin-bottom:5px;transition:all .15s}
+.today-part .inline-checks .icitem:active{transform:scale(.98)}
+.today-part .inline-checks .icitem.done{background:rgba(52,199,89,.25);border-color:rgba(52,199,89,.6)}
+.today-part .inline-checks .icitem:last-child{margin-bottom:0}
+.today-part .inline-checks .icitem .icbox{width:22px;height:22px;border-radius:5px;border:2px solid rgba(255,255,255,.5);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:transparent;background:transparent}
+.today-part .inline-checks .icitem .ictext{flex:1;font-size:13px;line-height:1.4;color:#fff;font-weight:600}
+/* 3状態：未着手／意識中（黄）／習得済（緑） */
+.today-part .inline-checks .icitem.s-意識中{background:rgba(255,179,0,.3);border-color:rgba(255,179,0,.8);box-shadow:0 0 0 1px rgba(255,179,0,.4)}
+.today-part .inline-checks .icitem.s-意識中 .icbox{background:#ffb300;border-color:#ffb300;color:#fff}
+.today-part .inline-checks .icitem.s-意識中 .ictext{font-weight:800}
+.today-part .inline-checks .icitem.s-習得済{background:rgba(52,199,89,.22);border-color:rgba(52,199,89,.6)}
+.today-part .inline-checks .icitem.s-習得済 .icbox{background:#34c759;border-color:#34c759;color:#fff}
+.today-part .inline-checks .icitem.s-習得済 .ictext{opacity:.7;text-decoration:line-through}
+/* 旧 .done 互換 */
+.today-part .inline-checks .icitem.done .icbox{background:#34c759;border-color:#34c759;color:#fff}
+.today-part .inline-checks .icitem.done .ictext{opacity:.75;text-decoration:line-through}
+
+/* === Claudeコーチ観察ノート === */
+.coach-note{margin:12px 14px;padding:14px;border-radius:14px;background:linear-gradient(135deg,#1a3a52 0%,#264e6e 100%);color:#fff;box-shadow:0 4px 12px rgba(26,58,82,.25)}
+.coach-note .coach-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:12px;font-weight:800}
+.coach-note .updated{font-size:10px;opacity:.7;background:rgba(255,255,255,.15);padding:2px 8px;border-radius:999px}
+.coach-note details{margin-bottom:6px;background:rgba(0,0,0,.18);border-radius:10px;overflow:hidden}
+.coach-note details[open]{background:rgba(0,0,0,.25)}
+.coach-note summary{padding:10px 12px;font-size:13px;font-weight:700;cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px}
+.coach-note summary::-webkit-details-marker{display:none}
+.coach-note summary::before{content:"▶";font-size:9px;transition:transform .2s}
+.coach-note details[open] summary::before{transform:rotate(90deg)}
+.coach-note .body{padding:2px 14px 12px;font-size:13px;line-height:1.6;opacity:.95}
+.coach-note .body ul{margin:6px 0;padding-left:18px}
+.coach-note .body li{margin:3px 0}
+.coach-note .body .pos{color:#7ee8a4}
+.coach-note .body .neg{color:#ffb3b3}
+.coach-note .body .focus{color:#ffd966}
+
+.guide{font-size:12px;color:#0a4a82;background:#dceeff;padding:8px 12px;border-radius:8px;margin:0 14px 10px;border-left:3px solid #0a84ff}
+
+.main-area{padding:0 14px 8px}
+.main-area textarea{
+  width:100%;min-height:65px;
+  border:2px solid var(--line);border-radius:12px;
+  padding:12px;font:inherit;font-size:15px;
+  background:#fff;resize:vertical;
+}
+.main-area textarea:focus{border-color:#0a84ff;outline:none}
+.hint{font-size:11px;color:var(--muted);margin:4px 2px}
+
+.btn-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:6px 14px 10px}
+.cat-btn{
+  appearance:none;border:none;border-radius:14px;
+  padding:18px 10px;font-size:16px;font-weight:800;color:#fff;
+  cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;
+  box-shadow:0 3px 8px rgba(0,0,0,.12);
+  transition:transform .1s, box-shadow .1s;
+}
+.cat-btn:active{transform:scale(.95);box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.cat-btn .icon{font-size:26px;line-height:1}
+.cat-btn .sub{font-size:10px;font-weight:600;opacity:.85}
+.cat-btn.strike{background:var(--c-strike)}
+.cat-btn.clinch{background:var(--c-clinch)}
+.cat-btn.ground{background:var(--c-ground)}
+.cat-btn.spar{background:var(--c-spar)}
+.cat-btn.memo{background:var(--c-memo);grid-column:span 2;padding:14px}
+
+.section-title{padding:10px 14px 6px;font-size:13px;font-weight:700;color:var(--muted);display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.section-title .count{font-size:11px;font-weight:600}
+.section-title .arrow{transition:transform .2s;font-size:10px;color:#aaa}
+.section-title.collapsed .arrow{transform:rotate(-90deg)}
+
+.log-list{padding:0 14px 12px;display:flex;flex-direction:column;gap:6px}
+.log-item{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:grid;grid-template-columns:50px 1fr auto;gap:8px;align-items:start;transition:all .3s}
+.log-item.flash{
+  background:#fff8d4;border-color:#ffd60a;
+  box-shadow:0 0 0 3px rgba(255,214,10,.3);
+  animation:flashHi 1.2s ease;
+}
+@keyframes flashHi{
+  0%{transform:scale(1.04);background:#fff5a8}
+  100%{transform:scale(1);background:#fff8d4}
+}
+.log-item .time{font-size:11px;color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums}
+.log-item .body .cat{display:inline-block;font-size:10px;font-weight:800;color:#fff;padding:2px 7px;border-radius:6px;margin-bottom:3px}
+.log-item .body .cat.strike{background:var(--c-strike)}
+.log-item .body .cat.clinch{background:var(--c-clinch)}
+.log-item .body .cat.ground{background:var(--c-ground)}
+.log-item .body .cat.spar{background:var(--c-spar)}
+.log-item .body .cat.strategy{background:var(--c-strategy)}
+.log-item .body .cat.memo{background:var(--c-memo)}
+.log-item .body .cat.part{background:var(--gold)}
+.log-item .body .text{font-size:13px;line-height:1.4;word-break:break-word;white-space:pre-wrap}
+.log-item .del{appearance:none;border:none;background:transparent;color:#ccc;font-size:18px;cursor:pointer;padding:0 4px}
+.log-item .del:active{color:#ff453a}
+
+.empty{padding:20px;text-align:center;color:var(--muted);font-size:13px;background:var(--card);border-radius:12px;border:1px dashed var(--line);margin:0 14px 12px}
+
+.date-tabs{display:flex;gap:6px;padding:0 14px 8px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.date-tabs button{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--text);font-size:12px;font-weight:600;padding:6px 12px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.date-tabs button.active{background:var(--text);color:#fff;border-color:var(--text)}
+
+.parts-wrap{padding:0 14px 12px}
+.parts-block{margin-bottom:10px}
+.parts-block h4{margin:0 0 6px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.parts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px}
+.part-cell{
+  background:#fff;border:1.5px solid var(--line);border-radius:8px;
+  padding:8px 10px;font-size:12px;line-height:1.3;display:flex;align-items:center;gap:6px;
+  cursor:pointer;transition:all .15s;
+}
+.part-cell:active{transform:scale(.97)}
+.part-cell .pname{flex:1;font-weight:700}
+.part-cell .pmark{font-size:14px;flex:0 0 auto}
+.part-cell.s-未着手{color:#999}
+.part-cell.s-未着手 .pmark{color:#ccc}
+.part-cell.s-練習中{background:#fff8e1;border-color:var(--gold);color:#7a4f00}
+.part-cell.s-練習中 .pmark{color:var(--gold)}
+.part-cell.s-組み上がった{background:#dcf5e3;border-color:var(--done);color:#1d6435}
+.part-cell.s-組み上がった .pmark{color:var(--done)}
+
+.parts-summary{display:flex;gap:10px;margin-bottom:8px;font-size:11px;flex-wrap:wrap}
+.parts-summary span{display:inline-flex;align-items:center;gap:4px;color:var(--muted)}
+.parts-summary i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.progress-bar{height:8px;background:#eee;border-radius:999px;overflow:hidden;margin-bottom:10px}
+.progress-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--done));transition:width .3s}
+
+.chart-wrap{padding:8px 14px 12px}
+.chart-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.chart-card h3{margin:0 0 8px;font-size:12px;color:var(--muted);font-weight:700}
+.chart-card svg{width:100%;max-width:200px;height:auto;display:block;margin:0 auto}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;font-size:11px;justify-content:center}
+.legend span{display:inline-flex;align-items:center;gap:4px;color:var(--muted)}
+.legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
+
+.toolbar{display:flex;gap:8px;padding:8px 14px 24px;flex-wrap:wrap}
+.toolbar button{flex:1;min-width:100px;background:#fff;border:1px solid var(--line);padding:10px;border-radius:10px;font-size:12px;font-weight:700;color:var(--text);cursor:pointer}
+.toolbar button.danger{color:#c43;border-color:#fbb}
+.toolbar button.primary{background:var(--text);color:#fff;border-color:var(--text)}
+
+.toast{
+  position:fixed;left:50%;top:60px;transform:translateX(-50%) translateY(-30px);
+  background:rgba(20,200,90,.95);color:#fff;
+  padding:14px 24px;border-radius:999px;font-weight:800;font-size:15px;
+  opacity:0;pointer-events:none;transition:all .3s;z-index:200;
+  box-shadow:0 4px 16px rgba(0,0,0,.2);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.collapsible{max-height:8000px;overflow:hidden;transition:max-height .3s ease}
+.collapsible.hidden{max-height:0}
+
+/* === モーダル（ボトムシート風） === */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150;opacity:0;pointer-events:none;transition:opacity .25s;display:flex;align-items:flex-end;justify-content:center}
+.modal-bg.show{opacity:1;pointer-events:auto}
+.modal{background:#fff;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:18px 16px 30px;transform:translateY(100%);transition:transform .3s ease}
+.modal-bg.show .modal{transform:translateY(0)}
+.modal .grip{width:42px;height:5px;background:#ddd;border-radius:999px;margin:0 auto 14px}
+.modal .m-cat{display:inline-block;font-size:10px;font-weight:800;padding:3px 9px;border-radius:6px;color:#fff;margin-bottom:6px}
+.modal .m-cat.strike{background:var(--c-strike)}
+.modal .m-cat.clinch{background:var(--c-clinch)}
+.modal .m-cat.ground{background:var(--c-ground)}
+.modal .m-cat.strategy{background:var(--c-strategy)}
+.modal .m-name{font-size:24px;font-weight:900;line-height:1.2;margin-bottom:6px}
+.modal .m-status{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;display:inline-block;margin-bottom:10px}
+.modal .m-status.s-未着手{background:#eee;color:#999}
+.modal .m-status.s-練習中{background:#fff3c4;color:#7a4f00}
+.modal .m-status.s-組み上がった{background:#dcf5e3;color:#1d6435}
+.modal .m-desc{font-size:14px;color:var(--muted);margin-bottom:16px;line-height:1.5}
+.modal h3{font-size:13px;font-weight:800;color:#444;margin:18px 0 8px;display:flex;align-items:center;gap:5px}
+.modal .checklist{display:flex;flex-direction:column;gap:6px}
+.modal .checkitem{display:flex;align-items:flex-start;gap:10px;padding:10px;background:#f8f8fa;border-radius:10px;border:1px solid var(--line);cursor:pointer;transition:all .15s}
+.modal .checkitem:active{transform:scale(.98)}
+.modal .checkitem.done{background:#dcf5e3;border-color:var(--done)}
+.modal .checkitem.s-意識中{background:#fff3c4;border-color:#ffb300}
+.modal .checkitem.s-意識中 .box{background:#ffb300;border-color:#ffb300;color:#fff}
+.modal .checkitem.s-意識中 .text{font-weight:800;color:#7a4f00}
+.modal .checkitem.s-習得済{background:#dcf5e3;border-color:#34c759}
+.modal .checkitem.s-習得済 .box{background:#34c759;border-color:#34c759;color:#fff}
+.modal .checkitem.s-習得済 .text{opacity:.7;text-decoration:line-through}
+.modal .checkitem .box{width:22px;height:22px;border-radius:6px;border:2px solid #ccc;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:14px;color:transparent;font-weight:900;background:#fff}
+.modal .checkitem.done .box{background:var(--done);border-color:var(--done);color:#fff}
+.modal .checkitem .text{flex:1;font-size:13px;line-height:1.4}
+.modal .checkitem.done .text{text-decoration:line-through;opacity:.7}
+.modal textarea{width:100%;min-height:90px;border:2px solid var(--line);border-radius:10px;padding:10px;font:inherit;font-size:14px;resize:vertical}
+.modal textarea:focus{border-color:#0a84ff;outline:none}
+.modal .m-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:18px}
+.modal .m-actions button{appearance:none;border:none;border-radius:10px;padding:14px;font:inherit;font-weight:800;font-size:14px;cursor:pointer}
+.modal .m-actions .b-consult{background:#1a1a2e;color:#fff;grid-column:span 2}
+.modal .m-actions .b-complete{background:var(--done);color:#fff}
+.modal .m-actions .b-progress{background:var(--gold);color:#fff}
+.modal .m-actions .b-reset{background:#eee;color:#666}
+.modal .m-actions .b-close{background:transparent;color:#666;border:1px solid #ccc;grid-column:span 2}
+.modal .m-history{max-height:200px;overflow-y:auto;border:1px solid var(--line);border-radius:10px;padding:8px;font-size:12px;background:#fafafa}
+.modal .m-history .item{padding:6px 0;border-bottom:1px dashed #e5e5e5}
+.modal .m-history .item:last-child{border-bottom:none}
+.modal .m-history .item .t{font-size:10px;color:#999}
+
+/* === 昨日の振り返り（5段階評価） === */
+.review-yesterday{margin:14px 14px 10px;padding:14px;border-radius:14px;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.review-yesterday .rhead{font-size:12px;font-weight:800;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;opacity:.85}
+.review-yesterday .rfocus{font-size:14px;font-weight:700;padding:10px 12px;background:rgba(255,255,255,.1);border-radius:8px;margin-bottom:10px;line-height:1.4}
+.review-yesterday .scores{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:10px}
+.review-yesterday .scores button{background:rgba(255,255,255,.1);color:#fff;border:1.5px solid rgba(255,255,255,.25);padding:12px 4px;border-radius:8px;font:inherit;font-weight:800;font-size:16px;cursor:pointer;transition:all .15s}
+.review-yesterday .scores button.s1.selected{background:#ff5050;border-color:#ff5050;transform:scale(1.05)}
+.review-yesterday .scores button.s2.selected{background:#ff8c3c;border-color:#ff8c3c;transform:scale(1.05)}
+.review-yesterday .scores button.s3.selected{background:#ffc850;border-color:#ffc850;transform:scale(1.05);color:#5a4500}
+.review-yesterday .scores button.s4.selected{background:#8cdc64;border-color:#8cdc64;transform:scale(1.05);color:#1a4a20}
+.review-yesterday .scores button.s5.selected{background:#50c878;border-color:#50c878;transform:scale(1.05)}
+.review-yesterday textarea{width:100%;min-height:50px;border:none;background:rgba(255,255,255,.1);color:#fff;border-radius:8px;padding:10px;font:inherit;font-size:13px;resize:vertical}
+.review-yesterday textarea::placeholder{color:rgba(255,255,255,.5)}
+.review-yesterday textarea:focus{outline:none;background:rgba(255,255,255,.18)}
+
+/* === 履歴・達成率（記録タブ） === */
+.focus-stats{margin:0 14px 12px;padding:14px;background:#fff;border:1px solid var(--line);border-radius:12px}
+.focus-stats .fstitle{font-size:12px;color:var(--muted);font-weight:700;margin-bottom:8px}
+.focus-stats .fsavg{font-size:32px;font-weight:900;line-height:1}
+.focus-stats .fsbar{height:10px;background:#eee;border-radius:999px;overflow:hidden}
+.focus-stats .fsbar i{display:block;height:100%;background:linear-gradient(90deg,#ff5050 0%,#ffc850 50%,#50c878 100%);transition:width .3s}
+.focus-history{padding:0 14px 12px;display:flex;flex-direction:column;gap:6px}
+.focus-history-item{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:grid;grid-template-columns:54px 1fr 44px;gap:10px;align-items:center}
+.focus-history-item .fhdate{font-size:11px;color:var(--muted);font-weight:800;text-align:center}
+.focus-history-item .fhtext{font-size:13px;line-height:1.4;font-weight:600;word-break:break-word}
+.focus-history-item .fhnote{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.3;word-break:break-word}
+.focus-history-item .fhscore{font-size:20px;font-weight:900;text-align:center;border-radius:8px;padding:8px 0;color:#fff}
+.focus-history-item .fhscore.s1{background:#ff5050}
+.focus-history-item .fhscore.s2{background:#ff8c3c}
+.focus-history-item .fhscore.s3{background:#ffc850;color:#5a4500}
+.focus-history-item .fhscore.s4{background:#8cdc64;color:#1a4a20}
+.focus-history-item .fhscore.s5{background:#50c878}
+.focus-history-item .fhscore.empty{background:#eee;color:#999}
+
+/* === 今日の意識ポイント（朝書く・1発で見える） === */
+.focus-card{margin:14px 14px 10px;padding:16px;border-radius:14px;background:linear-gradient(135deg,#ffb300 0%,#ff6b00 100%);color:#fff;box-shadow:0 4px 14px rgba(255,107,0,.3)}
+.focus-card .fhead{font-size:12px;font-weight:800;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.focus-card .fhead .badge{font-size:10px;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:999px;font-weight:700}
+.focus-card textarea{width:100%;min-height:80px;border:none;background:#fff;color:#5a2d00;border-radius:10px;padding:12px;font:inherit;font-size:16px;font-weight:700;resize:vertical;line-height:1.5}
+.focus-card textarea::placeholder{color:rgba(90,45,0,.4);font-weight:500}
+.focus-card textarea:focus{outline:none;box-shadow:0 0 0 3px rgba(255,255,255,.4)}
+.focus-card .fmeta{font-size:11px;opacity:.85;margin-top:8px}
+.focus-card .focus-review{margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.4)}
+.focus-card .focus-review .frhead{font-size:11px;font-weight:800;opacity:.95;margin-bottom:8px}
+.focus-card .focus-review .scores{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:8px}
+.focus-card .focus-review .scores button{background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.4);padding:10px 4px;border-radius:8px;font:inherit;font-weight:800;font-size:14px;cursor:pointer;transition:all .15s}
+.focus-card .focus-review .scores button.s1.selected{background:#ff5050;border-color:#fff;transform:scale(1.05)}
+.focus-card .focus-review .scores button.s2.selected{background:#ff8c3c;border-color:#fff;transform:scale(1.05)}
+.focus-card .focus-review .scores button.s3.selected{background:#ffc850;border-color:#fff;color:#5a4500;transform:scale(1.05)}
+.focus-card .focus-review .scores button.s4.selected{background:#8cdc64;border-color:#fff;color:#1a4a20;transform:scale(1.05)}
+.focus-card .focus-review .scores button.s5.selected{background:#50c878;border-color:#fff;transform:scale(1.05)}
+.focus-card .focus-review textarea{width:100%;min-height:45px;background:#fff;color:#5a2d00;font-size:13px;border-radius:8px;border:none;padding:8px 10px;font:inherit;resize:vertical;font-weight:600}
+.focus-card .focus-review textarea:focus{outline:none;box-shadow:0 0 0 2px rgba(255,255,255,.5)}
+
+/* === Claude推奨（オレンジカード内に統合） === */
+.focus-card .suggest-inline{margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.4)}
+.focus-card .suggest-inline .shead{font-size:11px;font-weight:800;opacity:.95;margin-bottom:8px}
+.focus-card .suggest-inline .sitem{display:block;width:100%;background:rgba(255,255,255,.95);border:none;color:#5a2d00;padding:10px 12px;border-radius:10px;margin-bottom:6px;text-align:left;font:inherit;font-size:13px;line-height:1.4;cursor:pointer;font-weight:600;transition:all .15s}
+.focus-card .suggest-inline .sitem:active{background:#fff;transform:scale(.99)}
+.focus-card .suggest-inline .sitem:last-child{margin-bottom:0}
+
+/* === 今意識してる項目（スキルパーツのチェック項目から） === */
+.focus-items{margin:0 14px 12px;padding:14px;border-radius:14px;background:linear-gradient(135deg,#1a3a52 0%,#2a5070 100%);color:#fff;box-shadow:0 3px 10px rgba(26,58,82,.25)}
+.focus-items .fihead{font-size:12px;font-weight:800;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.focus-items .ficount{background:rgba(255,179,0,.85);color:#fff;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:800}
+.focus-items .fiitem{background:rgba(255,255,255,.95);color:#1a3a52;padding:10px 12px;border-radius:10px;margin-bottom:6px;cursor:pointer;transition:all .15s}
+.focus-items .fiitem:active{transform:scale(.99)}
+.focus-items .fiitem:last-child{margin-bottom:0}
+.focus-items .fiitem .fipart{font-size:10px;font-weight:800;color:#5a7a8a;margin-bottom:3px;letter-spacing:.05em}
+.focus-items .fiitem .fitext{font-size:13px;font-weight:800;line-height:1.4;color:#1a3a52}
+.focus-items .fiitem .fimeta{font-size:10px;color:#5a7a8a;margin-top:4px;font-weight:600;display:flex;justify-content:space-between}
+.focus-items .empty{background:rgba(255,255,255,.12);padding:14px;border-radius:10px;font-size:12px;text-align:center;opacity:.9}
+
+/* === 前回のコーチノート（今日やる用・コンパクト版） === */
+.prev-coach{margin:0 14px 12px;padding:12px 14px;border-radius:12px;background:linear-gradient(135deg,#2a4a6a 0%,#3a5a7e 100%);color:#fff;box-shadow:0 3px 10px rgba(42,74,106,.2)}
+.prev-coach .pchead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:12px;font-weight:800;opacity:.95}
+.prev-coach .pcdate{font-size:10px;background:rgba(255,255,255,.18);padding:2px 8px;border-radius:999px;font-weight:700}
+.prev-coach .pcbody{font-size:13px;line-height:1.6;opacity:.95}
+.prev-coach .pcbody b{color:#ffd966}
+.prev-coach .pcbody ul{margin:6px 0;padding-left:18px}
+.prev-coach .pcbody li{margin:3px 0}
+
+/* === day-card内のコーチ観察セクション === */
+.day-card .dcoach{background:linear-gradient(135deg,#2a4a6a 0%,#3a5a7e 100%);color:#fff;padding:10px 12px;border-radius:8px;font-size:12px;line-height:1.5}
+.day-card .dcoach b{color:#ffd966}
+.day-card .dcoach ul{margin:4px 0;padding-left:16px}
+.day-card .dcoach li{margin:2px 0}
+
+/* === 入力欄一括クリアボタン === */
+.ta-wrap{position:relative}
+.ta-wrap > .clear-x{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.25);color:#fff;border:none;width:24px;height:24px;border-radius:50%;font-size:14px;font-weight:900;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;z-index:5;padding:0;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.ta-wrap > .clear-x:active{background:rgba(0,0,0,.4);transform:scale(.88)}
+.ta-wrap > .clear-x:hover{background:rgba(0,0,0,.35)}
+
+/* === 記録タブの日付1カード集約 === */
+.day-card{margin:0 14px 12px;padding:14px;background:#fff;border:2px solid #d4dbe5;border-radius:14px;box-shadow:0 3px 10px rgba(26,58,82,.08)}
+.day-card .dheader{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1px dashed #d4dbe5;margin-bottom:10px}
+.day-card .ddate{font-size:15px;font-weight:900;color:#1a3a52}
+.day-card .dscore{font-size:13px;font-weight:800;padding:4px 12px;border-radius:999px;color:#fff}
+.day-card .dscore.s1{background:#ff5050}
+.day-card .dscore.s2{background:#ff8c3c}
+.day-card .dscore.s3{background:#ffc850;color:#5a4500}
+.day-card .dscore.s4{background:#8cdc64;color:#1a4a20}
+.day-card .dscore.s5{background:#50c878}
+.day-card .dscore.empty{background:#eee;color:#999}
+.day-card .dsection{margin-bottom:12px}
+.day-card .dsection:last-child{margin-bottom:0}
+.day-card .dlabel{font-size:11px;font-weight:800;color:var(--muted);margin-bottom:4px;letter-spacing:.03em}
+.day-card .dvalue{font-size:14px;line-height:1.5;color:var(--text);padding:10px 12px;background:#f8f8fa;border-radius:8px;white-space:pre-wrap;word-break:break-word}
+.day-card .dvalue.empty{color:#999;font-style:italic;font-size:12px}
+.day-card .dlogs{display:flex;flex-direction:column;gap:5px}
+.day-card .dlogs .dlog{display:grid;grid-template-columns:46px 1fr auto;gap:6px;padding:8px 10px;background:#f8f8fa;border-radius:8px;border:1px solid #e3e3e8;align-items:start}
+.day-card .dlogs .dlog .time{font-size:10px;color:var(--muted);font-weight:700;padding-top:2px}
+.day-card .dlogs .dlog .body .cat{display:inline-block;font-size:9px;font-weight:800;color:#fff;padding:2px 7px;border-radius:5px;margin-bottom:3px}
+.day-card .dlogs .dlog .body .cat.strike{background:var(--c-strike)}
+.day-card .dlogs .dlog .body .cat.clinch{background:var(--c-clinch)}
+.day-card .dlogs .dlog .body .cat.ground{background:var(--c-ground)}
+.day-card .dlogs .dlog .body .cat.spar{background:var(--c-spar)}
+.day-card .dlogs .dlog .body .cat.memo{background:var(--c-memo)}
+.day-card .dlogs .dlog .body .cat.part{background:var(--gold)}
+.day-card .dlogs .dlog .body .text{font-size:12px;line-height:1.4;word-break:break-word}
+.day-card .dlogs .dlog .del{background:transparent;border:none;color:#ccc;font-size:16px;cursor:pointer;padding:0 4px}
+
+/* === メモ＋カテゴリのカード化 === */
+.memo-section{margin:0 14px 14px;padding:14px;border-radius:14px;background:#fff;border:2px solid #d4dbe5;box-shadow:0 3px 10px rgba(26,58,82,.08)}
+.memo-section .memo-header{font-size:13px;font-weight:800;color:#1a3a52;margin-bottom:10px;display:flex;align-items:center;gap:6px;padding-bottom:8px;border-bottom:1px dashed #d4dbe5}
+.memo-section .memo-header .sub{font-size:10px;color:var(--muted);font-weight:600;margin-left:auto}
+.memo-section .main-area{padding:0 0 8px}
+.memo-section .btn-grid{padding:0;gap:8px}
+
+/* === 更新ボタン＆Pull-to-refresh === */
+.refresh-btn{position:fixed;top:10px;right:10px;z-index:100;background:#0a84ff;color:#fff;border:none;height:36px;padding:0 14px;border-radius:18px;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:5px;box-shadow:0 3px 10px rgba(10,132,255,.4);transition:transform .15s}
+.refresh-btn:active{transform:scale(.92)}
+.refresh-btn .ricon{font-size:15px}
+.ptr-indicator{position:fixed;top:0;left:50%;transform:translateX(-50%) translateY(-60px);width:48px;height:48px;border-radius:50%;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.2);z-index:1000;display:flex;align-items:center;justify-content:center;font-size:22px;color:#1a3a52;pointer-events:none;transition:transform .25s ease-out;font-weight:900}
+.ptr-indicator.show{transform:translateX(-50%) translateY(20px)}
+.ptr-indicator.ready{background:#34c759;color:#fff}
+.ptr-indicator.refreshing{animation:ptrSpin .8s linear infinite;background:#0a84ff;color:#fff}
+@keyframes ptrSpin{from{transform:translateX(-50%) translateY(20px) rotate(0)}to{transform:translateX(-50%) translateY(20px) rotate(360deg)}}
+
+/* === タブバー（3ページ切替） === */
+.tabbar{position:sticky;top:46px;z-index:9;background:rgba(245,245,247,.95);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:8px 12px;border-bottom:1px solid var(--line);display:flex;gap:6px}
+.tab{flex:1;background:#fff;border:1.5px solid var(--line);color:var(--muted);padding:8px 4px;border-radius:10px;font:inherit;font-weight:800;font-size:12px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:2px}
+.tab .tab-icon{font-size:18px;line-height:1}
+.tab.active{background:#1a1a2e;color:#fff;border-color:#1a1a2e;box-shadow:0 2px 8px rgba(26,26,46,.3)}
+.page{display:none;animation:pageIn .25s ease}
+.page.active{display:block}
+@keyframes pageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+@media (min-width:600px){
+  .btn-grid{grid-template-columns:repeat(4,1fr)}
+  .cat-btn.memo{grid-column:span 4}
+  .modal-bg{align-items:center}
+  .modal{border-radius:20px;max-height:85vh}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🥊 MMA練習ログ</h1>
+  <div class="today" id="todayLabel"></div>
+</header>
+
+<button class="refresh-btn" onclick="forceReload()" title="最新を取得（キャッシュ無視）"><span class="ricon">🔄</span><span>更新</span></button>
+<div class="ptr-indicator" id="ptrIndicator">↓</div>
+
+<nav class="tabbar">
+  <button class="tab active" data-page="input" onclick="switchPage('input')">
+    <span class="tab-icon">📝</span><span>今日やる</span>
+  </button>
+  <button class="tab" data-page="now" onclick="switchPage('now')">
+    <span class="tab-icon">📦</span><span>スキル積み上げ</span>
+  </button>
+  <button class="tab" data-page="archive" onclick="switchPage('archive')">
+    <span class="tab-icon">📋</span><span>記録</span>
+  </button>
+</nav>
+
+<!-- ========== ページ📝 今日やる ========== -->
+<div class="page active" data-page="input">
+
+<!-- 🔍 昨日の振り返り（focusあれば自動表示） -->
+<div class="review-yesterday" id="reviewYesterday" style="display:none"></div>
+
+<!-- 🎯 今日の意識ポイント（1発で見える主役＋Claude推奨を同カード内に統合） -->
+<div class="focus-card">
+  <div class="fhead"><span>🎯 今日の練習で意識する1点</span><span class="badge" id="focusDate"></span></div>
+  <div class="ta-wrap">
+    <textarea id="focusBox" placeholder="例：ジャブの距離測りを徹底／ビビらず1パーツに絞る／視野を広く首振り" oninput="onFocusInput()"></textarea>
+    <button class="clear-x" onclick="clearTextarea('focusBox','onFocusInput')" title="この欄をクリア">×</button>
+  </div>
+  <div class="fmeta" id="focusMeta">朝書く・自動保存される</div>
+
+  <!-- 同日内振り返り（focus書いたら出る） -->
+  <div class="focus-review" id="todayFocusReview" style="display:none"></div>
+
+  <!-- 💡 Claude推奨（タップで意識ポイントにコピー）：同カード内統合 -->
+  <div class="suggest-inline">
+    <div class="shead">💡 Claude推奨（タップで上にコピー・5/18踏まえ）</div>
+    <button class="sitem" onclick="copyToFocus('ジャブ：「楽しめる」状態を再現できるか観察（5/18で初到達）')">① ジャブ：「楽しめる」状態を再現できるか観察</button>
+    <button class="sitem" onclick="copyToFocus('ジャブのチェック5「2への繋ぎ」を意識')">② ジャブの「2への繋ぎ」を意識</button>
+    <button class="sitem" onclick="copyToFocus('月水基礎練（壁タックル・フォーム確認・技基礎）')">③ 月水基礎練（壁タックル・フォーム・技基礎）</button>
+    <button class="sitem" onclick="copyToFocus('寝技：腕十字＋派生（三角・木村・脇締め）を1セットとして捉える')">④ 寝技：腕十字Assyとして捉える</button>
+    <button class="sitem" onclick="copyToFocus('スパー中「ビビリ」が出たら→1パーツに絞る実験に切替')">⑤ ビビリ出たら1パーツ実験に切替</button>
+    <button class="sitem" onclick="copyToFocus('視野を広く・首振り（ハンドボール由来）も継続意識')">⑥ 視野を広く・首振り</button>
+  </div>
+</div>
+
+<!-- 💬 前回の練習のコーチノート（朝・練習前に確認） -->
+<div class="prev-coach" id="prevCoach"></div>
+
+<!-- 🎯 今意識してる項目（スキル積み上げのチェック項目連動） -->
+<div class="focus-items" id="focusItemsList"></div>
+
+<!-- 📝 練習記録カード（意識ポイントとは別役割：何があったか） -->
+<div class="memo-section">
+  <div class="memo-header">
+    <span>📝 今日の練習記録</span>
+    <span class="sub">何があった？</span>
+  </div>
+  <div class="main-area">
+    <div class="ta-wrap">
+      <textarea id="memoBox" placeholder="何があった？（音声入力もOK・任意）"></textarea>
+      <button class="clear-x" onclick="clearTextarea('memoBox')" title="この欄をクリア">×</button>
+    </div>
+    <div class="hint">↓ カテゴリボタンで記録（メモ＋カテゴリでログに保存）</div>
+  </div>
+  <div class="btn-grid">
+    <button class="cat-btn strike" onclick="quickSave('strike')">
+      <span class="icon">👊</span><span>打撃</span><span class="sub">タップで記録</span>
+    </button>
+    <button class="cat-btn clinch" onclick="quickSave('clinch')">
+      <span class="icon">🤼</span><span>組み技</span><span class="sub">タップで記録</span>
+    </button>
+    <button class="cat-btn ground" onclick="quickSave('ground')">
+      <span class="icon">🌀</span><span>寝技</span><span class="sub">タップで記録</span>
+    </button>
+    <button class="cat-btn spar" onclick="quickSave('spar')">
+      <span class="icon">🥊</span><span>スパー</span><span class="sub">タップで記録</span>
+    </button>
+    <button class="cat-btn memo" onclick="quickSave('memo')">
+      <span class="icon">📝</span><span>メモとして保存</span>
+    </button>
+  </div>
+</div>
+
+</div><!-- /page input -->
+
+<!-- ========== ページ📦 スキル積み上げ ========== -->
+<div class="page" data-page="now">
+
+<div class="today-part" id="todayPartCard"></div>
+
+<!-- coach-note は「今日やる」と「記録」に移動済（同ジャンル原則）。スキルはパーツ表だけ -->
+<div class="coach-note" style="display:none">
+  <div class="coach-head">
+    <span>💬 Claudeコーチの観察ノート</span>
+    <span class="updated">最終更新 2026-05-19</span>
+  </div>
+
+  <details open>
+    <summary>🎯 次の練習で意識すること（5/18 を踏まえて）</summary>
+    <div class="body">
+      <ul>
+        <li><span class="focus">①</span> ジャブ：<b>「楽しめる」状態を再現</b>できるか観察（5/18で初到達）</li>
+        <li><span class="focus">②</span> ジャブのチェック5「<b>2への繋ぎ</b>」を次の意識項目に</li>
+        <li><span class="focus">③</span> 月水基礎練プラン（壁タックル・フォーム確認・技基礎）を実行＆観察</li>
+        <li><span class="focus">④</span> 寝技：腕十字＋派生（三角・木村・脇締め）を<b>1セット</b>として捉える</li>
+        <li><span class="focus">⑤</span> スパー中「ビビリ」が出たら→<b>1パーツに絞る</b>実験に切替</li>
+        <li><span class="focus">⑥</span> 視野・首振り（ハンドボール由来）も継続意識</li>
+      </ul>
+    </div>
+  </details>
+
+  <details open>
+    <summary>📅 5/18 MMA（実戦機能化・楽しめる状態到達）</summary>
+    <div class="body">
+      <b>打撃：</b>ジャブの距離意識で打撃が楽になった→ストレート当たる→<b>タックル/散らしの攻防が楽しめる</b>状態へ。<br><br>
+      <b>寝技：</b>腕十字＋派生（三角・木村・脇締め）。1つにこだわらず全体感で。<br><br>
+      <b>自主練計画：</b>フィリップさんと前回種目復習／<b>月水スパー時間で基礎練</b>（壁タックル・フォーム確認・技基礎）。<br><br>
+      <b>俺の観察：</b>5/15の俺の提案「距離測りに多用」が<b>3日でパーツメモに反映＋実戦実装</b>。意識→身体化の学習サイクルが超短い。<br>
+      コーチ依存から脱して<b>自分で月水基礎練を組んだ</b>＝発明家マインドの萌芽。
+    </div>
+  </details>
+
+  <details>
+    <summary>📅 5/15 MMA（質的飛躍：技術構造の言語化）</summary>
+    <div class="body">
+      ジャブ「出したら下げる」を実戦で意識できた。<b>コーチしゅんさんから「パンチの位置が近い」</b>と指摘＝俺の暗黙知「距離測りに多用」と完全一致。<br><br>
+      <b>自分の言葉で構造化：</b>「ジャブで距離測り→ストレートで当てる→距離制覇→タックルも入りやすくなる」<br><br>
+      <b>気づき：</b>技術はない、運動能力でカバーしてるだけ。恵さんと同じレベルの技術。<br>
+      <b>転換：</b>5/11「フィジカル余裕」→5/15「運動能力依存の自覚」へ正しい自己評価に移行。<br><br>
+      <b>課題再観測：</b>スパーで「ビビリ」（=5/11「力に逃げる」と同根）。
+    </div>
+  </details>
+
+  <details>
+    <summary>📅 5/12 ハンドボール → MMA転移</summary>
+    <div class="body">
+      ハンドボールで「視野を広く・首振り」を発見。MMA/BJJ上級者の基本に<b>別ルートで到達</b>。<br><br>
+      設計脳の<b>アセンブリビュー</b>（全体俯瞰→個別部品→公差確認）が無意識にスポーツに転移してる。
+    </div>
+  </details>
+
+  <details>
+    <summary>📅 5/11 MMA 練習（初本格ログ）</summary>
+    <div class="body">
+      ジャブ「出したら即引く／頭ずらす」が実戦で意識できた（チェック3/5達成）。<br>
+      タックル絡みからのバックコントロール初挑戦。<br><br>
+      <b>気づき：</b>強い相手だと力に逃げる癖。試合出てる人の技に余裕。<br>
+      <b>転換：</b>「勝つ→技術磨く」へマインドセット切替。
+    </div>
+  </details>
+
+  <details>
+    <summary>🟢 三輪さんの強み（蓄積中・俺の観察）</summary>
+    <div class="body">
+      <ul>
+        <li><span class="pos">✅</span> 客観視できる（「勘違いかも」と疑える）</li>
+        <li><span class="pos">✅</span> マインドセット転換が早い（勝つ→技術）</li>
+        <li><span class="pos">✅</span> チェックリスト型学習が刺さる（設計脳）</li>
+        <li><span class="pos">✅</span> 別領域からの転移学習が早い（ハンドボール→MMA）</li>
+        <li><span class="pos">✅</span> 設計脳のスポーツ転移</li>
+        <li><span class="pos">✅</span> 技術構造の自発的言語化（ジャブ→距離→ストレート→タックル）</li>
+        <li><span class="pos">✅</span> 自己認識の解像度上昇（フィジカル過信→運動能力依存自覚）</li>
+        <li><span class="pos">✅</span> 外部指摘を素直に受容（コーチ指摘を防衛的にならず吸収）</li>
+        <li><span class="pos">✅</span> 基礎練への回帰意識（強くなる→基礎磨く）</li>
+        <li><span class="pos">✅</span> <b>意識→身体化が早い（3日）</b>（5/15提案→5/18実装）</li>
+        <li><span class="pos">✅</span> <b>技術機能で「楽しめる」状態到達</b>（5/18）</li>
+        <li><span class="pos">✅</span> <b>自主練計画を構造化できる</b>（コーチ依存じゃない）</li>
+        <li><span class="pos">✅</span> <b>派生技を体系で捉える</b>（腕十字Assyとして）</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary>🔴 課題（直したい癖・継続観察中）</summary>
+    <div class="body">
+      <ul>
+        <li><span class="neg">⚠</span> <b>強い相手だと力に逃げる／ビビリが出る</b>（5/11, 5/15 で再観測）<br>
+        → 対処：強い相手こそ「1パーツに絞った技術検証」に使う。負荷試験機として扱う</li>
+        <li><span class="neg">⚠</span> <b>パンチの位置が近い</b>（5/15 コーチしゅん指摘）<br>
+        → 対処：ジャブで距離測り→ストレートで当てるイメージを徹底</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary>🚀 ステージ評価（成長カーブ）</summary>
+    <div class="body">
+      <b>三輪さんは今ステージ2＋3を同時に駆け上がってる時期</b>。<br><br>
+      <ul>
+        <li>1. 単発技を磨く（ジャブ単体）</li>
+        <li>2. 技同士の関係が見える（ジャブ→ストレート→タックル）← <b>今ここ</b></li>
+        <li>3. 派生技群を体系で理解（腕十字Assy）← <b>今ここ</b></li>
+        <li>4. 完成品を自由に組合せ（試合）</li>
+      </ul>
+      ステージ3→4の境目。最も伸びる時期。
+    </div>
+  </details>
+</div>
+
+<div class="guide">
+  📌 「今日の1個」の名前をタップ → 詳細＆チェックリスト＆メモ＆Claude相談が開く
+</div>
+
+<div class="section-title" onclick="toggleSection('partsContainer', this)">
+  <span>📦 完成パーツ表（タップで詳細）</span>
+  <span><span class="count" id="partsCount"></span> <span class="arrow">▼</span></span>
+</div>
+<div id="partsContainer" class="collapsible"></div>
+
+</div><!-- /page now -->
+
+<!-- ========== ページ📋 記録 ========== -->
+<div class="page" data-page="archive">
+
+<!-- 📊 月間達成率（コンパクト・上部固定） -->
+<div class="focus-stats" id="focusStats" style="margin-top:14px"></div>
+
+<!-- 📅 日付選択（横スクロール） -->
+<div class="section-title">
+  <span>📅 日付を選ぶ（タップで詳細）</span>
+</div>
+<div class="date-tabs" id="dateTabs"></div>
+
+<!-- 📋 選んだ日の全情報（1枚カード集約） -->
+<div class="day-card" id="daySummary"></div>
+
+<!-- 📊 月次比率（折りたたみ） -->
+<div class="section-title" onclick="toggleSection('chartContainer', this)">
+  <span>📊 月次カテゴリ比率</span>
+  <span><span class="count" id="monthLabel"></span> <span class="arrow">▼</span></span>
+</div>
+<div id="chartContainer" class="collapsible">
+  <div class="chart-wrap">
+    <div class="chart-card">
+      <h3>カテゴリ比率（今月）</h3>
+      <div id="chartArea"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 📜 全期間 意識ポイント履歴（折りたたみ） -->
+<div class="section-title collapsed" onclick="toggleSection('focusHistoryContainer', this)">
+  <span>📜 全期間 意識ポイント履歴</span>
+  <span class="arrow">▼</span>
+</div>
+<div id="focusHistoryContainer" class="collapsible hidden">
+  <div class="focus-history" id="focusHistoryList"></div>
+</div>
+
+<div class="toolbar">
+  <button class="primary" onclick="copyToday()">📋 今日のログをコピー</button>
+  <button onclick="importText()">📥 テキストから読込</button>
+  <button onclick="exportJSON()">JSON書き出し</button>
+  <button onclick="importJSON()">ファイル読込</button>
+  <button class="danger" onclick="resetAll()">全消去</button>
+</div>
+
+</div><!-- /page archive -->
+
+<!-- ペースト読込モーダル -->
+<div class="modal-bg" id="pasteBg" onclick="if(event.target===this)closePaste()">
+  <div class="modal">
+    <div class="grip"></div>
+    <div style="font-size:18px;font-weight:800;margin-bottom:6px">📥 テキストから読み込み</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px">下のエリアにJSON文字列を貼り付けて「読み込む」を押す。既存データは上書きされる。</div>
+    <div class="ta-wrap">
+      <textarea id="pasteBox" style="width:100%;min-height:200px;border:2px solid var(--line);border-radius:10px;padding:10px;padding-right:38px;font:inherit;font-size:12px;font-family:ui-monospace,Menlo,Consolas,monospace;resize:vertical" placeholder='{"logs":[...], "parts":{...}}'></textarea>
+      <button class="clear-x" onclick="clearTextarea('pasteBox')" title="この欄をクリア">×</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px">
+      <button onclick="doImportText()" style="appearance:none;border:none;border-radius:10px;padding:14px;font:inherit;font-weight:800;font-size:14px;cursor:pointer;background:#34c759;color:#fff">✓ 読み込む</button>
+      <button onclick="closePaste()" style="appearance:none;border:none;border-radius:10px;padding:14px;font:inherit;font-weight:800;font-size:14px;cursor:pointer;background:#eee;color:#666">キャンセル</button>
+    </div>
+  </div>
+</div>
+
+<!-- モーダル -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+console.log("MMA Tracker v8 - Claudeコーチノート日別化");
+
+// ===== Claudeコーチ観察ノート（日別データ） =====
+const COACH_NOTES = {
+  "2026-05-18": `<b>📅 5/18 MMA（実戦機能化・楽しめる状態到達）</b><br><br>
+    <b>打撃：</b>ジャブの距離意識で打撃が楽になった→ストレート当たる→<b>タックル/散らしの攻防が楽しめる</b>状態へ。<br>
+    <b>寝技：</b>腕十字＋派生（三角・木村・脇締め）。1つにこだわらず全体感で。<br>
+    <b>自主練計画：</b>フィリップさんと前回種目復習／<b>月水スパー時間で基礎練</b>（壁タックル・フォーム確認・技基礎）。<br><br>
+    <b>俺の観察：</b>5/15提案「距離測りに多用」が<b>3日でパーツメモに反映＋実戦実装</b>。意識→身体化が超短い。<br>
+    コーチ依存から脱して<b>自分で月水基礎練を組んだ</b>＝発明家マインドの萌芽。`,
+  "2026-05-15": `<b>📅 5/15 MMA（質的飛躍：技術構造の言語化）</b><br><br>
+    ジャブ「出したら下げる」を実戦で意識。<b>コーチしゅんさんから「パンチの位置が近い」</b>と指摘＝暗黙知「距離測りに多用」と完全一致。<br><br>
+    <b>自分の言葉で構造化：</b>「ジャブで距離測り→ストレートで当てる→距離制覇→タックルも入りやすくなる」<br><br>
+    <b>気づき：</b>技術はない、運動能力でカバーしてるだけ。<br>
+    <b>転換：</b>5/11「フィジカル余裕」→5/15「運動能力依存の自覚」へ正しい自己評価に。<br>
+    <b>課題再観測：</b>スパーで「ビビリ」（=5/11「力に逃げる」と同根）。`,
+  "2026-05-12": `<b>📅 5/12 ハンドボール → MMA転移</b><br><br>
+    ハンドボールで「視野を広く・首振り」を発見。MMA/BJJ上級者の基本に<b>別ルートで到達</b>。<br><br>
+    設計脳の<b>アセンブリビュー</b>（全体俯瞰→個別部品→公差確認）が無意識にスポーツに転移してる。`,
+  "2026-05-11": `<b>📅 5/11 MMA 練習（初本格ログ）</b><br><br>
+    ジャブ「出したら即引く／頭ずらす」が実戦で意識できた（チェック3/5達成）。<br>
+    タックル絡みからのバックコントロール初挑戦。<br><br>
+    <b>気づき：</b>強い相手だと力に逃げる癖。試合出てる人の技に余裕。<br>
+    <b>転換：</b>「勝つ→技術磨く」へマインドセット切替。`
+};
+
+function getLatestCoachNoteDate(){
+  const dates = Object.keys(COACH_NOTES).sort().reverse();
+  return dates[0] || null;
+}
+
+// ===== 今意識中の項目一覧（今日やるタブ用） =====
+function renderFocusInProgress(){
+  const cont = document.getElementById("focusItemsList");
+  if(!cont) return;
+  const items = [];
+  PARTS.forEach(part=>{
+    const ps = state.parts[part.id];
+    if(!ps || !ps.checks) return;
+    part.checks.forEach((checkText, ix)=>{
+      const c = ps.checks[ix];
+      if(c && c.status === "意識中"){
+        const since = c.since ? new Date(c.since) : null;
+        const days = since ? Math.floor((new Date() - since)/(1000*60*60*24)) : 0;
+        items.push({partId: part.id, partName: part.name, partCat: part.cat, ix, checkText, days});
+      }
+    });
+  });
+  if(!items.length){
+    cont.innerHTML = `<div class="fihead">🎯 今意識してる項目<span class="ficount">0個</span></div>
+      <div class="empty">📦 スキル積み上げタブで「意識する」項目を選んでね</div>`;
+    return;
+  }
+  cont.innerHTML = `<div class="fihead">🎯 今意識してる項目（タップで詳細）<span class="ficount">${items.length}個</span></div>
+    ${items.map(it=>{
+      const safeText = it.checkText.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+      const catName = (CATS[it.partCat]||{}).name || it.partCat;
+      const catEmoji = (CATS[it.partCat]||{}).emoji || "";
+      return `<div class="fiitem" onclick="openPartModal(${it.partId})">
+        <div class="fipart">${catEmoji} ${catName} ／ ${it.partName}</div>
+        <div class="fitext">${safeText}</div>
+        <div class="fimeta"><span>📅 ${it.days}日経過</span><span>▶ 詳細</span></div>
+      </div>`;
+    }).join("")}`;
+}
+
+// ===== ある日に意識中だったかを判定（記録day-card用） =====
+function wasFocusOnDate(check, dateStr){
+  if(!check || !check.since) return false;
+  const sinceDate = check.since.slice(0,10);
+  if(sinceDate > dateStr) return false;
+  if(check.resolvedAt){
+    const resolvedDate = check.resolvedAt.slice(0,10);
+    if(resolvedDate <= dateStr) return false;
+  }
+  return true;
+}
+function getFocusItemsForDate(dateStr){
+  const items = [];
+  PARTS.forEach(part=>{
+    const ps = state.parts[part.id];
+    if(!ps || !ps.checks) return;
+    part.checks.forEach((checkText, ix)=>{
+      if(wasFocusOnDate(ps.checks[ix], dateStr)){
+        items.push({partName: part.name, partCat: part.cat, checkText});
+      }
+    });
+  });
+  return items;
+}
+
+function renderPrevCoach(){
+  const cont = document.getElementById("prevCoach");
+  if(!cont) return;
+  const latestDate = getLatestCoachNoteDate();
+  if(!latestDate){
+    cont.style.display = "none";
+    return;
+  }
+  cont.style.display = "block";
+  cont.innerHTML = `
+    <div class="pchead">
+      <span>💬 前回の練習・俺の観察</span>
+      <span class="pcdate">${latestDate}</span>
+    </div>
+    <div class="pcbody">${COACH_NOTES[latestDate]}</div>
+  `;
+}
+
+// ===== 更新ボタン＆Pull-to-refresh =====
+
+// ===== テキストエリア一括クリア =====
+function clearTextarea(id, callbackName){
+  const el = document.getElementById(id);
+  if(!el) return;
+  if(!el.value){ toast("既に空っぽ"); return; }
+  if(!confirm("この欄の文字を全部消す？")) return;
+  el.value = "";
+  if(callbackName && typeof window[callbackName] === 'function'){
+    window[callbackName]();
+  }
+  toast("✓ クリア");
+}
+
+// ===== 更新ボタン＆Pull-to-refresh =====
+function forceReload(){
+  const url = new URL(location.href);
+  url.searchParams.set('_t', Date.now());
+  location.href = url.toString();
+}
+(function setupPullToRefresh(){
+  let startY = 0, currentY = 0, pulling = false;
+  const threshold = 80;
+  function getIndicator(){ return document.getElementById('ptrIndicator'); }
+  window.addEventListener('touchstart', e => {
+    if(window.scrollY === 0 && e.touches.length === 1){
+      startY = e.touches[0].clientY;
+      currentY = startY;
+      pulling = true;
+    }
+  }, {passive: true});
+  window.addEventListener('touchmove', e => {
+    if(!pulling) return;
+    currentY = e.touches[0].clientY;
+    const dist = currentY - startY;
+    const ind = getIndicator();
+    if(dist > 10){
+      if(ind){
+        ind.classList.add('show');
+        ind.classList.toggle('ready', dist > threshold);
+        ind.textContent = dist > threshold ? '✓' : '↓';
+      }
+    }
+  }, {passive: true});
+  window.addEventListener('touchend', () => {
+    if(!pulling) return;
+    const dist = currentY - startY;
+    const ind = getIndicator();
+    if(dist > threshold){
+      if(ind){
+        ind.classList.add('refreshing');
+        ind.textContent = '🔄';
+      }
+      setTimeout(forceReload, 200);
+    } else {
+      if(ind){
+        ind.classList.remove('show','ready');
+        ind.textContent = '↓';
+      }
+    }
+    pulling = false;
+    startY = 0;
+    currentY = 0;
+  }, {passive: true});
+})();
+
+// ===== ページ切替 =====
+function switchPage(name){
+  document.querySelectorAll('.page').forEach(p=>{
+    p.classList.toggle('active', p.dataset.page===name);
+  });
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.classList.toggle('active', t.dataset.page===name);
+  });
+  try{ localStorage.setItem('mma_page', name); }catch(e){}
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ===== パーツ定義（チェックリスト付き） =====
+const PARTS = [
+  {id:1, cat:"strike", name:"ジャブ", desc:"前手の刺し。距離測りの基本",
+    checks:["肩から真っ直ぐ突く（肩より外に流れない）","出したら即引く（戻しが速い）","当てるより距離測りに多用","頭の位置をズラしながら出す","ジャブから2への繋ぎ"]},
+  {id:2, cat:"strike", name:"ストレート", desc:"後手の直線。パワーの中核",
+    checks:["後ろ足のひねりで打つ","体重移動：後→前","顎を引いて打つ","距離はジャブの届く所","返しのリスク管理"]},
+  {id:3, cat:"strike", name:"1-2（ジャブ→ストレート）", desc:"基本コンビ",
+    checks:["1で止めず2まで連続","1の戻りで2を打つ","1で頭の位置変える","2の後の戻り姿勢","距離の合わせ方"]},
+  {id:4, cat:"strike", name:"フック", desc:"横の弧。近距離",
+    checks:["肘を肩の高さに固定","体のひねりで打つ","拳より肘が先行","近距離で使う","フォロースルーしすぎない"]},
+  {id:5, cat:"strike", name:"アッパー", desc:"下から。ガード割り",
+    checks:["膝の屈伸を使う","ガードの隙間を狙う","顎を引いて打つ","短い距離","クリンチ前の崩し"]},
+  {id:6, cat:"strike", name:"ロー", desc:"脛蹴り低段。足削り",
+    checks:["脛で打つ（足甲じゃない）","軸足を踏み込む","腰のひねり","戻しが速い","内側／外側の打ち分け"]},
+  {id:7, cat:"strike", name:"ミドル", desc:"脛蹴り腹。スタミナ削る",
+    checks:["軌道は45度","腹／肝臓を狙う","軸足の踏み込み","キャッチされない速度","フォロースルー"]},
+  {id:8, cat:"strike", name:"ハイ", desc:"脛蹴り頭。一撃必殺",
+    checks:["軌道：直線→弧","蹴り足の引き上げ高さ","軸足の柔軟性","フェイントから出す","当たらない時のリスク"]},
+  {id:9, cat:"strike", name:"前蹴り", desc:"距離切り。ストッパー",
+    checks:["膝を上げて爪先を返す","押し出すような蹴り","距離を作る用途","足裏で押す","カウンターに注意"]},
+  {id:10, cat:"strike", name:"ヒザ", desc:"クリンチ時の武器",
+    checks:["クリンチで首を落とす","膝先で当てる","腰で押し込む","連打可能","スタミナ食う技"]},
+  {id:11, cat:"strike", name:"肘", desc:"接近時の切り札",
+    checks:["短い距離専用","切る意識","クリンチからの突き上げ／振り下ろし","スタミナ少なく済む","ルール確認（流派による）"]},
+  {id:12, cat:"clinch", name:"クリンチ姿勢", desc:"首相撲の基本",
+    checks:["重心を低く","額を相手胸に","手首じゃなく腕全体で","足は相手の足の外側","呼吸を保つ"]},
+  {id:13, cat:"clinch", name:"アンダーフック", desc:"脇下を制する",
+    checks:["肘を絞る","肩を相手の脇下に","自分の腰を低く","引き上げる方向の力","テイクダウンへの繋ぎ"]},
+  {id:14, cat:"clinch", name:"ダブルレッグ", desc:"両足タックル",
+    checks:["ヒザ→腰の順で落とす","頭を相手の腰外側に","両手で膝裏を抱える","一気に距離を詰める","持ち上げ→倒すの2段階"]},
+  {id:15, cat:"clinch", name:"シングルレッグ", desc:"片足タックル",
+    checks:["片足を抱える","頭の位置：内側／外側で展開違う","軸足を刈る or 持ち上げる","相手の手の処理","スプロール返しに注意"]},
+  {id:16, cat:"clinch", name:"スプロール", desc:"タックル切り",
+    checks:["両足を後ろに開く","腰を前に落とす","相手の頭を押さえる","体重で潰す","立ち上がる連動"]},
+  {id:17, cat:"clinch", name:"TD防御基礎", desc:"テイクダウン防ぐ姿勢",
+    checks:["距離管理","フレーム（腕の壁）","スプロール準備姿勢","グラウンドに行かせない","押し返しのタイミング"]},
+  {id:18, cat:"ground", name:"クローズドガード", desc:"足で胴体を絡める",
+    checks:["足首をクロス","相手の腰を絞る","上体を引き寄せる","手の処理（ピストルグリップ等）","攻撃／復帰のスイッチ"]},
+  {id:19, cat:"ground", name:"オープンガード", desc:"足を開いた多彩な攻防",
+    checks:["足を相手のヒップに","距離管理が命","スイープ準備姿勢","パスされないフレーム","蜘蛛・ラッソー等の選択"]},
+  {id:20, cat:"ground", name:"ハーフガード", desc:"片足だけ絡める",
+    checks:["片足を相手の足に絡める","アンダーフック取る","横向き姿勢","スイープ／復帰","パスされる前の手"]},
+  {id:21, cat:"ground", name:"パスガード基本", desc:"ガードを越える",
+    checks:["相手の足を制する","重心を相手に乗せる","立ちパス／座りパス","横を取る動き","サイドへの移行"]},
+  {id:22, cat:"ground", name:"マウント維持", desc:"上に乗った安定",
+    checks:["重心を低く","グレープバイン（足を絡める）","ハイマウント／ローマウント","エビ返しへの対応","攻撃の選択肢"]},
+  {id:23, cat:"ground", name:"サイドコントロール", desc:"横抑え込み",
+    checks:["体重を相手胸に","頭の位置（首を抑える）","腰を低く","エビへの対応","ニーオンベリー／マウント移行"]},
+  {id:24, cat:"ground", name:"バックコントロール", desc:"背中取り。最強",
+    checks:["フックを足に","シートベルトグリップ","上の手で首を制する","体を密着","チョークへの繋ぎ"]},
+  {id:25, cat:"ground", name:"腕十字", desc:"肘関節極め",
+    checks:["相手の腕を伸ばし切る","自分の足を相手胸／顔に","親指を上に向けて極める","腰を上げて押し込む","抜けられる前のスピード"]},
+  {id:26, cat:"ground", name:"三角絞め", desc:"足で首と腕を絞める",
+    checks:["片腕を入れて片腕を出す形","自分の足首を膝裏に固定","腰を引いて角度作る","相手の頭を引きつける","完全に首動脈を絞める"]},
+  {id:27, cat:"ground", name:"リアネイキッドチョーク", desc:"裸絞め",
+    checks:["腕を相手の首回りに","反対の手で後頭部を押す","肘を顎下に","体を絞る","フックでバック維持"]},
+  {id:28, cat:"ground", name:"ギロチンチョーク", desc:"立ち→寝での首絞め",
+    checks:["立ちでもグラウンドでも","拳を上に向ける","相手の脇をブロック","背中を丸める（手前に引く）","クローズドガード絞めも"]},
+  {id:29, cat:"strategy", name:"距離管理", desc:"自分の距離で戦う",
+    checks:["自分の得意距離を知る","相手の届かない距離","ステップワーク","圧力／間合い切り","試合中の距離調整"]},
+  {id:30, cat:"strategy", name:"スタミナ配分", desc:"3R通して使い切らない",
+    checks:["1Rは様子見","2Rで仕掛け","3Rで決め切る or 守る","呼吸を切らさない","力みを抜く"]},
+];
+
+// ===== ストレージ =====
+const KEY = "mma_log_v1";
+function loadState(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(raw){
+      const s = JSON.parse(raw);
+      if(!s.logs) s.logs = [];
+      if(!s.parts) s.parts = {};
+      if(!s.daily) s.daily = {};
+      return s;
+    }
+  }catch(e){ console.warn("loadState fail", e); }
+  return {logs:[], parts:{}, daily:{}};
+}
+
+// ===== 今日の意識ポイント =====
+function getTodayDaily(){
+  const d = todayStr();
+  if(!state.daily) state.daily = {};
+  if(!state.daily[d]) state.daily[d] = {};
+  return state.daily[d];
+}
+function onFocusInput(){
+  const txt = document.getElementById("focusBox").value;
+  const data = getTodayDaily();
+  data.focus = txt;
+  saveState(state);
+  document.getElementById("focusMeta").textContent = `✓ 自動保存 ${new Date().toLocaleTimeString('ja-JP')}`;
+  renderTodayFocusReview();
+}
+function copyToFocus(text){
+  const box = document.getElementById("focusBox");
+  if(box.value.trim() && !confirm("今日の意識ポイントを上書きする？")) return;
+  box.value = text;
+  const data = getTodayDaily();
+  data.focus = text;
+  saveState(state);
+  document.getElementById("focusMeta").textContent = `✓ コピーした ${new Date().toLocaleTimeString('ja-JP')}`;
+  toast("✓ 意識ポイントにコピー");
+  renderTodayFocusReview();
+}
+function renderFocus(){
+  const data = getTodayDaily();
+  const box = document.getElementById("focusBox");
+  if(box && document.activeElement !== box){
+    box.value = data.focus || "";
+  }
+  const dateEl = document.getElementById("focusDate");
+  if(dateEl) dateEl.textContent = todayStr();
+}
+
+// ===== 今日の振り返り（同日内評価） =====
+function setTodayFocusScore(score){
+  const t = todayStr();
+  if(!state.daily) state.daily = {};
+  if(!state.daily[t]) state.daily[t] = {};
+  if(state.daily[t].focusScore === score){
+    // 同じ点数タップ→取消
+    delete state.daily[t].focusScore;
+    saveState(state);
+    toast("✓ 今日の評価を取消");
+  } else {
+    state.daily[t].focusScore = score;
+    saveState(state);
+    toast(`✓ 今日 ${score}点で評価`);
+  }
+  renderTodayFocusReview();
+  renderFocusHistory();
+  renderFocusStats();
+}
+function clearTodayFocusScore(){
+  const t = todayStr();
+  if(state.daily && state.daily[t]) delete state.daily[t].focusScore;
+  saveState(state);
+  toast("✓ 今日の評価を取消");
+  renderTodayFocusReview();
+  renderFocusHistory();
+  renderFocusStats();
+}
+function onTodayNoteInput(){
+  const t = todayStr();
+  if(!state.daily) state.daily = {};
+  if(!state.daily[t]) state.daily[t] = {};
+  state.daily[t].focusNote = document.getElementById("todayNote").value;
+  saveState(state);
+}
+function renderTodayFocusReview(){
+  const cont = document.getElementById("todayFocusReview");
+  if(!cont) return;
+  const data = getTodayDaily();
+  if(!data.focus){
+    cont.style.display = "none";
+    return;
+  }
+  cont.style.display = "block";
+  const score = data.focusScore || 0;
+  const note = data.focusNote || "";
+  const safeNote = note.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const cancelLink = score > 0
+    ? `<div style="text-align:right;margin:-2px 0 6px"><button onclick="clearTodayFocusScore()" style="background:transparent;border:none;color:rgba(255,255,255,.85);font-size:11px;cursor:pointer;text-decoration:underline;padding:2px 6px;font-weight:700">✗ 評価を取消</button></div>`
+    : '';
+  cont.innerHTML = `
+    <div class="frhead">📊 今日の達成度（練習後 or 夜にタップ／同じ点を再タップで取消）</div>
+    <div class="scores">
+      <button class="s1 ${score===1?'selected':''}" onclick="setTodayFocusScore(1)">1</button>
+      <button class="s2 ${score===2?'selected':''}" onclick="setTodayFocusScore(2)">2</button>
+      <button class="s3 ${score===3?'selected':''}" onclick="setTodayFocusScore(3)">3</button>
+      <button class="s4 ${score===4?'selected':''}" onclick="setTodayFocusScore(4)">4</button>
+      <button class="s5 ${score===5?'selected':''}" onclick="setTodayFocusScore(5)">5</button>
+    </div>
+    ${cancelLink}
+    <div class="ta-wrap">
+      <textarea id="todayNote" placeholder="一言メモ（例：できた／忘れた／半分意識）" oninput="onTodayNoteInput()">${safeNote}</textarea>
+      <button class="clear-x" onclick="clearTextarea('todayNote','onTodayNoteInput')" title="この欄をクリア">×</button>
+    </div>
+  `;
+}
+
+// ===== 昨日の振り返り =====
+function getYesterdayStr(){
+  const d = new Date();
+  d.setDate(d.getDate()-1);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function setFocusScore(score){
+  const y = getYesterdayStr();
+  if(!state.daily) state.daily = {};
+  if(!state.daily[y]) state.daily[y] = {};
+  if(state.daily[y].focusScore === score){
+    delete state.daily[y].focusScore;
+    saveState(state);
+    toast("✓ 昨日の評価を取消");
+  } else {
+    state.daily[y].focusScore = score;
+    saveState(state);
+    toast(`✓ ${score}点で評価`);
+  }
+  renderReviewYesterday();
+  renderFocusHistory();
+  renderFocusStats();
+}
+function clearFocusScore(){
+  const y = getYesterdayStr();
+  if(state.daily && state.daily[y]) delete state.daily[y].focusScore;
+  saveState(state);
+  toast("✓ 昨日の評価を取消");
+  renderReviewYesterday();
+  renderFocusHistory();
+  renderFocusStats();
+}
+function onFocusNoteInput(){
+  const y = getYesterdayStr();
+  if(!state.daily) state.daily = {};
+  if(!state.daily[y]) state.daily[y] = {};
+  state.daily[y].focusNote = document.getElementById("focusNote").value;
+  saveState(state);
+}
+function renderReviewYesterday(){
+  const card = document.getElementById("reviewYesterday");
+  if(!card) return;
+  const y = getYesterdayStr();
+  const data = (state.daily && state.daily[y]) || {};
+  if(!data.focus){
+    card.style.display = "none";
+    return;
+  }
+  card.style.display = "block";
+  const score = data.focusScore || 0;
+  const note = data.focusNote || "";
+  const safeFocus = data.focus.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const safeNote = note.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const cancelLink = score > 0
+    ? `<div style="text-align:right;margin:-2px 0 6px"><button onclick="clearFocusScore()" style="background:transparent;border:none;color:rgba(255,255,255,.85);font-size:11px;cursor:pointer;text-decoration:underline;padding:2px 6px;font-weight:700">✗ 評価を取消</button></div>`
+    : '';
+  card.innerHTML = `
+    <div class="rhead"><span>🔍 昨日の意識を振り返り（5段階評価／同じ点を再タップで取消）</span><span>${y}</span></div>
+    <div class="rfocus">${safeFocus}</div>
+    <div class="scores">
+      <button class="s1 ${score===1?'selected':''}" onclick="setFocusScore(1)">1</button>
+      <button class="s2 ${score===2?'selected':''}" onclick="setFocusScore(2)">2</button>
+      <button class="s3 ${score===3?'selected':''}" onclick="setFocusScore(3)">3</button>
+      <button class="s4 ${score===4?'selected':''}" onclick="setFocusScore(4)">4</button>
+      <button class="s5 ${score===5?'selected':''}" onclick="setFocusScore(5)">5</button>
+    </div>
+    ${cancelLink}
+    <div class="ta-wrap">
+      <textarea id="focusNote" placeholder="一言メモ（例：スパーでは意識できた、打ち込みで忘れた）" oninput="onFocusNoteInput()">${safeNote}</textarea>
+      <button class="clear-x" onclick="clearTextarea('focusNote','onFocusNoteInput')" title="この欄をクリア">×</button>
+    </div>
+  `;
+}
+
+// ===== 履歴＆達成率 =====
+function renderFocusHistory(){
+  const cont = document.getElementById("focusHistoryList");
+  if(!cont) return;
+  const hist = [];
+  if(state.daily){
+    Object.keys(state.daily).sort().reverse().forEach(d=>{
+      const data = state.daily[d];
+      if(data.focus){
+        hist.push({date: d, focus: data.focus, score: data.focusScore || 0, note: data.focusNote || ""});
+      }
+    });
+  }
+  if(!hist.length){
+    cont.innerHTML = `<div class="empty" style="margin:0">まだ意識ポイントなし</div>`;
+    return;
+  }
+  cont.innerHTML = hist.map(h=>{
+    const safeText = h.focus.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const safeNote = h.note.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const scoreCls = h.score ? `s${h.score}` : 'empty';
+    const scoreText = h.score ? h.score : '-';
+    return `<div class="focus-history-item">
+      <div class="fhdate">${h.date.slice(5)}</div>
+      <div>
+        <div class="fhtext">${safeText}</div>
+        ${h.note ? `<div class="fhnote">📝 ${safeNote}</div>` : ''}
+      </div>
+      <div class="fhscore ${scoreCls}">${scoreText}</div>
+    </div>`;
+  }).join("");
+}
+function renderDaySummary(){
+  const cont = document.getElementById("daySummary");
+  if(!cont) return;
+  const d = viewDate;
+  const data = (state.daily && state.daily[d]) || {};
+  const wd = ["日","月","火","水","木","金","土"][new Date(d).getDay()];
+  const score = data.focusScore || 0;
+  const focus = data.focus || "";
+  const note = data.focusNote || "";
+  const dayLogs = state.logs.filter(l => l.date === d).sort((a,b)=>b.ts.localeCompare(a.ts));
+  const safeFocus = focus.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const safeNote = note.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const scoreCls = score ? `s${score}` : 'empty';
+  const scoreText = score ? `⭐ ${score}/5` : '未評価';
+  const isToday = d === todayStr();
+  const dateLabel = isToday ? `${d}（${wd}・今日）` : `${d}（${wd}）`;
+  const logsHtml = dayLogs.length ? dayLogs.map(l=>{
+    const t = new Date(l.ts);
+    const tt = `${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+    const c = CATS[l.cat] || CATS.memo;
+    const safeText = l.text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    return `<div class="dlog">
+      <div class="time">${tt}</div>
+      <div class="body"><span class="cat ${l.cat}">${c.name}</span><div class="text">${safeText}</div></div>
+      <button class="del" onclick="delLog('${l.ts}')" title="削除">×</button>
+    </div>`;
+  }).join("") : `<div class="dvalue empty">この日はログなし</div>`;
+  const coachHtml = COACH_NOTES[d] ? `<div class="dsection">
+    <div class="dlabel">💬 Claudeコーチの観察</div>
+    <div class="dcoach">${COACH_NOTES[d]}</div>
+  </div>` : '';
+  const focusItems = getFocusItemsForDate(d);
+  const focusItemsHtml = focusItems.length ? `<div class="dsection">
+    <div class="dlabel">🎯 この日の意識中項目（パーツ）</div>
+    <div class="dvalue">${focusItems.map(f=>{
+      const safeT = f.checkText.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+      const catEmoji = (CATS[f.partCat]||{}).emoji || "";
+      return `<div>• ${catEmoji} <b>${f.partName}</b>: ${safeT}</div>`;
+    }).join("")}</div>
+  </div>` : '';
+  cont.innerHTML = `
+    <div class="dheader">
+      <span class="ddate">${dateLabel}</span>
+      <span class="dscore ${scoreCls}">${scoreText}</span>
+    </div>
+    <div class="dsection">
+      <div class="dlabel">🎯 意識ポイント</div>
+      <div class="dvalue ${focus?'':'empty'}">${safeFocus || 'この日はfocus未記入'}</div>
+    </div>
+    ${note ? `<div class="dsection">
+      <div class="dlabel">📝 振り返りメモ</div>
+      <div class="dvalue">${safeNote}</div>
+    </div>` : ''}
+    ${focusItemsHtml}
+    ${coachHtml}
+    <div class="dsection">
+      <div class="dlabel">📋 ログ（${dayLogs.length}件）</div>
+      <div class="dlogs">${logsHtml}</div>
+    </div>
+  `;
+}
+
+function renderFocusStats(){
+  const cont = document.getElementById("focusStats");
+  if(!cont) return;
+  let total=0, sum=0, count=0;
+  const ym = todayStr().slice(0,7);
+  if(state.daily){
+    Object.keys(state.daily).filter(d=>d.startsWith(ym)).forEach(d=>{
+      const data = state.daily[d];
+      if(data.focus){
+        total++;
+        if(data.focusScore){
+          sum += data.focusScore;
+          count++;
+        }
+      }
+    });
+  }
+  const avg = count ? (sum/count).toFixed(1) : "-";
+  const pct = count ? (sum/count)*20 : 0;
+  cont.innerHTML = `
+    <div class="fstitle">📊 今月（${ym}）の意識ポイント達成率</div>
+    <div style="display:flex;gap:14px;align-items:center;margin-bottom:8px">
+      <div class="fsavg">${avg}<span style="font-size:14px;color:#999">/5点</span></div>
+      <div style="flex:1">
+        <div class="fsbar"><i style="width:${pct}%"></i></div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">評価済 ${count} / 総数 ${total} 日</div>
+      </div>
+    </div>
+  `;
+}
+function saveState(s){
+  try{ localStorage.setItem(KEY, JSON.stringify(s)); }
+  catch(e){ console.warn("saveState fail", e); }
+}
+let state = loadState();
+// チェックリストv2移行（既存のチェックを未着手にリセット・1回だけ実行される）
+(function(){ if(state.checkVersion !== 2){ Object.keys(state.parts||{}).forEach(pid=>{ if(state.parts[pid] && state.parts[pid].checks) state.parts[pid].checks={}; }); state.checkVersion=2; try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} } })();
+
+function todayStr(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+let viewDate = todayStr();
+let lastSavedTs = null;
+let openPartId = null;
+
+const CATS = {
+  strike: {name:"打撃", color:"#ff6b6b", emoji:"👊"},
+  clinch: {name:"組み技", color:"#f59e3c", emoji:"🤼"},
+  ground: {name:"寝技", color:"#c850dc", emoji:"🌀"},
+  spar:   {name:"スパー", color:"#0a84ff", emoji:"🥊"},
+  strategy:{name:"戦略", color:"#1aa56a", emoji:"🧠"},
+  memo:   {name:"メモ", color:"#6b6b73", emoji:"📝"},
+  part:   {name:"パーツ", color:"#ffb300", emoji:"📦"}
+};
+
+let toastTimer;
+function toast(msg){
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove("show"), 2000);
+}
+
+// ===== パーツ操作 =====
+function getPart(id){ return state.parts[id] || {status:"未着手", notes:"", checks:{}}; }
+function getPartStatus(id){ return getPart(id).status; }
+function ensurePart(id){
+  if(!state.parts[id]) state.parts[id] = {status:"未着手", notes:"", checks:{}};
+  if(!state.parts[id].checks) state.parts[id].checks = {};
+  if(state.parts[id].notes===undefined) state.parts[id].notes = "";
+  return state.parts[id];
+}
+function setPartStatus(id, status){
+  ensurePart(id);
+  state.parts[id].status = status;
+  state.parts[id].updated = new Date().toISOString();
+  saveState(state);
+}
+function pickTodayPart(){
+  const inProg = PARTS.filter(p => getPartStatus(p.id)==="練習中")
+    .sort((a,b)=>(state.parts[a.id].updated||"").localeCompare(state.parts[b.id].updated||""));
+  if(inProg.length) return inProg[0];
+  const ns = PARTS.find(p => getPartStatus(p.id)==="未着手");
+  if(ns) return ns;
+  return null;
+}
+function partComplete(id){
+  const p = PARTS.find(x=>x.id===id);
+  if(!p) return;
+  setPartStatus(id, "組み上がった");
+  pushPartLog(p, "組み上がった");
+  toast(`✅ パーツ完成：${p.name}`);
+  closeModal();
+  render();
+}
+function partInProgress(id){
+  const p = PARTS.find(x=>x.id===id);
+  if(!p) return;
+  setPartStatus(id, "練習中");
+  pushPartLog(p, "練習中");
+  toast(`🔄 練習中：${p.name}`);
+  render();
+  if(openPartId===id) renderModal();
+}
+function partReset(id){
+  delete state.parts[id];
+  saveState(state);
+  toast(`未着手に戻した`);
+  render();
+  if(openPartId===id) renderModal();
+}
+function partSkip(id){
+  delete state.parts[id];
+  saveState(state);
+  toast(`⏭ パスした`);
+  render();
+}
+function pushPartLog(part, status){
+  const log = {
+    ts: new Date().toISOString(),
+    date: todayStr(),
+    cat: "part",
+    text: `[${status}] ${part.name}（${CATS[part.cat].name}）`,
+    partId: part.id
+  };
+  state.logs.push(log);
+  saveState(state);
+  lastSavedTs = log.ts;
+}
+function toggleCheck(id, ix){
+  // 旧API互換用に残してあるが、新ルートは cycleCheckStatus
+  cycleCheckStatus(id, ix);
+}
+
+// ===== チェック項目を3状態でサイクル（未着手→意識中→習得済→未着手） =====
+function getCheckStatus(partId, ix){
+  const p = state.parts[partId];
+  if(!p || !p.checks || !p.checks[ix]) return "未着手";
+  const v = p.checks[ix];
+  // 旧データ互換：true は習得済として扱う（migrateで消える予定）
+  if(v === true) return "習得済";
+  return (v && v.status) || "未着手";
+}
+
+function cycleCheckStatus(partId, ix){
+  const p = ensurePart(partId);
+  if(!p.checks) p.checks = {};
+  const part = PARTS.find(x=>x.id === partId);
+  if(!part) return;
+  const curStatus = getCheckStatus(partId, ix);
+  let nextStatus;
+  if(curStatus === "未着手") nextStatus = "意識中";
+  else if(curStatus === "意識中") nextStatus = "習得済";
+  else nextStatus = "未着手";
+
+  // 1個だけルール：「意識中」にする時、同パーツ内の他の意識中を「未着手」に戻す
+  if(nextStatus === "意識中"){
+    Object.keys(p.checks).forEach(k=>{
+      if(parseInt(k) === ix) return;
+      const cv = p.checks[k];
+      const cs = (cv && cv.status) || (cv === true ? "習得済" : "未着手");
+      if(cs === "意識中") delete p.checks[k];
+    });
+  }
+
+  if(nextStatus === "未着手"){
+    delete p.checks[ix];
+  } else if(nextStatus === "意識中"){
+    p.checks[ix] = {status: "意識中", since: new Date().toISOString()};
+  } else { // 習得済
+    const oldSince = (p.checks[ix] && p.checks[ix].since) || new Date().toISOString();
+    p.checks[ix] = {status: "習得済", since: oldSince, resolvedAt: new Date().toISOString()};
+  }
+  saveState(state);
+  const label = part.checks[ix];
+  const shortLabel = label.length > 18 ? label.slice(0,18)+"..." : label;
+  toast(`"${shortLabel}" → ${nextStatus}`);
+  if(openPartId === partId) renderModal();
+  renderTodayPart();
+}
+
+// ===== 30日経過サジェスト =====
+function check30DaySuggest(){
+  const today = todayStr();
+  let lastShown = "";
+  try{ lastShown = localStorage.getItem('mma_30day_toast') || ""; }catch(e){}
+  if(lastShown === today) return;
+  let candidate = null;
+  Object.keys(state.parts || {}).forEach(pid=>{
+    const p = state.parts[pid];
+    if(!p || !p.checks) return;
+    Object.keys(p.checks).forEach(ix=>{
+      const c = p.checks[ix];
+      if(c && c.status === "意識中" && c.since){
+        const since = new Date(c.since);
+        const days = Math.floor((new Date() - since) / (1000*60*60*24));
+        if(days >= 30){
+          const part = PARTS.find(x=>x.id == pid);
+          if(part){
+            if(!candidate || candidate.days < days){
+              candidate = {partName: part.name, checkText: part.checks[ix], days};
+            }
+          }
+        }
+      }
+    });
+  });
+  if(candidate){
+    setTimeout(()=>{
+      toast(`💡「${candidate.partName}: ${candidate.checkText.slice(0,12)}…」${candidate.days}日経過。もう習得？`);
+      try{ localStorage.setItem('mma_30day_toast', today); }catch(e){}
+    }, 1200);
+  }
+}
+
+// ===== チェックデータ移行（v2：未着手リセット） =====
+function migrateChecksV2(){
+  if(state.checkVersion === 2) return;
+  Object.keys(state.parts || {}).forEach(pid=>{
+    const p = state.parts[pid];
+    if(p && p.checks) p.checks = {};
+  });
+  state.checkVersion = 2;
+  saveState(state);
+}
+function saveNotes(id, text){
+  const p = ensurePart(id);
+  p.notes = text;
+  saveState(state);
+}
+
+// ===== モーダル =====
+function openPartModal(id){
+  openPartId = id;
+  document.getElementById("modalBg").classList.add("show");
+  renderModal();
+}
+function closeModal(){
+  openPartId = null;
+  document.getElementById("modalBg").classList.remove("show");
+}
+
+function renderModal(){
+  if(openPartId===null) return;
+  const p = PARTS.find(x=>x.id===openPartId);
+  if(!p){ closeModal(); return; }
+  const ps = ensurePart(p.id);
+  const checksHtml = p.checks.map((c,ix)=>{
+    const status = getCheckStatus(p.id, ix);
+    const mark = status === "意識中" ? "🎯" : (status === "習得済" ? "✓" : "");
+    const safeC = c.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    return `<div class="checkitem s-${status}" onclick="cycleCheckStatus(${p.id},${ix})">
+      <div class="box">${mark}</div>
+      <div class="text">${safeC}</div>
+    </div>`;
+  }).join("");
+  // 履歴
+  const histLogs = state.logs.filter(l=>l.partId===p.id).slice(-10).reverse();
+  const histHtml = histLogs.length ? histLogs.map(l=>{
+    const t = new Date(l.ts);
+    const tt = `${l.date} ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+    const safeText = l.text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    return `<div class="item"><div class="t">${tt}</div><div>${safeText}</div></div>`;
+  }).join("") : `<div style="color:#999;font-size:12px">まだ履歴なし</div>`;
+
+  const safeNotes = (ps.notes||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+  document.getElementById("modalContent").innerHTML = `
+    <div class="grip"></div>
+    <span class="m-cat ${p.cat}">${CATS[p.cat].emoji} ${CATS[p.cat].name}</span>
+    <div class="m-name">${p.name}</div>
+    <span class="m-status s-${ps.status}">${ps.status}</span>
+    <div class="m-desc">${p.desc}</div>
+
+    <h3>✅ チェックリスト（意識すること）</h3>
+    <div class="checklist">${checksHtml}</div>
+
+    <h3>📝 自分のメモ（コツ・気づき・失敗）</h3>
+    <div class="ta-wrap">
+      <textarea id="notesBox" placeholder="例：左肩が上がる癖がある。鏡見ながらやると意識できる" oninput="saveNotes(${p.id}, this.value)">${safeNotes}</textarea>
+      <button class="clear-x" onclick="if(confirm('このパーツのメモを消す？')){document.getElementById('notesBox').value='';saveNotes(${p.id},'');toast('✓ クリア');}" title="この欄をクリア">×</button>
+    </div>
+    <div class="hint">↑ 自動で保存される</div>
+
+    <h3>💬 Claudeに相談</h3>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:8px">下のボタンを押すと、このパーツの状況をまとめた相談文がコピーされる。Claude（俺）に貼って質問追加して送って。</div>
+
+    <div class="m-actions">
+      <button class="b-consult" onclick="copyConsult(${p.id})">💬 Claudeに相談する文を作ってコピー</button>
+      <button class="b-complete" onclick="partComplete(${p.id})">✅ 組み上がった</button>
+      <button class="b-progress" onclick="partInProgress(${p.id})">🔄 練習中にする</button>
+      ${ps.status!=="未着手" ? `<button class="b-reset" onclick="partReset(${p.id})">↺ 未着手に戻す</button><button class="b-close" onclick="closeModal()">閉じる</button>` : `<button class="b-close" onclick="closeModal()">閉じる</button>`}
+    </div>
+
+    <h3>📅 このパーツの履歴</h3>
+    <div class="m-history">${histHtml}</div>
+  `;
+}
+
+function copyConsult(id){
+  const p = PARTS.find(x=>x.id===id);
+  if(!p) return;
+  const ps = ensurePart(p.id);
+  const checksDone = p.checks.map((c,ix)=>({c, done: !!ps.checks[ix]}));
+  const doneList = checksDone.filter(x=>x.done).map(x=>`✓ ${x.c}`).join("\n");
+  const ndList = checksDone.filter(x=>!x.done).map(x=>`✗ ${x.c}`).join("\n");
+  const histLogs = state.logs.filter(l=>l.partId===p.id);
+  const text =
+`【MMA練習相談】（mma-tracker.html から）
+
+■ パーツ
+- 名前: ${p.name}
+- カテゴリ: ${CATS[p.cat].name}
+- 説明: ${p.desc}
+- 状態: ${ps.status}
+- 関連ログ累計: ${histLogs.length}件
+
+■ チェックリスト（できてること）
+${doneList || "（まだなし）"}
+
+■ チェックリスト（未達）
+${ndList || "（全部できてる）"}
+
+■ 自分のメモ
+${ps.notes || "（まだ書いてない）"}
+
+■ 質問・相談したいこと
+（ここに書いてください）
+
+→ 設計脳・板金例えも交えて、このパーツを組み上げるコツを教えて。`;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>{
+      toast("📋 相談文コピー完了");
+    }).catch(()=>fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+// ===== クイック保存 =====
+function quickSave(cat){
+  const box = document.getElementById("memoBox");
+  const txt = (box.value || "").trim();
+  const finalText = txt || `${CATS[cat].name}をやった`;
+  const log = {
+    ts: new Date().toISOString(),
+    date: todayStr(),
+    cat: cat,
+    text: finalText
+  };
+  state.logs.push(log);
+  saveState(state);
+  box.value = "";
+  viewDate = todayStr();
+  lastSavedTs = log.ts;
+  toast(`✓ ${CATS[cat].emoji} ${CATS[cat].name} を保存`);
+  render();
+  setTimeout(()=>{
+    const flashed = document.querySelector(".log-item.flash");
+    if(flashed) flashed.scrollIntoView({behavior:"smooth", block:"center"});
+  }, 100);
+}
+
+function delLog(ts){
+  state.logs = state.logs.filter(l=>l.ts!==ts);
+  saveState(state);
+  toast("削除した");
+  render();
+}
+
+function resetAll(){
+  if(!confirm("全ログ＆パーツ進捗を消去します。よろしい？")) return;
+  state = {logs:[], parts:{}};
+  saveState(state);
+  render();
+}
+
+function copyToday(){
+  const todays = state.logs.filter(l=>l.date===viewDate);
+  if(!todays.length){ toast("ログなし"); return; }
+  const text = todays.map(l=>{
+    const t = new Date(l.ts);
+    const tt = `${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+    return `[${tt}] ${CATS[l.cat].name}: ${l.text}`;
+  }).join("\n");
+  const head = `=== MMA練習ログ ${viewDate} ===\n`;
+  const full = head+text;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(full).then(()=>toast("コピーした")).catch(()=>fallbackCopy(full));
+  } else {
+    fallbackCopy(full);
+  }
+}
+
+function fallbackCopy(text){
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position="fixed";ta.style.opacity="0";
+  document.body.appendChild(ta);
+  ta.select();
+  try{ document.execCommand("copy"); toast("コピーした"); }
+  catch(e){ alert(text); }
+  document.body.removeChild(ta);
+}
+
+function exportJSON(){
+  const blob = new Blob([JSON.stringify(state,null,2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `mma_log_${todayStr()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importText(){
+  document.getElementById("pasteBg").classList.add("show");
+  document.getElementById("pasteBox").value = "";
+  setTimeout(()=>document.getElementById("pasteBox").focus(), 100);
+}
+function closePaste(){
+  document.getElementById("pasteBg").classList.remove("show");
+}
+function doImportText(){
+  const txt = document.getElementById("pasteBox").value.trim();
+  if(!txt){ toast("テキスト貼って"); return; }
+  try {
+    const data = JSON.parse(txt);
+    if(!data.logs) throw new Error("logs フィールドなし");
+    if(!data.parts) data.parts = {};
+    if(!confirm(`既存${state.logs.length}件 → 読込${data.logs.length}件で上書き。OK？`)) return;
+    state = data;
+    saveState(state);
+    closePaste();
+    toast("✓ 読込完了");
+    render();
+  } catch(e) {
+    alert("JSON解析失敗: " + e.message);
+  }
+}
+
+function importJSON(){
+  const inp = document.createElement("input");
+  inp.type = "file";
+  inp.accept = "application/json";
+  inp.onchange = e=>{
+    const f = e.target.files[0];
+    if(!f) return;
+    const r = new FileReader();
+    r.onload = ()=>{
+      try{
+        const data = JSON.parse(r.result);
+        if(!data.logs) throw new Error("logs フィールドなし");
+        if(!data.parts) data.parts = {};
+        if(confirm(`既存${state.logs.length}件 → 読込${data.logs.length}件で上書き。OK？`)){
+          state = data;
+          saveState(state);
+          render();
+        }
+      }catch(err){ alert("JSON読込失敗: "+err.message); }
+    };
+    r.readAsText(f);
+  };
+  inp.click();
+}
+
+function toggleSection(id, titleEl){
+  const el = document.getElementById(id);
+  el.classList.toggle("hidden");
+  titleEl.classList.toggle("collapsed");
+}
+
+// ===== 描画 =====
+function render(){
+  const t = new Date();
+  const wd = ["日","月","火","水","木","金","土"][t.getDay()];
+  const completed = PARTS.filter(p => getPartStatus(p.id)==="組み上がった").length;
+  document.getElementById("todayLabel").textContent =
+    `${todayStr()}（${wd}）/ ログ${state.logs.length}件 / パーツ ${completed}/${PARTS.length}`;
+
+  renderFocus();
+  renderPrevCoach();
+  renderFocusInProgress();
+  renderTodayFocusReview();
+  check30DaySuggest();
+  renderReviewYesterday();
+  renderFocusHistory();
+  renderFocusStats();
+  renderDaySummary();
+  renderTodayPart();
+  renderDateTabs();
+  renderLogs();
+  renderParts();
+  renderChart();
+}
+
+function renderTodayPart(){
+  const cards = ['todayPartCard','todayPartCardInput'].map(id=>document.getElementById(id)).filter(Boolean);
+  const p = pickTodayPart();
+  const completed = PARTS.filter(x=>getPartStatus(x.id)==="組み上がった").length;
+  let html, isAllDone;
+  if(!p){
+    isAllDone = true;
+    html = `
+      <div class="header"><span>🏆 完成</span><span class="pcount">${completed}/${PARTS.length}</span></div>
+      <div class="name" style="cursor:default;text-decoration:none">全パーツ組み上がった！</div>
+      <div class="desc">次のレベルのパーツを追加するか、リセットして再挑戦できる。</div>
+      <div class="actions">
+        <button class="btn-detail" onclick="alert('次レベルのパーツ追加は俺と相談してね')">✨ 次へ</button>
+        <button class="btn-skip" onclick="if(confirm('パーツ進捗だけリセット？')){state.parts={};saveState(state);render();}">🔄 リセット</button>
+        <button class="btn-skip" onclick="switchPage('now');document.getElementById('partsContainer').scrollIntoView({behavior:'smooth'})">📦 表へ</button>
+        <button class="btn-skip" style="grid-column:span 1" onclick="alert('お疲れさん！')">🎉</button>
+      </div>
+    `;
+  } else {
+    isAllDone = false;
+    const status = getPartStatus(p.id);
+    const statusLabel = status==="練習中" ? "🔄 練習中" : "🎯 今日の1個";
+    ensurePart(p.id);
+    const checksHtml = p.checks.map((c,ix)=>{
+      const status = getCheckStatus(p.id, ix);
+      const mark = status === "意識中" ? "🎯" : (status === "習得済" ? "✓" : "");
+      const safeC = c.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+      return `<div class="icitem s-${status}" onclick="event.stopPropagation();cycleCheckStatus(${p.id},${ix})">
+        <div class="icbox">${mark}</div>
+        <div class="ictext">${safeC}</div>
+      </div>`;
+    }).join("");
+    html = `
+      <div class="header"><span>${statusLabel}</span><span class="pcount">${completed}/${PARTS.length} 完成</span></div>
+      <span class="cat-tag ${p.cat}">${CATS[p.cat].emoji} ${CATS[p.cat].name}</span>
+      <div class="name" onclick="openPartModal(${p.id})" title="タップで詳細">${p.name} <span style="font-size:14px;opacity:.7">▶</span></div>
+      <div class="desc">${p.desc}</div>
+      <div class="inline-checks">
+        <div class="ichead">✅ 意識すること（タップでチェック）</div>
+        ${checksHtml}
+      </div>
+      <div class="actions" style="margin-top:12px">
+        <button class="btn-detail" onclick="openPartModal(${p.id})">📋 詳細</button>
+        <button class="btn-complete" onclick="partComplete(${p.id})">✅ 完成</button>
+        <button class="btn-progress" onclick="partInProgress(${p.id})">🔄 練習</button>
+        <button class="btn-skip" onclick="partSkip(${p.id})">⏭ パス</button>
+      </div>
+    `;
+  }
+  cards.forEach(card=>{
+    card.classList.toggle('all-done', isAllDone);
+    card.innerHTML = html;
+  });
+}
+
+function renderDateTabs(){
+  const dates = new Set();
+  for(let i=0; i<7; i++){
+    const d = new Date();
+    d.setDate(d.getDate()-i);
+    const s = d.toISOString().slice(0,10);
+    dates.add(s);
+  }
+  state.logs.forEach(l=>dates.add(l.date));
+  const sorted = Array.from(dates).sort().reverse();
+  const el = document.getElementById("dateTabs");
+  el.innerHTML = sorted.map(d=>{
+    const cls = d===viewDate ? "active" : "";
+    const cnt = state.logs.filter(l=>l.date===d).length;
+    const label = d===todayStr() ? `今日 (${cnt})` : `${d.slice(5)} (${cnt})`;
+    return `<button class="${cls}" onclick="setView('${d}')">${label}</button>`;
+  }).join("");
+}
+
+function setView(d){ viewDate = d; render(); }
+
+function renderLogs(){
+  const cont = document.getElementById("logsContainer");
+  if(!cont) return; // 旧仕様の logsContainer は記録タブから削除済（day-card に集約）
+  const logs = state.logs.filter(l=>l.date===viewDate)
+    .sort((a,b)=>b.ts.localeCompare(a.ts));
+  const titleEl = document.getElementById("logsTitle");
+  if(titleEl) titleEl.textContent =
+    viewDate===todayStr() ? "📋 今日のログ（新しい順）" : `📋 ${viewDate} のログ`;
+  const countEl = document.getElementById("logsCount");
+  if(countEl) countEl.textContent = `${logs.length}件`;
+  if(!logs.length){
+    cont.innerHTML = `<div class="empty">この日はまだログなし</div>`;
+    return;
+  }
+  cont.innerHTML = `<div class="log-list">${logs.map(l=>{
+    const t = new Date(l.ts);
+    const tt = `${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+    const c = CATS[l.cat] || CATS.memo;
+    const safeText = l.text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const flashCls = l.ts===lastSavedTs ? "flash" : "";
+    return `<div class="log-item ${flashCls}">
+      <div class="time">${tt}</div>
+      <div class="body">
+        <span class="cat ${l.cat}">${c.name}</span>
+        <div class="text">${safeText}</div>
+      </div>
+      <button class="del" onclick="delLog('${l.ts}')" title="削除">×</button>
+    </div>`;
+  }).join("")}</div>`;
+}
+
+function renderParts(){
+  const cont = document.getElementById("partsContainer");
+  const completed = PARTS.filter(p=>getPartStatus(p.id)==="組み上がった").length;
+  const inProgress = PARTS.filter(p=>getPartStatus(p.id)==="練習中").length;
+  const notStarted = PARTS.length - completed - inProgress;
+  document.getElementById("partsCount").textContent = `${completed}/${PARTS.length} 完成`;
+  const pct = Math.round(100*completed/PARTS.length);
+
+  const blocks = [
+    {cat:"strike", title:"👊 打撃"},
+    {cat:"clinch", title:"🤼 組み技"},
+    {cat:"ground", title:"🌀 寝技"},
+    {cat:"strategy", title:"🧠 戦略"},
+  ];
+  let html = `
+    <div class="parts-wrap">
+      <div class="parts-summary">
+        <span><i style="background:#ccc"></i>未着手 ${notStarted}</span>
+        <span><i style="background:var(--gold)"></i>練習中 ${inProgress}</span>
+        <span><i style="background:var(--done)"></i>完成 ${completed}</span>
+      </div>
+      <div class="progress-bar"><i style="width:${pct}%"></i></div>
+  `;
+  blocks.forEach(b=>{
+    const items = PARTS.filter(p=>p.cat===b.cat);
+    const cells = items.map(p=>{
+      const st = getPartStatus(p.id);
+      const mark = st==="組み上がった"?"✓":(st==="練習中"?"●":"○");
+      return `<div class="part-cell s-${st}" onclick="openPartModal(${p.id})" title="${p.desc}">
+        <span class="pmark">${mark}</span>
+        <span class="pname">${p.name}</span>
+      </div>`;
+    }).join("");
+    html += `<div class="parts-block"><h4>${b.title}（${items.length}個）</h4><div class="parts-grid">${cells}</div></div>`;
+  });
+  html += `</div>`;
+  cont.innerHTML = html;
+}
+
+function pieSVG(segs, size=180){
+  const total = segs.reduce((a,b)=>a+b.val,0);
+  const r = size/2 - 4;
+  const cx=size/2, cy=size/2;
+  if(total===0){
+    return `<svg viewBox="0 0 ${size} ${size}"><circle cx="${cx}" cy="${cy}" r="${r}" fill="#eee"/><text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="middle" fill="#999" font-size="13">今月まだ</text></svg>`;
+  }
+  let acc = -90;
+  let parts = "";
+  segs.forEach(s=>{
+    if(s.val===0) return;
+    const ang = 360*s.val/total;
+    const start = acc, end = acc+ang;
+    const x1 = cx + r*Math.cos(start*Math.PI/180);
+    const y1 = cy + r*Math.sin(start*Math.PI/180);
+    const x2 = cx + r*Math.cos(end*Math.PI/180);
+    const y2 = cy + r*Math.sin(end*Math.PI/180);
+    const large = ang>180?1:0;
+    if(ang>=359.99){
+      parts += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${s.color}"/>`;
+    } else {
+      parts += `<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${large} 1 ${x2},${y2} Z" fill="${s.color}" stroke="#fff" stroke-width="2"/>`;
+    }
+    const mid = (start+end)/2;
+    const lx = cx + r*0.62*Math.cos(mid*Math.PI/180);
+    const ly = cy + r*0.62*Math.sin(mid*Math.PI/180);
+    const pct = Math.round(100*s.val/total);
+    if(pct>=8){
+      parts += `<text x="${lx}" y="${ly}" fill="#fff" font-size="13" font-weight="800" text-anchor="middle" dominant-baseline="middle">${pct}%</text>`;
+    }
+    acc = end;
+  });
+  return `<svg viewBox="0 0 ${size} ${size}">${parts}</svg>`;
+}
+
+function renderChart(){
+  const ym = todayStr().slice(0,7);
+  document.getElementById("monthLabel").textContent = ym;
+  const monthLogs = state.logs.filter(l=>l.date.startsWith(ym));
+  const counts = {strike:0, clinch:0, ground:0, spar:0, strategy:0, part:0, memo:0};
+  monthLogs.forEach(l=>{ if(counts[l.cat]!==undefined) counts[l.cat]++; });
+  const segs = Object.keys(counts).map(k=>({
+    name: CATS[k].name,
+    val: counts[k],
+    color: CATS[k].color
+  }));
+  const legend = `<div class="legend">${segs.filter(s=>s.val>0).map(s=>
+    `<span><i style="background:${s.color}"></i>${s.name} ${s.val}</span>`
+  ).join("")}</div>`;
+  document.getElementById("chartArea").innerHTML = pieSVG(segs) + (segs.some(s=>s.val>0) ? legend : "");
+}
+
+render();
+// 前回ページ復元
+try{
+  const lastPage = localStorage.getItem('mma_page');
+  if(lastPage && ['input','now','archive'].includes(lastPage)) switchPage(lastPage);
+}catch(e){}
+
+console.log("MMA Tracker v6 描画完了（3ページ式）");
+</script>
+<!-- ===== 共通：フローティング付箋メモパッド ===== -->
+<script>
+(function(){
+  const MEMOPAD_KEY = "memopad_mma"; // ★アプリごとに変える
+  const COLORS = [
+    {name:"yellow", bg:"#fff3b0", bar:"#f5c500"},
+    {name:"pink",   bg:"#ffd6e0", bar:"#ff5e8a"},
+    {name:"blue",   bg:"#cfe8ff", bar:"#0a84ff"},
+    {name:"green",  bg:"#d2f5d6", bar:"#34c759"}
+  ];
+  // ---- CSS注入 ----
+  const css = `
+  .mp-fab{position:fixed;right:14px;bottom:18px;z-index:300;width:54px;height:54px;border-radius:50%;border:none;background:linear-gradient(135deg,#ffb300,#ff7a00);color:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 14px rgba(255,122,0,.45);display:flex;align-items:center;justify-content:center}
+  .mp-fab:active{transform:scale(.92)}
+  .mp-fab .mp-badge{position:absolute;top:-2px;right:-2px;background:#ff3b30;color:#fff;font-size:11px;font-weight:800;min-width:20px;height:20px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 5px;border:2px solid #fff}
+  .mp-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:301;opacity:0;pointer-events:none;transition:opacity .25s;display:flex;align-items:flex-end;justify-content:center}
+  .mp-bg.show{opacity:1;pointer-events:auto}
+  .mp-panel{background:#f5f5f7;width:100%;max-width:640px;max-height:85vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:16px 14px 28px;transform:translateY(100%);transition:transform .3s ease}
+  .mp-bg.show .mp-panel{transform:translateY(0)}
+  .mp-grip{width:42px;height:5px;background:#ccc;border-radius:999px;margin:0 auto 14px}
+  .mp-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .mp-head h2{margin:0;font-size:18px;font-weight:800;color:#1d1d1f}
+  .mp-head .mp-close{background:#e5e5ea;border:none;color:#555;font-size:13px;font-weight:700;padding:7px 13px;border-radius:999px;cursor:pointer}
+  .mp-add{display:flex;gap:8px;margin-bottom:14px}
+  .mp-add button{flex:1;background:#1d1d1f;color:#fff;border:none;padding:13px;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer}
+  .mp-add button:active{transform:scale(.98)}
+  .mp-list{display:flex;flex-direction:column;gap:10px}
+  .mp-note{border-radius:12px;padding:12px;position:relative;box-shadow:0 2px 6px rgba(0,0,0,.08);border-left:5px solid}
+  .mp-note textarea{width:100%;min-height:48px;border:none;background:transparent;font:inherit;font-size:14px;line-height:1.5;resize:vertical;color:#3a2d00}
+  .mp-note textarea:focus{outline:none}
+  .mp-note .mp-foot{display:flex;align-items:center;gap:6px;margin-top:6px}
+  .mp-note .mp-colors{display:flex;gap:5px;flex:1}
+  .mp-note .mp-colors span{width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid rgba(0,0,0,.1)}
+  .mp-note .mp-colors span.sel{border-color:#1d1d1f;transform:scale(1.15)}
+  .mp-note .mp-del{background:rgba(0,0,0,.08);border:none;color:#a00;font-size:12px;font-weight:700;padding:6px 11px;border-radius:8px;cursor:pointer}
+  .mp-note .mp-time{font-size:10px;color:rgba(0,0,0,.4);margin-right:auto;font-weight:600}
+  .mp-empty{text-align:center;color:#999;font-size:13px;padding:30px 10px}
+  `;
+  const styleEl = document.createElement("style");
+  styleEl.textContent = css;
+  document.head.appendChild(styleEl);
+
+  // ---- DOM生成 ----
+  const fab = document.createElement("button");
+  fab.className = "mp-fab";
+  fab.innerHTML = `📌<span class="mp-badge" id="mpBadge" style="display:none">0</span>`;
+  fab.onclick = openPad;
+  document.body.appendChild(fab);
+
+  const bg = document.createElement("div");
+  bg.className = "mp-bg";
+  bg.id = "mpBg";
+  bg.innerHTML = `<div class="mp-panel">
+    <div class="mp-grip"></div>
+    <div class="mp-head"><h2>📌 付箋メモ</h2><button class="mp-close">閉じる</button></div>
+    <div class="mp-add"><button>＋ 新しい付箋を追加</button></div>
+    <div class="mp-list" id="mpList"></div>
+  </div>`;
+  document.body.appendChild(bg);
+  bg.addEventListener("click", e=>{ if(e.target===bg) closePad(); });
+  bg.querySelector(".mp-close").onclick = closePad;
+  bg.querySelector(".mp-add button").onclick = addNote;
+
+  // ---- データ ----
+  function load(){ try{ return JSON.parse(localStorage.getItem(MEMOPAD_KEY)||"[]"); }catch(e){ return []; } }
+  function save(arr){ try{ localStorage.setItem(MEMOPAD_KEY, JSON.stringify(arr)); }catch(e){} }
+  let notes = load();
+
+  function updateBadge(){
+    const b = document.getElementById("mpBadge");
+    if(!b) return;
+    if(notes.length){ b.style.display="flex"; b.textContent = notes.length; }
+    else b.style.display="none";
+  }
+  function openPad(){ document.getElementById("mpBg").classList.add("show"); renderNotes(); }
+  function closePad(){ document.getElementById("mpBg").classList.remove("show"); }
+
+  function addNote(){
+    notes.unshift({id:Date.now(), text:"", color:"yellow", ts:new Date().toISOString()});
+    save(notes); renderNotes(); updateBadge();
+    setTimeout(()=>{ const ta=document.querySelector(".mp-note textarea"); if(ta) ta.focus(); },80);
+  }
+  function editNote(id, text){ const n=notes.find(x=>x.id===id); if(n){ n.text=text; save(notes); } }
+  function colorNote(id, c){ const n=notes.find(x=>x.id===id); if(n){ n.color=c; save(notes); renderNotes(); } }
+  function delNote(id){ if(!confirm("この付箋を消す？")) return; notes=notes.filter(x=>x.id!==id); save(notes); renderNotes(); updateBadge(); }
+
+  window.mpEdit=editNote; window.mpColor=colorNote; window.mpDel=delNote;
+
+  function renderNotes(){
+    const list = document.getElementById("mpList");
+    if(!notes.length){ list.innerHTML = `<div class="mp-empty">付箋なし。<br>「＋ 新しい付箋を追加」で書ける</div>`; return; }
+    list.innerHTML = notes.map(n=>{
+      const col = COLORS.find(c=>c.name===n.color)||COLORS[0];
+      const t = new Date(n.ts);
+      const tt = `${t.getMonth()+1}/${t.getDate()} ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+      const safe = (n.text||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+      const colorsHtml = COLORS.map(c=>`<span style="background:${c.bar}" class="${c.name===n.color?'sel':''}" onclick="mpColor(${n.id},'${c.name}')"></span>`).join("");
+      return `<div class="mp-note" style="background:${col.bg};border-left-color:${col.bar}">
+        <textarea placeholder="メモを書く…" oninput="mpEdit(${n.id},this.value)">${safe}</textarea>
+        <div class="mp-foot">
+          <span class="mp-time">${tt}</span>
+          <div class="mp-colors">${colorsHtml}</div>
+          <button class="mp-del" onclick="mpDel(${n.id})">削除</button>
+        </div>
+      </div>`;
+    }).join("");
+  }
+  updateBadge();
+})();
+</script>
+</body>
+</html>
