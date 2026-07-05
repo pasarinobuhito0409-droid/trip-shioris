@@ -39,9 +39,8 @@ body.cal2-lock{overflow:hidden;position:fixed;inset:0;width:100%;background:tran
 #stars{position:fixed;inset:0;z-index:-2;opacity:0;transition:opacity .8s;pointer-events:none;display:none}
 .star{position:absolute;background:#fff;border-radius:50%;animation:tw 3s infinite ease-in-out}
 @keyframes tw{0%,100%{opacity:.25}50%{opacity:1}}
-#constellation{position:fixed;inset:0;z-index:-2;opacity:0;transition:opacity .8s;pointer-events:none;display:none}
 #celestial{position:fixed;width:70px;height:70px;border-radius:50%;z-index:-2;left:0;top:0;transition:background .4s,box-shadow .4s;will-change:transform;display:none;pointer-events:none}
-body.cal2-lock #sky,body.cal2-lock #stars,body.cal2-lock #constellation,body.cal2-lock #celestial{display:block}
+body.cal2-lock #sky,body.cal2-lock #stars,body.cal2-lock #celestial{display:block}
 @keyframes sparkle{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(0);opacity:0}}
 .sparkle-dot{position:fixed;width:8px;height:8px;border-radius:50%;pointer-events:none;z-index:999;animation:sparkle .6s cubic-bezier(.25,.46,.45,.94) forwards;box-shadow:0 0 6px currentColor}
 
@@ -266,31 +265,6 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 .record-diary .rd-body.long::after{content:"";position:absolute;bottom:0;left:0;right:0;height:30px;background:linear-gradient(transparent,rgba(25,25,45,.85))}
 .record-section-title{font-size:13px;color:var(--muted);margin:14px 0 6px;font-weight:700}
 
-/* === 星座パネル（芸術品化 v6） === */
-.constel-card{position:relative;width:100%;height:220px;border-radius:16px;overflow:hidden;margin-bottom:14px;background:radial-gradient(ellipse 90% 70% at 70% 20%,#141b3d 0%,#0a0e24 45%,#04060f 100%)}
-.constel-card::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(120,140,220,.10) 46%,rgba(190,160,255,.13) 52%,rgba(120,140,220,.08) 58%,transparent 72%);pointer-events:none}
-.constel-bg{position:absolute;inset:0;width:100%;height:100%}
-.constel-bg-star{position:absolute;border-radius:50%;background:#fff;opacity:.55}
-.constel-svg{position:absolute;inset:0;width:100%;height:100%;display:block}
-.cst-star{transform-origin:center}
-.cst-star.tw{animation:tw 3s infinite ease-in-out}
-.constel-overlay{position:absolute;left:14px;top:12px;z-index:2}
-.constel-num{font-size:34px;font-weight:900;color:#ffd98a;text-shadow:0 0 18px rgba(255,200,90,.9),0 0 40px rgba(255,200,90,.55);line-height:1}
-.constel-sub{margin-top:4px;font-size:12px;color:rgba(255,255,255,.75);font-weight:700}
-
-/* === cal2夜空レイヤーの星（C-6：等級統一） === */
-#constellation .cst-star.tw{animation:tw 3s infinite ease-in-out}
-
-/* === 流れ星演出（C-5） === */
-@keyframes shootStar{
-  0%{transform:translate(0,0) rotate(var(--ang)) scaleX(0);opacity:0}
-  8%{opacity:1;transform:translate(0,0) rotate(var(--ang)) scaleX(1)}
-  100%{transform:translate(var(--sx),var(--sy)) rotate(var(--ang)) scaleX(1);opacity:.2}
-}
-.shooting-star{position:fixed;width:70px;height:2px;border-radius:999px;background:linear-gradient(90deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.9) 100%);transform-origin:left center;pointer-events:none;z-index:997;animation:shootStar .7s cubic-bezier(.3,.6,.35,1) forwards}
-@keyframes starBurst{0%{transform:translate(-50%,-50%) scale(.2);opacity:1}100%{transform:translate(-50%,-50%) scale(2.6);opacity:0}}
-.star-burst{position:fixed;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle,#fff 0%,#ffe9b0 40%,rgba(255,217,138,0) 75%);pointer-events:none;z-index:997;animation:starBurst .42s ease-out forwards}
-
 .summary{padding:8px 12px}
 .summary-card{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:12px;padding:12px 14px;border:1px solid var(--glass-border)}
 .summary-card .label{font-size:11px;color:var(--muted);font-weight:500}
@@ -434,7 +408,6 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 
 <div id="sky"></div>
 <div id="stars"></div>
-<div id="constellation"></div>
 <div id="celestial"></div>
 
 <header>
@@ -645,11 +618,23 @@ function tally(m){
         }
       });
     }
-    // その日の主タスクが1つ以上完了 → 実績日カウント
+    // その日の主タスクが1つ以上完了 → 実績日カウント（日タイプ問わず）
     if(dayDone > 0){
       actDay[x.type]++;
-      if(x.type==="普通" && x.night && s.night) actNight[x.night]++;
     }
+    // 夜運動（実績）: その日にやった運動タイプを名前で判定し、1日1カウント
+    const nightTypesDone = new Set();
+    if(x.night && s.night) nightTypesDone.add(x.night);
+    if(s.__custom__ && s.__custom__.length){
+      s.__custom__.forEach(t=>{
+        if(!s[t.id]) return;
+        const label = t.label||"";
+        if(/wt|ウェイト|筋トレ|ベンチ|スクワット|デッド/i.test(label)) nightTypesDone.add("WT");
+        else if(/mma|スパー|総合|柔術|グラップ/i.test(label)) nightTypesDone.add("MMA");
+        else if(/ハンド/.test(label)) nightTypesDone.add("ハンド");
+      });
+    }
+    nightTypesDone.forEach(type=>{ actNight[type]++; });
   });
   return {days, planDay, planNight, actDay, actNight, cats, totalPlan, totalDone};
 }
@@ -755,50 +740,17 @@ function legendHTML(segs){
   return `<div class="legend">${segs.filter(s=>s.val>0).map(s=>`<span><i style="background:${s.color}"></i>${s.name} ${s.val}</span>`).join("")}</div>`;
 }
 
-// 今月の完了タスク・ドーナツ（中央に総✓数）
-function donutSVG(segs, size=130, thickness=16){
-  const total = segs.reduce((a,b)=>a+b.val,0);
-  const r = size/2 - thickness/2 - 2;
-  const cx=size/2, cy=size/2;
-  const circumf = 2*Math.PI*r;
-  if(total===0){
-    return `<svg viewBox="0 0 ${size} ${size}"><circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="${thickness}"/></svg>`;
-  }
-  let acc = -90;
-  let parts = "";
-  segs.forEach(s=>{
-    if(s.val<=0) return;
-    const frac = s.val/total;
-    const len = frac*circumf;
-    const dash = `${len} ${circumf-len}`;
-    parts += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${s.color}" stroke-width="${thickness}" stroke-dasharray="${dash}" stroke-dashoffset="${-acc/360*circumf}" transform="rotate(-90 ${cx} ${cy})"/>`;
-    acc += frac*360;
-  });
-  return `<svg viewBox="0 0 ${size} ${size}">${parts}
-    <text x="${cx}" y="${cy-6}" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-size="26" font-weight="900">${total}</text>
-    <text x="${cx}" y="${cy+16}" text-anchor="middle" dominant-baseline="middle" fill="rgba(255,255,255,.55)" font-size="10" font-weight="700">✓タスク</text>
-  </svg>`;
-}
-
 function renderCharts(){
   const t = tally(currentMonth);
   const seg = (obj, keys) => keys.map(k=>({name:k, val:obj[k], color:CHART_COLORS[k]}));
   const dayPlan = seg(t.planDay, ["普通","チート","特別"]);
+  const dayAct = seg(t.actDay, ["普通","チート","特別"]);
   const nightPlan = seg(t.planNight, ["WT","MMA","ハンド"]);
   const nightAct = seg(t.actNight, ["WT","MMA","ハンド"]);
-  const taskDefs = [
-    {k:'morning', name:'朝', color:'#5ab4ff'},
-    {k:'lunch', name:'昼', color:'#a99cff'},
-    {k:'night', name:'夜', color:'#c850dc'},
-    {k:'daily', name:'毎日', color:'#34c759'},
-    {k:'special', name:'特別', color:'#76b347'},
-    {k:'custom', name:'自分', color:'#d898e8'},
-  ];
-  const taskDone = taskDefs.map(c=>({name:c.name, val:t.cats[c.k][0], color:c.color}));
 
   document.getElementById("charts").innerHTML = `
     <div class="chart-card"><h3>日タイプ（予定）</h3>${pieSVG(dayPlan)}${legendHTML(dayPlan)}</div>
-    <div class="chart-card"><h3>今月の完了タスク</h3>${donutSVG(taskDone)}${legendHTML(taskDone)}</div>
+    <div class="chart-card"><h3>日タイプ（実績）</h3>${pieSVG(dayAct)}${legendHTML(dayAct)}</div>
     <div class="chart-card"><h3>夜運動（予定）</h3>${pieSVG(nightPlan)}${legendHTML(nightPlan)}</div>
     <div class="chart-card"><h3>夜運動（実績）</h3>${pieSVG(nightAct)}${legendHTML(nightAct)}</div>
   `;
@@ -1006,189 +958,6 @@ function todayYMD(){
   return {y:t.getFullYear(), m:t.getMonth()+1, d:t.getDate()};
 }
 
-// ===== 星座パネル（v6芸術品化） =====
-// 年月+番号を種にした決定的擬似乱数（0〜1）。mulberry32ベース
-function seededRandom(seed){
-  let t = seed + 0x6D2B79F5;
-  t = Math.imul(t ^ (t >>> 15), t | 1);
-  t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-}
-function constellationSeed(y,m,i){
-  return y*10000 + m*100 + i;
-}
-// その月の✓合計数ぶんの星座標を返す（画面上部60%の帯・毎回同じ場所）。stars配列は90個で頭打ちだがtotalは実数
-function getConstellationStars(y,m){
-  const t = tally(m);
-  const count = Math.min(90, t.totalDone);
-  const stars = [];
-  for(let i=0;i<count;i++){
-    const sx = seededRandom(constellationSeed(y,m,i*2));
-    const sy = seededRandom(constellationSeed(y,m,i*2+1));
-    stars.push({x: 4+sx*92, y: sy*60});
-  }
-  return {stars, total:t.totalDone};
-}
-const MONTH_CONSTEL_NAMES = ['始動座','継続座','飛躍座','新緑座','疾風座','深潜座','鍛錬座','灼熱座','実り座','錬成座','不屈座','集大成座'];
-// 星番号iで等級を決める（大星=5の倍数目、中星=3の倍数目、他=小星）
-function starGradeFor(i){
-  if(i%5===0) return 'big';
-  if(i%3===0) return 'mid';
-  return 'small';
-}
-// seedで色を2系統（青白系:金系＝7:3）に振り分け
-function starColorFor(y,m,i){
-  const c = seededRandom(constellationSeed(y,m,i*2+10000));
-  return c < 0.7 ? {a:'#ffffff', b:'#cfe0ff'} : {a:'#fff8e0', b:'#ffd98a'};
-}
-// 星座SVG本体。opts.scale で全体サイズ比（cal2は0.6倍）、opts.dash で破線省略可否を制御
-function constellationSVG(y, m, stars, w, h, opts={}){
-  const scale = opts.scale || 1;
-  const showDash = opts.dash !== false;
-  const bigR = 4.5*scale, midR = 3*scale, smallR = 2*scale;
-  const crossLen = 17.5*scale; // 十字光条：片側長さ（設計=35pxの半分）
-  let defs = '';
-  let crosses = '';
-  let dots = '';
-  const bigStars = [];
-  stars.forEach((p,i)=>{
-    const cx = p.x*w/100, cy = p.y*h/100;
-    const grade = starGradeFor(i);
-    const col = starColorFor(y,m,i);
-    const gid = `sg${i}_${w}x${h}`;
-    defs += `<radialGradient id="${gid}" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="${col.a}"/><stop offset="100%" stop-color="${col.b}" stop-opacity="0"/></radialGradient>`;
-    if(grade==='big'){
-      bigStars.push({x:cx,y:cy,i});
-      crosses += `<line x1="${cx-crossLen}" y1="${cy}" x2="${cx+crossLen}" y2="${cy}" stroke="${col.a}" stroke-width="${0.7*scale}" opacity=".55"/>`;
-      crosses += `<line x1="${cx}" y1="${cy-crossLen}" x2="${cx}" y2="${cy+crossLen}" stroke="${col.a}" stroke-width="${0.7*scale}" opacity=".55"/>`;
-      dots += `<circle class="cst-star" cx="${cx}" cy="${cy}" r="${bigR}" fill="${col.a}" style="filter:drop-shadow(0 0 ${7*scale}px ${col.b})"/>`;
-    } else if(grade==='mid'){
-      dots += `<circle class="cst-star tw" cx="${cx}" cy="${cy}" r="${midR}" fill="url(#${gid})" style="filter:drop-shadow(0 0 ${4.5*scale}px ${col.b})" data-si="${i}"/>`;
-    } else {
-      dots += `<circle class="cst-star tw" cx="${cx}" cy="${cy}" r="${smallR}" fill="url(#${gid})" style="filter:drop-shadow(0 0 ${3*scale}px ${col.b})" data-si="${i}"/>`;
-    }
-  });
-  // メインライン：大星同士を出現順に結ぶ（両端rgba(170,210,255,.05)→中央.55の疑似グラデ）
-  let mainLine = '';
-  if(bigStars.length>=2){
-    const lid = `mainline_${w}x${h}`;
-    defs += `<linearGradient id="${lid}" x1="${bigStars[0].x}" y1="${bigStars[0].y}" x2="${bigStars[bigStars.length-1].x}" y2="${bigStars[bigStars.length-1].y}" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="rgba(170,210,255,.05)"/><stop offset="50%" stop-color="rgba(170,210,255,.55)"/><stop offset="100%" stop-color="rgba(170,210,255,.05)"/></linearGradient>`;
-    const pts = bigStars.map(p=>`${p.x},${p.y}`).join(' ');
-    mainLine = `<polyline points="${pts}" fill="none" stroke="url(#${lid})" stroke-width="${1.6*scale}"/>`;
-  }
-  // 中星→最寄りの大星への破線
-  let dashLines = '';
-  if(showDash && bigStars.length){
-    stars.forEach((p,i)=>{
-      if(starGradeFor(i)!=='mid') return;
-      const cx = p.x*w/100, cy = p.y*h/100;
-      let nearest=null, best=Infinity;
-      bigStars.forEach(b=>{ const dd=(b.x-cx)**2+(b.y-cy)**2; if(dd<best){ best=dd; nearest=b; } });
-      if(nearest) dashLines += `<line x1="${cx}" y1="${cy}" x2="${nearest.x}" y2="${nearest.y}" stroke="rgba(255,255,255,.35)" stroke-width="${1*scale}" stroke-dasharray="3 5"/>`;
-    });
-  }
-  return `<svg class="constel-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><defs>${defs}</defs>${mainLine}${dashLines}${crosses}${dots}</svg>`;
-}
-// パネル背景の微光星20個（✓と無関係の決定的装飾）
-function constellationBgHTML(){
-  let html = '';
-  for(let i=0;i<20;i++){
-    const x = seededRandom(90000+i*2)*100;
-    const y = seededRandom(90000+i*2+1)*100;
-    const sz = 1+seededRandom(91000+i)*1;
-    const op = 0.4+seededRandom(92000+i)*0.3;
-    html += `<div class="constel-bg-star" style="left:${x}%;top:${y}%;width:${sz}px;height:${sz}px;opacity:${op}"></div>`;
-  }
-  return html;
-}
-function renderConstellationCard(){
-  const {stars, total} = getConstellationStars(curYear, currentMonth);
-  const named = total>=30;
-  const monthName = MONTH_CONSTEL_NAMES[currentMonth-1];
-  const numHtml = `★${total}`;
-  const nameLine = named
-    ? `${currentMonth}月の星座「${monthName}」`
-    : `？？座・あと${30-total}✓で名前が判明`;
-  return `<div class="constel-card" id="constelCard">
-    <div class="constel-bg">${constellationBgHTML()}</div>
-    ${constellationSVG(curYear, currentMonth, stars, 343, 220)}
-    <div class="constel-overlay">
-      <div class="constel-num">${numHtml}</div>
-      <div class="constel-sub">${nameLine}</div>
-    </div>
-  </div>`;
-}
-// cal2の夜空レイヤー更新（skyUpdateから呼ばれる）。年月+✓総数をキャッシュキーにして、
-// ✓が増えるたび（=星が増えるたび）再描画。月が変わってもリセットされる。C-6：等級見た目は共通・0.6倍・破線省略
-function updateSkyConstellation(){
-  const el = document.getElementById('constellation');
-  if(!el) return;
-  const {y,m} = todayYMD();
-  const {stars, total} = getConstellationStars(y,m);
-  const cacheKey = `${y}-${m}-${total}`;
-  if(el.dataset.ck !== cacheKey){
-    el.innerHTML = constellationSVG(y, m, stars, 100, 100, {scale:0.6, dash:false});
-    el.dataset.ck = cacheKey;
-  }
-}
-// 流れ星演出（C-5）：DOM追加→CSSアニメ→自動remove。再描画は呼ばない
-// fromRect: 発射元の矩形（省略時は画面左上外）、toEl: 着弾先の星要素（省略可）、toX/toY: 着弾先の絶対px座標
-function spawnShootingStar(opts){
-  const toX = opts.toX, toY = opts.toY;
-  if(toX==null || toY==null) return;
-  const fromX = opts.fromX!=null ? opts.fromX : toX-90;
-  const fromY = opts.fromY!=null ? opts.fromY : toY-70;
-  const dx = toX-fromX, dy = toY-fromY;
-  const ang = Math.atan2(dy,dx)*180/Math.PI;
-  const star = document.createElement('div');
-  star.className = 'shooting-star';
-  star.style.left = fromX+'px';
-  star.style.top = fromY+'px';
-  star.style.setProperty('--sx', dx+'px');
-  star.style.setProperty('--sy', dy+'px');
-  star.style.setProperty('--ang', ang+'deg');
-  document.body.appendChild(star);
-  star.addEventListener('animationend', ()=>{
-    star.remove();
-    const burst = document.createElement('div');
-    burst.className = 'star-burst';
-    burst.style.left = toX+'px';
-    burst.style.top = toY+'px';
-    document.body.appendChild(burst);
-    setTimeout(()=>burst.remove(), 420);
-  }, {once:true});
-}
-// toggleTaskの「未完了→完了」時に呼ぶ。記録タブの星座パネルが見えていればそこへ、
-// cal2表示中で夜空が見えていれば#constellationへ流れ星を飛ばす
-function fireConstellationShootingStar(){
-  if(currentView==="record"){
-    const card = document.getElementById('constelCard');
-    if(card){
-      const {stars} = getConstellationStars(curYear, currentMonth);
-      if(stars.length){
-        const rect = card.getBoundingClientRect();
-        const last = stars[stars.length-1];
-        const toX = rect.left + last.x/100*rect.width;
-        const toY = rect.top + last.y/100*rect.height;
-        spawnShootingStar({fromX:rect.left-40, fromY:rect.top-40, toX, toY});
-      }
-    }
-  } else if(document.body.classList.contains('cal2-lock')){
-    const el = document.getElementById('constellation');
-    if(el && getComputedStyle(el).opacity > 0.05){
-      const {y,m} = todayYMD();
-      const {stars} = getConstellationStars(y,m);
-      if(stars.length){
-        const rect = el.getBoundingClientRect();
-        const last = stars[stars.length-1];
-        const toX = rect.left + last.x/100*rect.width;
-        const toY = rect.top + last.y/100*rect.height;
-        spawnShootingStar({fromX:rect.left-40, fromY:rect.top-40, toX, toY});
-      }
-    }
-  }
-}
-
 function renderRecord(){
   const t = tally(currentMonth);
   const pct = t.totalPlan ? Math.round(100*t.totalDone/t.totalPlan) : 0;
@@ -1273,7 +1042,7 @@ function renderRecord(){
   }).filter(Boolean).join('');
   const doneLogSection = `<div class="record-section-title">✅ 完了ログ（✓した内容・新しい順）</div>` + (doneLog || `<div class="empty" style="background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:24px;text-align:center;color:var(--muted);font-size:13px">まだ✓なし<br><small>カレンダーの◯や予定をタップすると、ここに残る</small></div>`);
 
-  return `<div class="record-view">${summary}${renderConstellationCard()}${doneLogSection}${monthReview}<div class="record-section-title">📝 日記（新しい順）</div>${diaryHtml}</div>`;
+  return `<div class="record-view">${summary}${doneLogSection}${monthReview}<div class="record-section-title">📝 日記（新しい順）</div>${diaryHtml}</div>`;
 }
 function jumpToDay(d){ selDay=d; dvWantAutoScroll=true; setView('cal2'); }
 
@@ -1373,7 +1142,6 @@ function toggleTask(ev,m,d,id){
   if(justCompleted && ev) spawnSparkles(ev);
   saveState(state);
   render();
-  if(justCompleted) fireConstellationShootingStar();
 }
 
 // ===== カスタムタスク（追加・編集・削除） =====
@@ -1874,10 +1642,9 @@ function skyMakeStars(){
 function skyUpdate(){
   if(!document.body.classList.contains('cal2-lock')) return;
   const scroll=document.getElementById('dvScroll');
-  const sky=document.getElementById('sky'), cel=document.getElementById('celestial'), stars=document.getElementById('stars'), constel=document.getElementById('constellation');
+  const sky=document.getElementById('sky'), cel=document.getElementById('celestial'), stars=document.getElementById('stars');
   if(!scroll||!sky||!cel||!stars) return;
   skyMakeStars();
-  if(constel) updateSkyConstellation();
   let min=((scroll.scrollTop+scroll.clientHeight/2)/HOUR_PX)*60;
   min=Math.max(0,Math.min(1440,min));
   let i=0;
@@ -1904,7 +1671,6 @@ function skyUpdate(){
   else if(min<=270) so=1;
   else if(min<=360) so=1-(min-270)/90;
   stars.style.opacity=so;
-  if(constel) constel.style.opacity=so;
 }
 function skyOnScroll(){
   if(skyRaf) return;
