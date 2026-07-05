@@ -39,8 +39,9 @@ body.cal2-lock{overflow:hidden;position:fixed;inset:0;width:100%;background:tran
 #stars{position:fixed;inset:0;z-index:-2;opacity:0;transition:opacity .8s;pointer-events:none;display:none}
 .star{position:absolute;background:#fff;border-radius:50%;animation:tw 3s infinite ease-in-out}
 @keyframes tw{0%,100%{opacity:.25}50%{opacity:1}}
+#constellation{position:fixed;inset:0;z-index:-2;opacity:0;transition:opacity .8s;pointer-events:none;display:none}
 #celestial{position:fixed;width:70px;height:70px;border-radius:50%;z-index:-2;left:0;top:0;transition:background .4s,box-shadow .4s;will-change:transform;display:none;pointer-events:none}
-body.cal2-lock #sky,body.cal2-lock #stars,body.cal2-lock #celestial{display:block}
+body.cal2-lock #sky,body.cal2-lock #stars,body.cal2-lock #constellation,body.cal2-lock #celestial{display:block}
 @keyframes sparkle{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(0);opacity:0}}
 .sparkle-dot{position:fixed;width:8px;height:8px;border-radius:50%;pointer-events:none;z-index:999;animation:sparkle .6s cubic-bezier(.25,.46,.45,.94) forwards;box-shadow:0 0 6px currentColor}
 
@@ -265,6 +266,50 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 .record-diary .rd-body.long::after{content:"";position:absolute;bottom:0;left:0;right:0;height:30px;background:linear-gradient(transparent,rgba(25,25,45,.85))}
 .record-section-title{font-size:13px;color:var(--muted);margin:14px 0 6px;font-weight:700}
 
+/* === 成長の見える化：今日のリング === */
+.today-ring-card{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:12px;padding:14px;margin-bottom:14px;display:flex;align-items:center;gap:14px}
+.today-ring-card .trc-svg{flex:0 0 auto;width:104px;height:104px}
+.today-ring-card .trc-svg svg{width:100%;height:100%;display:block}
+.today-ring-card .trc-info{flex:1;min-width:0}
+.today-ring-card .trc-date{font-size:12px;color:var(--muted);font-weight:700;margin-bottom:2px}
+.today-ring-card .trc-msg{font-size:15px;font-weight:800;color:#fff;line-height:1.35}
+.today-ring-card .trc-rest{font-size:13px;color:rgba(255,255,255,.75);line-height:1.5}
+.today-ring-card .trc-extra{font-size:11px;color:var(--muted);margin-top:6px}
+.today-ring-card .trc-moon{font-size:34px;line-height:1;flex:0 0 auto}
+.trc-ring-seg{transition:stroke-dashoffset .4s ease-out}
+.trc-complete-toast{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%) scale(.7);background:linear-gradient(135deg,#ffd60a,#ff9f0a);color:#3a2600;font-size:17px;font-weight:900;padding:14px 26px;border-radius:999px;box-shadow:0 8px 30px rgba(255,159,10,.5);z-index:998;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
+.trc-complete-toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+
+/* === 草マップ === */
+.grass-card{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:12px;padding:14px;margin-bottom:14px}
+.grass-card h3{margin:0 0 10px;font-size:13px;color:var(--muted);font-weight:700}
+.grass-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.grass-cell{aspect-ratio:1/1;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:rgba(255,255,255,.55);cursor:pointer;transition:transform .1s}
+.grass-cell:active{transform:scale(.88)}
+.grass-cell.today{box-shadow:0 0 0 1.5px #fff inset}
+.grass-cell.future{opacity:.35;cursor:default}
+.grass-legend{display:flex;align-items:center;gap:4px;margin-top:10px;font-size:10px;color:var(--muted)}
+.grass-legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
+
+/* === 今月の星座（記録タブミニ空） === */
+.constel-card{background:#0d1024;border:1px solid var(--glass-border);border-radius:12px;padding:14px;margin-bottom:14px;position:relative;overflow:hidden}
+.constel-card h3{margin:0 0 8px;font-size:13px;color:var(--muted);font-weight:700}
+.constel-mini{width:100%;height:120px;display:block;border-radius:8px}
+.constel-mini .cm-star{fill:#fff}
+.constel-hint{font-size:11px;color:rgba(255,255,255,.55);margin-top:8px;text-align:center}
+
+/* === 炎＆レベル === */
+.flame-card{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:12px;padding:14px;margin-bottom:14px;display:flex;align-items:center;gap:14px}
+.flame-card .fc-icon{font-size:40px;line-height:1;flex:0 0 auto;filter:drop-shadow(0 2px 6px rgba(255,120,20,.4))}
+.flame-card .fc-body{flex:1;min-width:0}
+.flame-card .fc-top{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.flame-card .fc-lv{font-size:17px;font-weight:900;color:#fff}
+.flame-card .fc-title{font-size:12px;font-weight:700;color:#ffd60a}
+.flame-card .fc-streak{font-size:11px;color:var(--muted);margin-top:2px}
+.flame-card .fc-bar{height:8px;background:rgba(255,255,255,.1);border-radius:999px;overflow:hidden;margin-top:8px}
+.flame-card .fc-bar i{display:block;height:100%;background:linear-gradient(90deg,#ff9f0a,#ffd60a);transition:width .3s}
+.flame-card .fc-next{font-size:10px;color:var(--muted);margin-top:5px;text-align:right}
+
 .summary{padding:8px 12px}
 .summary-card{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:12px;padding:12px 14px;border:1px solid var(--glass-border)}
 .summary-card .label{font-size:11px;color:var(--muted);font-weight:500}
@@ -408,6 +453,7 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 
 <div id="sky"></div>
 <div id="stars"></div>
+<div id="constellation"></div>
 <div id="celestial"></div>
 
 <header>
@@ -728,17 +774,50 @@ function legendHTML(segs){
   return `<div class="legend">${segs.filter(s=>s.val>0).map(s=>`<span><i style="background:${s.color}"></i>${s.name} ${s.val}</span>`).join("")}</div>`;
 }
 
+// 今月の完了タスク・ドーナツ（中央に総✓数）。ringSVG/草マップ等でも流用する共通ドーナツ
+function donutSVG(segs, size=130, thickness=16){
+  const total = segs.reduce((a,b)=>a+b.val,0);
+  const r = size/2 - thickness/2 - 2;
+  const cx=size/2, cy=size/2;
+  const circumf = 2*Math.PI*r;
+  if(total===0){
+    return `<svg viewBox="0 0 ${size} ${size}"><circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="${thickness}"/></svg>`;
+  }
+  let acc = -90;
+  let parts = "";
+  segs.forEach(s=>{
+    if(s.val<=0) return;
+    const frac = s.val/total;
+    const len = frac*circumf;
+    const dash = `${len} ${circumf-len}`;
+    parts += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${s.color}" stroke-width="${thickness}" stroke-dasharray="${dash}" stroke-dashoffset="${-acc/360*circumf}" transform="rotate(-90 ${cx} ${cy})"/>`;
+    acc += frac*360;
+  });
+  return `<svg viewBox="0 0 ${size} ${size}">${parts}
+    <text x="${cx}" y="${cy-6}" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-size="26" font-weight="900">${total}</text>
+    <text x="${cx}" y="${cy+16}" text-anchor="middle" dominant-baseline="middle" fill="rgba(255,255,255,.55)" font-size="10" font-weight="700">✓タスク</text>
+  </svg>`;
+}
+
 function renderCharts(){
   const t = tally(currentMonth);
   const seg = (obj, keys) => keys.map(k=>({name:k, val:obj[k], color:CHART_COLORS[k]}));
   const dayPlan = seg(t.planDay, ["普通","チート","特別"]);
-  const dayAct = seg(t.actDay, ["普通","チート","特別"]);
   const nightPlan = seg(t.planNight, ["WT","MMA","ハンド"]);
   const nightAct = seg(t.actNight, ["WT","MMA","ハンド"]);
+  const taskDefs = [
+    {k:'morning', name:'朝', color:'#5ab4ff'},
+    {k:'lunch', name:'昼', color:'#a99cff'},
+    {k:'night', name:'夜', color:'#c850dc'},
+    {k:'daily', name:'毎日', color:'#34c759'},
+    {k:'special', name:'特別', color:'#76b347'},
+    {k:'custom', name:'自分', color:'#d898e8'},
+  ];
+  const taskDone = taskDefs.map(c=>({name:c.name, val:t.cats[c.k][0], color:c.color}));
 
   document.getElementById("charts").innerHTML = `
     <div class="chart-card"><h3>日タイプ（予定）</h3>${pieSVG(dayPlan)}${legendHTML(dayPlan)}</div>
-    <div class="chart-card"><h3>日タイプ（実績）</h3>${pieSVG(dayAct)}${legendHTML(dayAct)}</div>
+    <div class="chart-card"><h3>今月の完了タスク</h3>${donutSVG(taskDone)}${legendHTML(taskDone)}</div>
     <div class="chart-card"><h3>夜運動（予定）</h3>${pieSVG(nightPlan)}${legendHTML(nightPlan)}</div>
     <div class="chart-card"><h3>夜運動（実績）</h3>${pieSVG(nightAct)}${legendHTML(nightAct)}</div>
   `;
@@ -756,7 +835,7 @@ function renderContent(){
   });
   // cal2（日ビュー）中はhtml/bodyの外側スクロールをロックし、二重スクロールを防ぐ
   document.body.classList.toggle('cal2-lock', isCal2);
-  if(currentView==="record") el.innerHTML = renderRecord();
+  if(currentView==="record"){ el.innerHTML = renderRecord(); animateRingTransition(); checkTodayRingComplete(); }
   else if(isCal2){ el.innerHTML = renderDayView(); afterDayViewRender(); }
   else el.innerHTML = renderList();
 }
@@ -940,6 +1019,336 @@ function renderPrevCarry(m,y){
   </div>`;
 }
 
+// ===== 成長の見える化：共通ユーティリティ =====
+function todayYMD(){
+  const t = new Date();
+  return {y:t.getFullYear(), m:t.getMonth()+1, d:t.getDate()};
+}
+
+// ===== タスク1：今日のリング =====
+// rings: [{pct(0-1), color}] 内側から外側の順。1本なら特別日用の太リング扱い
+// stroke-dasharrayは円周固定、stroke-dashoffsetだけを進捗値にする（CSS transitionで滑らかに動かすため）
+function ringSVG(rings, size=104){
+  const cx=size/2, cy=size/2;
+  const thickness = rings.length>1 ? 8 : 14;
+  const gap = 3;
+  let svg = `<svg viewBox="0 0 ${size} ${size}">`;
+  rings.forEach((rg,i)=>{
+    const r = size/2 - thickness/2 - 2 - i*(thickness+gap);
+    if(r<=0) return;
+    const circumf = 2*Math.PI*r;
+    const pct = Math.max(0, Math.min(1, rg.pct));
+    const offset = circumf*(1-pct);
+    svg += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="${thickness}"/>`;
+    svg += `<circle class="trc-ring-seg" cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${rg.color}" stroke-width="${thickness}" stroke-linecap="round" stroke-dasharray="${circumf}" stroke-dashoffset="${offset}" data-target-offset="${offset}" data-circumf="${circumf}" transform="rotate(-90 ${cx} ${cy})"/>`;
+  });
+  svg += `</svg>`;
+  return svg;
+}
+// DOM再生成後もリングが「前回値→今回値」でアニメーションして見えるようにするFLIP的処理。
+// renderRecord()でinnerHTML差し替え直後にrenderContentから呼ばれる
+let prevRingOffsets = null;
+function animateRingTransition(){
+  const svgEl = document.querySelector('#todayRingCard .trc-svg svg, .today-ring-card .trc-svg svg');
+  if(!svgEl) { prevRingOffsets = null; return; }
+  const segs = svgEl.querySelectorAll('.trc-ring-seg');
+  const targets = Array.from(segs).map(el=>parseFloat(el.dataset.targetOffset));
+  if(prevRingOffsets && prevRingOffsets.length===segs.length){
+    // 一旦「前回の値」を即時適用（transitionなし）→次フレームで「今回の値」に戻してアニメさせる
+    segs.forEach((el,i)=>{
+      el.style.transition = 'none';
+      el.style.strokeDashoffset = String(prevRingOffsets[i]);
+    });
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        segs.forEach((el,i)=>{
+          el.style.transition = '';
+          el.style.strokeDashoffset = String(targets[i]);
+        });
+      });
+    });
+  }
+  prevRingOffsets = targets;
+}
+
+function renderTodayRing(){
+  const {y,m,d} = todayYMD();
+  const type = dayType(m,d,y);
+  const s = getDayState(m,d,y);
+  const wd = WD_JP[new Date(y,m-1,d).getDay()];
+  const dateLabel = `${m}/${d}（${wd}）`;
+  const customList = s.__custom__ || [];
+  const customDone = customList.filter(c=>s[c.id]).length;
+  const customExtra = customList.length ? `<div class="trc-extra">自分の予定 +${customDone}/${customList.length}</div>` : '';
+
+  if(type === "チート"){
+    return `<div class="today-ring-card">
+      <div class="trc-moon">🌙</div>
+      <div class="trc-info">
+        <div class="trc-date">${dateLabel}</div>
+        <div class="trc-rest">休養日。回復も仕事。</div>
+        ${customExtra}
+      </div>
+    </div>`;
+  }
+
+  const day = buildMonth(m,y).find(x=>x.d===d) || {d,type,wd:new Date(y,m-1,d).getDay(),theme:null,night:null,wtRot:null,isSpur:false,loc:null,noPlan:!hasPresets(y,m)};
+  const tasks = visibleTasksOf(day, m);
+
+  if(!tasks.length){
+    return `<div class="today-ring-card">
+      <div class="trc-moon">📭</div>
+      <div class="trc-info">
+        <div class="trc-date">${dateLabel}</div>
+        <div class="trc-rest">今日は予定なし。カレンダーから自分の予定を追加できる。</div>
+        ${customExtra}
+      </div>
+    </div>`;
+  }
+
+  let rings, remain, allDone;
+  if(type === "特別"){
+    const done = tasks.filter(tk=>s[tk.id]).length;
+    remain = tasks.length - done;
+    allDone = remain===0;
+    rings = [{pct: done/tasks.length, color:'#76b347'}];
+  } else {
+    const catColor = {morning:'#5ab4ff', lunch:'#a99cff', night:'#c850dc', daily:'#34c759'};
+    const order = ['morning','lunch','night','daily'];
+    rings = order.map(cat=>{
+      const tk = tasks.find(t=>t.cat===cat);
+      if(!tk) return {pct:0, color:catColor[cat]};
+      return {pct: s[tk.id] ? 1 : 0, color:catColor[cat]};
+    });
+    remain = tasks.filter(tk=>!s[tk.id]).length;
+    allDone = remain===0;
+  }
+
+  const msg = allDone ? '今日ぜんぶ完了！' : `あと${remain}個で全部閉じる`;
+  return `<div class="today-ring-card" id="todayRingCard" data-alldone="${allDone?1:0}">
+    <div class="trc-svg">${ringSVG(rings)}</div>
+    <div class="trc-info">
+      <div class="trc-date">${dateLabel}</div>
+      <div class="trc-msg">${msg}</div>
+      ${customExtra}
+    </div>
+  </div>`;
+}
+
+// 「未完了→完了」に切り替わった瞬間だけ演出。タブ再訪問や既完了状態での再描画では発火しない
+let lastRingAllDone = null;
+function checkTodayRingComplete(){
+  const card = document.getElementById('todayRingCard');
+  const nowDone = !!(card && card.dataset.alldone==='1');
+  const wasKnown = lastRingAllDone !== null;
+  const justCompleted = wasKnown && !lastRingAllDone && nowDone;
+  lastRingAllDone = nowDone;
+  if(!justCompleted) return;
+  spawnSparkles({target:card});
+  const toast = document.createElement('div');
+  toast.className = 'trc-complete-toast';
+  toast.textContent = '今日コンプリート！';
+  document.body.appendChild(toast);
+  requestAnimationFrame(()=>toast.classList.add('show'));
+  setTimeout(()=>{ toast.classList.remove('show'); setTimeout(()=>toast.remove(),300); }, 1600);
+}
+
+// ===== タスク2：草マップ =====
+function grassColorFor(n){
+  if(n<=0) return 'rgba(255,255,255,.06)';
+  if(n<=2) return '#2d4a22';
+  if(n<=4) return '#3B6D11';
+  if(n<=6) return '#639922';
+  return '#97C459';
+}
+
+function renderGrassMap(){
+  const days = buildMonth(currentMonth);
+  const {y:ty,m:tm,d:td} = todayYMD();
+  const isCurYearMonth = curYear===ty && currentMonth===tm;
+  const firstWd = days.length ? new Date(curYear, currentMonth-1, 1).getDay() : 0;
+  const blanks = Array.from({length:firstWd}).map(()=>`<div class="grass-cell" style="visibility:hidden"></div>`).join('');
+  const cells = days.map(x=>{
+    const s = getDayState(currentMonth, x.d);
+    let n = 0;
+    visibleTasksOf(x, currentMonth).forEach(tk=>{ if(s[tk.id]) n++; });
+    (s.__custom__||[]).forEach(tc=>{ if(s[tc.id]) n++; });
+    const isToday = isCurYearMonth && x.d===td;
+    const isFuture = curYear>ty || (curYear===ty && (currentMonth>tm || (currentMonth===tm && x.d>td)));
+    const cls = ['grass-cell'];
+    if(isToday) cls.push('today');
+    if(isFuture) cls.push('future');
+    const bg = isFuture ? 'rgba(255,255,255,.03)' : grassColorFor(n);
+    const txtColor = n>=7 ? 'rgba(20,30,10,.75)' : 'rgba(255,255,255,.6)'; // 明るい黄緑背景(7+)は暗文字でコントラスト確保
+    const onclick = isFuture ? '' : ` onclick="jumpToDay(${x.d})"`;
+    return `<div class="${cls.join(' ')}" style="background:${bg};color:${txtColor}"${onclick}>${x.d}</div>`;
+  }).join('');
+  return `<div class="grass-card">
+    <h3>🌱 ${currentMonth}月の草マップ</h3>
+    <div class="grass-grid">${blanks}${cells}</div>
+    <div class="grass-legend">
+      <span>少</span><i style="background:rgba(255,255,255,.06)"></i><i style="background:#2d4a22"></i><i style="background:#3B6D11"></i><i style="background:#639922"></i><i style="background:#97C459"></i><span>多</span>
+    </div>
+  </div>`;
+}
+
+// ===== タスク3：夜空の星座 =====
+// 年月+番号を種にした決定的擬似乱数（0〜1）。mulberry32ベース
+function seededRandom(seed){
+  let t = seed + 0x6D2B79F5;
+  t = Math.imul(t ^ (t >>> 15), t | 1);
+  t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+}
+function constellationSeed(y,m,i){
+  return y*10000 + m*100 + i;
+}
+// その月の✓合計数ぶんの星座標を返す（画面上部60%の帯・毎回同じ場所）
+function getConstellationStars(y,m){
+  const t = tally(m);
+  const count = Math.min(90, t.totalDone);
+  const stars = [];
+  for(let i=0;i<count;i++){
+    const sx = seededRandom(constellationSeed(y,m,i*2));
+    const sy = seededRandom(constellationSeed(y,m,i*2+1));
+    stars.push({x: 4+sx*92, y: sy*60});
+  }
+  return {stars, total:t.totalDone};
+}
+function constellationSVG(stars, w=100, h=100, opts={}){
+  const starR = opts.starR || 1.4;
+  const styleAttr = opts.style ? ` style="${opts.style}"` : '';
+  const lineColor = 'rgba(255,255,255,.3)';
+  let lines = '';
+  for(let i=1;i<stars.length;i++){
+    const a=stars[i-1], b=stars[i];
+    lines += `<line x1="${a.x*w/100}" y1="${a.y*h/100}" x2="${b.x*w/100}" y2="${b.y*h/100}" stroke="${lineColor}" stroke-width="1"/>`;
+  }
+  const dots = stars.map(p=>`<circle class="cm-star" cx="${p.x*w/100}" cy="${p.y*h/100}" r="${starR}"/>`).join('');
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"${styleAttr}>${lines}${dots}</svg>`;
+}
+function renderConstellationCard(){
+  const {stars, total} = getConstellationStars(curYear, currentMonth);
+  const hint = total>=90 ? '今月は満天。線はまだ伸びる' : 'あと1✓で次の星';
+  return `<div class="constel-card">
+    <h3>🌌 今月の星座（★${total}）</h3>
+    <div class="constel-mini">${constellationSVG(stars, 300, 120, {starR:1.6})}</div>
+    <div class="constel-hint">${hint}</div>
+  </div>`;
+}
+// cal2の夜空レイヤー更新（skyUpdateから呼ばれる）。年月+✓総数をキャッシュキーにして、
+// ✓が増えるたび（=星が増えるたび）再描画。月が変わってもリセットされる
+function updateSkyConstellation(){
+  const el = document.getElementById('constellation');
+  if(!el) return;
+  const {y,m} = todayYMD();
+  const {stars, total} = getConstellationStars(y,m);
+  const cacheKey = `${y}-${m}-${total}`;
+  if(el.dataset.ck !== cacheKey){
+    el.innerHTML = constellationSVG(stars, 100, 100, {starR:0.4, style:'position:absolute;inset:0;width:100%;height:100%'});
+    el.dataset.ck = cacheKey;
+  }
+}
+
+// ===== タスク4：炎＆レベル =====
+// state全キーを年月でグループ化してbuildMonth/tasksOfをそのまま使う（プリセット無し月のnoPlanも正しく反映）
+function calcTotalXP(){
+  let xp = 0;
+  const byYM = {}; // "y-m" -> Set(day)
+  Object.keys(state).forEach(k=>{
+    const m2 = /^(\d+)-(\d+)$/.exec(k); // 2026年キー: m-d
+    const m3 = /^(\d+)-(\d+)-(\d+)$/.exec(k); // 他年キー: y-m-d
+    let y, m, d;
+    if(m3){ y=+m3[1]; m=+m3[2]; d=+m3[3]; }
+    else if(m2){ y=2026; m=+m2[1]; d=+m2[2]; }
+    else return;
+    const ymKey = `${y}-${m}`;
+    if(!byYM[ymKey]) byYM[ymKey] = {y, m, days:new Set()};
+    byYM[ymKey].days.add(d);
+  });
+  Object.values(byYM).forEach(({y,m,days})=>{
+    const monthDays = buildMonth(m,y);
+    days.forEach(d=>{
+      const day = monthDays.find(x=>x.d===d);
+      if(!day) return;
+      const s = getDayState(m,d,y);
+      tasksOf(day).forEach(tk=>{ if(s[tk.id]) xp++; });
+      (s.__custom__||[]).forEach(tc=>{ if(s[tc.id]) xp++; });
+    });
+  });
+  return xp;
+}
+// 累積式：Lv nに達するための必要XP=10*(n-1)の累積合計。xpForNext=10*lv
+function xpToLevel(xp){
+  let lv=1, need=0;
+  while(true){
+    const req = 10*lv; // このレベルからLv+1に必要なXP
+    if(xp < need+req) break;
+    need += req;
+    lv++;
+  }
+  const curLevelBase = need;
+  const nextReq = 10*lv;
+  const intoLevel = xp - curLevelBase;
+  return {lv, xpIntoLevel:intoLevel, xpForNext:nextReq, xpTotal:xp};
+}
+function levelTitle(lv){
+  const table = [
+    [30,'伝説'],[25,'仙人'],[20,'師範'],[16,'達人'],[12,'鉄人'],[8,'匠'],[5,'職人'],[3,'修行中'],[1,'見習い']
+  ];
+  for(const [th,name] of table){ if(lv>=th) return name; }
+  return '見習い';
+}
+// 「1個でも✓した日」が今日から何日連続か（今日まだ0✓なら昨日から数えて継続扱い）
+function calcTaskStreak(){
+  const hasAnyCheck = (y,m,d)=>{
+    const k = dayKey(y,m,d);
+    const s = state[k];
+    if(!s) return false;
+    // __で始まる特殊キー（__custom__/__hidden__/__ptime__/__pcolor__/__diary__等）は
+    // タスク完了フラグではなくメタデータなので全て除外。素のタスクIDキー(true)のみカウント
+    return Object.keys(s).some(kk=>!kk.startsWith('__') && s[kk]===true);
+  };
+  let cur = new Date();
+  cur.setHours(0,0,0,0);
+  const todayHas = hasAnyCheck(cur.getFullYear(), cur.getMonth()+1, cur.getDate());
+  if(!todayHas) cur.setDate(cur.getDate()-1); // 今日まだなら昨日から遡る
+  let streak = 0;
+  while(streak < 3650){ // 安全上限（10年分）。通常はstateが途切れた時点で自然終了
+    const has = hasAnyCheck(cur.getFullYear(), cur.getMonth()+1, cur.getDate());
+    if(!has) break;
+    streak++;
+    cur.setDate(cur.getDate()-1);
+  }
+  return {streak, todayHas};
+}
+// 連続日数で炎の大きさ・色味が育つ（絵文字は🔥固定・drop-shadow色とfont-sizeで演出）
+function flameStyleFor(days){
+  if(days<=0) return {icon:'🕯️', size:'26px', glow:'rgba(180,180,190,.35)'};
+  if(days<=2) return {icon:'🔥', size:'26px', glow:'rgba(255,159,10,.45)'};
+  if(days<=6) return {icon:'🔥', size:'32px', glow:'rgba(255,120,20,.5)'};
+  if(days<=13) return {icon:'🔥', size:'38px', glow:'rgba(255,59,48,.55)'};
+  return {icon:'🔥', size:'44px', glow:'rgba(255,214,10,.7)'};
+}
+function renderFlameCard(){
+  const xp = calcTotalXP();
+  const {lv, xpIntoLevel, xpForNext} = xpToLevel(xp);
+  const title = levelTitle(lv);
+  const {streak, todayHas} = calcTaskStreak();
+  const pct = xpForNext ? Math.round(100*xpIntoLevel/xpForNext) : 0;
+  const streakLabel = streak>0 ? `🔥連続${streak}日${todayHas?'':'（今日✓でまだ継続！）'}` : 'まだ連続なし。今日1つ✓で開始';
+  const fs = flameStyleFor(streak);
+  return `<div class="flame-card">
+    <div class="fc-icon" style="font-size:${fs.size};filter:drop-shadow(0 2px 8px ${fs.glow})">${fs.icon}</div>
+    <div class="fc-body">
+      <div class="fc-top"><span class="fc-lv">Lv.${lv}</span><span class="fc-title">${title}</span></div>
+      <div class="fc-streak">${streakLabel}</div>
+      <div class="fc-bar"><i style="width:${pct}%"></i></div>
+      <div class="fc-next">あと${xpForNext-xpIntoLevel}✓でLv.${lv+1}</div>
+    </div>
+  </div>`;
+}
+
 function renderRecord(){
   const t = tally(currentMonth);
   const pct = t.totalPlan ? Math.round(100*t.totalDone/t.totalPlan) : 0;
@@ -1024,7 +1433,8 @@ function renderRecord(){
   }).filter(Boolean).join('');
   const doneLogSection = `<div class="record-section-title">✅ 完了ログ（✓した内容・新しい順）</div>` + (doneLog || `<div class="empty" style="background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:24px;text-align:center;color:var(--muted);font-size:13px">まだ✓なし<br><small>カレンダーの◯や予定をタップすると、ここに残る</small></div>`);
 
-  return `<div class="record-view">${summary}${doneLogSection}${monthReview}<div class="record-section-title">📝 日記（新しい順）</div>${diaryHtml}</div>`;
+  const growthCards = renderTodayRing() + renderFlameCard() + renderGrassMap() + renderConstellationCard();
+  return `<div class="record-view">${growthCards}${summary}${doneLogSection}${monthReview}<div class="record-section-title">📝 日記（新しい順）</div>${diaryHtml}</div>`;
 }
 function jumpToDay(d){ selDay=d; dvWantAutoScroll=true; setView('cal2'); }
 
@@ -1623,9 +2033,10 @@ function skyMakeStars(){
 function skyUpdate(){
   if(!document.body.classList.contains('cal2-lock')) return;
   const scroll=document.getElementById('dvScroll');
-  const sky=document.getElementById('sky'), cel=document.getElementById('celestial'), stars=document.getElementById('stars');
+  const sky=document.getElementById('sky'), cel=document.getElementById('celestial'), stars=document.getElementById('stars'), constel=document.getElementById('constellation');
   if(!scroll||!sky||!cel||!stars) return;
   skyMakeStars();
+  if(constel) updateSkyConstellation();
   let min=((scroll.scrollTop+scroll.clientHeight/2)/HOUR_PX)*60;
   min=Math.max(0,Math.min(1440,min));
   let i=0;
@@ -1652,6 +2063,7 @@ function skyUpdate(){
   else if(min<=270) so=1;
   else if(min<=360) so=1-(min-270)/90;
   stars.style.opacity=so;
+  if(constel) constel.style.opacity=so;
 }
 function skyOnScroll(){
   if(skyRaf) return;
@@ -2281,10 +2693,10 @@ render();
 (function(){
   const MEMOPAD_KEY = "memopad_tracker"; // ★アプリごとに変える
   const COLORS = [
-    {name:"yellow", bg:"#fff3b0", bar:"#f5c500"},
-    {name:"pink",   bg:"#ffd6e0", bar:"#ff5e8a"},
-    {name:"blue",   bg:"#cfe8ff", bar:"#0a84ff"},
-    {name:"green",  bg:"#d2f5d6", bar:"#34c759"}
+    {name:"yellow", bg:"#fff3b0", bar:"#f5c500", text:"#3a2e00"},
+    {name:"pink",   bg:"#ffd6e0", bar:"#ff5e8a", text:"#4a1526"},
+    {name:"blue",   bg:"#cfe8ff", bar:"#0a84ff", text:"#0a2540"},
+    {name:"green",  bg:"#d2f5d6", bar:"#34c759", text:"#0f3d18"}
   ];
   // ---- CSS注入 ----
   const css = `
@@ -2304,14 +2716,15 @@ render();
   .mp-add button:active{transform:scale(.98)}
   .mp-list{display:flex;flex-direction:column;gap:10px}
   .mp-note{border-radius:12px;padding:12px;position:relative;box-shadow:0 2px 8px rgba(0,0,0,.3);border-left:5px solid;background:rgba(255,255,255,.06)}
-  .mp-note textarea{width:100%;min-height:48px;border:none;background:transparent;font:inherit;font-size:14px;line-height:1.5;resize:vertical;color:rgba(255,255,255,.85)}
+  .mp-note textarea{width:100%;min-height:48px;border:none;background:transparent;font:inherit;font-size:14px;line-height:1.5;resize:vertical;color:var(--mp-text,rgba(255,255,255,.85))}
   .mp-note textarea:focus{outline:none}
+  .mp-note textarea::placeholder{color:var(--mp-text,rgba(255,255,255,.85));opacity:.55}
   .mp-note .mp-foot{display:flex;align-items:center;gap:6px;margin-top:6px}
   .mp-note .mp-colors{display:flex;gap:5px;flex:1}
   .mp-note .mp-colors span{width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid rgba(255,255,255,.15)}
   .mp-note .mp-colors span.sel{border-color:#fff;transform:scale(1.15)}
   .mp-note .mp-del{background:rgba(255,100,100,.12);border:none;color:#ff6b6b;font-size:12px;font-weight:700;padding:6px 11px;border-radius:8px;cursor:pointer}
-  .mp-note .mp-time{font-size:10px;color:rgba(255,255,255,.35);margin-right:auto;font-weight:600}
+  .mp-note .mp-time{font-size:10px;color:var(--mp-text,rgba(255,255,255,.35));opacity:.7;font-weight:600;margin-right:auto}
   .mp-empty{text-align:center;color:rgba(255,255,255,.4);font-size:13px;padding:30px 10px}
   `;
   const styleEl = document.createElement("style");
@@ -2373,7 +2786,7 @@ render();
       const tt = `${t.getMonth()+1}/${t.getDate()} ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
       const safe = (n.text||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
       const colorsHtml = COLORS.map(c=>`<span style="background:${c.bar}" class="${c.name===n.color?'sel':''}" onclick="mpColor(${n.id},'${c.name}')"></span>`).join("");
-      return `<div class="mp-note" style="background:${col.bg};border-left-color:${col.bar}">
+      return `<div class="mp-note" style="background:${col.bg};border-left-color:${col.bar};--mp-text:${col.text}">
         <textarea placeholder="メモを書く…" oninput="mpEdit(${n.id},this.value)">${safe}</textarea>
         <div class="mp-foot">
           <span class="mp-time">${tt}</span>
