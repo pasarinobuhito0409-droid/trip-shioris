@@ -1,0 +1,18 @@
+{
+  "name": "設計研究所 復習アプリ",
+  "short_name": "設計復習",
+  "description": "設計質問を3D・実物画像・問題でためて復習するアプリ。",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#02070b",
+  "theme_color": "#02070b",
+  "icons": [
+    {
+      "src": "assets/m3-tap-countersink-teaching.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
