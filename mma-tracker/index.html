@@ -525,6 +525,63 @@ function saveFL(data){
 
 var flData = loadFL();
 
+(function migrateFromOld(){
+  try{
+    var oldRaw = localStorage.getItem("mma_log_v1");
+    if(!oldRaw) return;
+    var old = JSON.parse(oldRaw);
+    if(!old || !Array.isArray(old.logs) || old.logs.length === 0) return;
+
+    var existDates = {};
+    flData.sessions.forEach(function(s){ existDates[s.date] = true; });
+
+    var catMap = {strike:"打撃",clinch:"タックル",ground:"寝技",spar:"スパー",strategy:"ドリル",part:"ドリル"};
+
+    var byDate = {};
+    old.logs.forEach(function(log){
+      if(!log.date) return;
+      if(!byDate[log.date]) byDate[log.date] = [];
+      byDate[log.date].push(log);
+    });
+
+    var added = 0;
+    Object.keys(byDate).sort().forEach(function(date){
+      if(existDates[date]) return;
+      var logs = byDate[date];
+      var tags = [];
+      var texts = [];
+      logs.forEach(function(log){
+        if(log.cat && catMap[log.cat]){
+          var tag = catMap[log.cat];
+          if(tags.indexOf(tag) === -1) tags.push(tag);
+        }
+        if(log.text && log.cat !== "part") texts.push(log.text);
+      });
+      var cond = 3;
+      var kadai = "";
+      if(old.daily && old.daily[date]){
+        if(old.daily[date].focusScore) cond = old.daily[date].focusScore;
+        if(old.daily[date].focus) kadai = old.daily[date].focus;
+      }
+      flData.sessions.push({
+        id: "s_m_" + date.replace(/-/g,""),
+        date: date,
+        tags: tags,
+        insight: texts.join("／"),
+        cond: cond,
+        kadai: kadai,
+        ts: new Date(date + "T12:00:00").getTime()
+      });
+      added++;
+    });
+
+    if(added > 0){
+      flData.sessions.sort(function(a,b){ return a.ts - b.ts; });
+      saveFL(flData);
+    }
+  }catch(e){}
+})();
+
 function pad2(n){ return n < 10 ? "0" + n : String(n); }
 function todayISO(){
   var d = new Date();
