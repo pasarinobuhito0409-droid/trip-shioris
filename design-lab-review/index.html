@@ -3,9 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>設計研究所 復習アプリ</title>
-  <meta name="theme-color" content="#02070b">
-  <link rel="manifest" href="manifest.webmanifest">
+  <title>M3タップ皿キリ 3D研究所</title>
   <link rel="icon" href="data:,">
   <style>
     :root{
@@ -328,7 +326,7 @@
       bottom:14px;
       z-index:8;
     }
-    .panel,.step-panel,.memo-panel,.question,.real-panel,.point-panel,.shelf-panel{
+    .panel,.step-panel,.memo-panel,.question,.real-panel,.point-panel{
       border:1px solid var(--line);
       border-radius:12px;
       background:var(--panel);
@@ -400,7 +398,7 @@
       box-shadow:0 0 15px rgba(32,220,121,.2);
     }
     .question{padding:12px}
-    .question,.step-panel,.memo-panel,.shelf-panel,.right-stack{
+    .question,.step-panel,.memo-panel,.right-stack{
       position:absolute;
       left:14px;
       right:14px;
@@ -414,7 +412,6 @@
     .phone[data-mode="quiz"] .question{display:block}
     .phone[data-mode="steps"] .step-panel{display:block}
     .phone[data-mode="memo"] .memo-panel{display:grid}
-    .phone[data-mode="shelf"] .shelf-panel{display:block}
     .phone[data-mode="real"] .right-stack{
       display:block;
       top:14px;
@@ -425,7 +422,6 @@
     .phone[data-mode="quiz"] .panels,
     .phone[data-mode="steps"] .panels,
     .phone[data-mode="memo"] .panels,
-    .phone[data-mode="shelf"] .panels,
     .phone[data-mode="real"] .panels{
       display:none;
     }
@@ -482,7 +478,7 @@
     }
     .choice.correct{border-color:var(--ok);background:rgba(21,89,53,.6)}
     .choice.wrong{border-color:var(--warn);background:rgba(91,25,24,.6)}
-    .step-panel,.memo-panel,.shelf-panel{padding:12px}
+    .step-panel,.memo-panel{padding:12px}
     .steps{
       display:grid;
       grid-template-columns:repeat(4,1fr);
@@ -512,45 +508,6 @@
       grid-template-columns:1fr 190px;
       gap:12px;
       align-items:center;
-    }
-    .lesson-list{
-      display:grid;
-      gap:10px;
-      margin-top:10px;
-    }
-    .lesson-card{
-      width:100%;
-      border:1px solid var(--cyanLine);
-      border-radius:12px;
-      background:rgba(3,22,32,.86);
-      color:#eefdff;
-      display:grid;
-      grid-template-columns:auto 1fr;
-      gap:10px;
-      align-items:center;
-      padding:12px;
-      text-align:left;
-      box-shadow:inset 0 0 18px rgba(0,217,255,.07);
-    }
-    .lesson-card span{
-      display:grid;
-      place-items:center;
-      width:42px;
-      aspect-ratio:1;
-      border-radius:999px;
-      color:var(--cyan2);
-      background:var(--cyanSoft);
-      border:1px solid var(--cyanLine);
-      font-weight:1000;
-    }
-    .lesson-card strong{display:block;font-size:16px}
-    .lesson-card small{display:block;color:var(--muted);font-weight:900;margin-top:4px}
-    .shelf-note{
-      margin-top:10px;
-      color:#c7eaf1;
-      font-size:13px;
-      font-weight:900;
-      line-height:1.45;
     }
     textarea{
       width:100%;
@@ -620,7 +577,7 @@
     }
     .bottom-nav{
       display:grid;
-      grid-template-columns:repeat(6,1fr);
+      grid-template-columns:repeat(5,1fr);
       gap:4px;
       padding:10px 20px 18px;
       color:#9bb8c2;
@@ -649,35 +606,25 @@
     .phone[data-mode="lab"] .question,
     .phone[data-mode="lab"] .step-panel,
     .phone[data-mode="lab"] .memo-panel,
-    .phone[data-mode="lab"] .shelf-panel,
     .phone[data-mode="lab"] .right-stack,
     .phone[data-mode="quiz"] .step-panel,
     .phone[data-mode="quiz"] .memo-panel,
-    .phone[data-mode="quiz"] .shelf-panel,
     .phone[data-mode="quiz"] .right-stack,
     .phone[data-mode="steps"] .question,
     .phone[data-mode="steps"] .memo-panel,
-    .phone[data-mode="steps"] .shelf-panel,
     .phone[data-mode="steps"] .right-stack,
     .phone[data-mode="real"] .question,
     .phone[data-mode="real"] .step-panel,
     .phone[data-mode="real"] .memo-panel,
-    .phone[data-mode="real"] .shelf-panel,
     .phone[data-mode="memo"] .question,
     .phone[data-mode="memo"] .step-panel,
-    .phone[data-mode="memo"] .shelf-panel,
-    .phone[data-mode="memo"] .right-stack,
-    .phone[data-mode="shelf"] .question,
-    .phone[data-mode="shelf"] .step-panel,
-    .phone[data-mode="shelf"] .memo-panel,
-    .phone[data-mode="shelf"] .right-stack{
+    .phone[data-mode="memo"] .right-stack{
       display:none;
       pointer-events:none;
     }
     .phone[data-mode="quiz"] .question,
     .phone[data-mode="steps"] .step-panel,
     .phone[data-mode="memo"] .memo-panel,
-    .phone[data-mode="shelf"] .shelf-panel,
     .phone[data-mode="real"] .right-stack{
       pointer-events:auto;
     }
@@ -730,7 +677,6 @@
       .ok{width:74px;font-size:18px}
       .steps{grid-template-columns:repeat(2,1fr)}
       .memo-panel{grid-template-columns:1fr}
-      .shelf-panel{max-height:58%}
       .phone[data-mode="real"] .right-stack{display:block}
       .phone[data-mode="real"] .real-panel h2{font-size:18px}
       .phone[data-mode="real"] .real-panel .meta{font-size:14px}
@@ -829,15 +775,6 @@
           </div>
           <div class="sketch" aria-label="皿穴断面メモ"></div>
         </section>
-
-        <section class="shelf-panel">
-          <h2>復習棚</h2>
-          <div class="lesson-list" id="lessonList"></div>
-          <div class="shelf-note">
-            次の設計質問は、この棚へ1問ずつ追加します。<br>
-            `lessons.js` に増やすので、古い問題は消しません。
-          </div>
-        </section>
       </div>
 
       <aside class="right-stack">
@@ -875,34 +812,19 @@
       <button type="button" data-mode="steps"><span>▦</span>工程</button>
       <button type="button" data-mode="real"><span>▣</span>実物</button>
       <button type="button" data-mode="memo"><span>✎</span>メモ</button>
-      <button type="button" data-mode="shelf"><span>▤</span>棚</button>
     </nav>
   </section>
 </main>
 
-<script src="lessons.js"></script>
 <script type="module">
   import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
 
-  const lessons = window.DESIGN_LAB_LESSONS || [];
-  const currentLesson = lessons[0] || {
-    id: "m3-tap-countersink",
-    title: "M3タップ皿キリ",
-    subtitle: "皿ビス頭を、面一に沈めるしくみ",
-    createdAt: "2026/07/07",
-    choices: [
-      { text: "M3のねじ穴を切り、皿ビス頭が沈む逃げを作る", correct: true },
-      { text: "M3穴を大きくして、貫通ボルトを通す", correct: false },
-      { text: "皿ビスを溶接で固定する", correct: false }
-    ]
-  };
-  document.title = `設計研究所 復習アプリ | ${currentLesson.title}`;
-  document.querySelector("h1").textContent = currentLesson.title;
-  document.querySelector(".subline").textContent = currentLesson.subtitle;
-  document.querySelector(".phone").setAttribute("aria-label", `${currentLesson.title} 設計研究所 復習アプリ`);
-
-  const questions = currentLesson.choices.map((choice) => choice.text);
-  const correct = Math.max(0, currentLesson.choices.findIndex((choice) => choice.correct));
+  const questions = [
+    "M3のねじ穴を切り、皿ビス頭が沈む逃げを作る",
+    "M3穴を大きくして、貫通ボルトを通す",
+    "皿ビスを溶接で固定する"
+  ];
+  const correct = 0;
 
   const choices = document.getElementById("choices");
   const answerBand = document.getElementById("answerBand");
@@ -917,42 +839,22 @@
   const copy = document.getElementById("copy");
   const memo = document.getElementById("memo");
   const motionChip = document.getElementById("motionChip");
-  const guide = document.querySelector(".guide");
-  const lessonList = document.getElementById("lessonList");
   const stepButtons = [...document.querySelectorAll(".step")];
   const phone = document.querySelector(".phone");
   const navButtons = [...document.querySelectorAll(".bottom-nav button")];
   let autoLoop = true;
   let loopStart = performance.now();
 
-  function setMode(mode){
-    phone.dataset.mode = mode;
-    navButtons.forEach((item) => item.classList.toggle("active", item.dataset.mode === mode));
-    autoLoop = mode === "lab";
-    if (autoLoop) {
-      loopStart = performance.now();
-      motionChip.textContent = "AUTO再生中";
-    }
-  }
-
   navButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
-      setMode(btn.dataset.mode);
+      phone.dataset.mode = btn.dataset.mode;
+      navButtons.forEach((item) => item.classList.toggle("active", item === btn));
+      autoLoop = btn.dataset.mode === "lab";
+      if (autoLoop) {
+        loopStart = performance.now();
+        motionChip.textContent = "AUTO再生中";
+      }
     });
-  });
-  guide.addEventListener("click", () => setMode("shelf"));
-
-  lessons.forEach((lesson, index) => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "lesson-card";
-    btn.innerHTML = `<span>Q${index + 1}</span><div><strong>${lesson.title}</strong><small>${lesson.createdAt} / ${lesson.subtitle}</small></div>`;
-    btn.addEventListener("click", () => {
-      answerBand.textContent = `${lesson.title} を表示中。今後はここに設計質問を追加します。`;
-      answerBand.classList.add("show");
-      setMode("lab");
-    });
-    lessonList.appendChild(btn);
   });
 
   questions.forEach((text, index) => {
@@ -1172,7 +1074,7 @@
   });
 
   copy.addEventListener("click", async () => {
-    const text = `${currentLesson.title}について質問です。皿キリは皿ビス頭を面一に沈める逃げで、深さ6.00mm、皿角度90°を目標にすると理解しました。メモ：${memo.value || "未記入"}`;
+    const text = `M3タップ皿キリについて質問です。皿キリは皿ビス頭を面一に沈める逃げで、深さ6.00mm、皿角度90°を目標にすると理解しました。メモ：${memo.value || "未記入"}`;
     await navigator.clipboard.writeText(text).catch(() => {});
     copy.textContent = "コピーしました";
     setTimeout(() => copy.textContent = "相棒に聞く文をコピー", 1200);
@@ -1182,9 +1084,6 @@
   resize();
   startMotion();
   animate();
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./service-worker.js").catch(() => {});
-  }
 </script>
 </body>
 </html>
