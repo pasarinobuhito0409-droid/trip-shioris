@@ -7,12 +7,14 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
-<title>FIGHT LOG</title>
+<title>FIGHT LOG v2</title>
 <style>
 :root{
   --red:#ff3b2a;
   --red-glow:rgba(255,80,55,.55);
-  --red-soft:rgba(255,110,80,.4);
+  --blue:#3aa0ff;
+  --green:#2fd06f;
+  --green-glow:rgba(47,208,111,.4);
   --gold:#ffd9a0;
   --ink:#050506;
 }
@@ -20,27 +22,15 @@
 html,body{
   margin:0;padding:0;background:var(--ink);color:#f2f0ee;
   font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic UI","Segoe UI",sans-serif;
-  overscroll-behavior-y:none;
-  width:100%;
-  min-height:100%;
+  overscroll-behavior-y:none;width:100%;min-height:100%;
 }
-body{
-  touch-action:manipulation;
-  position:relative;
-  min-height:100vh;
-  min-height:100dvh;
-  overflow-x:hidden;
-}
-input,textarea{user-select:text;-webkit-user-select:text}
-button,.notselect{user-select:none;-webkit-user-select:none}
-button{touch-action:manipulation;font-family:inherit}
+body{touch-action:manipulation;position:relative;min-height:100vh;min-height:100dvh;overflow-x:hidden}
+input,textarea{user-select:text;-webkit-user-select:text;font-family:inherit}
+button{touch-action:manipulation;font-family:inherit;user-select:none;-webkit-user-select:none;cursor:pointer}
 
+/* ===== ARENA BG (v1譲り・このアプリの魂) ===== */
 .arena{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:var(--ink)}
-
-.arena .crowd{
-  position:absolute;left:0;right:0;top:0;height:42%;
-  opacity:.9;
-  will-change:transform;
+.arena .crowd{position:absolute;left:0;right:0;top:0;height:42%;opacity:.9;
   background-image:
     radial-gradient(circle 24px at 6% 18%, rgba(90,100,180,.24), transparent 70%),
     radial-gradient(circle 20px at 14% 30%, rgba(160,60,70,.20), transparent 70%),
@@ -62,74 +52,50 @@ button{touch-action:manipulation;font-family:inherit}
   mask-image:linear-gradient(180deg,rgba(0,0,0,.95) 0%, rgba(0,0,0,.6) 70%, transparent 100%);
   -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.95) 0%, rgba(0,0,0,.6) 70%, transparent 100%);
 }
-
-.arena .wash{
-  position:absolute;inset:0;
-  background:linear-gradient(180deg, rgba(10,8,14,.35) 0%, rgba(5,5,6,.55) 45%, #050506 90%);
-}
-
-.arena .truss{
-  position:absolute;left:6%;right:6%;top:0;height:5px;
+.arena .wash{position:absolute;inset:0;background:linear-gradient(180deg, rgba(10,8,14,.35) 0%, rgba(5,5,6,.55) 45%, #050506 90%)}
+.arena .truss{position:absolute;left:6%;right:6%;top:0;height:5px;
   background:linear-gradient(90deg, transparent, rgba(210,210,220,.5) 10%, rgba(210,210,220,.5) 90%, transparent);
-  box-shadow:0 0 10px rgba(200,200,220,.3);
-}
+  box-shadow:0 0 10px rgba(200,200,220,.3)}
 .arena .lamp{position:absolute;top:2px;width:6px;height:6px;border-radius:50%;background:#fff8e0;
   box-shadow:0 0 16px 6px rgba(255,244,220,.85), 0 0 34px 14px rgba(255,200,120,.35)}
-.arena .lamp.l1{left:22%}
-.arena .lamp.l2{left:50%}
-.arena .lamp.l3{left:78%}
-
-.ray{
-  position:absolute;top:0;height:78%;width:46%;
+.arena .lamp.l1{left:22%}.arena .lamp.l2{left:50%}.arena .lamp.l3{left:78%}
+.ray{position:absolute;top:0;height:78%;width:46%;
   clip-path:polygon(46% 0,54% 0,100% 100%,0 100%);
   -webkit-clip-path:polygon(46% 0,54% 0,100% 100%,0 100%);
   background:linear-gradient(180deg, rgba(255,244,220,.24), transparent 85%);
   will-change:transform,opacity;
-  transform-origin:top center;
-}
+  transform-origin:top center}
 .ray.center{left:50%;transform:translateX(-50%);opacity:.95;animation:swayC 11s ease-in-out infinite}
 .ray.left{left:20%;transform:translateX(-50%) rotate(-16deg);opacity:.4;animation:swayL 13s ease-in-out infinite}
 .ray.right{left:80%;transform:translateX(-50%) rotate(16deg);opacity:.4;animation:swayR 10s ease-in-out infinite}
 @keyframes swayC{0%,100%{transform:translateX(-50%) rotate(0deg)}50%{transform:translateX(-50%) rotate(1.5deg)}}
 @keyframes swayL{0%,100%{transform:translateX(-50%) rotate(-16deg)}50%{transform:translateX(-50%) rotate(-14.5deg)}}
 @keyframes swayR{0%,100%{transform:translateX(-50%) rotate(16deg)}50%{transform:translateX(-50%) rotate(14.5deg)}}
-
-.arena .cage{
-  position:absolute;left:0;right:0;top:30%;height:34%;
-  opacity:.8;
+.arena .cage{position:absolute;left:0;right:0;top:30%;height:34%;opacity:.8;
   background-image:
     repeating-linear-gradient(52deg, transparent 0 9px, rgba(255,255,255,.055) 9px 10px),
     repeating-linear-gradient(-52deg, transparent 0 9px, rgba(255,255,255,.055) 9px 10px);
   mask-image:linear-gradient(180deg, transparent 0%, rgba(0,0,0,.9) 22%, rgba(0,0,0,.9) 78%, transparent 100%);
   -webkit-mask-image:linear-gradient(180deg, transparent 0%, rgba(0,0,0,.9) 22%, rgba(0,0,0,.9) 78%, transparent 100%);
 }
-.arena .rail{
-  position:absolute;left:0;right:0;top:30%;height:2px;
-  background:rgba(255,80,55,.6);
-  box-shadow:0 0 14px rgba(255,80,55,.45), 0 0 4px rgba(255,120,90,.6);
-}
+.arena .rail{position:absolute;left:0;right:0;top:30%;height:2px;background:rgba(255,80,55,.6);
+  box-shadow:0 0 14px rgba(255,80,55,.45), 0 0 4px rgba(255,120,90,.6)}
 .arena .post{position:absolute;top:28%;width:6px;height:38%;background:rgba(40,20,20,.5);box-shadow:0 0 10px rgba(255,60,40,.25)}
 .arena .post.p1{left:8%}
 .arena .post.p2{left:92%}
-
-.arena .floor{
-  position:absolute;left:0;right:0;bottom:0;height:34%;
+.arena .floor{position:absolute;left:0;right:0;bottom:0;height:34%;
   clip-path:polygon(12% 0,88% 0,100% 100%,0 100%);
   -webkit-clip-path:polygon(12% 0,88% 0,100% 100%,0 100%);
-  background:
-    radial-gradient(ellipse 70% 60% at 50% 100%, rgba(120,20,20,.35), transparent 70%),
-    linear-gradient(180deg, rgba(20,14,14,.9), rgba(8,6,6,.98));
+  background:radial-gradient(ellipse 70% 60% at 50% 100%, rgba(120,20,20,.35), transparent 70%),
+    linear-gradient(180deg, rgba(30,28,30,.9), rgba(12,10,12,.98));
 }
 .arena .floor::before{
   content:"";position:absolute;inset:0;opacity:.16;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
   background-size:120px 120px;
 }
-.arena .emblem{
-  position:absolute;left:50%;bottom:14%;transform:translateX(-50%);
-  width:150px;height:150px;opacity:.16;
-}
-
+.arena .emblem{position:absolute;left:50%;bottom:14%;transform:translateX(-50%);width:150px;height:150px;opacity:.16}
+.arena .vig{position:absolute;inset:0;background:radial-gradient(ellipse 120% 90% at 50% 40%, transparent 55%, rgba(0,0,0,.75) 100%)}
 .ember{
   position:absolute;bottom:-10px;width:2px;height:2px;border-radius:50%;
   background:#ffb060;
@@ -145,248 +111,315 @@ button{touch-action:manipulation;font-family:inherit}
   50%{transform:translate(8px,-52vh)}
   100%{transform:translate(-8px,-105vh);opacity:0}
 }
-@keyframes emberFlick{
-  0%,100%{opacity:.9}
-  50%{opacity:.35}
-}
-.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
-  box-shadow:inset 0 0 110px 34px rgba(0,0,0,.94);
-}
+@keyframes emberFlick{0%,100%{opacity:.9}50%{opacity:.35}}
 
-body.scr-s1 .ray.center{opacity:1}
-body.scr-s1 .crowd{opacity:.85}
-
-body.scr-s2 .ray.center{opacity:1;filter:brightness(1.25)}
-body.scr-s2 .ray.left,body.scr-s2 .ray.right{opacity:.22}
-body.scr-s2 .crowd{opacity:.45}
-
-body.scr-s4 .ray.center{opacity:.55}
-body.scr-s4 .ray.left,body.scr-s4 .ray.right{opacity:.5}
-body.scr-s4 .wash{background:linear-gradient(180deg, rgba(22,16,20,.3) 0%, rgba(10,8,10,.5) 45%, #0a0808 90%)}
-
-.app{position:relative;z-index:2;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
-.screen{display:none;flex:1;flex-direction:column;padding:max(18px,env(safe-area-inset-top)) 18px calc(24px + env(safe-area-inset-bottom))}
+#app{position:relative;z-index:2;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+.screen{display:none;flex:1;flex-direction:column;padding:max(14px,env(safe-area-inset-top)) 0 calc(24px + env(safe-area-inset-bottom))}
 .screen.active{display:flex}
+.pad{padding-left:18px;padding-right:18px}
 
-.s1-top{text-align:center;letter-spacing:6px;font-size:11px;color:rgba(240,235,230,.55);font-weight:700;margin-top:6px}
-.s1-event{text-align:center;color:var(--red);font-size:12px;font-weight:800;letter-spacing:3px;margin-top:10px;
-  text-shadow:0 0 12px var(--red-glow), 0 0 26px rgba(255,60,40,.4)}
-.s1-card{margin-top:22px;text-align:center}
-.s1-name{font-size:31px;font-weight:900;color:#fff;text-shadow:0 0 10px rgba(255,255,255,.25)}
-.s1-vs{display:block;color:var(--red);font-size:14px;font-weight:900;letter-spacing:10px;margin:8px 0;
-  text-shadow:0 0 14px var(--red-glow)}
-.s1-rival{font-size:31px;font-weight:900;color:#fff;text-shadow:0 0 10px rgba(255,255,255,.25)}
-
-.plate{
-  margin:26px auto 0;max-width:420px;width:100%;
-  border:1.5px solid var(--red-soft);border-radius:14px;
-  background:linear-gradient(160deg, rgba(30,14,14,.85), rgba(10,8,10,.92));
-  box-shadow:0 0 22px rgba(255,70,50,.16), inset 0 1px 0 rgba(255,255,255,.06);
-  padding:18px 18px 16px;
-  position:relative;
+/* ===== 放送っぽい共通部品 ===== */
+.ticker{
+  display:flex;align-items:center;gap:10px;
+  padding:6px 18px;
+  background:linear-gradient(90deg, rgba(255,59,42,.92), rgba(160,20,14,.85) 55%, rgba(30,8,6,.6));
+  font-size:10.5px;font-weight:800;letter-spacing:.22em;color:#fff;
+  text-transform:uppercase;
 }
-.plate::before{
-  content:"次回への伝言";
-  display:block;font-size:10px;letter-spacing:3px;color:var(--red);font-weight:800;margin-bottom:10px;
-  text-shadow:0 0 8px var(--red-glow);
+.ticker .live{display:inline-block;width:7px;height:7px;border-radius:50%;background:#fff;
+  box-shadow:0 0 8px #fff;animation:blink 1.6s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.ticker .right{margin-left:auto;font-weight:600;letter-spacing:.14em;opacity:.85}
+
+.strap{
+  position:relative;margin:0 0 2px 0;
+  background:linear-gradient(90deg, rgba(16,14,16,.96), rgba(16,14,16,.82) 70%, rgba(16,14,16,.4));
+  clip-path:polygon(0 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+  padding:10px 26px 10px 18px;
 }
-.plate .msg{font-size:17px;line-height:1.55;font-weight:700;color:#fdf3ee}
-.plate .insight{margin-top:12px;padding-top:10px;border-top:1px dashed rgba(255,255,255,.14);
-  font-size:12.5px;color:rgba(240,232,226,.62);line-height:1.5;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
-.plate .insight.open{white-space:normal}
+.strap::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--red)}
+.strap.green::before{background:var(--green)}
+.strap.blue::before{background:var(--blue)}
+.strap .k{font-size:10px;font-weight:800;letter-spacing:.24em;color:rgba(255,255,255,.5);text-transform:uppercase}
+.strap .v{font-size:16px;font-weight:700;margin-top:3px;line-height:1.45}
+.strap .v.dim{color:rgba(240,232,226,.45);font-weight:500}
 
-.s1-stats{display:flex;justify-content:center;gap:26px;margin-top:22px}
-.s1-stats .stat{text-align:center}
-.s1-stats .stat b{display:block;font-size:22px;font-weight:900;color:#fff}
-.s1-stats .stat span{display:block;font-size:10.5px;color:rgba(240,232,226,.55);letter-spacing:1px;margin-top:2px}
+.bcast-h{font-style:italic;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
 
-.spacer{flex:1;min-height:14px}
+/* ===== S1 入場 ===== */
+.s1-head{display:flex;align-items:baseline;justify-content:space-between;padding:16px 18px 0}
+.s1-logo{font-style:italic;font-weight:900;font-size:21px;letter-spacing:.08em}
+.s1-logo b{color:var(--red)}
+.s1-reclink{font-size:12px;font-weight:700;letter-spacing:.14em;color:rgba(255,255,255,.55);padding:8px 0 8px 16px;min-height:44px;display:flex;align-items:center}
+.s1-event{margin-top:26px;text-align:center;font-size:11px;font-weight:800;letter-spacing:.34em;color:var(--gold);text-transform:uppercase}
+.s1-card{margin-top:10px;text-align:center}
+.s1-name{font-style:italic;font-weight:900;font-size:29px;letter-spacing:.02em;text-shadow:0 0 24px var(--red-glow)}
+.s1-vs{display:inline-block;margin:6px 0;font-style:italic;font-weight:900;font-size:14px;color:var(--red);letter-spacing:.2em}
+.s1-rival{font-style:italic;font-weight:900;font-size:20px;color:rgba(240,232,226,.8)}
+
+.plan-block{margin-top:26px}
+.plan-title{display:flex;align-items:center;gap:8px;padding:0 18px 8px}
+.plan-title .bar{width:22px;height:3px;background:var(--red)}
+.plan-title span{font-size:11px;font-weight:800;letter-spacing:.26em;color:rgba(255,255,255,.65)}
+.plan-title .edit{margin-left:auto;font-size:11.5px;font-weight:700;color:var(--gold);letter-spacing:.1em;padding:6px 0 6px 14px;min-height:44px;display:flex;align-items:center}
+.plan-empty{padding:14px 18px;font-size:15px;font-weight:700;color:rgba(240,232,226,.7);line-height:1.6}
+
+.tape{display:flex;margin-top:26px;border-top:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12)}
+.tape .cell{flex:1;text-align:center;padding:12px 0}
+.tape .cell + .cell{border-left:1px solid rgba(255,255,255,.12)}
+.tape b{display:block;font-style:italic;font-weight:900;font-size:24px}
+.tape span{display:block;margin-top:2px;font-size:9.5px;font-weight:700;letter-spacing:.22em;color:rgba(255,255,255,.4);text-transform:uppercase}
+.tape .cell.g b{color:var(--gold);text-shadow:0 0 16px rgba(255,217,160,.4)}
+
+.prev-line{margin-top:14px;padding:0 18px;font-size:12.5px;color:rgba(240,232,226,.5);line-height:1.5;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-height:20px}
 
 .btn-enter{
-  display:block;width:100%;max-width:420px;margin:0 auto;
-  background:linear-gradient(180deg,#ff5540,var(--red) 60%,#c81e10);
-  color:#fff;border:none;border-radius:16px;
-  font-size:19px;font-weight:900;letter-spacing:3px;
-  padding:20px 10px;min-height:60px;
-  box-shadow:0 6px 22px rgba(255,60,40,.4), inset 0 1px 0 rgba(255,255,255,.25);
-  cursor:pointer;
+  margin:auto 18px 0;padding:17px;
+  font-style:italic;font-weight:900;font-size:18px;letter-spacing:.14em;color:#fff;
+  background:linear-gradient(180deg, #ff4a36, #c81f12);
+  border:none;clip-path:polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  box-shadow:0 6px 26px rgba(255,60,40,.35);
+  min-height:52px;
 }
-.btn-enter:active{transform:scale(.97)}
-
-.s1-record-link{
-  position:absolute;top:calc(14px + env(safe-area-inset-top));right:16px;
-  font-size:12px;color:rgba(240,232,226,.65);font-weight:700;
-  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);
-  border-radius:999px;padding:8px 14px;min-height:44px;min-width:44px;display:flex;align-items:center;justify-content:center;
+.btn-plan{
+  margin:14px 18px 0;padding:15px;
+  font-weight:800;font-size:15px;letter-spacing:.1em;color:var(--gold);
+  background:rgba(255,217,160,.08);
+  border:none;clip-path:polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  min-height:48px;
 }
-.s1-record-link:active{background:rgba(255,255,255,.12)}
 
-.s2-head{display:flex;align-items:center;gap:10px;margin-bottom:22px}
-.s2-bars{flex:1;display:flex;gap:6px}
-.s2-bars i{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.14);display:block}
-.s2-bars i.on{background:var(--red);box-shadow:0 0 10px var(--red-glow)}
-.s2-bars i.past{background:rgba(255,80,60,.45)}
-.s2-round{font-size:12px;font-weight:800;color:#fff;letter-spacing:1px;white-space:nowrap}
-.s2-timer{font-size:15px;font-weight:900;color:#fff;min-width:44px;text-align:right;font-variant-numeric:tabular-nums}
-.s2-timer.warn{color:var(--red);text-shadow:0 0 10px var(--red-glow)}
-.s2-timer.over{color:var(--red);animation:pulseWarn 1s ease-in-out infinite}
-@keyframes pulseWarn{0%,100%{opacity:1}50%{opacity:.4}}
-
-.s2-q{font-size:20px;font-weight:900;color:#fff;text-align:center;margin:6px 0 22px;line-height:1.4}
-
-.tile-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.tile{
-  min-height:96px;border-radius:16px;border:1.5px solid rgba(255,255,255,.14);
-  background:rgba(255,255,255,.04);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
-  cursor:pointer;
+/* ===== S2 ゲームプラン記入 ===== */
+.s2-head{padding:18px 18px 4px}
+.s2-kicker{font-size:10px;font-weight:800;letter-spacing:.3em;color:var(--red)}
+.s2-title{font-style:italic;font-weight:900;font-size:26px;margin-top:4px}
+.s2-title.mini{font-size:19px;font-style:normal;font-weight:700}
+.s2-sub{font-size:12.5px;color:rgba(240,232,226,.55);margin-top:6px;line-height:1.6}
+.s2-back{font-size:12.5px;color:rgba(255,255,255,.55);font-weight:700;padding:14px 18px 0;min-height:44px;display:flex;align-items:center}
+.field{margin-top:18px}
+.field .tag{
+  display:inline-block;padding:5px 16px 5px 12px;
+  clip-path:polygon(0 0, 100% 0, calc(100% - 9px) 100%, 0 100%);
+  font-size:11px;font-weight:900;letter-spacing:.18em;color:#fff;
 }
-.tile .tt{font-size:17px;font-weight:900;color:#fff}
-.tile .ts{font-size:9.5px;letter-spacing:1.5px;color:rgba(240,232,226,.5);font-weight:700}
-.tile.on{
-  background:linear-gradient(160deg, rgba(255,80,55,.35), rgba(180,20,10,.45));
-  border-color:var(--red);
-  box-shadow:0 0 20px rgba(255,60,40,.4), inset 0 1px 0 rgba(255,255,255,.15);
+.field .tag.aim{background:linear-gradient(90deg,#ff4a36,#a81a0f)}
+.field .tag.ok{background:linear-gradient(90deg,#2fd06f,#178a44)}
+.field .tag.ng{background:linear-gradient(90deg,#8a1d14,#5a120c)}
+.field .tag.neutral{background:rgba(255,255,255,.16)}
+.field textarea{
+  display:block;width:100%;margin-top:0;padding:13px 14px;
+  background:rgba(14,12,14,.88);color:#f2f0ee;
+  border:none;border-left:3px solid rgba(255,255,255,.14);
+  font-size:16px;line-height:1.55;min-height:64px;resize:none;
 }
-.tile.on .ts{color:rgba(255,220,210,.85)}
-.tile:active{transform:scale(.96)}
-
-.s2-body{flex:1;display:flex;flex-direction:column}
-
-.input-big{
-  width:100%;min-height:120px;border-radius:14px;
-  border:1.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.05);
-  color:#fff;font-size:17px;padding:16px;font-family:inherit;line-height:1.5;
-  resize:none;
+.field.aim textarea{border-left-color:var(--red)}
+.field.ok textarea{border-left-color:var(--green)}
+.field.ng textarea{border-left-color:#c2352a}
+.hint{font-size:11px;color:rgba(240,232,226,.4);margin-top:5px}
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+  background:rgba(20,16,16,.96);color:#fff;font-size:13px;font-weight:700;
+  padding:12px 20px;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);
+  z-index:60;opacity:0;pointer-events:none;transition:opacity .2s;
 }
-.input-big::placeholder{color:rgba(240,232,226,.35)}
-.input-big:focus{outline:none;border-color:var(--red-soft);box-shadow:0 0 0 3px rgba(255,60,40,.15)}
+.toast.show{opacity:1}
 
 .mic-row{display:flex;justify-content:flex-end;margin-top:10px}
 .mic-btn{
-  min-width:52px;min-height:52px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);
-  background:rgba(255,255,255,.06);color:#fff;font-size:22px;cursor:pointer;
+  min-width:48px;min-height:48px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.06);color:#fff;font-size:20px;
   display:flex;align-items:center;justify-content:center;
 }
-.mic-btn.rec{background:var(--red);border-color:var(--red);box-shadow:0 0 18px rgba(255,60,40,.6);
-  animation:micPulse 1s ease-in-out infinite}
+.mic-btn.rec{background:var(--red);border-color:var(--red);box-shadow:0 0 18px rgba(255,60,40,.6);animation:micPulse 1s ease-in-out infinite}
 @keyframes micPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 .mic-btn:active{transform:scale(.92)}
 
-.cond-grid{display:flex;flex-direction:column;gap:10px}
-.cond-bar{
-  min-height:58px;border-radius:14px;border:1.5px solid rgba(255,255,255,.14);
-  background:rgba(255,255,255,.04);
-  display:flex;align-items:center;padding:0 20px;gap:14px;cursor:pointer;
+/* ===== S2R 記録フロー（ラウンド進行） ===== */
+.s2-bars{display:flex;gap:6px;margin-top:6px}
+.s2-bars i{flex:1;height:5px;background:rgba(255,255,255,.14);display:block}
+.s2-bars i.on{background:var(--red);box-shadow:0 0 10px var(--red-glow)}
+.s2-bars i.past{background:rgba(255,80,60,.45)}
+
+.tile2-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:18px}
+.tile2{
+  min-height:64px;background:rgba(255,255,255,.05);
+  border-left:3px solid rgba(255,255,255,.14);
+  clip-path:polygon(0 0,100% 0,calc(100% - 10px) 100%, 0 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;
 }
-.cond-bar .cn{font-size:20px;font-weight:900;color:#fff;width:22px}
-.cond-bar .cl{font-size:14px;font-weight:700;color:rgba(240,232,226,.65)}
-.cond-bar.on{
-  background:linear-gradient(90deg, rgba(255,80,55,.4), rgba(180,20,10,.5));
-  border-color:var(--red);box-shadow:0 0 18px rgba(255,60,40,.35);
+.tile2 .tt{font-weight:900;font-size:15px;color:#fff}
+.tile2 .ts{font-size:9px;letter-spacing:.15em;color:rgba(255,255,255,.4);font-weight:700;margin-top:2px}
+.tile2.on{background:linear-gradient(90deg, rgba(255,59,42,.32), rgba(160,20,14,.28));border-left-color:var(--red)}
+.tile2.on .ts{color:rgba(255,210,200,.85)}
+
+.condrow{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.08);min-height:44px}
+.condrow .cn{font-weight:900;font-size:18px;width:20px;color:#fff}
+.condrow .cl{font-size:13.5px;font-weight:700;color:rgba(255,255,255,.6)}
+.condrow.on{background:rgba(255,59,42,.14);border-left:3px solid var(--red)}
+.condrow.on .cl{color:#fff}
+
+.judge{display:flex;gap:2px;margin-top:14px}
+.judge button{
+  flex:1;padding:26px 0 22px;border:none;color:#fff;position:relative;
+  font-style:italic;font-weight:900;background:none;min-height:44px;
 }
-.cond-bar.on .cl{color:#fff}
-.cond-bar:active{transform:scale(.98)}
+.judge .o{background:linear-gradient(180deg, rgba(47,208,111,.16), rgba(23,138,68,.10));}
+.judge .x{background:linear-gradient(180deg, rgba(200,40,28,.16), rgba(120,20,14,.10));}
+.judge .n{background:rgba(255,255,255,.06)}
+.judge .mark{display:block;font-size:52px;font-style:normal;line-height:1}
+.judge .n .mark{font-size:26px}
+.judge .o .mark{color:var(--green);text-shadow:0 0 26px var(--green-glow)}
+.judge .x .mark{color:var(--red);text-shadow:0 0 26px var(--red-glow)}
+.judge .n .mark{color:rgba(255,255,255,.5)}
+.judge .lbl{display:block;margin-top:8px;font-size:12px;letter-spacing:.2em}
+.judge button.sel.o{background:linear-gradient(180deg, rgba(47,208,111,.4), rgba(23,138,68,.22));box-shadow:inset 0 0 0 2px var(--green)}
+.judge button.sel.x{background:linear-gradient(180deg, rgba(200,40,28,.42), rgba(120,20,14,.24));box-shadow:inset 0 0 0 2px var(--red)}
+.judge button.sel.n{background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 2px rgba(255,255,255,.5)}
+
+.done-check{
+  display:flex;align-items:center;gap:14px;
+  margin:22px 18px 0;padding:16px;
+  background:rgba(14,12,14,.9);
+  clip-path:polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+  border-left:4px solid var(--gold);
+}
+.done-check .box{
+  width:34px;height:34px;flex:none;
+  border:2px solid rgba(255,217,160,.6);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;color:var(--gold);font-weight:900;
+}
+.done-check .txt{font-size:14.5px;font-weight:700;line-height:1.5}
+.done-check.on{background:rgba(255,217,160,.1)}
+
+.stamp{
+  margin:20px 18px 0;text-align:center;padding:22px 0;
+  border-top:2px solid var(--gold);border-bottom:2px solid var(--gold);
+  transform:rotate(-2deg);
+}
+.stamp .big{font-style:italic;font-weight:900;font-size:27px;color:var(--gold);
+  text-shadow:0 0 30px rgba(255,217,160,.45);letter-spacing:.04em}
+.stamp .small{margin-top:6px;font-size:11px;font-weight:700;letter-spacing:.3em;color:rgba(255,217,160,.7)}
+
+.kuyashii{margin:24px 18px 0}
+.kuyashii .msg{
+  margin-top:10px;padding:12px 14px;
+  background:linear-gradient(90deg, rgba(255,59,42,.14), transparent);
+  border-left:3px solid var(--red);
+  font-size:13.5px;font-weight:700;line-height:1.65;color:#ffb4a8;
+}
 
 .btn-next{
-  display:block;width:100%;margin-top:20px;
-  background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.2);
-  border-radius:14px;font-size:16px;font-weight:800;letter-spacing:1px;
-  padding:17px 10px;min-height:54px;cursor:pointer;
+  margin:22px 18px 0;padding:16px;
+  font-style:italic;font-weight:900;font-size:16px;letter-spacing:.12em;color:#fff;
+  background:linear-gradient(180deg, #ff4a36, #c81f12);
+  border:none;clip-path:polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  min-height:52px;
 }
-.btn-next:active{transform:scale(.97)}
-.btn-next.primary{
-  background:linear-gradient(180deg,#ff5540,var(--red) 60%,#c81e10);
-  border-color:transparent;
-  box-shadow:0 6px 20px rgba(255,60,40,.4);
-  font-size:18px;letter-spacing:2px;
-}
+.btn-next.sec{background:rgba(255,255,255,.08);color:#fff;box-shadow:none}
 
-.s3-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.s3-card{
-  width:100%;max-width:380px;border-radius:16px;border:1.5px solid rgba(255,255,255,.14);
-  background:linear-gradient(160deg, rgba(20,14,14,.9), rgba(8,6,8,.95));
-  padding:22px;position:relative;overflow:hidden;
-  box-shadow:0 10px 30px rgba(0,0,0,.5);
-}
-.s3-date{font-size:12px;color:rgba(240,232,226,.5);font-weight:700;letter-spacing:1px}
-.s3-tags{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
-.s3-tags span{font-size:11px;font-weight:800;color:#fff;background:rgba(255,60,40,.3);border:1px solid rgba(255,90,60,.5);
-  border-radius:999px;padding:4px 10px}
-.s3-insight{font-size:15px;font-weight:700;color:#fdf3ee;line-height:1.5}
-.stamp{
-  position:absolute;top:50%;left:50%;
-  border:2.5px solid var(--red);color:var(--red);
-  font-size:30px;font-weight:900;letter-spacing:3px;
-  padding:8px 18px;border-radius:6px;
-  transform:translate(-50%,-50%) rotate(-12deg) scale(2.6);
-  opacity:0;
-  text-shadow:0 0 10px var(--red-glow);
-  box-shadow:0 0 22px rgba(255,60,40,.35);
-  background:rgba(5,5,6,.35);
-  animation:stampIn .35s cubic-bezier(.2,1.4,.4,1) .12s forwards;
-}
-@keyframes stampIn{
-  0%{transform:translate(-50%,-50%) rotate(-12deg) scale(2.6);opacity:0}
-  60%{opacity:1}
-  100%{transform:translate(-50%,-50%) rotate(-12deg) scale(1);opacity:1}
-}
+/* ===== S3 試合後 ===== */
+.s3-body{margin-top:8px}
+.s3-oneliner{padding:14px 18px 0;font-size:14px;font-weight:700}
+.s3-oneliner .mk{font-weight:900;margin-right:8px}
+.s3-oneliner .mk.o{color:var(--green)}
+.s3-oneliner .mk.x{color:var(--red)}
 
-.s4-back{font-size:13px;color:rgba(240,232,226,.6);font-weight:700;margin-bottom:18px;cursor:pointer;
-  display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:6px 4px}
-.s4-record{text-align:center;margin-bottom:22px}
-.s4-record b{font-size:40px;font-weight:900;color:#fff;text-shadow:0 0 16px rgba(255,255,255,.2)}
-.s4-record span{display:block;font-size:11px;letter-spacing:2px;color:rgba(240,232,226,.5);margin-top:4px;font-weight:700}
+/* ===== S4 戦績（台帳） ===== */
+.s4-head{padding:16px 18px 0;display:flex;align-items:baseline;justify-content:space-between}
+.s4-back{font-size:12.5px;color:rgba(255,255,255,.55);font-weight:700;padding:8px 14px 8px 0;min-height:44px;display:flex;align-items:center}
+.big-rec{text-align:center;margin-top:14px}
+.big-rec b{font-style:italic;font-weight:900;font-size:44px;letter-spacing:.02em;
+  color:var(--gold);text-shadow:0 0 30px rgba(255,217,160,.35)}
+.big-rec span{display:block;font-size:10px;font-weight:800;letter-spacing:.32em;color:rgba(255,255,255,.45);margin-top:2px}
+.rec-tape{display:flex;margin-top:16px;border-top:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12)}
+.rec-tape .cell{flex:1;text-align:center;padding:10px 0}
+.rec-tape .cell + .cell{border-left:1px solid rgba(255,255,255,.12)}
+.rec-tape b{display:block;font-style:italic;font-weight:900;font-size:19px}
+.rec-tape .o b{color:var(--green)}
+.rec-tape .x b{color:var(--red)}
+.rec-tape span{display:block;font-size:9px;font-weight:700;letter-spacing:.2em;color:rgba(255,255,255,.4);margin-top:1px}
 
-.s4-list{display:flex;flex-direction:column;gap:10px}
-.s4-item{
-  border-radius:14px;border:1.5px solid rgba(255,255,255,.12);
-  background:rgba(255,255,255,.03);padding:14px 16px;cursor:pointer;
+.ledger{margin-top:18px}
+.s4-empty{text-align:center;padding:40px 18px;color:rgba(240,232,226,.5);font-size:13px;line-height:1.6}
+.lrow{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 18px;
+  border-bottom:1px solid rgba(255,255,255,.08);
 }
-.s4-item .row1{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.s4-item .date{font-size:11px;color:rgba(240,232,226,.5);font-weight:700}
-.s4-item .cond-chip{font-size:11px;font-weight:900;padding:2px 9px;border-radius:999px;color:#fff}
-.s4-item .tagrow{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
-.s4-item .tagrow span{font-size:10px;font-weight:800;color:#fff;background:rgba(255,60,40,.28);
-  border:1px solid rgba(255,90,60,.4);border-radius:999px;padding:3px 9px}
-.s4-item .insight{font-size:14.5px;color:#fff;font-weight:700;margin-top:9px;line-height:1.45;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.s4-item.open .insight{white-space:normal}
-.s4-item .kadai{font-size:12.5px;color:rgba(240,232,226,.68);margin-top:8px;padding-left:10px;
-  border-left:2px solid var(--red);line-height:1.4}
-.s4-item .expand{max-height:0;overflow:hidden;transition:max-height .25s ease}
-.s4-item.open .expand{max-height:200px;margin-top:10px}
-.s4-item .del-btn{
-  width:100%;margin-top:10px;background:rgba(255,60,40,.14);border:1px solid rgba(255,80,60,.4);
-  color:#ffb0a0;border-radius:10px;padding:11px;font-size:12.5px;font-weight:800;cursor:pointer;min-height:44px;
+.lrow .res{
+  flex:none;width:30px;height:30px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:17px;
 }
-.s4-item .del-btn:active{background:rgba(255,60,40,.26)}
-.s4-empty{text-align:center;padding:40px 16px;color:rgba(240,232,226,.5);font-size:13px;line-height:1.6}
+.lrow .res.o{background:rgba(47,208,111,.16);color:var(--green);box-shadow:inset 0 0 0 1.5px rgba(47,208,111,.55)}
+.lrow .res.x{background:rgba(255,59,42,.14);color:var(--red);box-shadow:inset 0 0 0 1.5px rgba(255,59,42,.5)}
+.lrow .res.n{background:rgba(255,255,255,.06);color:rgba(255,255,255,.35);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.18)}
+.lrow .mid{flex:1;min-width:0}
+.lrow .date{font-size:10.5px;font-weight:700;letter-spacing:.12em;color:rgba(255,255,255,.42)}
+.lrow .aim{
+  font-size:14.5px;font-weight:700;margin-top:2px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.lrow .chev{flex:none;color:rgba(255,255,255,.3);font-size:15px}
+
+.lrow.open-detail{background:rgba(14,12,14,.92);border-left:3px solid var(--red)}
+.detail{padding:4px 18px 16px;background:rgba(14,12,14,.92);border-bottom:1px solid rgba(255,255,255,.08)}
+.detail .drow{display:flex;gap:10px;margin-top:9px;font-size:13.5px;line-height:1.6}
+.detail .dk{flex:none;width:64px;font-size:10px;font-weight:800;letter-spacing:.14em;
+  color:rgba(255,255,255,.4);padding-top:3px}
+.detail .dv{flex:1}
+.detail .dv.green{color:#9fe8bd}
+.detail .dv.red2{color:#ffb4a8}
+.detail .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.detail .actions button{
+  flex:1;padding:11px;border:none;font-weight:800;font-size:13.5px;letter-spacing:.08em;
+  clip-path:polygon(7px 0, 100% 0, calc(100% - 7px) 100%, 0 100%);min-height:44px;min-width:80px;
+}
+.detail .actions .edit{background:rgba(255,217,160,.12);color:var(--gold)}
+.detail .actions .del{background:rgba(255,255,255,.06);color:rgba(255,255,255,.5)}
+.detail .actions .rematch{background:rgba(255,59,42,.16);color:#ffb4a8}
+
+/* ===== 編集シート ===== */
+.edit-overlay{
+  position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.92);
+  display:none;flex-direction:column;
+}
+.edit-overlay.open{display:flex}
+.edit-scroll{flex:1;overflow-y:auto;padding:max(18px,env(safe-area-inset-top)) 18px 20px}
+.edit-title{font-style:italic;font-weight:900;font-size:20px;margin-bottom:4px}
+.edit-date{font-size:12px;color:rgba(255,255,255,.45);margin-bottom:18px}
+.edit-label{font-size:10.5px;font-weight:800;letter-spacing:.2em;color:rgba(255,255,255,.5);margin:18px 0 8px;text-transform:uppercase}
+.edit-bar{
+  display:flex;gap:10px;padding:12px 18px calc(12px + env(safe-area-inset-bottom));
+  background:rgba(10,8,8,.98);border-top:1px solid rgba(255,255,255,.12);
+}
+.edit-bar button{flex:1;padding:14px;border:none;font-weight:800;font-size:14px;letter-spacing:.08em;min-height:48px;
+  clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);}
+.edit-bar .cancel{background:rgba(255,255,255,.08);color:#fff}
+.edit-bar .save{background:linear-gradient(180deg,#ff4a36,#c81f12);color:#fff}
 
 @media (min-width:600px){
-  .screen{align-items:center}
-  .screen > *{width:100%;max-width:480px}
-  .tile-grid{max-width:480px}
+  .screen > *{width:100%;max-width:480px;margin-left:auto;margin-right:auto}
+  .strap{max-width:480px}
+  .edit-scroll{max-width:480px;margin:0 auto;width:100%}
+  .edit-bar{max-width:480px;margin:0 auto;width:100%}
 }
 </style>
 </head>
-<body class="scr-s1">
+<body>
 
 <div class="arena">
   <div class="crowd"></div>
   <div class="wash"></div>
-  <div class="truss"></div>
-  <div class="lamp l1"></div>
-  <div class="lamp l2"></div>
-  <div class="lamp l3"></div>
   <div class="ray left"></div>
   <div class="ray center"></div>
   <div class="ray right"></div>
-  <div class="cage"></div>
-  <div class="rail"></div>
-  <div class="post p1"></div>
-  <div class="post p2"></div>
+  <div class="truss"></div>
+  <div class="lamp l1"></div><div class="lamp l2"></div><div class="lamp l3"></div>
+  <div class="cage"></div><div class="rail"></div>
+  <div class="post p1"></div><div class="post p2"></div>
   <div class="floor">
     <svg class="emblem" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <polygon points="50,4 79,18 93,47 79,76 50,90 21,76 7,47 21,18" fill="none" stroke="#ff5540" stroke-width="1.4"/>
@@ -394,124 +427,280 @@ body.scr-s4 .wash{background:linear-gradient(180deg, rgba(22,16,20,.3) 0%, rgba(
     </svg>
   </div>
   <div id="emberField"></div>
+  <div class="vig"></div>
 </div>
-<div class="vignette"></div>
 
-<div class="app">
+<div id="app">
 
-  <section class="screen active" id="screen-s1">
-    <div class="s1-record-link" id="btnGoS4" role="button">戦績 ›</div>
-    <div class="s1-top">FIGHT LOG</div>
-    <div class="s1-event">TONIGHT'S MAIN EVENT</div>
-    <div class="s1-card">
-      <div class="s1-name">三輪 允仁</div>
-      <span class="s1-vs">VS</span>
-      <div class="s1-rival">昨日の自分</div>
+<!-- ============ S1 入場 ============ -->
+<section class="screen active" id="screen-s1">
+  <div class="ticker"><span class="live"></span>FIGHT WEEK<span class="right" id="s1TickerDate">2026.01.01 THU</span></div>
+
+  <div class="s1-head">
+    <div class="s1-logo">FIGHT<b>LOG</b></div>
+    <div class="s1-reclink" id="btnGoS4" role="button">戦績 ›</div>
+  </div>
+
+  <div class="s1-event">Tonight's Main Event</div>
+  <div class="s1-card">
+    <div class="s1-name">三輪 允仁</div>
+    <span class="s1-vs">VS</span>
+    <div class="s1-rival">昨日の自分</div>
+  </div>
+
+  <div class="plan-block" id="planBlock"></div>
+
+  <div class="prev-line" id="prevLine">初陣だ。まずは1本記録しろ。</div>
+
+  <div class="tape">
+    <div class="cell g"><b id="statDone">0</b><span>実験 完遂</span></div>
+    <div class="cell"><b id="statOX">0◯ 0✕</b><span>実験結果</span></div>
+    <div class="cell"><b id="statSince">デビュー戦</b><span>Since Last</span></div>
+  </div>
+
+  <button class="btn-enter" id="btnEnter">入場する — 今夜の結果を記録</button>
+  <button class="btn-plan" id="btnPlan">＋ 新しいゲームプランを書く</button>
+</section>
+
+<!-- ============ S2 ゲームプラン記入 ============ -->
+<section class="screen" id="screen-s2">
+  <div class="ticker"><span class="live"></span>GAME PLAN<span class="right">練習前に書く</span></div>
+  <div class="s2-back" id="btnS2Back">‹ 戻る</div>
+
+  <div class="s2-head">
+    <div class="s2-kicker">ROUND 0 — セコンドの作戦会議</div>
+    <div class="s2-title bcast-h">GAME PLAN</div>
+    <div class="s2-sub">試す前に◯と✕の見た目を決める。<br>後から甘く採点できなくするための作戦書。</div>
+  </div>
+
+  <div class="pad">
+    <div class="field aim">
+      <span class="tag aim">狙い — AIM</span>
+      <textarea id="planAim" placeholder="何を良くしたい？"></textarea>
     </div>
-
-    <div class="plate">
-      <div class="msg" id="plateMsg">初陣だ。まずは1本記録しろ。</div>
-      <div class="insight" id="plateInsight" style="display:none"></div>
+    <div class="mic-row" id="micRowAim" style="display:none">
+      <button class="mic-btn" id="micAim">🎤</button>
     </div>
-
-    <div class="s1-stats">
-      <div class="stat"><b id="statCount">0戦</b><span>TOTAL FIGHTS</span></div>
-      <div class="stat"><b id="statGap">デビュー戦</b><span>SINCE LAST</span></div>
+    <div class="field ok">
+      <span class="tag ok">◯ のサイン</span>
+      <textarea id="planOk" placeholder="「できた」と何が見えたら分かる？"></textarea>
+      <div class="hint">目で見える具体的なサインで書く</div>
     </div>
+    <div class="field ng">
+      <span class="tag ng">✕ のサイン</span>
+      <textarea id="planNg" placeholder="「ダメ」と何が見えたら分かる？"></textarea>
+    </div>
+  </div>
 
-    <div class="spacer"></div>
-    <button class="btn-enter" id="btnEnter">入場する</button>
-  </section>
+  <button class="btn-next" id="btnPlanSave">作戦を保存 — ジムへ</button>
+</section>
 
-  <section class="screen" id="screen-s2">
-    <div class="s2-head">
-      <div class="s2-bars">
-        <i data-r="1"></i><i data-r="2"></i><i data-r="3"></i><i data-r="4"></i>
+<!-- ============ S2R 記録フロー（4ラウンド） ============ -->
+<section class="screen" id="screen-s2r">
+  <div class="ticker"><span class="live"></span><span id="s2rRoundLabel">ROUND 1 / 4</span><span class="right" id="s2rTimer">0:30</span></div>
+  <div class="pad"><div class="s2-bars" id="s2rBars"><i data-r="1"></i><i data-r="2"></i><i data-r="3"></i><i data-r="4"></i></div></div>
+
+  <div class="round-pane pad" id="pane-r1">
+    <div class="s2-title bcast-h mini" style="margin-top:18px">今日、何で闘った？</div>
+    <div class="tile2-grid" id="tagTiles">
+      <div class="tile2" data-tag="打撃"><div class="tt">打撃</div><div class="ts">STRIKING</div></div>
+      <div class="tile2" data-tag="寝技"><div class="tt">寝技</div><div class="ts">GROUND</div></div>
+      <div class="tile2" data-tag="タックル"><div class="tt">タックル</div><div class="ts">WRESTLING</div></div>
+      <div class="tile2" data-tag="スパー"><div class="tt">スパー</div><div class="ts">SPARRING</div></div>
+      <div class="tile2" data-tag="ドリル"><div class="tt">ドリル</div><div class="ts">DRILL</div></div>
+      <div class="tile2" data-tag="フィジカル"><div class="tt">フィジカル</div><div class="ts">PHYSICAL</div></div>
+    </div>
+    <button class="btn-next sec" id="btnR1Next">次へ</button>
+  </div>
+
+  <div class="round-pane pad" id="pane-r2" style="display:none">
+    <div id="r2WithPlan">
+      <div class="s2-title bcast-h mini" style="margin-top:18px">ジャッジ</div>
+      <div class="strap"><div class="k">狙い — AIM</div><div class="v" id="r2AimText"></div></div>
+      <div class="judge" id="judgeButtons">
+        <button type="button" class="o" data-r="o"><span class="mark">◯</span><span class="lbl">サイン確認</span></button>
+        <button type="button" class="x" data-r="x"><span class="mark">✕</span><span class="lbl">サイン欠け</span></button>
       </div>
-      <div class="s2-round" id="s2RoundLabel">ROUND 1 / 4</div>
-      <div class="s2-timer" id="s2Timer">0:30</div>
+      <div class="field" style="margin-top:18px">
+        <span class="tag neutral">結果ひとことメモ</span>
+        <textarea id="r2MemoInput" placeholder="何が効いた／効かなかった？"></textarea>
+      </div>
+      <div class="mic-row" id="micRowMemo" style="display:none"><button class="mic-btn" id="micMemo">🎤</button></div>
     </div>
-
-    <div class="s2-body">
-
-      <div class="round-pane" id="pane-r1">
-        <div class="s2-q">今日、何で闘った？</div>
-        <div class="tile-grid" id="tagTiles">
-          <div class="tile" data-tag="打撃"><div class="tt">打撃</div><div class="ts">STRIKING</div></div>
-          <div class="tile" data-tag="寝技"><div class="tt">寝技</div><div class="ts">GROUND</div></div>
-          <div class="tile" data-tag="タックル"><div class="tt">タックル</div><div class="ts">WRESTLING</div></div>
-          <div class="tile" data-tag="スパー"><div class="tt">スパー</div><div class="ts">SPARRING</div></div>
-          <div class="tile" data-tag="ドリル"><div class="tt">ドリル</div><div class="ts">DRILL</div></div>
-          <div class="tile" data-tag="フィジカル"><div class="tt">フィジカル</div><div class="ts">PHYSICAL</div></div>
-        </div>
-        <button class="btn-next" id="btnR1Next">次へ</button>
+    <div id="r2NoPlan" style="display:none">
+      <div class="s2-title bcast-h mini" style="margin-top:18px">気づきを1行</div>
+      <div class="field" style="margin-top:18px">
+        <textarea id="insightInput" placeholder="例：ジャブの距離が近かった"></textarea>
       </div>
-
-      <div class="round-pane" id="pane-r2" style="display:none">
-        <div class="s2-q">気づきを1行</div>
-        <textarea class="input-big" id="insightInput" placeholder="例：ジャブの距離が近かった"></textarea>
-        <div class="mic-row" id="micRowInsight" style="display:none">
-          <button class="mic-btn" id="micInsight">🎤</button>
-        </div>
-        <button class="btn-next" id="btnR2Next">次へ</button>
-      </div>
-
-      <div class="round-pane" id="pane-r3" style="display:none">
-        <div class="s2-q">コンディション</div>
-        <div class="cond-grid" id="condGrid">
-          <div class="cond-bar" data-v="1"><span class="cn">1</span><span class="cl">かなり悪い</span></div>
-          <div class="cond-bar" data-v="2"><span class="cn">2</span><span class="cl">やや悪い</span></div>
-          <div class="cond-bar" data-v="3"><span class="cn">3</span><span class="cl">ふつう</span></div>
-          <div class="cond-bar" data-v="4"><span class="cn">4</span><span class="cl">やや良い</span></div>
-          <div class="cond-bar" data-v="5"><span class="cn">5</span><span class="cl">絶好調</span></div>
-        </div>
-      </div>
-
-      <div class="round-pane" id="pane-r4" style="display:none">
-        <div class="s2-q">次回の課題を1個</div>
-        <textarea class="input-big" id="kadaiInput" placeholder="例：距離を測ってから踏み込む"></textarea>
-        <div class="mic-row" id="micRowKadai" style="display:none">
-          <button class="mic-btn" id="micKadai">🎤</button>
-        </div>
-        <button class="btn-next primary" id="btnGong">ゴング（保存）</button>
-      </div>
-
+      <div class="mic-row" id="micRowInsight" style="display:none"><button class="mic-btn" id="micInsight">🎤</button></div>
     </div>
-  </section>
+    <button class="btn-next sec" id="btnR2Next">次へ</button>
+  </div>
 
-  <section class="screen" id="screen-s3">
-    <div class="s3-wrap">
-      <div class="s3-card">
-        <div class="s3-date" id="s3Date"></div>
-        <div class="s3-tags" id="s3Tags"></div>
-        <div class="s3-insight" id="s3Insight"></div>
-        <div class="stamp">LOGGED</div>
+  <div class="round-pane pad" id="pane-r3" style="display:none">
+    <div class="s2-title bcast-h mini" style="margin-top:18px">やり切った？</div>
+    <div class="done-check" id="doneCheck">
+      <div class="box" id="doneBox"></div>
+      <div class="txt">いつものやり方に戻さず、<br>最後まで実験できた？</div>
+    </div>
+    <div class="stamp" id="r3Stamp" style="display:none">
+      <div class="big">実験完了＝成長！</div>
+      <div class="small">EXPERIMENT COMPLETED</div>
+    </div>
+    <div class="kuyashii">
+      <div class="plan-title" style="padding:0 0 8px"><span class="bar"></span><span>悔しさログ</span></div>
+      <div class="field" style="margin-top:0">
+        <textarea id="kuyashiiInput" placeholder="悔しかったこと・負けたことを書いていい"></textarea>
       </div>
+      <div class="msg" id="kuyashiiMsg" style="display:none">悔しい＝現状に止まっていない証拠。<br>今、成長している。</div>
     </div>
-  </section>
+    <button class="btn-next sec" id="btnR3Next">次へ</button>
+  </div>
 
-  <section class="screen" id="screen-s4">
-    <div class="s4-back" id="btnBackS1">‹ 入場画面へ</div>
-    <div class="s4-record">
-      <b id="s4Record">0勝 0敗</b>
-      <span>サボりゼロ継続中</span>
+  <div class="round-pane pad" id="pane-r4" style="display:none">
+    <div class="s2-title bcast-h mini" style="margin-top:18px">コンディション</div>
+    <div id="condGrid" style="margin-top:14px">
+      <div class="condrow" data-v="1"><span class="cn">1</span><span class="cl">かなり悪い</span></div>
+      <div class="condrow" data-v="2"><span class="cn">2</span><span class="cl">やや悪い</span></div>
+      <div class="condrow" data-v="3"><span class="cn">3</span><span class="cl">ふつう</span></div>
+      <div class="condrow" data-v="4"><span class="cn">4</span><span class="cl">やや良い</span></div>
+      <div class="condrow" data-v="5"><span class="cn">5</span><span class="cl">絶好調</span></div>
     </div>
-    <div class="s4-list" id="s4List"></div>
-  </section>
+    <button class="btn-next" id="btnGong">ゴング（保存）</button>
+  </div>
+</section>
+
+<!-- ============ S3 ゴング後 ============ -->
+<section class="screen" id="screen-s3">
+  <div class="ticker"><span class="live"></span>JUDGES' DECISION<span class="right">練習後</span></div>
+  <div class="s3-body pad">
+    <div class="s2-kicker" style="margin-top:10px">今夜の記録</div>
+    <div class="s2-title bcast-h mini" id="s3Date" style="margin-top:6px"></div>
+    <div class="s2-sub" id="s3Tags"></div>
+  </div>
+  <div class="stamp" id="s3Stamp" style="display:none">
+    <div class="big">実験完了＝成長！</div>
+    <div class="small">EXPERIMENT COMPLETED</div>
+  </div>
+  <div class="s3-oneliner" id="s3ExpLine" style="display:none"></div>
+  <button class="btn-next" id="btnS3Back">入場画面へ</button>
+</section>
+
+<!-- ============ S4 戦績（台帳） ============ -->
+<section class="screen" id="screen-s4">
+  <div class="ticker"><span class="live"></span>FIGHT RECORD<span class="right" id="s4TickerCount">全0戦</span></div>
+  <div class="s4-head"><div class="s4-back" id="btnBackS1">‹ 入場画面へ</div></div>
+
+  <div class="big-rec">
+    <b id="s4DoneCount">0</b>
+    <span>実験を最後までやり切った数</span>
+  </div>
+
+  <div class="rec-tape">
+    <div class="cell o"><b id="s4OCount">0</b><span>◯ サイン確認</span></div>
+    <div class="cell x"><b id="s4XCount">0</b><span>✕ 次の材料</span></div>
+    <div class="cell"><b id="s4TotalCount">0</b><span>総練習数</span></div>
+  </div>
+
+  <div class="ledger" id="s4List"></div>
+</section>
 
 </div>
+
+<!-- ============ 編集シート ============ -->
+<div class="edit-overlay" id="editOverlay">
+  <div class="edit-scroll">
+    <div class="edit-title">記録を編集する</div>
+    <div class="edit-date" id="editDate"></div>
+
+    <div class="edit-label">タグ</div>
+    <div class="tile2-grid" id="editTagTiles" style="margin-top:0">
+      <div class="tile2" data-tag="打撃"><div class="tt">打撃</div><div class="ts">STRIKING</div></div>
+      <div class="tile2" data-tag="寝技"><div class="tt">寝技</div><div class="ts">GROUND</div></div>
+      <div class="tile2" data-tag="タックル"><div class="tt">タックル</div><div class="ts">WRESTLING</div></div>
+      <div class="tile2" data-tag="スパー"><div class="tt">スパー</div><div class="ts">SPARRING</div></div>
+      <div class="tile2" data-tag="ドリル"><div class="tt">ドリル</div><div class="ts">DRILL</div></div>
+      <div class="tile2" data-tag="フィジカル"><div class="tt">フィジカル</div><div class="ts">PHYSICAL</div></div>
+    </div>
+
+    <div class="field aim">
+      <span class="tag aim">狙い — AIM</span>
+      <textarea id="editAim" placeholder="何を良くしたい？"></textarea>
+    </div>
+    <div class="field ok">
+      <span class="tag ok">◯ のサイン</span>
+      <textarea id="editOk" placeholder="「できた」と何が見えたら分かる？"></textarea>
+    </div>
+    <div class="field ng">
+      <span class="tag ng">✕ のサイン</span>
+      <textarea id="editNg" placeholder="「ダメ」と何が見えたら分かる？"></textarea>
+    </div>
+
+    <div class="edit-label">結果</div>
+    <div class="judge" id="editJudge">
+      <button type="button" class="o" data-r="o"><span class="mark">◯</span><span class="lbl">確認</span></button>
+      <button type="button" class="x" data-r="x"><span class="mark">✕</span><span class="lbl">欠け</span></button>
+      <button type="button" class="n" data-r="none"><span class="mark">－</span><span class="lbl">実験なし</span></button>
+    </div>
+
+    <div class="field">
+      <span class="tag neutral">結果メモ</span>
+      <textarea id="editMemo" placeholder="結果ひとことメモ"></textarea>
+    </div>
+
+    <div class="edit-label">やり切った</div>
+    <div class="done-check" id="editDoneCheck">
+      <div class="box" id="editDoneBox"></div>
+      <div class="txt">いつものやり方に戻さず、<br>最後まで実験できた？</div>
+    </div>
+
+    <div class="field">
+      <span class="tag neutral">悔しさ</span>
+      <textarea id="editKuyashii" placeholder="悔しかったこと"></textarea>
+    </div>
+    <div class="field">
+      <span class="tag neutral">気づき</span>
+      <textarea id="editInsight" placeholder="気づいたこと"></textarea>
+    </div>
+    <div class="field">
+      <span class="tag neutral">次回の課題</span>
+      <textarea id="editKadai" placeholder="次回の課題"></textarea>
+    </div>
+
+    <div class="edit-label">コンディション</div>
+    <div id="editCondGrid">
+      <div class="condrow" data-v="1"><span class="cn">1</span><span class="cl">かなり悪い</span></div>
+      <div class="condrow" data-v="2"><span class="cn">2</span><span class="cl">やや悪い</span></div>
+      <div class="condrow" data-v="3"><span class="cn">3</span><span class="cl">ふつう</span></div>
+      <div class="condrow" data-v="4"><span class="cn">4</span><span class="cl">やや良い</span></div>
+      <div class="condrow" data-v="5"><span class="cn">5</span><span class="cl">絶好調</span></div>
+    </div>
+  </div>
+  <div class="edit-bar">
+    <button class="cancel" id="editCancel">キャンセル</button>
+    <button class="save" id="editSave">保存する</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <script>
 (function(){
 "use strict";
 
-var FL_KEY = "fightlog_v1";
+var FL2_KEY = "fightlog_v2";
+var PLAN_KEY = "fightlog_v2_plan";
+var FL1_KEY = "fightlog_v1";
+var OLD_KEY = "mma_log_v1";
 var TR_KEY = "tracker2026_v2";
 var ROUND_SECONDS = 30;
+var WD = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
+var TAGS = ["打撃","寝技","タックル","スパー","ドリル","フィジカル"];
 
-function loadFL(){
+/* ---------- storage ---------- */
+function loadV2(){
   try{
-    var raw = localStorage.getItem(FL_KEY);
+    var raw = localStorage.getItem(FL2_KEY);
     var parsed = raw ? JSON.parse(raw) : null;
     if(!parsed || typeof parsed !== "object" || !Array.isArray(parsed.sessions)){
       return { sessions: [] };
@@ -521,71 +710,106 @@ function loadFL(){
     return { sessions: [] };
   }
 }
-function saveFL(data){
+function saveV2(data){
+  try{ localStorage.setItem(FL2_KEY, JSON.stringify(data)); }catch(e){}
+}
+function loadPlan(){
   try{
-    localStorage.setItem(FL_KEY, JSON.stringify(data));
-  }catch(e){}
+    var raw = localStorage.getItem(PLAN_KEY);
+    var parsed = raw ? JSON.parse(raw) : null;
+    if(!parsed || typeof parsed !== "object") return null;
+    return parsed;
+  }catch(e){ return null; }
+}
+function savePlan(p){
+  try{ localStorage.setItem(PLAN_KEY, JSON.stringify(p)); }catch(e){}
+}
+function clearPlan(){
+  try{ localStorage.removeItem(PLAN_KEY); }catch(e){}
 }
 
-var flData = loadFL();
+var flData = loadV2();
+var plan = loadPlan();
 
-(function migrateFromOld(){
+/* ---------- migration (runs once, only when fightlog_v2 didn't exist yet) ---------- */
+(function migrateToV2(){
   try{
-    var oldRaw = localStorage.getItem("mma_log_v1");
-    if(!oldRaw) return;
-    var old = JSON.parse(oldRaw);
-    if(!old || !Array.isArray(old.logs) || old.logs.length === 0) return;
+    var v2Raw = null;
+    try{ v2Raw = localStorage.getItem(FL2_KEY); }catch(e){}
+    if(v2Raw) return; // 2.3.1 既に在れば何もしない
 
-    var existDates = {};
-    flData.sessions.forEach(function(s){ existDates[s.date] = true; });
-
-    var catMap = {strike:"打撃",clinch:"タックル",ground:"寝技",spar:"スパー",strategy:"ドリル",part:"ドリル"};
-
-    var byDate = {};
-    old.logs.forEach(function(log){
-      if(!log.date) return;
-      if(!byDate[log.date]) byDate[log.date] = [];
-      byDate[log.date].push(log);
-    });
-
-    var added = 0;
-    Object.keys(byDate).sort().forEach(function(date){
-      if(existDates[date]) return;
-      var logs = byDate[date];
-      var tags = [];
-      var texts = [];
-      logs.forEach(function(log){
-        if(log.cat && catMap[log.cat]){
-          var tag = catMap[log.cat];
-          if(tags.indexOf(tag) === -1) tags.push(tag);
-        }
-        if(log.text && log.cat !== "part") texts.push(log.text);
-      });
-      var cond = 3;
-      var kadai = "";
-      if(old.daily && old.daily[date]){
-        if(old.daily[date].focusScore) cond = old.daily[date].focusScore;
-        if(old.daily[date].focus) kadai = old.daily[date].focus;
+    var v1Raw = null;
+    try{ v1Raw = localStorage.getItem(FL1_KEY); }catch(e){}
+    if(v1Raw){
+      var v1 = JSON.parse(v1Raw);
+      if(v1 && Array.isArray(v1.sessions)){
+        var migrated = v1.sessions.map(function(s){
+          return {
+            id: s.id, date: s.date, ts: s.ts, tags: s.tags || [],
+            cond: s.cond, insight: s.insight || "", kadai: s.kadai || "",
+            exp: null, done: false, kuyashii: ""
+          };
+        });
+        flData = { sessions: migrated };
+        saveV2(flData);
+        return; // 元キー(fightlog_v1)は消さない
       }
-      flData.sessions.push({
-        id: "s_m_" + date.replace(/-/g,""),
-        date: date,
-        tags: tags,
-        insight: texts.join("／"),
-        cond: cond,
-        kadai: kadai,
-        ts: new Date(date + "T12:00:00").getTime()
-      });
-      added++;
-    });
+    }
 
-    if(added > 0){
-      flData.sessions.sort(function(a,b){ return a.ts - b.ts; });
-      saveFL(flData);
+    var oldRaw = null;
+    try{ oldRaw = localStorage.getItem(OLD_KEY); }catch(e){}
+    if(oldRaw){
+      var old = JSON.parse(oldRaw);
+      if(old && Array.isArray(old.logs) && old.logs.length > 0){
+        // v1のmigrateFromOldロジックをv2形式へ直接移植
+        var catMap = {strike:"打撃",clinch:"タックル",ground:"寝技",spar:"スパー",strategy:"ドリル",part:"ドリル"};
+        var byDate = {};
+        old.logs.forEach(function(log){
+          if(!log.date) return;
+          if(!byDate[log.date]) byDate[log.date] = [];
+          byDate[log.date].push(log);
+        });
+        var sessions = [];
+        Object.keys(byDate).sort().forEach(function(date){
+          var logs = byDate[date];
+          var tags = [];
+          var texts = [];
+          logs.forEach(function(log){
+            if(log.cat && catMap[log.cat]){
+              var tag = catMap[log.cat];
+              if(tags.indexOf(tag) === -1) tags.push(tag);
+            }
+            if(log.text && log.cat !== "part") texts.push(log.text);
+          });
+          var cond = 3;
+          var kadai = "";
+          if(old.daily && old.daily[date]){
+            if(old.daily[date].focusScore) cond = old.daily[date].focusScore;
+            if(old.daily[date].focus) kadai = old.daily[date].focus;
+          }
+          sessions.push({
+            id: "s_m_" + date.replace(/-/g,""),
+            date: date,
+            ts: new Date(date + "T12:00:00").getTime(),
+            tags: tags,
+            cond: cond,
+            insight: texts.join("／"),
+            kadai: kadai,
+            exp: null, done: false, kuyashii: ""
+          });
+        });
+        if(sessions.length > 0){
+          sessions.sort(function(a,b){ return a.ts - b.ts; });
+          flData = { sessions: sessions };
+          saveV2(flData);
+        }
+        return; // 元キー(mma_log_v1)は消さない
+      }
     }
   }catch(e){}
 })();
 
+/* ---------- helpers ---------- */
 function pad2(n){ return n < 10 ? "0" + n : String(n); }
 function todayISO(){
   var d = new Date();
@@ -597,12 +821,18 @@ function daysBetween(iso1, iso2){
   var ms = b.getTime() - a.getTime();
   return Math.round(ms / 86400000);
 }
-
-function vibrate(pattern){
-  try{
-    if(navigator.vibrate){ navigator.vibrate(pattern); }
-  }catch(e){}
+function weekday3FromISO(iso){
+  var d = new Date(iso + "T00:00:00");
+  return WD[d.getDay()];
 }
+function mmdd(iso){
+  var parts = iso.split("-");
+  return parts[1] + "." + parts[2];
+}
+function vibrate(pattern){
+  try{ if(navigator.vibrate){ navigator.vibrate(pattern); } }catch(e){}
+}
+function escapeText(s){ return s == null ? "" : String(s); }
 
 function syncToTracker(session){
   try{
@@ -618,7 +848,6 @@ function syncToTracker(session){
 
     var dayState = state[key];
     if(!dayState || typeof dayState !== "object"){ dayState = {}; }
-
     if(!Array.isArray(dayState.__custom__)){ dayState.__custom__ = []; }
 
     var label = "MMA（練習ログ）";
@@ -629,34 +858,37 @@ function syncToTracker(session){
         break;
       }
     }
-
     var taskId;
     if(existing){
       taskId = existing.id;
     } else {
       taskId = "c_fightlog_" + Date.now();
       dayState.__custom__.push({
-        id: taskId,
-        label: label,
-        cat: "custom",
-        start: "19:00",
-        end: "21:00",
-        color: "#c850dc"
+        id: taskId, label: label, cat: "custom",
+        start: "19:00", end: "21:00", color: "#c850dc"
       });
     }
-
     dayState[taskId] = true;
     state[key] = dayState;
-
     localStorage.setItem(TR_KEY, JSON.stringify(state));
-  }catch(e){
-    
-  }
+  }catch(e){}
 }
 
+/* ---------- toast ---------- */
+var toastTimer = null;
+function showToast(msg){
+  var el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  if(toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ el.classList.remove("show"); }, 1800);
+}
+
+/* ---------- screens ---------- */
 var screens = {
   s1: document.getElementById("screen-s1"),
   s2: document.getElementById("screen-s2"),
+  s2r: document.getElementById("screen-s2r"),
   s3: document.getElementById("screen-s3"),
   s4: document.getElementById("screen-s4")
 };
@@ -664,177 +896,17 @@ function showScreen(name){
   Object.keys(screens).forEach(function(k){
     screens[k].classList.toggle("active", k === name);
   });
-  document.body.classList.remove("scr-s1","scr-s2","scr-s3","scr-s4");
-  document.body.classList.add("scr-" + name);
 }
 
-function renderS1(){
-  var sessions = flData.sessions;
-  var count = sessions.length;
-  document.getElementById("statCount").textContent = count + "戦";
-
-  var gapEl = document.getElementById("statGap");
-  if(count === 0){
-    gapEl.textContent = "デビュー戦";
-  } else {
-    var last = sessions[sessions.length - 1];
-    var gap = daysBetween(last.date, todayISO());
-    if(gap < 0) gap = 0;
-    gapEl.textContent = "中" + gap + "日";
-  }
-
-  var plateMsg = document.getElementById("plateMsg");
-  var plateInsight = document.getElementById("plateInsight");
-  if(count === 0){
-    plateMsg.textContent = "初陣だ。まずは1本記録しろ。";
-    plateInsight.style.display = "none";
-  } else {
-    var last2 = sessions[sessions.length - 1];
-    plateMsg.textContent = last2.kadai && last2.kadai.trim() ? last2.kadai : "特になし。今日も1本刻め。";
-    if(last2.insight && last2.insight.trim()){
-      plateInsight.textContent = "前回の気づき：" + last2.insight;
-      plateInsight.style.display = "block";
-      plateInsight.classList.remove("open");
-    } else {
-      plateInsight.style.display = "none";
-    }
-  }
-}
-document.getElementById("plateInsight").addEventListener("click", function(){
-  this.classList.toggle("open");
-});
-
-var roundState = {
-  tags: [],
-  insight: "",
-  cond: 0,
-  kadai: ""
-};
-var currentRound = 1;
-var timerHandle = null;
-var timerRemain = ROUND_SECONDS;
-
-function resetRoundState(){
-  roundState = { tags: [], insight: "", cond: 0, kadai: "" };
-  currentRound = 1;
-  document.querySelectorAll(".tile").forEach(function(t){ t.classList.remove("on"); });
-  document.querySelectorAll(".cond-bar").forEach(function(c){ c.classList.remove("on"); });
-  document.getElementById("insightInput").value = "";
-  document.getElementById("kadaiInput").value = "";
-}
-
-function updateProgressBars(){
-  document.querySelectorAll(".s2-bars i").forEach(function(bar){
-    var r = parseInt(bar.getAttribute("data-r"), 10);
-    bar.classList.remove("on","past");
-    if(r === currentRound){ bar.classList.add("on"); }
-    else if(r < currentRound){ bar.classList.add("past"); }
-  });
-  document.getElementById("s2RoundLabel").textContent = "ROUND " + currentRound + " / 4";
-}
-
-function showRound(n){
-  currentRound = n;
-  ["r1","r2","r3","r4"].forEach(function(key, idx){
-    var pane = document.getElementById("pane-" + key);
-    pane.style.display = (idx + 1 === n) ? "block" : "none";
-  });
-  updateProgressBars();
-  if(n === 1){
-    startTimer();
-  }
-}
-
-function startTimer(){
-  stopTimer();
-  timerRemain = ROUND_SECONDS;
-  renderTimer();
-  timerHandle = setInterval(function(){
-    timerRemain--;
-    if(timerRemain <= 0){
-      timerRemain = 0;
-      renderTimer();
-      stopTimer();
-      return;
-    }
-    renderTimer();
-  }, 1000);
-}
-function stopTimer(){
-  if(timerHandle){ clearInterval(timerHandle); timerHandle = null; }
-}
-function renderTimer(){
-  var el = document.getElementById("s2Timer");
-  if(timerRemain <= 0){
-    el.textContent = "延長戦";
-    el.classList.add("over");
-    el.classList.remove("warn");
-  } else {
-    var s = pad2(timerRemain % 60);
-    el.textContent = "0:" + s;
-    el.classList.toggle("warn", timerRemain <= 10);
-    el.classList.remove("over");
-  }
-}
-
-document.querySelectorAll(".tile").forEach(function(tile){
-  tile.addEventListener("click", function(){
-    var tag = tile.getAttribute("data-tag");
-    var idx = roundState.tags.indexOf(tag);
-    if(idx === -1){
-      roundState.tags.push(tag);
-      tile.classList.add("on");
-    } else {
-      roundState.tags.splice(idx, 1);
-      tile.classList.remove("on");
-    }
-    vibrate(15);
-  });
-});
-
-document.getElementById("btnR1Next").addEventListener("click", function(){
-  showRound(2);
-});
-
-document.getElementById("btnR2Next").addEventListener("click", function(){
-  roundState.insight = document.getElementById("insightInput").value.trim();
-  showRound(3);
-});
-
-var condAdvanceLock = false;
-document.querySelectorAll(".cond-bar").forEach(function(bar){
-  bar.addEventListener("click", function(){
-    if(condAdvanceLock) return;
-    condAdvanceLock = true;
-    var v = parseInt(bar.getAttribute("data-v"), 10);
-    roundState.cond = v;
-    document.querySelectorAll(".cond-bar").forEach(function(b){ b.classList.remove("on"); });
-    bar.classList.add("on");
-    vibrate(15);
-    setTimeout(function(){
-      condAdvanceLock = false;
-      showRound(4);
-    }, 250);
-  });
-});
-
-document.getElementById("btnGong").addEventListener("click", function(){
-  roundState.kadai = document.getElementById("kadaiInput").value.trim();
-  doSave();
-});
-
+/* ---------- mic ---------- */
 function setupMic(btnId, targetInputId, rowId){
   var SR = window.webkitSpeechRecognition || window.SpeechRecognition;
   var row = document.getElementById(rowId);
-  if(!SR){
-    row.style.display = "none";
-    return;
-  }
+  if(!SR){ row.style.display = "none"; return; }
   row.style.display = "flex";
   var btn = document.getElementById(btnId);
   var recognition = null;
   var listening = false;
-
   btn.addEventListener("click", function(){
     if(listening){
       if(recognition){ try{ recognition.stop(); }catch(e){} }
@@ -845,78 +917,326 @@ function setupMic(btnId, targetInputId, rowId){
       recognition.lang = "ja-JP";
       recognition.interimResults = false;
       recognition.maxAlternatives = 1;
-
-      recognition.onstart = function(){
-        listening = true;
-        btn.classList.add("rec");
-      };
+      recognition.onstart = function(){ listening = true; btn.classList.add("rec"); };
       recognition.onresult = function(evt){
         var input = document.getElementById(targetInputId);
         var transcript = "";
-        for(var i=0; i<evt.results.length; i++){
-          transcript += evt.results[i][0].transcript;
-        }
+        for(var i=0; i<evt.results.length; i++){ transcript += evt.results[i][0].transcript; }
         var existing = input.value;
         input.value = existing ? (existing + transcript) : transcript;
       };
-      recognition.onerror = function(){
-        listening = false;
-        btn.classList.remove("rec");
-      };
-      recognition.onend = function(){
-        listening = false;
-        btn.classList.remove("rec");
-      };
+      recognition.onerror = function(){ listening = false; btn.classList.remove("rec"); };
+      recognition.onend = function(){ listening = false; btn.classList.remove("rec"); };
       recognition.start();
-    }catch(e){
-      listening = false;
-      btn.classList.remove("rec");
-    }
+    }catch(e){ listening = false; btn.classList.remove("rec"); }
   });
 }
+setupMic("micAim", "planAim", "micRowAim");
+setupMic("micMemo", "r2MemoInput", "micRowMemo");
 setupMic("micInsight", "insightInput", "micRowInsight");
-setupMic("micKadai", "kadaiInput", "micRowKadai");
+
+/* ---------- S1 render ---------- */
+function ticker1Date(){
+  var d = new Date();
+  return d.getFullYear() + "." + pad2(d.getMonth()+1) + "." + pad2(d.getDate()) + " " + WD[d.getDay()];
+}
+
+function expMarkOf(exp){
+  if(!exp) return "";
+  if(exp.result === "o") return "◯";
+  if(exp.result === "x") return "✕";
+  return "－";
+}
+
+function renderS1(){
+  document.getElementById("s1TickerDate").textContent = ticker1Date();
+
+  var sessions = flData.sessions;
+  var count = sessions.length;
+  var doneCount = sessions.filter(function(s){ return s.done === true; }).length;
+  var oCount = sessions.filter(function(s){ return s.exp && s.exp.result === "o"; }).length;
+  var xCount = sessions.filter(function(s){ return s.exp && s.exp.result === "x"; }).length;
+
+  document.getElementById("statDone").textContent = doneCount;
+  document.getElementById("statOX").textContent = oCount + "◯ " + xCount + "✕";
+
+  var sinceEl = document.getElementById("statSince");
+  if(count === 0){
+    sinceEl.textContent = "デビュー戦";
+  } else {
+    var last = sessions[sessions.length - 1];
+    var gap = daysBetween(last.date, todayISO());
+    if(gap < 0) gap = 0;
+    sinceEl.textContent = (gap === 0) ? "今日" : (gap + "日前");
+  }
+
+  /* 今夜のゲームプラン */
+  var planBlock = document.getElementById("planBlock");
+  if(plan){
+    planBlock.innerHTML =
+      '<div class="plan-title"><span class="bar"></span><span>今夜のゲームプラン</span><span class="edit" id="planEditLink" role="button">編集 ›</span></div>' +
+      '<div class="strap"><div class="k">狙い — AIM</div><div class="v">' + escapeText(plan.aim) + '</div></div>' +
+      '<div class="strap green"><div class="k">◯ のサイン</div><div class="v">' + escapeText(plan.ok) + '</div></div>' +
+      '<div class="strap"><div class="k">✕ のサイン</div><div class="v">' + escapeText(plan.ng) + '</div></div>';
+    document.getElementById("planEditLink").addEventListener("click", function(){
+      openPlanScreen();
+    });
+  } else {
+    planBlock.innerHTML = '<div class="plan-empty">今夜の実験、まだ決めてない。</div>';
+  }
+
+  /* 前回の一行 */
+  var prevLine = document.getElementById("prevLine");
+  if(count === 0){
+    prevLine.textContent = "初陣だ。まずは1本記録しろ。";
+  } else {
+    var last2 = sessions[sessions.length - 1];
+    if(last2.exp){
+      // TODO(設計書3.1-5): result無し(null)の一行フォーマットは仕様書に例示が無いため「－」を暫定採用
+      prevLine.textContent = "前回 " + expMarkOf(last2.exp) + " " + (last2.exp.aim || "");
+    } else {
+      prevLine.textContent = "前回 （通常練習）" + (last2.insight || "");
+    }
+  }
+
+  /* 金ボタンの文言 */
+  document.getElementById("btnPlan").textContent = plan ? "ゲームプランを書き直す" : "＋ 新しいゲームプランを書く";
+}
+
+document.getElementById("prevLine").addEventListener("click", function(){
+  renderS4();
+  showScreen("s4");
+});
+document.getElementById("btnGoS4").addEventListener("click", function(){
+  renderS4();
+  showScreen("s4");
+});
+document.getElementById("btnPlan").addEventListener("click", function(){
+  openPlanScreen();
+});
+document.getElementById("btnEnter").addEventListener("click", function(){
+  resetRoundState();
+  showRound(1);
+  showScreen("s2r");
+});
+
+/* ---------- S2 ゲームプラン記入 ---------- */
+function openPlanScreen(){
+  document.getElementById("planAim").value = plan ? (plan.aim || "") : "";
+  document.getElementById("planOk").value = plan ? (plan.ok || "") : "";
+  document.getElementById("planNg").value = plan ? (plan.ng || "") : "";
+  showScreen("s2");
+}
+document.getElementById("btnS2Back").addEventListener("click", function(){
+  renderS1();
+  showScreen("s1");
+});
+document.getElementById("btnPlanSave").addEventListener("click", function(){
+  var aim = document.getElementById("planAim").value.trim();
+  if(!aim){
+    showToast("狙いを書いてから保存しろ");
+    return;
+  }
+  var ok = document.getElementById("planOk").value.trim();
+  var ng = document.getElementById("planNg").value.trim();
+  plan = { aim: aim, ok: ok, ng: ng, ts: Date.now() };
+  savePlan(plan);
+  renderS1();
+  showScreen("s1");
+});
+
+/* ---------- S2R 記録フロー ---------- */
+var roundState = { tags: [], insight: "", cond: 0, done: false, kuyashii: "", expResult: null, expMemo: "" };
+var currentRound = 1;
+var timerHandle = null;
+var timerRemain = ROUND_SECONDS;
+
+function resetRoundState(){
+  roundState = { tags: [], insight: "", cond: 0, done: false, kuyashii: "", expResult: null, expMemo: "" };
+  currentRound = 1;
+
+  document.querySelectorAll("#tagTiles .tile2").forEach(function(t){ t.classList.remove("on"); });
+  document.querySelectorAll("#condGrid .condrow").forEach(function(c){ c.classList.remove("on"); });
+  document.getElementById("insightInput").value = "";
+  document.getElementById("r2MemoInput").value = "";
+  document.getElementById("kuyashiiInput").value = "";
+  document.getElementById("kuyashiiMsg").style.display = "none";
+
+  document.getElementById("doneBox").textContent = "";
+  document.getElementById("doneCheck").classList.remove("on");
+  document.getElementById("r3Stamp").style.display = "none";
+
+  document.querySelectorAll("#judgeButtons button").forEach(function(b){ b.classList.remove("sel"); });
+
+  if(plan){
+    document.getElementById("r2WithPlan").style.display = "block";
+    document.getElementById("r2NoPlan").style.display = "none";
+    document.getElementById("r2AimText").textContent = plan.aim || "";
+  } else {
+    document.getElementById("r2WithPlan").style.display = "none";
+    document.getElementById("r2NoPlan").style.display = "block";
+  }
+}
+
+function updateProgressBars(){
+  document.querySelectorAll("#s2rBars i").forEach(function(bar){
+    var r = parseInt(bar.getAttribute("data-r"), 10);
+    bar.classList.remove("on","past");
+    if(r === currentRound){ bar.classList.add("on"); }
+    else if(r < currentRound){ bar.classList.add("past"); }
+  });
+  document.getElementById("s2rRoundLabel").textContent = "ROUND " + currentRound + " / 4";
+}
+function showRound(n){
+  currentRound = n;
+  ["r1","r2","r3","r4"].forEach(function(key, idx){
+    var pane = document.getElementById("pane-" + key);
+    pane.style.display = (idx + 1 === n) ? "block" : "none";
+  });
+  updateProgressBars();
+  if(n === 1){ startTimer(); }
+}
+function startTimer(){
+  stopTimer();
+  timerRemain = ROUND_SECONDS;
+  renderTimer();
+  timerHandle = setInterval(function(){
+    timerRemain--;
+    if(timerRemain <= 0){ timerRemain = 0; renderTimer(); stopTimer(); return; }
+    renderTimer();
+  }, 1000);
+}
+function stopTimer(){ if(timerHandle){ clearInterval(timerHandle); timerHandle = null; } }
+function renderTimer(){
+  var el = document.getElementById("s2rTimer");
+  if(timerRemain <= 0){
+    el.textContent = "延長戦";
+  } else {
+    el.textContent = "0:" + pad2(timerRemain % 60);
+  }
+}
+
+document.querySelectorAll("#tagTiles .tile2").forEach(function(tile){
+  tile.addEventListener("click", function(){
+    var tag = tile.getAttribute("data-tag");
+    var idx = roundState.tags.indexOf(tag);
+    if(idx === -1){ roundState.tags.push(tag); tile.classList.add("on"); }
+    else { roundState.tags.splice(idx, 1); tile.classList.remove("on"); }
+    vibrate(15);
+  });
+});
+document.getElementById("btnR1Next").addEventListener("click", function(){ showRound(2); });
+
+document.querySelectorAll("#judgeButtons button").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    var r = btn.getAttribute("data-r");
+    roundState.expResult = (roundState.expResult === r) ? null : r; // 再タップで解除できる
+    document.querySelectorAll("#judgeButtons button").forEach(function(b){
+      b.classList.toggle("sel", b === btn && roundState.expResult === r);
+    });
+    vibrate(15);
+  });
+});
+document.getElementById("btnR2Next").addEventListener("click", function(){
+  if(plan){
+    roundState.expMemo = document.getElementById("r2MemoInput").value.trim();
+  } else {
+    roundState.insight = document.getElementById("insightInput").value.trim();
+  }
+  showRound(3);
+});
+
+document.getElementById("doneCheck").addEventListener("click", function(){
+  roundState.done = !roundState.done;
+  var box = document.getElementById("doneBox");
+  var wrap = document.getElementById("doneCheck");
+  var stamp = document.getElementById("r3Stamp");
+  if(roundState.done){
+    box.textContent = "✓";
+    wrap.classList.add("on");
+    stamp.style.display = "none";
+    // 再アニメーションのため一度detachしてからattach
+    void stamp.offsetWidth;
+    stamp.style.display = "block";
+    vibrate([40,30,60]);
+  } else {
+    box.textContent = "";
+    wrap.classList.remove("on");
+    stamp.style.display = "none";
+  }
+});
+document.getElementById("kuyashiiInput").addEventListener("input", function(){
+  roundState.kuyashii = this.value;
+  document.getElementById("kuyashiiMsg").style.display = this.value.trim().length > 0 ? "block" : "none";
+});
+document.getElementById("btnR3Next").addEventListener("click", function(){ showRound(4); });
+
+document.querySelectorAll("#condGrid .condrow").forEach(function(bar){
+  bar.addEventListener("click", function(){
+    var v = parseInt(bar.getAttribute("data-v"), 10);
+    roundState.cond = v;
+    document.querySelectorAll("#condGrid .condrow").forEach(function(b){ b.classList.remove("on"); });
+    bar.classList.add("on");
+    vibrate(15);
+  });
+});
+
+document.getElementById("btnGong").addEventListener("click", function(){
+  doSave();
+});
 
 function doSave(){
   stopTimer();
   var session = {
     id: "s_" + Date.now(),
     date: todayISO(),
+    ts: Date.now(),
     tags: roundState.tags.slice(),
-    insight: roundState.insight,
     cond: roundState.cond,
-    kadai: roundState.kadai,
-    ts: Date.now()
+    insight: plan ? "" : roundState.insight,
+    kadai: "",
+    exp: plan ? { aim: plan.aim, ok: plan.ok, ng: plan.ng, result: roundState.expResult, memo: roundState.expMemo } : null,
+    done: roundState.done,
+    kuyashii: roundState.kuyashii
   };
   flData.sessions.push(session);
-  saveFL(flData);
+  saveV2(flData);
+  clearPlan();
+  plan = null;
   syncToTracker(session);
-
   vibrate([60,40,60,40,120]);
   renderS3(session);
   showScreen("s3");
-
-  setTimeout(function(){
-    renderS4();
-    showScreen("s4");
-  }, 1200);
 }
 
+/* ---------- S3 ゴング後 ---------- */
 function renderS3(session){
-  document.getElementById("s3Date").textContent = session.date;
-  var tagsEl = document.getElementById("s3Tags");
-  tagsEl.innerHTML = "";
-  session.tags.forEach(function(tag){
-    var span = document.createElement("span");
-    span.textContent = tag;
-    tagsEl.appendChild(span);
-  });
-  document.getElementById("s3Insight").textContent = session.insight || "（気づきなし）";
-}
+  document.getElementById("s3Date").textContent = mmdd(session.date) + " " + weekday3FromISO(session.date);
+  document.getElementById("s3Tags").textContent = session.tags && session.tags.length ? session.tags.join(" / ") : "（タグなし）";
 
+  var stampEl = document.getElementById("s3Stamp");
+  stampEl.style.display = session.done === true ? "block" : "none";
+
+  var expLine = document.getElementById("s3ExpLine");
+  if(session.exp){
+    var mark = expMarkOf(session.exp);
+    var mkClass = session.exp.result === "o" ? "o" : (session.exp.result === "x" ? "x" : "");
+    expLine.innerHTML = '<span class="mk ' + mkClass + '">' + mark + '</span>' + escapeText(session.exp.aim);
+    expLine.style.display = "block";
+  } else {
+    expLine.style.display = "none";
+  }
+}
+document.getElementById("btnS3Back").addEventListener("click", function(){
+  renderS1();
+  showScreen("s1");
+});
+
+/* ---------- S4 戦績（台帳） ---------- */
 var openedId = null;
 
-function condColor(v){
+function condDotColor(v){
+  if(!v) return "rgba(255,255,255,.3)";
   if(v <= 1) return "#ff5050";
   if(v === 2) return "#ff8c3c";
   if(v === 3) return "#ffc850";
@@ -927,7 +1247,15 @@ function condColor(v){
 function renderS4(){
   var sessions = flData.sessions;
   var count = sessions.length;
-  document.getElementById("s4Record").textContent = count + "勝 0敗";
+  var doneCount = sessions.filter(function(s){ return s.done === true; }).length;
+  var oCount = sessions.filter(function(s){ return s.exp && s.exp.result === "o"; }).length;
+  var xCount = sessions.filter(function(s){ return s.exp && s.exp.result === "x"; }).length;
+
+  document.getElementById("s4TickerCount").textContent = "全" + count + "戦";
+  document.getElementById("s4DoneCount").textContent = doneCount;
+  document.getElementById("s4OCount").textContent = oCount;
+  document.getElementById("s4XCount").textContent = xCount;
+  document.getElementById("s4TotalCount").textContent = count;
 
   var listEl = document.getElementById("s4List");
   listEl.innerHTML = "";
@@ -942,95 +1270,197 @@ function renderS4(){
 
   var ordered = sessions.slice().reverse();
   ordered.forEach(function(s){
-    var item = document.createElement("div");
-    item.className = "s4-item";
-    if(openedId === s.id){ item.classList.add("open"); }
+    var resClass = (s.exp && s.exp.result === "o") ? "o" : (s.exp && s.exp.result === "x") ? "x" : "n";
+    var resMark = resClass === "o" ? "◯" : resClass === "x" ? "✕" : "—";
+    var oneLiner = s.exp ? (s.exp.aim || "") : ("（通常練習）" + (s.insight || ""));
 
-    var row1 = document.createElement("div");
-    row1.className = "row1";
-    var dateEl = document.createElement("span");
-    dateEl.className = "date";
-    dateEl.textContent = s.date;
-    var condChip = document.createElement("span");
-    condChip.className = "cond-chip";
-    condChip.style.background = condColor(s.cond || 3);
-    condChip.style.color = (s.cond === 3) ? "#5a4500" : "#fff";
-    condChip.textContent = "C" + (s.cond || "-");
-    row1.appendChild(dateEl);
-    row1.appendChild(condChip);
-    item.appendChild(row1);
-
-    if(s.tags && s.tags.length){
-      var tagrow = document.createElement("div");
-      tagrow.className = "tagrow";
-      s.tags.forEach(function(tag){
-        var sp = document.createElement("span");
-        sp.textContent = tag;
-        tagrow.appendChild(sp);
-      });
-      item.appendChild(tagrow);
-    }
-
-    if(s.insight){
-      var insightEl = document.createElement("div");
-      insightEl.className = "insight";
-      insightEl.textContent = s.insight;
-      item.appendChild(insightEl);
-    }
-
-    var expand = document.createElement("div");
-    expand.className = "expand";
-
-    if(s.kadai){
-      var kadaiEl = document.createElement("div");
-      kadaiEl.className = "kadai";
-      kadaiEl.textContent = "次回の課題：" + s.kadai;
-      expand.appendChild(kadaiEl);
-    }
-
-    var delBtn = document.createElement("button");
-    delBtn.className = "del-btn";
-    delBtn.textContent = "この記録を削除";
-    delBtn.addEventListener("click", function(evt){
-      evt.stopPropagation();
-      if(window.confirm("この記録を削除しますか？")){
-        deleteSession(s.id);
-      }
-    });
-    expand.appendChild(delBtn);
-
-    item.appendChild(expand);
-
-    item.addEventListener("click", function(){
+    var row = document.createElement("div");
+    row.className = "lrow";
+    if(openedId === s.id) row.classList.add("open-detail");
+    row.innerHTML =
+      '<div class="res ' + resClass + '">' + resMark + '</div>' +
+      '<div class="mid">' +
+        '<div class="date">' + mmdd(s.date) + ' ' + weekday3FromISO(s.date) + ' — ' + (s.tags && s.tags.length ? s.tags.join(" / ") : "（タグなし）") + '</div>' +
+        '<div class="aim">' + escapeText(oneLiner) + '</div>' +
+      '</div>' +
+      '<div class="chev">' + (openedId === s.id ? "▾" : "▸") + '</div>';
+    row.addEventListener("click", function(){
       openedId = (openedId === s.id) ? null : s.id;
       renderS4();
     });
+    listEl.appendChild(row);
 
-    listEl.appendChild(item);
+    if(openedId === s.id){
+      var detail = document.createElement("div");
+      detail.className = "detail";
+      var rows = "";
+      if(s.exp && s.exp.ok) rows += '<div class="drow"><div class="dk">◯サイン</div><div class="dv green">' + escapeText(s.exp.ok) + '</div></div>';
+      if(s.exp && s.exp.ng) rows += '<div class="drow"><div class="dk">✕サイン</div><div class="dv">' + escapeText(s.exp.ng) + '</div></div>';
+      if(s.exp && s.exp.memo) rows += '<div class="drow"><div class="dk">結果メモ</div><div class="dv">' + escapeText(s.exp.memo) + '</div></div>';
+      if(s.insight) rows += '<div class="drow"><div class="dk">気づき</div><div class="dv">' + escapeText(s.insight) + '</div></div>';
+      if(s.kadai) rows += '<div class="drow"><div class="dk">課題</div><div class="dv">' + escapeText(s.kadai) + '</div></div>';
+      if(s.kuyashii) rows += '<div class="drow"><div class="dk">悔しさ</div><div class="dv red2">' + escapeText(s.kuyashii) + '</div></div>';
+      if(s.cond) rows += '<div class="drow"><div class="dk">コンディション</div><div class="dv"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + condDotColor(s.cond) + ';margin-right:6px;vertical-align:middle"></span>' + s.cond + '</div></div>';
+
+      var actions = '<div class="actions">' +
+        '<button type="button" class="edit" data-act="edit">✎ 編集する</button>' +
+        '<button type="button" class="del" data-act="del">削除</button>' +
+        (s.exp && s.exp.result === "x" ? '<button type="button" class="rematch" data-act="rematch">⟳ 再戦する</button>' : '') +
+        '</div>';
+
+      detail.innerHTML = rows + actions;
+      listEl.appendChild(detail);
+
+      detail.querySelector('[data-act="edit"]').addEventListener("click", function(evt){
+        evt.stopPropagation();
+        openEditSheet(s.id);
+      });
+      detail.querySelector('[data-act="del"]').addEventListener("click", function(evt){
+        evt.stopPropagation();
+        if(window.confirm("この記録を削除しますか？")){
+          deleteSession(s.id);
+        }
+      });
+      var rematchBtn = detail.querySelector('[data-act="rematch"]');
+      if(rematchBtn){
+        rematchBtn.addEventListener("click", function(evt){
+          evt.stopPropagation();
+          rematchSession(s.id);
+        });
+      }
+    }
   });
 }
 
 function deleteSession(id){
   flData.sessions = flData.sessions.filter(function(s){ return s.id !== id; });
-  saveFL(flData);
-  openedId = null;
+  saveV2(flData);
+  if(openedId === id) openedId = null;
   renderS4();
 }
 
-document.getElementById("btnEnter").addEventListener("click", function(){
-  resetRoundState();
-  showRound(1);
-  showScreen("s2");
-});
-document.getElementById("btnGoS4").addEventListener("click", function(){
-  renderS4();
-  showScreen("s4");
-});
+function rematchSession(id){
+  var s = flData.sessions.filter(function(x){ return x.id === id; })[0];
+  if(!s || !s.exp) return;
+  plan = { aim: s.exp.aim || "", ok: s.exp.ok || "", ng: s.exp.ng || "", ts: Date.now() };
+  savePlan(plan);
+  renderS1();
+  showScreen("s1");
+}
+
 document.getElementById("btnBackS1").addEventListener("click", function(){
   renderS1();
   showScreen("s1");
 });
 
+/* ---------- 編集シート ---------- */
+var editingId = null;
+var editState = { tags: [], result: null, done: false, cond: 0 };
+
+function openEditSheet(id){
+  var s = flData.sessions.filter(function(x){ return x.id === id; })[0];
+  if(!s) return;
+  editingId = id;
+  editState = {
+    tags: (s.tags || []).slice(),
+    result: s.exp ? (s.exp.result || null) : "none",
+    done: s.done === true,
+    cond: s.cond || 0
+  };
+
+  document.getElementById("editDate").textContent = mmdd(s.date) + " " + weekday3FromISO(s.date) + "（" + s.date + "）";
+
+  document.querySelectorAll("#editTagTiles .tile2").forEach(function(t){
+    t.classList.toggle("on", editState.tags.indexOf(t.getAttribute("data-tag")) !== -1);
+  });
+
+  document.getElementById("editAim").value = s.exp ? (s.exp.aim || "") : "";
+  document.getElementById("editOk").value = s.exp ? (s.exp.ok || "") : "";
+  document.getElementById("editNg").value = s.exp ? (s.exp.ng || "") : "";
+  document.getElementById("editMemo").value = s.exp ? (s.exp.memo || "") : "";
+
+  document.querySelectorAll("#editJudge button").forEach(function(b){
+    b.classList.toggle("sel", b.getAttribute("data-r") === editState.result);
+  });
+
+  document.getElementById("editDoneBox").textContent = editState.done ? "✓" : "";
+  document.getElementById("editDoneCheck").classList.toggle("on", editState.done);
+
+  document.getElementById("editKuyashii").value = s.kuyashii || "";
+  document.getElementById("editInsight").value = s.insight || "";
+  document.getElementById("editKadai").value = s.kadai || "";
+
+  document.querySelectorAll("#editCondGrid .condrow").forEach(function(b){
+    b.classList.toggle("on", parseInt(b.getAttribute("data-v"),10) === editState.cond);
+  });
+
+  document.getElementById("editOverlay").classList.add("open");
+}
+
+document.querySelectorAll("#editTagTiles .tile2").forEach(function(tile){
+  tile.addEventListener("click", function(){
+    var tag = tile.getAttribute("data-tag");
+    var idx = editState.tags.indexOf(tag);
+    if(idx === -1){ editState.tags.push(tag); tile.classList.add("on"); }
+    else { editState.tags.splice(idx, 1); tile.classList.remove("on"); }
+  });
+});
+document.querySelectorAll("#editJudge button").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    editState.result = btn.getAttribute("data-r");
+    document.querySelectorAll("#editJudge button").forEach(function(b){
+      b.classList.toggle("sel", b === btn);
+    });
+  });
+});
+document.getElementById("editDoneCheck").addEventListener("click", function(){
+  editState.done = !editState.done;
+  document.getElementById("editDoneBox").textContent = editState.done ? "✓" : "";
+  this.classList.toggle("on", editState.done);
+});
+document.querySelectorAll("#editCondGrid .condrow").forEach(function(bar){
+  bar.addEventListener("click", function(){
+    editState.cond = parseInt(bar.getAttribute("data-v"), 10);
+    document.querySelectorAll("#editCondGrid .condrow").forEach(function(b){ b.classList.remove("on"); });
+    bar.classList.add("on");
+  });
+});
+
+document.getElementById("editCancel").addEventListener("click", function(){
+  document.getElementById("editOverlay").classList.remove("open");
+  editingId = null;
+});
+document.getElementById("editSave").addEventListener("click", function(){
+  if(!editingId) return;
+  var s = flData.sessions.filter(function(x){ return x.id === editingId; })[0];
+  if(!s){ document.getElementById("editOverlay").classList.remove("open"); return; }
+
+  s.tags = editState.tags.slice();
+  s.cond = editState.cond || s.cond;
+  s.kuyashii = document.getElementById("editKuyashii").value;
+  s.insight = document.getElementById("editInsight").value;
+  s.kadai = document.getElementById("editKadai").value;
+  s.done = editState.done === true;
+
+  if(editState.result === "none" || !editState.result){
+    s.exp = null;
+  } else {
+    s.exp = {
+      aim: document.getElementById("editAim").value,
+      ok: document.getElementById("editOk").value,
+      ng: document.getElementById("editNg").value,
+      result: editState.result,
+      memo: document.getElementById("editMemo").value
+    };
+  }
+
+  saveV2(flData);
+  document.getElementById("editOverlay").classList.remove("open");
+  editingId = null;
+  renderS4();
+});
+
+/* ---------- embers ---------- */
 (function spawnEmbers(){
   var field = document.getElementById("emberField");
   var count = 8;
@@ -1047,6 +1477,8 @@ document.getElementById("btnBackS1").addEventListener("click", function(){
   }
 })();
 
+/* ---------- init ---------- */
+resetRoundState();
 renderS1();
 showScreen("s1");
 
