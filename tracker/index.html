@@ -187,6 +187,22 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 .es-card .es-del-line{justify-content:center;color:#ff453a;font-weight:700;font-size:15px;cursor:pointer;text-align:center}
 .es-card .es-del-line:active{background:rgba(255,69,58,.12)}
 
+/* === 繰り返し（iPhone式リピート） === */
+.es-repseg{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
+.es-repseg .rep-opt{border:none;background:rgba(255,255,255,.1);color:rgba(255,255,255,.75);font:inherit;font-size:12.5px;font-weight:700;padding:9px 0;border-radius:9px;cursor:pointer}
+.es-repseg .rep-opt.sel{background:#5ac8fa;color:#04222e}
+.es-line input[type=date]{border:none;background:rgba(255,255,255,.1);border-radius:8px;padding:6px 8px;font:inherit;font-size:14px;color:#5ac8fa;font-weight:700;color-scheme:dark;margin-left:auto}
+
+/* === アクションシート（この予定のみ／これ以降すべて） === */
+.act-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:3000;display:flex;align-items:flex-end;opacity:0;transition:opacity .18s}
+.act-bg.show{opacity:1}
+.act-sheet{width:100%;max-width:520px;margin:0 auto;padding:10px 10px calc(14px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:8px}
+.act-title{text-align:center;font-size:12px;color:rgba(255,255,255,.8);padding:4px 0 2px;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.act-btn{border:none;border-radius:13px;padding:15px;font:inherit;font-size:16px;font-weight:700;background:rgba(58,58,62,.97);color:#5ac8fa;cursor:pointer}
+.act-btn:active{background:rgba(80,80,86,.97)}
+.act-btn.danger{color:#ff453a}
+.act-btn.act-cancel{background:rgba(28,28,30,.98);color:#fff;font-weight:800;margin-top:2px}
+
 /* === 活動継続日バナー（リスト・記録 両方の上部に常時表示） === */
 .streak-banner{margin:8px 12px;padding:12px 14px;border-radius:14px;background:linear-gradient(135deg,#ff9500 0%,#ff5e3a 100%);color:#fff;box-shadow:0 3px 10px rgba(255,94,58,.3);display:flex;align-items:center;gap:12px}
 .streak-banner .sb-fire{font-size:30px;line-height:1}
@@ -2000,6 +2016,15 @@ function openEvent(id, kind, presetStart, presetEnd){
   evCtx.color = curColor;
   evCtx.done = done;
   evCtx.prevStart = start;
+  // 繰り返し情報（customのみ）
+  if(kind==='custom' && !evCtx.isNew){
+    const t=(s.__custom__||[]).find(t=>t.id===id);
+    evCtx.rid = t&&t.rid ? t.rid : null;
+    evCtx.repFreq = t&&t.freq ? t.freq : 'none';
+  } else {
+    evCtx.rid = null;
+    evCtx.repFreq = 'none';
+  }
   const colorSwatches = EV_PALETTE.map(c=>`<div class="cbox ${c.color===curColor?'sel':''}" style="background:${c.color}" onclick="pickEvColor('${c.color}')" title="${c.name}"></div>`).join('');
   const delLabel = isPreset ? 'この日の予定から外す' : '予定を削除';
   document.getElementById("dsBody").innerHTML=`
@@ -2018,6 +2043,16 @@ function openEvent(id, kind, presetStart, presetEnd){
     <div class="es-card">
       <div class="es-line"><span class="es-lbl">色</span><div class="es-colors" id="evColors">${colorSwatches}</div></div>
     </div>
+    ${!isPreset?`<div class="es-card">
+      <div class="es-line" style="display:block">
+        <span class="es-lbl">繰り返し</span>
+        <div class="es-repseg" id="evRepSeg">${repSegHTML(evCtx.repFreq)}</div>
+      </div>
+      <div class="es-line" id="evRepUntilLine" style="${evCtx.repFreq==='none'?'display:none':''}">
+        <span class="es-lbl">繰り返しの終了</span>
+        <input id="evRepUntil" type="date" value="">
+      </div>
+    </div>`:''}
     <div class="es-card">
       <div class="es-line"><span class="es-lbl">✓ 完了</span><button id="evDoneToggle" class="es-toggle ${done?'on':''}" onclick="evToggleDone()"></button></div>
     </div>
@@ -2044,6 +2079,16 @@ function evToggleDone(ev){
 function evDelete(){
   if(!evCtx) return;
   if(evCtx.kind==='custom'){
+    const s=getDayState(currentMonth, selDay);
+    const t=(s.__custom__||[]).find(t=>t.id===evCtx.id);
+    if(t && t.rid){
+      const rid=t.rid, tid=t.id, from={y:curYear,m:currentMonth,d:selDay};
+      showActSheet('これは繰り返し予定です', [
+        {label:'この予定のみ削除', cls:'danger', fn:()=>{ delCustomTaskSilent(currentMonth, selDay, tid); diaryToast('削除しました'); closeDaySheet(); }},
+        {label:'これ以降すべて削除', cls:'danger', fn:()=>{ removeSeriesFrom(rid, from); saveState(state); diaryToast('削除しました'); closeDaySheet(); }}
+      ]);
+      return;
+    }
     if(!confirm('この予定を削除？')) return;
     delCustomTask(currentMonth, selDay, evCtx.id);
   } else {
@@ -2076,6 +2121,130 @@ function evStartChanged(){
   enEl.value=min2hm(ns+dur);
   evCtx.prevStart=ns;
 }
+// ===== 繰り返し予定（iPhone式リピート） =====
+const REP_LABELS={none:'なし',daily:'毎日',weekly:'毎週',biweekly:'隔週',monthly:'毎月'};
+function repSegHTML(cur){
+  return Object.keys(REP_LABELS).map(f=>`<button class="rep-opt ${f===cur?'sel':''}" data-f="${f}" onclick="pickRepFreq('${f}')">${REP_LABELS[f]}</button>`).join('');
+}
+function pickRepFreq(f){
+  if(!evCtx) return;
+  evCtx.repFreq=f;
+  document.querySelectorAll('#evRepSeg .rep-opt').forEach(b=>b.classList.toggle('sel', b.dataset.f===f));
+  const ul=document.getElementById('evRepUntilLine');
+  if(ul) ul.style.display = (f==='none') ? 'none' : 'flex';
+}
+function date2ymd(dt){ return {y:dt.getFullYear(), m:dt.getMonth()+1, d:dt.getDate()}; }
+function dateCmp(a,b){ return (a.y-b.y)||(a.m-b.m)||(a.d-b.d); }
+// 開始日を含む発生日リスト。until未指定=3ヶ月先まで
+function repeatDates(y,m,d,freq,untilStr){
+  const out=[]; const start=new Date(y,m-1,d);
+  let until = untilStr ? new Date(untilStr+'T23:59:59') : new Date(y, m-1+3, d, 23,59,59);
+  if(until<start) until=start;
+  if(freq==='monthly'){
+    let cy=y, cm=m;
+    for(let i=0;i<60;i++){
+      const dim=new Date(cy,cm,0).getDate();
+      if(d<=dim){
+        const dt=new Date(cy,cm-1,d);
+        if(dt>until) break;
+        out.push({y:cy,m:cm,d:d});
+      }
+      cm++; if(cm>12){cm=1;cy++;}
+    }
+  } else {
+    const step = freq==='daily'?1 : freq==='weekly'?7 : 14;
+    let dt=start;
+    for(let i=0;i<400;i++){
+      if(dt>until) break;
+      out.push(date2ymd(dt));
+      dt=new Date(dt.getFullYear(), dt.getMonth(), dt.getDate()+step);
+    }
+  }
+  return out;
+}
+function parseDayKeyStr(k){
+  const p=k.split('-');
+  if(p.length===2){ const m=+p[0], d=+p[1]; return (m>=1&&m<=12&&d>=1&&d<=31)?{y:2026,m,d}:null; }
+  if(p.length===3){ const y=+p[0],m=+p[1],d=+p[2]; return (y>2000&&y<3000&&m>=1&&m<=12&&d>=1&&d<=31)?{y,m,d}:null; }
+  return null;
+}
+function forEachRidOccurrence(rid, cb){
+  Object.keys(state).forEach(k=>{
+    const pd=parseDayKeyStr(k); if(!pd) return;
+    const s=state[k]; if(!s||!s.__custom__) return;
+    s.__custom__.forEach(t=>{ if(t.rid===rid) cb(pd, s, t); });
+  });
+}
+function applyEvVals(t,v){ t.label=v.label; t.start=v.start; t.end=v.end; delete t.time; t.color=v.color; }
+function createRepeatSeries(y,m,d,vals,freq,untilStr,rid,skipFirst){
+  rid=rid||('r_'+Date.now());
+  const dates=repeatDates(y,m,d,freq,untilStr);
+  dates.forEach((pd,i)=>{
+    if(skipFirst && i===0) return;
+    const ds=getDayState(pd.m, pd.d, pd.y);
+    if(!ds.__custom__) ds.__custom__=[];
+    ds.__custom__.push({ id:`c_${Date.now()}_${i}`, label:vals.label, cat:'custom', start:vals.start, end:vals.end, color:vals.color, rid:rid, freq:freq });
+  });
+  return rid;
+}
+function removeSeriesFrom(rid, from){
+  Object.keys(state).forEach(k=>{
+    const pd=parseDayKeyStr(k); if(!pd) return;
+    if(dateCmp(pd,from)<0) return;
+    const s=state[k]; if(!s||!s.__custom__) return;
+    s.__custom__.forEach(t=>{ if(t.rid===rid) delete s[t.id]; });
+    s.__custom__=s.__custom__.filter(t=>t.rid!==rid);
+  });
+}
+function updateSeriesFrom(rid, from, vals, freq, untilStr, curTask){
+  const oldFreq=curTask.freq||'none';
+  if(freq===oldFreq){
+    forEachRidOccurrence(rid,(pd,s,t)=>{ if(dateCmp(pd,from)>=0) applyEvVals(t,vals); });
+    return;
+  }
+  // 周期が変わった → この日以降を消して作り直し
+  removeSeriesFrom(rid, from);
+  const ds=getDayState(from.m, from.d, from.y);
+  if(!ds.__custom__) ds.__custom__=[];
+  if(freq==='none'){
+    ds.__custom__.push({ id:'c_'+Date.now(), label:vals.label, cat:'custom', start:vals.start, end:vals.end, color:vals.color });
+  } else {
+    const nrid='r_'+Date.now();
+    ds.__custom__.push({ id:'c_'+Date.now(), label:vals.label, cat:'custom', start:vals.start, end:vals.end, color:vals.color, rid:nrid, freq:freq });
+    createRepeatSeries(from.y, from.m, from.d, vals, freq, untilStr, nrid, true);
+  }
+}
+// iPhone式アクションシート
+let actSheetEl=null;
+function showActSheet(title, opts){
+  closeActSheet();
+  const el=document.createElement('div');
+  el.className='act-bg';
+  el.innerHTML=`<div class="act-sheet">
+    <div class="act-title">${title}</div>
+    ${opts.map((o,i)=>`<button class="act-btn ${o.cls||''}" data-i="${i}">${o.label}</button>`).join('')}
+    <button class="act-btn act-cancel">キャンセル</button>
+  </div>`;
+  el.addEventListener('click',e=>{
+    if(e.target===el){ closeActSheet(); return; }
+    const b=e.target.closest('.act-btn'); if(!b) return;
+    closeActSheet();
+    if(b.classList.contains('act-cancel')) return;
+    const o=opts[+b.dataset.i]; if(o&&o.fn) o.fn();
+  });
+  document.body.appendChild(el);
+  requestAnimationFrame(()=>el.classList.add('show'));
+  actSheetEl=el;
+}
+function closeActSheet(){ if(actSheetEl){ actSheetEl.remove(); actSheetEl=null; } }
+function delCustomTaskSilent(m,d,id){
+  const s=getDayState(m,d);
+  if(!s.__custom__) return;
+  s.__custom__=s.__custom__.filter(t=>t.id!==id);
+  delete s[id];
+  saveState(state);
+}
+
 function evSave(){
   const name=(document.getElementById('evName').value||'').trim();
   const start=hm2min(document.getElementById('evStart').value);
@@ -2083,13 +2252,40 @@ function evSave(){
   if(end!=null&&start!=null&&end<=start) end=start+30;
   const s=getDayState(currentMonth, selDay);
   const col=evCtx.color||'#8e44ad';
+  const freq=evCtx.repFreq||'none';
+  const untilEl=document.getElementById('evRepUntil');
+  const untilStr=(untilEl&&untilEl.value)?untilEl.value:null;
   if(evCtx.isNew){
     if(!name){ diaryToast("予定名を入れてね"); return; }
-    if(!s.__custom__) s.__custom__=[];
-    s.__custom__.push({ id:`c_${Date.now()}`, label:name, cat:'custom', start:min2hm(start), end:min2hm(end), color:col });
+    if(freq==='none'){
+      if(!s.__custom__) s.__custom__=[];
+      s.__custom__.push({ id:`c_${Date.now()}`, label:name, cat:'custom', start:min2hm(start), end:min2hm(end), color:col });
+    } else {
+      createRepeatSeries(curYear, currentMonth, selDay, {label:name,start:min2hm(start),end:min2hm(end),color:col}, freq, untilStr);
+      saveState(state);
+      diaryToast("✓ 繰り返しで保存");
+      closeDaySheet();
+      return;
+    }
   } else if(evCtx.kind==='custom'){
     const t=(s.__custom__||[]).find(t=>t.id===evCtx.id);
-    if(t){ t.label=name||t.label; t.start=min2hm(start); t.end=min2hm(end); delete t.time; t.color=col; }
+    if(t){
+      const vals={label:name||t.label, start:min2hm(start), end:min2hm(end), color:col};
+      if(t.rid){
+        showActSheet('繰り返し予定の変更', [
+          {label:'この予定のみ変更', fn:()=>{ applyEvVals(t,vals); saveState(state); diaryToast('✓ 保存'); closeDaySheet(); }},
+          {label:'これ以降すべて変更', fn:()=>{ updateSeriesFrom(t.rid, {y:curYear,m:currentMonth,d:selDay}, vals, freq, untilStr, t); saveState(state); diaryToast('✓ 保存'); closeDaySheet(); }}
+        ]);
+        return;
+      }
+      applyEvVals(t,vals);
+      if(freq!=='none'){
+        // 単発→繰り返しに変換（この予定が初回になる）
+        const rid='r_'+Date.now();
+        t.rid=rid; t.freq=freq;
+        createRepeatSeries(curYear, currentMonth, selDay, vals, freq, untilStr, rid, true);
+      }
+    }
   } else {
     if(!s.__ptime__) s.__ptime__={};
     s.__ptime__[evCtx.id]={start, end};
