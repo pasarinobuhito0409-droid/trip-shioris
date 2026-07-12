@@ -216,7 +216,7 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 .streak-banner.unset{background:linear-gradient(135deg,#8e8e93 0%,#636366 100%);box-shadow:0 3px 10px rgba(99,99,102,.25)}
 
 /* === 前月からの引き継ぎ（参照・読み取り専用） === */
-.prev-carry{background:linear-gradient(135deg,#0a5dc2 0%,#0a84ff 100%);color:#fff;border-radius:12px;padding:14px;margin-bottom:14px;box-shadow:0 3px 10px rgba(10,132,255,.25)}
+.prev-carry{background:linear-gradient(135deg,#0a5dc2 0%,#0a84ff 100%);color:#fff;border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:0 3px 10px rgba(10,132,255,.25)}
 .prev-carry h3{margin:0 0 3px;font-size:14px;font-weight:800;display:flex;align-items:center;gap:6px}
 .prev-carry .pc-hint{font-size:11px;opacity:.85;margin-bottom:10px}
 .prev-carry .pc-goal{background:rgba(255,255,255,.18);border-radius:10px;padding:11px 12px;margin-bottom:8px}
@@ -233,7 +233,7 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 .prev-carry .pc-empty{font-size:12px;opacity:.85;font-style:italic}
 
 /* === 月総括（記録タブ・3欄） === */
-.month-review{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:12px;padding:14px;margin-bottom:14px}
+.month-review{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:14px;padding:14px;margin-bottom:14px}
 .month-review h3{margin:0 0 4px;font-size:14px;font-weight:800;color:#fff}
 .month-review .mr-hint{font-size:11px;color:var(--muted);margin-bottom:12px}
 .month-review .mr-field{margin-bottom:12px}
@@ -250,8 +250,8 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 .month-review .mr-saved{font-size:10px;color:var(--muted);text-align:right;margin-top:4px;min-height:12px}
 
 /* === 記録ビュー === */
-.record-view{padding:0 12px 24px}
-.record-summary{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:12px;padding:14px;margin-bottom:14px}
+.record-view{padding:0 12px 24px;position:relative;isolation:isolate}
+.record-summary{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:14px;padding:14px;margin-bottom:14px}
 .record-summary h3{margin:0 0 10px;font-size:13px;color:var(--muted);font-weight:700}
 .record-summary .pct{font-size:36px;font-weight:900;line-height:1;color:#fff}
 .record-summary .pct small{font-size:13px;font-weight:500;color:var(--muted);margin-left:6px}
@@ -266,14 +266,14 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 .rec-cat .rc-bar{height:7px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
 .rec-cat .rc-bar i{display:block;height:100%;border-radius:999px;transition:width .3s}
 .rec-cat .rc-n{text-align:right;color:#fff;font-variant-numeric:tabular-nums;font-weight:900;font-size:14px}
-.rec-log{background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--glass-border);border-radius:12px;padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+.rec-log{background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--glass-border);border-radius:14px;padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:all .15s}
 .rec-log:active{transform:scale(.99);background:rgba(255,255,255,.15)}
 .rec-log .rl-date{font-size:13px;font-weight:900;color:#fff;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center}
 .rec-log .rl-date small{font-size:10px;color:var(--muted);font-weight:700}
 .rec-log .rl-chips{display:flex;flex-wrap:wrap;gap:5px}
 .rec-log .rl-chip{font-size:11px;font-weight:700;color:#fff;padding:4px 10px;border-radius:999px;display:inline-flex;align-items:center;gap:4px;border:1px solid rgba(255,255,255,.15)}
 
-.record-diary{background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--glass-border);border-radius:12px;padding:12px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+.record-diary{background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--glass-border);border-radius:14px;padding:12px;margin-bottom:8px;cursor:pointer;transition:all .15s}
 .record-diary:active{transform:scale(.99);background:rgba(255,255,255,.15)}
 .record-diary .rd-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .record-diary .rd-date{font-size:14px;font-weight:900;color:#fff}
@@ -283,7 +283,7 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 .record-section-title{font-size:13px;color:var(--muted);margin:14px 0 6px;font-weight:700}
 
 .summary{padding:8px 12px}
-.summary-card{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:12px;padding:12px 14px;border:1px solid var(--glass-border)}
+.summary-card{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:14px;padding:12px 14px;border:1px solid var(--glass-border)}
 .summary-card .label{font-size:11px;color:var(--muted);font-weight:500}
 .summary-card .big{font-size:26px;font-weight:800;line-height:1.1;margin-top:2px;color:#fff}
 .summary-card .big small{font-size:13px;font-weight:500;color:var(--muted)}
@@ -297,7 +297,7 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 .cat-bar .pct{font-weight:600;font-size:11px;flex:0 0 38px;text-align:right}
 
 .charts{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:0 12px 10px}
-.chart-card{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:12px;padding:10px;border:1px solid var(--glass-border)}
+.chart-card{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:14px;padding:10px;border:1px solid var(--glass-border)}
 .chart-card h3{margin:0 0 6px;font-size:11px;color:var(--muted);font-weight:600}
 .chart-card svg{width:100%;height:auto;display:block}
 .legend{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;font-size:10px;color:var(--muted)}
@@ -378,6 +378,7 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 
 .toolbar{display:flex;gap:7px;padding:6px 12px 18px;flex-wrap:wrap}
 .toolbar button{flex:1;min-width:100px;background:var(--glass);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--glass-border);padding:9px;border-radius:9px;font-size:12px;font-weight:600;color:rgba(255,255,255,.7);cursor:pointer}
+.toolbar button:active{transform:scale(.97)}
 .toolbar button.danger{color:#ff6b6b;border-color:rgba(255,100,100,.3)}
 
 /* === 更新ボタン＆Pull-to-refresh === */
@@ -542,17 +543,114 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 .sv-lr-del{flex:0 0 auto;background:rgba(255,100,100,.14);border:none;color:#ff8a8a;font-size:11px;font-weight:700;padding:7px 11px;border-radius:8px;cursor:pointer;min-height:32px}
 
 /* ===== 実験タブ (kaizen_v1・機能A) ===== */
-.exp-wrap{padding:0 12px 24px}
+.exp-wrap{position:relative;isolation:isolate;padding:0 12px 130px;
+  background-image:repeating-linear-gradient(0deg, rgba(140,180,255,.02) 0 1px, transparent 1px 24px),
+    repeating-linear-gradient(90deg, rgba(140,180,255,.02) 0 1px, transparent 1px 24px)}
 .exp-card{padding-top:2px}
 .exp-card .es-line textarea{width:100%;border:1.5px solid var(--glass-border);border-radius:10px;padding:9px;font:inherit;font-size:13px;background:rgba(255,255,255,.06);color:#fff;resize:vertical;min-height:44px}
 .exp-card .es-line textarea:focus{outline:none;border-color:#5ac8fa}
-.exp-shelf{margin-top:6px;background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;overflow:hidden}
+.exp-shelf{margin-top:6px;background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;overflow:hidden}
 .exp-shelf summary{padding:12px 14px;font-size:13px;font-weight:800;color:#fff;cursor:pointer;list-style:none;min-height:44px;display:flex;align-items:center}
 .exp-shelf summary::-webkit-details-marker{display:none}
 .exp-shelf-list{padding:0 14px 12px;display:flex;flex-direction:column;gap:6px}
 .exp-shelf-item{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;padding:8px 10px;background:rgba(255,255,255,.06);border-radius:9px}
 .exp-shelf-item small{color:var(--muted);font-size:11px;white-space:nowrap}
-.exp-month-sum{margin-top:10px;padding:12px 14px;background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;font-size:12.5px;color:rgba(255,255,255,.75);text-align:center}
+.exp-month-sum{margin-top:10px;padding:12px 14px;background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;font-size:12.5px;color:rgba(255,255,255,.75);text-align:center}
+
+/* ===== 同じ空の下の基地：仕上げ・部屋演出（機能A/B/C） ===== */
+.room-cap{font-size:11px;font-weight:800;letter-spacing:.28em;color:rgba(255,255,255,.4);margin:0 0 8px}
+
+/* --- 歩みボード（記録タブ最上部・読み取り専用） --- */
+.walk-board{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:14px;padding:14px;margin-bottom:14px;position:relative;z-index:1}
+.walk-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.walk-title{font-size:14px;font-weight:800;color:#fff}
+.walk-score{font-size:20px;font-weight:900}
+.walk-score.walk-win{color:#ffd9a0}
+.walk-score.walk-lose{color:#8ec6ff}
+.walk-score.walk-tie{color:rgba(255,255,255,.6)}
+.walk-rows{display:flex;flex-direction:column;gap:6px}
+.walk-row{display:flex;align-items:center;gap:8px;font-size:12.5px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.05)}
+.walk-ico{font-size:14px;flex:0 0 auto}
+.walk-name{flex:0 0 auto;font-weight:700;color:rgba(255,255,255,.8);min-width:64px}
+.walk-vals{flex:1;text-align:right;font-variant-numeric:tabular-nums;color:rgba(255,255,255,.85)}
+.walk-arrow{font-style:normal;margin:0 3px;opacity:.75}
+.walk-row.walk-win .walk-arrow{color:#ffd9a0}
+.walk-row.walk-lose .walk-arrow{color:#8ec6ff}
+.walk-row.walk-tie .walk-arrow{color:rgba(255,255,255,.5)}
+.walk-empty{font-size:12px;color:var(--muted);text-align:center;padding:10px}
+.walk-hint{font-size:10.5px;color:rgba(255,255,255,.4);margin-top:8px}
+.walk-month{font-size:11px;color:var(--muted);margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,.08)}
+
+/* --- 部屋1: リスト「今日の道」 --- */
+.list{position:relative;padding-bottom:118px;isolation:isolate}
+.room-road{position:absolute;left:0;right:0;bottom:0;height:96px;z-index:-1;pointer-events:none;overflow:hidden}
+.road-ground{position:absolute;left:8%;right:8%;bottom:0;height:70px;background:linear-gradient(180deg, rgba(90,180,255,.05), rgba(90,180,255,.16));clip-path:polygon(38% 0%, 62% 0%, 100% 100%, 0% 100%)}
+.road-mid{position:absolute;left:49.3%;top:8px;bottom:0;width:1.4%;background:repeating-linear-gradient(180deg, rgba(255,255,255,.32) 0 10px, transparent 10px 20px)}
+.road-lamp{position:absolute;bottom:8px;width:2px}
+.road-lamp-pole{position:absolute;left:0;bottom:0;width:2px;height:44px;background:rgba(255,255,255,.28);display:block}
+.road-lamp-glow{position:absolute;left:50%;bottom:42px;width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.18);transform:translateX(-50%);z-index:1}
+.road-lamp-halo{position:absolute;left:50%;bottom:24px;width:56px;height:56px;border-radius:50%;transform:translateX(-50%);background:radial-gradient(circle, rgba(255,217,160,0) 0%, rgba(255,217,160,0) 100%);transition:background .5s}
+.road-lamp.on .road-lamp-glow{background:#ffd9a0;box-shadow:0 0 10px 4px rgba(255,217,160,.9);animation:roadFlicker 4.5s ease-in-out infinite}
+.road-lamp.on .road-lamp-halo{background:radial-gradient(circle, rgba(255,217,160,.32) 0%, rgba(255,217,160,.1) 45%, rgba(255,217,160,0) 75%);animation:roadFlicker 4.5s ease-in-out infinite}
+@keyframes roadFlicker{0%,100%{opacity:1}50%{opacity:.72}}
+
+/* --- 部屋3: 記録「観測室」 --- */
+/* 記録タブ最上部の専用の窓（カードの背後に隠れず常に見える帯） */
+.room-obs{position:relative;height:108px;margin-bottom:10px;overflow:hidden;pointer-events:none;border-radius:14px;background:linear-gradient(180deg, rgba(90,120,200,.10), rgba(20,20,40,.02))}
+.obs-dome{position:absolute;left:50%;top:-392px;width:500px;height:500px;margin-left:-250px;border-radius:50%;border:1px solid rgba(255,255,255,.16)}
+.obs-stars{position:absolute;inset:0}
+.obs-star{position:absolute;width:2px;height:2px;border-radius:50%;background:rgba(255,255,255,.65)}
+.obs-star.twinkle{animation:obsTwinkle 3.6s ease-in-out infinite}
+@keyframes obsTwinkle{0%,100%{opacity:.35}50%{opacity:1}}
+
+/* --- 部屋5: 実験「工房の実験机」 --- */
+.room-bench{position:absolute;left:0;right:0;bottom:0;height:96px;z-index:-1;pointer-events:none;overflow:hidden}
+.bench-body{position:absolute;left:0;right:0;bottom:0;height:58px;background:linear-gradient(180deg,#3d2c1d,#281c10)}
+.bench-top{position:absolute;left:0;right:0;bottom:58px;height:1px;background:rgba(255,255,255,.16)}
+.bench-flask{position:absolute;bottom:56px;left:50%;transform:translateX(-50%);width:56px;height:64px}
+.flask-neck{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);width:10px;height:22px;border-left:2px solid rgba(255,255,255,.32);border-right:2px solid rgba(255,255,255,.32)}
+.flask-body{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:44px;height:36px;border-radius:0 0 22px 22px;border:2px solid rgba(255,255,255,.32);background:rgba(255,255,255,.03);overflow:hidden}
+.flask-liquid{position:absolute;left:0;right:0;bottom:0;height:58%;transition:background .5s}
+.flask-bubble{position:absolute;left:50%;bottom:2px;width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.65);animation:flaskRise 8s ease-in infinite;opacity:0}
+@keyframes flaskRise{0%{transform:translate(-50%,0);opacity:0}10%{opacity:.85}88%{opacity:.15}100%{transform:translate(-50%,-30px);opacity:0}}
+
+/* ===== 実験タブ 最上部ステータス（機能C・第3弾） ===== */
+.exp-status{border-radius:16px;padding:16px 14px;margin-bottom:14px;position:relative;z-index:1}
+.exp-status-quiet{background:var(--glass);border:1px solid var(--glass-border)}
+.exp-status-main{font-size:16px;font-weight:800;color:#fff}
+.exp-status-sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.exp-status-redo{font-size:11.5px;color:rgba(255,255,255,.4);text-decoration:underline;cursor:pointer;margin-top:8px;min-height:44px;display:flex;align-items:center}
+.exp-status-fire{background:linear-gradient(135deg,rgba(255,215,0,.16),rgba(255,150,20,.10));border:1.5px solid rgba(255,205,60,.55);box-shadow:0 0 18px rgba(255,190,60,.18)}
+.exp-status-badge{font-size:19px;font-weight:900;color:#ffd76a;letter-spacing:.02em}
+.exp-status-ifthen{font-size:13.5px;color:rgba(255,255,255,.92);line-height:1.55;margin-top:8px}
+.exp-status-sub2{font-size:11.5px;color:rgba(255,255,255,.5);margin-top:8px}
+.exp-status-judge{background:var(--glass);border:1.5px solid rgba(255,255,255,.25)}
+.exp-status-btns{display:flex;gap:8px;margin-top:10px}
+.exp-judge-btn{flex:1;justify-content:center;padding:14px;font-size:14.5px;font-weight:800;border-radius:12px;border:1.5px solid;cursor:pointer;min-height:44px}
+.exp-judge-btn.ok{background:rgba(110,224,144,.14);border-color:rgba(110,224,144,.5);color:#6ee090}
+.exp-judge-btn.ng{background:rgba(255,154,186,.14);border-color:rgba(255,154,186,.5);color:#ff9aba}
+.exp-status-memo{width:100%;margin-top:10px;border:1.5px solid var(--glass-border);border-radius:10px;padding:9px;font:inherit;font-size:13px;background:rgba(255,255,255,.06);color:#fff;resize:vertical;min-height:44px;box-sizing:border-box}
+.exp-edit-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:12px;font-weight:700;padding:6px 10px;border-radius:8px;cursor:pointer;min-height:44px;min-width:44px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.exp-guide{background:rgba(255,255,255,.08);border:1px dashed rgba(255,255,255,.28);border-radius:14px;padding:14px 42px 14px 14px;margin-bottom:14px;position:relative}
+.exp-guide-close{position:absolute;top:4px;right:4px;width:40px;height:40px;min-width:40px;background:none;border:none;color:rgba(255,255,255,.5);font-size:16px;cursor:pointer}
+.exp-guide-title{font-size:13px;font-weight:800;color:#fff;margin-bottom:6px}
+.exp-guide-line{font-size:12.5px;color:rgba(255,255,255,.75);line-height:1.7}
+
+/* ===== 🥊MMAタブ（第3弾新設・読み取り専用） ===== */
+.mma-wrap{position:relative;isolation:isolate;padding:0 12px 130px}
+.mma-arena{position:relative;height:60px;margin-bottom:10px;overflow:hidden;border-radius:14px;background:rgba(6,6,10,.6)}
+.mma-rope{position:absolute;left:6%;right:6%;top:50%;height:3px;transform:translateY(-50%);background:#c81e3a;border-radius:2px;box-shadow:0 0 14px 3px rgba(255,40,60,.55), 0 0 28px 8px rgba(255,20,40,.28)}
+.mma-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+.mma-plan{border-left:3px solid #ff5e73}
+.mma-stat-row{display:flex}
+.mma-stat{flex:1;text-align:center;padding:14px 6px;min-width:0}
+.mma-stat-num{font-size:22px;font-weight:900;color:#fff}
+.mma-stat-x{font-size:13px;color:#8ec6ff;margin-left:6px;font-weight:700}
+.mma-stat-lbl{font-size:11px;color:var(--muted);margin-top:4px}
+.mma-last-date{font-size:12px;color:var(--muted);flex:0 0 auto}
+.mma-last-res{font-size:13px;font-weight:800;color:#fff;flex:0 0 auto}
+.mma-last-aim{font-size:12.5px;color:rgba(255,255,255,.7);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mma-enter-btn{width:100%;justify-content:center;padding:14px;font-size:15px;font-weight:900;border-radius:12px;border:1.5px solid rgba(255,40,60,.55);background:linear-gradient(135deg,rgba(200,30,58,.32),rgba(120,10,30,.32));color:#fff;cursor:pointer;min-height:44px}
 </style>
 </head>
 <body>
@@ -571,6 +669,7 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
       <button id="vRecord" onclick="setView('record')">📋 記録</button>
       <button id="vSleep" onclick="setView('sleep')">😴 睡眠</button>
       <button id="vExp" onclick="setView('exp')">🧪 実験</button>
+      <button id="vMma" onclick="setView('mma')">🥊 MMA</button>
       <button class="jump-today" onclick="jumpToToday()" title="今日のタスクへジャンプ">📅 今日</button>
     </div>
   </div>
@@ -812,6 +911,7 @@ function setView(v){
   document.getElementById("vRecord").classList.toggle("active", v==="record");
   document.getElementById("vSleep").classList.toggle("active", v==="sleep");
   document.getElementById("vExp").classList.toggle("active", v==="exp");
+  document.getElementById("vMma").classList.toggle("active", v==="mma");
   renderCarryBanner();
   renderContent();
   // タブ切替で一番上へ
@@ -926,9 +1026,10 @@ function renderContent(){
   const isCal2 = currentView==="cal2";
   const isSleep = currentView==="sleep";
   const isExp = currentView==="exp";
+  const isMma = currentView==="mma";
   ["streakBanner","carryBanner","summary","charts"].forEach(id=>{
     const node=document.getElementById(id);
-    if(node) node.style.display = (isCal2||isSleep||isExp) ? "none" : "";
+    if(node) node.style.display = (isCal2||isSleep||isExp||isMma) ? "none" : "";
   });
   // cal2（日ビュー）中はhtml/bodyの外側スクロールをロックし、二重スクロールを防ぐ
   document.body.classList.toggle('cal2-lock', isCal2);
@@ -936,6 +1037,7 @@ function renderContent(){
   else if(isCal2){ el.innerHTML = renderDayView(); afterDayViewRender(); }
   else if(isSleep){ el.innerHTML = renderSleep(); afterSleepRender(); }
   else if(isExp){ el.innerHTML = renderExp(); }
+  else if(isMma){ el.innerHTML = renderMma(); }
   else el.innerHTML = renderList();
 }
 
@@ -953,6 +1055,33 @@ function isPastDay(m, d, y){
 function isTodayYMD(y,m,d){
   const today=new Date();
   return today.getFullYear()===y && today.getMonth()+1===m && today.getDate()===d;
+}
+
+// 部屋1: リスト「今日の道」の街灯シーン（機能B）。今日の完了タスク数に応じて1本ずつ灯る
+function renderRoadScene(){
+  let lit = 0;
+  try{
+    const today = new Date();
+    const y = today.getFullYear(), m = today.getMonth()+1, d = today.getDate();
+    const days = buildMonth(m,y);
+    const day = days.find(x=>x.d===d);
+    if(day){
+      const tks = visibleTasksOf(day, m);
+      const s = getDayState(m,d,y) || {};
+      let done = 0;
+      tks.forEach(tk=>{ if(s[tk.id]) done++; });
+      if(s.__custom__ && s.__custom__.length) s.__custom__.forEach(t=>{ if(s[t.id]) done++; });
+      lit = Math.min(5, done);
+    }
+  }catch(e){ lit = 0; }
+  const lamps = [0,1,2,3,4].map(i=>{
+    const left = [8, 27, 46, 65, 84][i]; // 中央線(49.3%)と重ならない位置
+    return `<div class="road-lamp${i<lit?' on':''}" style="left:${left}%"><span class="road-lamp-halo"></span><span class="road-lamp-pole"></span><span class="road-lamp-glow"></span></div>`;
+  }).join('');
+  return `<div class="room-road" aria-hidden="true">
+    <div class="road-ground"><div class="road-mid"></div></div>
+    ${lamps}
+  </div>`;
 }
 
 function renderList(){
@@ -1000,7 +1129,7 @@ function renderList(){
       </div>
     `;
   }).join("");
-  return `<div class="list">${html}</div>`;
+  return `<div class="list">${html}${renderRoadScene()}</div>`;
 }
 
 // ===== 記録ビュー =====
@@ -1124,6 +1253,203 @@ function todayYMD(){
   return {y:t.getFullYear(), m:t.getMonth()+1, d:t.getDate()};
 }
 
+// ===== 「歩み」ボード（機能A・読み取り専用・書き込み禁止） =====
+// 対象キー: tracker2026_v2(state・既読)/sleep_v1/fightlog_v2/kaizen_v1
+// この関数群は一切 localStorage.setItem を呼ばない（読み取り専用）。
+function walkWeekMonday(dt){
+  const d = new Date(dt); d.setHours(0,0,0,0);
+  const wd = d.getDay();
+  const diff = (wd===0) ? 6 : wd-1;
+  d.setDate(d.getDate()-diff);
+  return d;
+}
+function walkYMD(dt){ return dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0")+"-"+String(dt.getDate()).padStart(2,"0"); }
+function walkWeekDates(monday){
+  const arr=[];
+  for(let i=0;i<7;i++){ const d=new Date(monday); d.setDate(d.getDate()+i); arr.push(d); }
+  return arr;
+}
+// 活動＝週内の✓完了数 / 運動＝夜タスク(WT/MMA/ハンド)の✓回数
+function walkActivityWeek(monday){
+  let done=0, night=0;
+  walkWeekDates(monday).forEach(dt=>{
+    const y=dt.getFullYear(), m=dt.getMonth()+1, d=dt.getDate();
+    let days, day;
+    try{ days = buildMonth(m,y); day = days.find(x=>x.d===d); }catch(e){ day=null; }
+    if(!day) return;
+    let tks=[], s={};
+    try{ tks = visibleTasksOf(day, m); s = getDayState(m,d,y) || {}; }catch(e){}
+    tks.forEach(tk=>{ if(s[tk.id]) done++; });
+    if(s.__custom__ && s.__custom__.length) s.__custom__.forEach(t=>{ if(s[t.id]) done++; });
+    if(day.night && s.night) night++;
+  });
+  return {done, night};
+}
+// 睡眠＝週の平均回復点（sleep_v1）。記録が無ければnull
+function walkSleepWeek(monday){
+  let sd;
+  try{ sd = JSON.parse(localStorage.getItem("sleep_v1")||"null"); }catch(e){ sd=null; }
+  if(!sd || !Array.isArray(sd.nights) || !sd.nights.length) return null;
+  const start = monday.getTime(), end = start + 7*86400000;
+  const inWeek = sd.nights.filter(n=> n && typeof n.wakeTs==="number" && typeof n.points==="number" && n.wakeTs>=start && n.wakeTs<end);
+  if(!inWeek.length) return null;
+  return Math.round(inWeek.reduce((a,n)=>a+n.points,0)/inWeek.length);
+}
+// MMA実験＝週の◯数・done数（fightlog_v2）。キーが無ければ丸ごとnull（行を隠す）
+function walkFightlogMissing(){
+  try{ return localStorage.getItem("fightlog_v2")===null; }catch(e){ return true; }
+}
+function walkFightlogWeek(monday){
+  let fl;
+  try{ fl = JSON.parse(localStorage.getItem("fightlog_v2")||"null"); }catch(e){ fl=null; }
+  if(!fl || !Array.isArray(fl.sessions)) return null;
+  const startStr = walkYMD(monday);
+  const endDt = new Date(monday); endDt.setDate(endDt.getDate()+7);
+  const endStr = walkYMD(endDt);
+  let oCount=0, doneCount=0;
+  fl.sessions.forEach(s=>{
+    if(!s || !s.date || s.date < startStr || s.date >= endStr) return;
+    if(s.exp && s.exp.result==='o') oCount++;
+    if(s.done===true) doneCount++;
+  });
+  return {oCount, doneCount};
+}
+// 改善実験＝その週の判定（kaizen_v1）。対象週が無ければnull
+function walkKaizenMissing(){
+  try{ return localStorage.getItem("kaizen_v1")===null; }catch(e){ return true; }
+}
+function walkKaizenWeek(monday){
+  let kd;
+  try{ kd = JSON.parse(localStorage.getItem("kaizen_v1")||"null"); }catch(e){ kd=null; }
+  if(!kd || !kd.active || !Array.isArray(kd.active.weeks) || !kd.active.weeks.length) return null;
+  const startStr = walkYMD(monday);
+  const week = kd.active.weeks.find(w=>w && w.start===startStr);
+  if(!week || !week.result) return null;
+  return week.result; // 'o' | 'x'
+}
+function walkCmpNum(a,b){
+  if(a==null || b==null) return null;
+  if(a>b) return 'win'; if(a<b) return 'lose'; return 'tie';
+}
+function walkCmpJudge(a,b){
+  if(a==null || b==null) return null;
+  if(a===b) return 'tie';
+  return a==='o' ? 'win' : 'lose';
+}
+// 指定した週(Monday始まり)の5領域を、先週(その7日前)と比較して行データを組み立てる
+function walkBuildRows(monday){
+  const lastMon = new Date(monday); lastMon.setDate(lastMon.getDate()-7);
+  const actT = walkActivityWeek(monday), actL = walkActivityWeek(lastMon);
+  const sleepT = walkSleepWeek(monday), sleepL = walkSleepWeek(lastMon);
+  const flMissing = walkFightlogMissing();
+  const flT = flMissing ? null : walkFightlogWeek(monday);
+  const flL = flMissing ? null : walkFightlogWeek(lastMon);
+  const kzMissing = walkKaizenMissing();
+  const kzT = kzMissing ? null : walkKaizenWeek(monday);
+  const kzL = kzMissing ? null : walkKaizenWeek(lastMon);
+  return [
+    { key:'activity', emoji:'🏃', name:'活動', thisVal:actT.done, lastVal:actL.done, unit:'件', result:walkCmpNum(actT.done, actL.done), hidden:false },
+    { key:'night', emoji:'💪', name:'運動', thisVal:actT.night, lastVal:actL.night, unit:'回', result:walkCmpNum(actT.night, actL.night), hidden:false },
+    { key:'sleep', emoji:'😴', name:'睡眠', thisVal:sleepT, lastVal:sleepL, unit:'点', result:walkCmpNum(sleepT, sleepL), hidden:false },
+    { key:'mma', emoji:'🥊', name:'MMA実験', thisVal: flT?flT.oCount:null, lastVal: flL?flL.oCount:null, unit:'◯', result: (flT&&flL) ? walkCmpNum(flT.oCount, flL.oCount) : null, hidden: flMissing },
+    { key:'kaizen', emoji:'🧪', name:'改善実験', thisVal:kzT, lastVal:kzL, unit:'', result:walkCmpJudge(kzT, kzL), hidden:kzMissing, isJudge:true },
+  ];
+}
+// ある週(Monday)の総合勝敗（行の多数決）。材料不足なら null
+function walkOverallForWeek(monday){
+  const rows = walkBuildRows(monday).filter(r=>!r.hidden);
+  const counted = rows.filter(r=>r.result);
+  if(!counted.length) return null;
+  const win = counted.filter(r=>r.result==='win').length;
+  const lose = counted.filter(r=>r.result==='lose').length;
+  if(win>lose) return 'win';
+  if(lose>win) return 'lose';
+  return 'tie';
+}
+// 今月: 週ごとの総合勝敗を積み上げ「〇月: 対戦N週・X勝Y敗Z分」
+function walkMonthRecord(){
+  const today = new Date(); today.setHours(0,0,0,0);
+  const y = today.getFullYear(), m = today.getMonth()+1;
+  const monday0 = walkWeekMonday(new Date(y, m-1, 1));
+  let win=0, lose=0, tie=0, weeks=0;
+  const cursor = new Date(monday0);
+  for(let guard=0; guard<6 && cursor.getTime()<=today.getTime(); guard++, cursor.setDate(cursor.getDate()+7)){
+    if(cursor.getMonth()+1 !== m) continue;
+    const res = walkOverallForWeek(new Date(cursor));
+    if(!res) continue;
+    weeks++;
+    if(res==='win') win++; else if(res==='lose') lose++; else tie++;
+  }
+  return {m, weeks, win, lose, tie};
+}
+function walkEsc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function renderWalkBoard(){
+  let rows, mr;
+  try{
+    const today = new Date(); today.setHours(0,0,0,0);
+    const thisMon = walkWeekMonday(today);
+    rows = walkBuildRows(thisMon).filter(r=>!r.hidden);
+    mr = walkMonthRecord();
+  }catch(e){
+    rows = []; mr = null;
+  }
+  const counted = rows.filter(r=>r.result);
+  const win = counted.filter(r=>r.result==='win').length;
+  const lose = counted.filter(r=>r.result==='lose').length;
+  const tie = counted.length - win - lose;
+  const overallCls = !counted.length ? 'walk-tie' : (win>lose?'walk-win':(lose>win?'walk-lose':'walk-tie'));
+  const headline = counted.length ? `${win}勝${lose}敗${tie}分` : "材料が集まり中";
+  const arrowOf = r => r.result==='win' ? '↑' : (r.result==='lose' ? '↓' : (r.result==='tie' ? '→' : '·'));
+  const fmtVal = (r, v) => {
+    if(v==null) return '—';
+    if(r.isJudge) return v==='o' ? '◯' : (v==='x' ? '✕' : '—');
+    return v + r.unit;
+  };
+  const rowsHtml = rows.map(r=>{
+    const cls = r.result==='win' ? 'walk-win' : (r.result==='lose' ? 'walk-lose' : (r.result==='tie' ? 'walk-tie' : ''));
+    return `<div class="walk-row ${cls}">
+      <span class="walk-ico">${r.emoji}</span>
+      <span class="walk-name">${walkEsc(r.name)}</span>
+      <span class="walk-vals">${fmtVal(r,r.thisVal)} <i class="walk-arrow">${arrowOf(r)}</i> ${fmtVal(r,r.lastVal)}</span>
+    </div>`;
+  }).join('');
+  const monthLine = (mr && mr.weeks) ? `${mr.m}月: 対戦${mr.weeks}週・${mr.win}勝${mr.lose}敗${mr.tie}分` : (mr ? `${mr.m}月: まだ対戦記録なし` : "");
+  return `<div class="walk-board">
+    <div class="room-cap">WALK</div>
+    <div class="walk-head">
+      <div class="walk-title">先週の自分との対戦</div>
+      <div class="walk-score ${overallCls}">${headline}</div>
+    </div>
+    <div class="walk-rows">${rowsHtml || '<div class="walk-empty">材料が集まり中</div>'}</div>
+    ${lose>win ? `<div class="walk-hint">材料が増えた週</div>` : ''}
+    ${monthLine ? `<div class="walk-month">${monthLine}</div>` : ''}
+  </div>`;
+}
+
+// ===== 部屋3: 記録＝「観測室」の星図（機能B） =====
+function walkSeededRand(seed){
+  const x = Math.sin(seed*12.9898)*43758.5453;
+  return x - Math.floor(x);
+}
+function renderObservatoryScene(monthForStars){
+  let doneCount = 0;
+  try{ doneCount = Math.min(60, tally(monthForStars).totalDone); }catch(e){ doneCount = 0; }
+  const twinkle = new Set();
+  if(doneCount>0) twinkle.add(0);
+  if(doneCount>2) twinkle.add(Math.floor(doneCount/2));
+  if(doneCount>4) twinkle.add(doneCount-1);
+  let stars = '';
+  for(let i=0;i<doneCount;i++){
+    const rx = (walkSeededRand(monthForStars*97+i*3.1)*96+2).toFixed(1);
+    const ry = (walkSeededRand(monthForStars*53+i*7.7+11)*94+3).toFixed(1);
+    stars += `<i class="obs-star${twinkle.has(i)?' twinkle':''}" style="left:${rx}%;top:${ry}%"></i>`;
+  }
+  return `<div class="room-obs" aria-hidden="true">
+    <div class="obs-dome"></div>
+    <div class="obs-stars">${stars}</div>
+  </div>`;
+}
+
 function renderRecord(){
   const t = tally(currentMonth);
   const pct = t.totalPlan ? Math.round(100*t.totalDone/t.totalPlan) : 0;
@@ -1142,6 +1468,7 @@ function renderRecord(){
     return `<div class="rec-cat"><span class="rc-name">${c.name}</span><span class="rc-bar"><i style="width:${p}%;background:${c.col}"></i></span><span class="rc-n">${dn}/${pl}</span></div>`;
   }).join('');
   const summary = `<div class="record-summary">
+    <div class="room-cap">RECORD</div>
     <h3>📊 ${currentMonth}月 サマリー</h3>
     <div class="pct">${pct}%<small>(${t.totalDone}/${t.totalPlan})</small></div>
     <div class="bar"><i style="width:${pct}%"></i></div>
@@ -1208,7 +1535,9 @@ function renderRecord(){
   }).filter(Boolean).join('');
   const doneLogSection = `<div class="record-section-title">✅ 完了ログ（✓した内容・新しい順）</div>` + (doneLog || `<div class="empty" style="background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:24px;text-align:center;color:var(--muted);font-size:13px">まだ✓なし<br><small>カレンダーの◯や予定をタップすると、ここに残る</small></div>`);
 
-  return `<div class="record-view">${summary}${doneLogSection}${monthReview}<div class="record-section-title">📝 日記（新しい順）</div>${diaryHtml}</div>`;
+  const scene = renderObservatoryScene(currentMonth);
+  const walk = renderWalkBoard();
+  return `<div class="record-view">${scene}${walk}${summary}${doneLogSection}${monthReview}<div class="record-section-title">📝 日記（新しい順）</div>${diaryHtml}</div>`;
 }
 function jumpToDay(d){ selDay=d; dvWantAutoScroll=true; setView('cal2'); }
 
@@ -3159,16 +3488,114 @@ function kaizenSeedIfNeeded(){
 }
 
 // ===== 描画 =====
+// 部屋5: 実験「工房の実験机」のフラスコシーン（機能B）
+// 進行中(判定待ち)=紫／今週◯判定済み=金／実験なし=空のフラスコ
+function renderBenchScene(kd){
+  let liquid = 'transparent', bubbling = false;
+  if(kd && kd.active && Array.isArray(kd.active.weeks) && kd.active.weeks.length){
+    const week = kd.active.weeks[kd.active.weeks.length-1];
+    if(week && week.result==='o'){ liquid = 'rgba(255,217,160,.55)'; bubbling = true; }
+    else { liquid = 'rgba(200,120,255,.42)'; bubbling = true; }
+  }
+  const bubbles = bubbling ? `
+      <span class="flask-bubble" style="animation-delay:0s;left:47%"></span>
+      <span class="flask-bubble" style="animation-delay:2.6s;left:53%"></span>
+      <span class="flask-bubble" style="animation-delay:5.2s;left:50%"></span>` : '';
+  return `<div class="room-bench" aria-hidden="true">
+    <div class="bench-body"></div><div class="bench-top"></div>
+    <div class="bench-flask">
+      <div class="flask-neck"></div>
+      <div class="flask-body"><div class="flask-liquid" style="background:${liquid}"></div>${bubbles}</div>
+    </div>
+  </div>`;
+}
+function fmtMD(dt){ return `${dt.getMonth()+1}/${dt.getDate()}（${WD_JP[dt.getDay()]}）`; }
+// 実験タブ最上部「今、俺は何をすればいい？」の場面判定（場面A/B/C）
+function kaizenScene(exp){
+  kaizenEnsureCurrentWeek(exp);
+  const idx = exp.weeks.length-1;
+  const week = exp.weeks[idx];
+  const isDaily = (exp.targetWeekday===null || exp.targetWeekday===undefined);
+  const now = new Date();
+  const today0 = new Date(now); today0.setHours(0,0,0,0);
+  const targetDate = isDaily ? today0 : kaizenWeekTargetDate(week.start, exp.targetWeekday);
+  if(week.result){
+    let nextDate;
+    if(isDaily){ nextDate = new Date(today0); nextDate.setDate(nextDate.getDate()+1); }
+    else { nextDate = new Date(targetDate); nextDate.setDate(nextDate.getDate()+7); }
+    return {type:'done', idx, week, targetDate, nextDate};
+  }
+  if(!isDaily && today0.getTime() < targetDate.getTime()){
+    return {type:'before', idx, week, targetDate};
+  }
+  const isTargetDay = isDaily || today0.getTime()===targetDate.getTime();
+  const pastTargetDay = !isDaily && today0.getTime() > targetDate.getTime();
+  const judgeOpen = pastTargetDay || (isTargetDay && now.getHours()>=18);
+  if(judgeOpen) return {type:'judge', idx, week, targetDate};
+  return {type:'today', idx, week, targetDate};
+}
+// 場面D: 初回のみの3行ガイド（✕で永久に閉じる）
+const EXP_GUIDE_KEY = "kaizen_guide_dismissed_v1";
+function kaizenGuideDismissed(){ try{ return localStorage.getItem(EXP_GUIDE_KEY)==='1'; }catch(e){ return false; } }
+function kaizenDismissGuide(){
+  try{ localStorage.setItem(EXP_GUIDE_KEY,'1'); }catch(e){}
+  renderContent();
+}
+function renderExpGuide(){
+  if(kaizenGuideDismissed()) return '';
+  return `<div class="exp-guide">
+    <button class="exp-guide-close" onclick="kaizenDismissGuide()">✕</button>
+    <div class="exp-guide-title">このタブの使い方は3つだけ</div>
+    <div class="exp-guide-line">① 実験は常に1個</div>
+    <div class="exp-guide-line">② 実験の日に、やる</div>
+    <div class="exp-guide-line">③ その夜、◯か✕を押す</div>
+  </div>`;
+}
+// 最上部ステータスブロック（場面A/B/C。0.5秒で「今、何をすればいいか」に答える）
+function renderExpStatusBlock(exp){
+  const sc = kaizenScene(exp);
+  if(sc.type==='before'){
+    return `<div class="exp-status exp-status-quiet">
+      <div class="exp-status-main">次の実験日は ${fmtMD(sc.targetDate)}</div>
+      <div class="exp-status-sub">今日は何もしなくていい</div>
+    </div>`;
+  }
+  if(sc.type==='today'){
+    return `<div class="exp-status exp-status-fire">
+      <div class="exp-status-badge">🔥 今日は実験日</div>
+      <div class="exp-status-ifthen">${escHtml(exp.ifThen)}</div>
+      <div class="exp-status-sub2">やったら夜、ここで◯を押す</div>
+    </div>`;
+  }
+  if(sc.type==='judge'){
+    return `<div class="exp-status exp-status-judge">
+      <div class="exp-status-main">今日の実験、どうだった？</div>
+      <div class="exp-status-btns">
+        <button class="exp-judge-btn ok" onclick="kaizenJudge(${sc.idx},'o')">◯ おおむねできた</button>
+        <button class="exp-judge-btn ng" onclick="kaizenJudge(${sc.idx},'x')">✕ できなかった</button>
+      </div>
+      <textarea id="expMemoTop${sc.idx}" class="exp-status-memo" placeholder="ひとことメモ（任意）">${escHtml(sc.week.memo||"")}</textarea>
+    </div>`;
+  }
+  // done
+  const resTxt = sc.week.result==='o' ? '◯' : '✕';
+  return `<div class="exp-status exp-status-quiet">
+    <div class="exp-status-main">今週は判定済み（${resTxt}）</div>
+    <div class="exp-status-sub">次の実験日は ${fmtMD(sc.nextDate)}</div>
+    <div class="exp-status-redo" onclick="kaizenRejudge(${sc.idx})">やり直す</div>
+  </div>`;
+}
 function renderExp(){
   kaizenSeedIfNeeded();
   const kd = loadKaizen();
-  let html = `<div class="exp-wrap">`;
+  let html = `<div class="exp-wrap">${renderBenchScene(kd)}<div class="room-cap">LAB</div>`;
+  html += renderExpGuide();
   if(kd.active){
     const exp = kd.active;
     kaizenEnsureCurrentWeek(exp);
     saveKaizen(kd);
+    html += renderExpStatusBlock(exp);
     html += renderExpActiveCard(exp);
-    html += renderExpJudge(exp);
     html += renderExpProgress(exp);
   } else {
     html += renderExpEmpty();
@@ -3182,8 +3609,11 @@ function renderExpActiveCard(exp){
   const weekNo = exp.weeks.length;
   return `
     <div class="es-card exp-card">
+      <div class="es-line" style="align-items:flex-start;justify-content:space-between;gap:8px">
+        <div style="font-size:18px;font-weight:800;color:#fff;flex:1;min-width:0">${escHtml(exp.title)}</div>
+        <button class="exp-edit-btn" onclick="kaizenOpenEditSheet()">✎編集</button>
+      </div>
       <div class="es-line" style="flex-direction:column;align-items:flex-start;gap:6px">
-        <div style="font-size:18px;font-weight:800;color:#fff">${escHtml(exp.title)}</div>
         <div style="font-size:13px;color:rgba(255,255,255,.75);line-height:1.5">${escHtml(exp.ifThen)}</div>
         <div style="font-size:11px;color:var(--muted)">第${weekNo}週</div>
       </div>
@@ -3192,43 +3622,15 @@ function renderExpActiveCard(exp){
     </div>
   `;
 }
-function renderExpJudge(exp){
-  const idx = exp.weeks.length-1;
-  const week = exp.weeks[idx];
-  const today = new Date(); today.setHours(0,0,0,0);
-  const targetDate = kaizenWeekTargetDate(week.start, exp.targetWeekday);
-  if(today < targetDate){
-    const diffDays = Math.ceil((targetDate-today)/86400000);
-    return `<div class="es-card exp-card">
-      <div class="es-line"><div style="font-size:13px;color:var(--muted)">今週の判定はあと${diffDays}日で解禁</div></div>
-    </div>`;
-  }
-  if(week.result){
-    const resTxt = week.result==='o' ? '◯ おおむねできた' : '✕ できなかった';
-    const resCol = week.result==='o' ? '#6ee090' : '#ff9aba';
-    return `<div class="es-card exp-card">
-      <div class="es-line"><div style="font-size:15px;font-weight:800;color:${resCol}">${resTxt}</div>
-        <button class="chip" style="margin-left:auto" onclick="kaizenRejudge(${idx})">やり直す</button></div>
-      ${week.memo ? `<div class="es-line"><div style="font-size:13px;color:rgba(255,255,255,.8);white-space:pre-wrap">${escHtml(week.memo)}</div></div>` : ``}
-    </div>`;
-  }
-  return `<div class="es-card exp-card">
-    <div class="es-line"><div style="font-size:13px;font-weight:800;color:#fff">今週の判定</div></div>
-    <div class="es-line" style="gap:8px">
-      <button class="chip cat-daily" style="flex:1;justify-content:center;padding:12px" onclick="kaizenJudge(${idx},'o')">◯ おおむねできた</button>
-      <button class="chip cat-rest" style="flex:1;justify-content:center;padding:12px" onclick="kaizenJudge(${idx},'x')">✕ できなかった</button>
-    </div>
-    <div class="es-line"><textarea id="expMemo${idx}" placeholder="ひとことメモ（任意）">${escHtml(week.memo||"")}</textarea></div>
-  </div>`;
-}
 function kaizenJudge(idx, result){
   const kd = loadKaizen();
   if(!kd.active || !kd.active.weeks[idx]) return;
-  const memoEl = document.getElementById('expMemo'+idx);
+  const memoEl = document.getElementById('expMemoTop'+idx);
   const memo = memoEl ? memoEl.value : (kd.active.weeks[idx].memo||"");
   kd.active.weeks[idx].result = result;
   kd.active.weeks[idx].memo = memo;
   saveKaizen(kd);
+  diaryToast(result==='o' ? "✓ 判定しました" : "記録しました");
   renderContent();
 }
 function kaizenRejudge(idx){
@@ -3283,24 +3685,33 @@ function renderExpMonthSummary(kd){
   return `<div class="exp-month-sum">${now.getMonth()+1}月: ◯${o} ✕${x} ／ 卒業${grad}</div>`;
 }
 
-// ===== 新しい実験シート =====
+// ===== 新しい実験シート（編集モードも同じシートを共用・機能A/致命傷の修正） =====
 let expDraftWeekday = null;
-function kaizenOpenNewSheet(){
-  expDraftWeekday = null;
+let expEditingId = null;
+function kaizenOpenNewSheet(){ kaizenOpenSheetInner(null); }
+function kaizenOpenEditSheet(){
+  const kd = loadKaizen();
+  if(!kd.active){ diaryToast("編集する実験が無い"); return; }
+  kaizenOpenSheetInner(kd.active);
+}
+function kaizenOpenSheetInner(editExp){
+  expEditingId = editExp ? editExp.id : null;
+  expDraftWeekday = editExp ? (editExp.targetWeekday===undefined ? null : editExp.targetWeekday) : null;
   const body = document.getElementById('expSheetBody');
-  const wdBtns = [`<button class="rep-opt sel" data-wd="null" onclick="kaizenPickWeekday(null)">毎日</button>`]
-    .concat(WD_JP.map((w,i)=>`<button class="rep-opt" data-wd="${i}" onclick="kaizenPickWeekday(${i})">${w}</button>`)).join('');
+  const wdBtns = [`<button class="rep-opt${expDraftWeekday===null?' sel':''}" data-wd="null" onclick="kaizenPickWeekday(null)">毎日</button>`]
+    .concat(WD_JP.map((w,i)=>`<button class="rep-opt${expDraftWeekday===i?' sel':''}" data-wd="${i}" onclick="kaizenPickWeekday(${i})">${w}</button>`)).join('');
+  const t = editExp || {};
   body.innerHTML = `
     <div class="es-topbar">
       <button class="es-cancel" onclick="kaizenCloseNewSheet()">キャンセル</button>
-      <div class="es-title">新しい実験</div>
-      <button class="es-savebtn" onclick="kaizenSaveNew()">開始</button>
+      <div class="es-title">${editExp ? '実験を編集' : '新しい実験'}</div>
+      <button class="es-savebtn" onclick="kaizenSaveNew()">${editExp ? '保存' : '開始'}</button>
     </div>
-    <div class="es-card"><div class="es-line"><input type="text" id="expTitle" placeholder="短い名前（例：日曜の最初の2時間を算数に）"></div></div>
-    <div class="es-card"><div class="es-line"><input type="text" id="expIfThen" placeholder="if-then文（例：昼寝から起きたら、算数2時間→AI解禁）"></div></div>
-    <div class="es-card"><div class="es-line"><input type="text" id="expAim" placeholder="狙い"></div></div>
-    <div class="es-card"><div class="es-line"><input type="text" id="expOk" placeholder="◯のサイン"></div></div>
-    <div class="es-card"><div class="es-line"><input type="text" id="expNg" placeholder="✕のサイン"></div></div>
+    <div class="es-card"><div class="es-line"><input type="text" id="expTitle" placeholder="短い名前（例：日曜の最初の2時間を算数に）" value="${escHtml(t.title||'')}"></div></div>
+    <div class="es-card"><div class="es-line"><input type="text" id="expIfThen" placeholder="if-then文（例：昼寝から起きたら、算数2時間→AI解禁）" value="${escHtml(t.ifThen||'')}"></div></div>
+    <div class="es-card"><div class="es-line"><input type="text" id="expAim" placeholder="狙い" value="${escHtml(t.aim||'')}"></div></div>
+    <div class="es-card"><div class="es-line"><input type="text" id="expOk" placeholder="◯のサイン" value="${escHtml(t.ok||'')}"></div></div>
+    <div class="es-card"><div class="es-line"><input type="text" id="expNg" placeholder="✕のサイン" value="${escHtml(t.ng||'')}"></div></div>
     <div class="es-card">
       <div class="es-line" style="flex-direction:column;align-items:stretch;gap:8px">
         <div class="es-lbl">実行する曜日</div>
@@ -3320,6 +3731,7 @@ function kaizenPickWeekday(wd){
 function kaizenCloseNewSheet(){
   const bg = document.getElementById('expBg');
   if(bg) bg.classList.remove('show');
+  expEditingId = null;
 }
 function kaizenSaveNew(){
   const title=(document.getElementById('expTitle').value||'').trim();
@@ -3329,6 +3741,10 @@ function kaizenSaveNew(){
   const ng=(document.getElementById('expNg').value||'').trim();
   if(!title){ diaryToast("名前を入れてね"); return; }
   const kd = loadKaizen();
+  if(expEditingId){
+    kaizenSaveEdit(kd, title, ifThen, aim, ok, ng);
+    return;
+  }
   if(kd.active){ diaryToast("実験は1個だけ"); return; }
   const startDate = fmtDateYMD(mondayOnOrBefore(new Date()));
   const exp = {
@@ -3348,6 +3764,39 @@ function kaizenSaveNew(){
   saveKaizen(kd);
   kaizenCloseNewSheet();
   diaryToast("✓ 実験を開始");
+  renderContent();
+}
+// 編集保存：曜日/時間帯（頻度）が変わったら旧repRidの将来分をremoveSeriesFromで掃除しcreateRepeatSeriesで貼り直し。weeks（過去の判定）は保持
+function kaizenSaveEdit(kd, title, ifThen, aim, ok, ng){
+  if(!kd.active || kd.active.id!==expEditingId){ kaizenCloseNewSheet(); return; }
+  const exp = kd.active;
+  const oldWd = (exp.targetWeekday===undefined) ? null : exp.targetWeekday;
+  const wdChanged = oldWd !== expDraftWeekday;
+  exp.title = title; exp.ifThen = ifThen; exp.aim = aim; exp.ok = ok; exp.ng = ng;
+  if(wdChanged){
+    try{
+      if(exp.repRid) removeSeriesFrom(exp.repRid, kaizenTomorrow());
+      const first = kaizenFirstOccurrenceFromToday(expDraftWeekday);
+      const freq = (expDraftWeekday===null) ? 'daily' : 'weekly';
+      const nrid = createRepeatSeries(first.y, first.m, first.d, {label:"🧪"+title, start:"14:00", end:"16:00", color:"#c850dc"}, freq, null);
+      exp.repRid = nrid;
+      saveState(state);
+    }catch(e){}
+    exp.targetWeekday = expDraftWeekday;
+  } else {
+    try{
+      if(exp.repRid){
+        const today0 = new Date(); today0.setHours(0,0,0,0);
+        forEachRidOccurrence(exp.repRid, (pd, s, t)=>{
+          if(dateCmp(pd, date2ymd(today0))>=0) t.label = "🧪"+title;
+        });
+        saveState(state);
+      }
+    }catch(e){}
+  }
+  saveKaizen(kd);
+  kaizenCloseNewSheet();
+  diaryToast("✓ 保存");
   renderContent();
 }
 function kaizenGraduate(){
@@ -3375,6 +3824,101 @@ function kaizenEndExperiment(){
   saveKaizen(kd);
   diaryToast("実験を終了");
   renderContent();
+}
+
+// ===== 🥊MMAタブ（第3弾新設・fightlog_v2/fightlog_v2_planは読み取り専用・書き込み禁止） =====
+const MMA_FL_KEY = "fightlog_v2";
+const MMA_PLAN_KEY = "fightlog_v2_plan";
+function mmaGet(key){ try{ return localStorage.getItem(key); }catch(e){ return null; } }
+function mmaFmtDate(dateStr){
+  try{
+    const d = new Date(dateStr+"T00:00:00");
+    if(isNaN(d.getTime())) return dateStr||'';
+    return `${d.getMonth()+1}/${d.getDate()}（${WD_JP[d.getDay()]}）`;
+  }catch(e){ return dateStr||''; }
+}
+function mmaDaysSince(dateStr){
+  try{
+    const d = new Date(dateStr+"T00:00:00");
+    if(isNaN(d.getTime())) return null;
+    const today = new Date(); today.setHours(0,0,0,0);
+    return Math.max(0, Math.round((today-d)/86400000));
+  }catch(e){ return null; }
+}
+function mmaEnterDojo(){
+  location.href = location.hostname.indexOf("github.io")>=0 ? "../mma-tracker/" : "mma_fightlog_v2.html";
+}
+function renderMmaArena(){
+  return `<div class="mma-arena" aria-hidden="true"><div class="mma-rope"></div></div>`;
+}
+function renderMma(){
+  const raw = mmaGet(MMA_FL_KEY);
+  const planRaw = mmaGet(MMA_PLAN_KEY);
+  let fl=null, plan=null;
+  try{ fl = raw ? JSON.parse(raw) : null; }catch(e){ fl=null; }
+  try{ plan = planRaw ? JSON.parse(planRaw) : null; }catch(e){ plan=null; }
+  const sessions = (fl && Array.isArray(fl.sessions)) ? fl.sessions : [];
+  const hasData = raw!==null && sessions.length>0;
+
+  let html = `<div class="mma-wrap">${renderMmaArena()}<div class="room-cap">ARENA</div>`;
+
+  if(plan && plan.aim){
+    html += `<div class="es-card mma-card mma-plan">
+      <div class="es-line"><div style="font-size:12px;font-weight:800;color:#ff5e73">今夜の実験</div></div>
+      <div class="es-line"><div style="font-size:14px;color:#fff;line-height:1.5">${escHtml(plan.aim)}</div></div>
+    </div>`;
+  }
+
+  if(!hasData){
+    html += `<div class="es-card mma-card">
+      <div class="es-line" style="justify-content:center;padding:18px 14px;flex-direction:column;gap:10px">
+        <div style="font-size:13px;color:var(--muted);text-align:center">まだ記録がない。道場で最初の1本を</div>
+        <button class="mma-enter-btn" onclick="mmaEnterDojo()">🥊 道場へ入場する</button>
+      </div>
+    </div>`;
+    html += `</div>`;
+    return html;
+  }
+
+  const doneCount = sessions.filter(s=>s && s.done===true).length;
+  const oCount = sessions.filter(s=>s && s.exp && s.exp.result==='o').length;
+  const xCount = sessions.filter(s=>s && s.exp && s.exp.result==='x').length;
+  const sorted = sessions.slice().sort((a,b)=>{
+    const ad=a&&a.date||'', bd=b&&b.date||'';
+    if(ad!==bd) return ad<bd ? 1 : -1;
+    return (b&&b.ts||0)-(a&&a.ts||0);
+  });
+  const last = sorted[0];
+  const daysSince = last ? mmaDaysSince(last.date) : null;
+
+  html += `<div class="es-card mma-card">
+    <div class="mma-stat-row">
+      <div class="mma-stat"><div class="mma-stat-num">${doneCount}</div><div class="mma-stat-lbl">完遂数</div></div>
+      <div class="mma-stat"><div class="mma-stat-num">${oCount}<span class="mma-stat-x">✕${xCount}</span></div><div class="mma-stat-lbl">◯ ✕</div></div>
+      <div class="mma-stat"><div class="mma-stat-num">${daysSince==null?'―':daysSince}</div><div class="mma-stat-lbl">最終戦から何日</div></div>
+    </div>
+  </div>`;
+
+  if(last){
+    const resMark = last.exp ? (last.exp.result==='o'?'◯':(last.exp.result==='x'?'✕':'・')) : '・';
+    const aimTxt = (last.exp && last.exp.aim) ? last.exp.aim : '';
+    html += `<div class="es-card mma-card">
+      <div class="es-line">
+        <div class="mma-last-date">${mmaFmtDate(last.date)}</div>
+        <div class="mma-last-res">${resMark}</div>
+        <div class="mma-last-aim">${escHtml(aimTxt)}</div>
+      </div>
+    </div>`;
+  }
+
+  html += `<div class="es-card mma-card">
+    <div class="es-line" style="justify-content:center;padding:14px">
+      <button class="mma-enter-btn" onclick="mmaEnterDojo()">🥊 道場へ入場する</button>
+    </div>
+  </div>`;
+
+  html += `</div>`;
+  return html;
 }
 
 // 初期表示を記録タブに（毎回トップは記録）
