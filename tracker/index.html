@@ -418,6 +418,112 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
   .diary-modal-bg{align-items:center}
   .diary-modal{border-radius:20px;max-height:85vh}
 }
+
+/* ===== 睡眠タブ (sleep_v1) — sv- 接頭辞で既存CSSと分離 ===== */
+.sv-wrap{position:relative;overflow:hidden;margin:0 -12px}
+.sv-sky{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;
+  background:linear-gradient(180deg,#05060e 0%,#0a0d20 40%,#10142e 70%,#141834 100%)}
+.sv-stars{position:absolute;inset:0;opacity:.9;
+  background-image:
+    radial-gradient(circle 1.2px at 12% 18%, #fff, transparent 70%),
+    radial-gradient(circle 1px at 28% 8%, rgba(255,255,255,.8), transparent 70%),
+    radial-gradient(circle 1.4px at 44% 22%, #fff, transparent 70%),
+    radial-gradient(circle 1px at 58% 12%, rgba(255,255,255,.7), transparent 70%),
+    radial-gradient(circle 1.3px at 72% 26%, #fff, transparent 70%),
+    radial-gradient(circle 1px at 85% 9%, rgba(255,255,255,.8), transparent 70%),
+    radial-gradient(circle 1.1px at 92% 30%, #fff, transparent 70%),
+    radial-gradient(circle 1px at 20% 34%, rgba(255,255,255,.65), transparent 70%),
+    radial-gradient(circle 1.2px at 66% 38%, rgba(255,255,255,.75), transparent 70%),
+    radial-gradient(circle 1px at 38% 42%, rgba(255,255,255,.6), transparent 70%);
+  animation:svTwinkle 5s ease-in-out infinite}
+@keyframes svTwinkle{0%,100%{opacity:.9}50%{opacity:.55}}
+.sv-moon{position:absolute;top:9%;right:14%;width:54px;height:54px;border-radius:50%;
+  background:radial-gradient(circle at 38% 35%, #fffdf4, #f5eeda 60%, #d9d0b4);
+  box-shadow:0 0 40px 10px rgba(245,238,218,.35), 0 0 90px 30px rgba(245,238,218,.12)}
+.sv-moon::after{content:"";position:absolute;left:10px;top:14px;width:9px;height:9px;border-radius:50%;
+  background:rgba(180,170,140,.4);box-shadow:14px 8px 0 -2px rgba(180,170,140,.3)}
+.sv-horizon{position:absolute;left:0;right:0;bottom:0;height:34%}
+.sv-ridge{position:absolute;left:0;right:0;bottom:0}
+.sv-ridge.sv-back{height:76%;
+  clip-path:polygon(0 58%,10% 44%,22% 56%,34% 38%,47% 52%,60% 34%,73% 50%,86% 40%,100% 54%,100% 100%,0 100%);
+  background:linear-gradient(180deg,#181c3a,#0d1026)}
+.sv-ridge.sv-front{height:52%;
+  clip-path:polygon(0 66%,14% 50%,29% 64%,44% 46%,58% 62%,74% 44%,88% 60%,100% 50%,100% 100%,0 100%);
+  background:linear-gradient(180deg,#0b0e22,#060814)}
+.sv-dawn{position:absolute;left:0;right:0;bottom:0;height:0%;
+  background:linear-gradient(180deg, transparent 0%, rgba(255,157,92,.0) 10%, rgba(255,157,92,.28) 55%, rgba(255,217,160,.5) 100%);
+  transition:height 1.6s cubic-bezier(.22,1,.36,1);
+  mix-blend-mode:screen}
+.sv-dawn-sun{position:absolute;left:50%;bottom:-30px;width:120px;height:120px;border-radius:50%;
+  transform:translateX(-50%) translateY(100px);
+  background:radial-gradient(circle, #ffd9a0 0%, #ff9d5c 45%, transparent 70%);
+  filter:blur(6px);opacity:0;transition:all 1.6s cubic-bezier(.22,1,.36,1)}
+.sv-app{position:relative;z-index:2;min-height:80vh;display:flex;flex-direction:column;
+  padding:max(16px,env(safe-area-inset-top)) 20px 44px;color:#eef0f6;
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic UI",sans-serif}
+@media(min-width:600px){.sv-app > *{max-width:440px;margin-left:auto;margin-right:auto;width:100%}}
+.sv-tab-title{font-size:12px;font-weight:800;letter-spacing:.3em;color:rgba(238,240,246,.55);text-align:center;margin-top:4px}
+.sv-now{font-size:15px;color:rgba(238,240,246,.55);text-align:center;margin-top:2px;font-weight:600}
+.sv-night-word{margin-top:9vh;text-align:center;font-size:19px;font-weight:600;line-height:2;color:#dfe3f2}
+.sv-night-sub{text-align:center;font-size:12.5px;color:rgba(238,240,246,.55);margin-top:8px;line-height:1.8}
+.sv-btn-oyasumi{margin:7vh auto 0;display:block;width:196px;height:196px;border-radius:50%;border:none;
+  background:radial-gradient(circle at 50% 38%, #2a3163, #171c42 60%, #10142e);
+  box-shadow:0 0 60px rgba(127,156,245,.28), inset 0 0 30px rgba(127,156,245,.16), inset 0 -8px 24px rgba(0,0,0,.4);
+  color:#eef0f6;font-size:21px;font-weight:800;letter-spacing:.14em;
+  animation:svBreathe 4.5s ease-in-out infinite}
+.sv-btn-oyasumi small{display:block;font-size:11px;font-weight:600;color:rgba(238,240,246,.55);margin-top:7px;letter-spacing:.1em}
+@keyframes svBreathe{0%,100%{box-shadow:0 0 46px rgba(127,156,245,.22), inset 0 0 30px rgba(127,156,245,.14)}
+  50%{box-shadow:0 0 78px rgba(127,156,245,.4), inset 0 0 40px rgba(127,156,245,.22)}}
+.sv-btn-oyasumi:active{transform:scale(.96)}
+.sv-btn-ohayo{margin:9vh auto 0;display:block;width:170px;height:170px;border-radius:50%;border:none;
+  background:radial-gradient(circle at 50% 38%, #3a2f63, #221c42 60%, #14102e);
+  box-shadow:0 0 60px rgba(255,180,120,.22), inset 0 0 30px rgba(255,180,120,.14);
+  color:#ffe6c8;font-size:20px;font-weight:800;letter-spacing:.14em}
+.sv-btn-ohayo:active{transform:scale(.96)}
+.sv-rescue-link,.sv-cancel-link,.sv-fix-link{text-align:center;font-size:12px;font-weight:700;color:rgba(238,240,246,.55);
+  margin-top:16px;text-decoration:underline;cursor:pointer;min-height:44px;display:flex;align-items:center;justify-content:center}
+.sv-m-head{margin-top:5vh;text-align:center}
+.sv-m-ohayo{font-size:24px;font-weight:800;letter-spacing:.06em}
+.sv-m-slept{margin-top:10px;font-size:14px;color:rgba(238,240,246,.55)}
+.sv-m-slept b{color:#ffd9a0;font-size:22px;font-weight:900;letter-spacing:.02em}
+.sv-m-q{margin-top:5vh;text-align:center;font-size:15px;font-weight:700}
+.sv-wake-grid{display:flex;gap:8px;margin-top:16px}
+.sv-wake-grid button{flex:1;padding:16px 0 13px;border:none;border-radius:16px;
+  background:rgba(255,255,255,.07);color:#eef0f6;font-size:26px;line-height:1;min-height:44px}
+.sv-wake-grid button span{display:block;font-size:10.5px;font-weight:700;color:rgba(238,240,246,.55);margin-top:7px}
+.sv-m-result{margin-top:5vh;text-align:center}
+.sv-m-score{font-size:15px;color:rgba(238,240,246,.55)}
+.sv-m-score b{display:block;font-size:52px;font-weight:900;color:#ffd9a0;text-shadow:0 0 30px rgba(255,157,92,.5);line-height:1.15}
+.sv-m-score small{font-size:13px;font-weight:700;color:#ffd9a0}
+.sv-m-word{margin-top:14px;font-size:14.5px;font-weight:600;line-height:2;color:#f3e9db}
+.sv-m-depth{margin-top:18px;display:flex;justify-content:center;flex-wrap:wrap;gap:18px;font-size:12px;color:rgba(238,240,246,.55)}
+.sv-m-depth b{display:block;font-size:16px;color:#eef0f6;margin-top:3px;font-weight:800}
+.sv-edit-box,.sv-manual-box{margin-top:6vh;background:rgba(255,255,255,.06);border-radius:16px;padding:14px 16px}
+.sv-edit-row{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;color:rgba(238,240,246,.55);padding:8px 0}
+.sv-edit-row input[type=time]{border:none;background:rgba(255,255,255,.1);border-radius:8px;padding:8px 10px;font:inherit;font-size:15px;color:#ffd9a0;font-weight:700;color-scheme:dark}
+.sv-edit-actions{display:flex;gap:8px;margin-top:12px}
+.sv-edit-save{flex:1;background:linear-gradient(135deg,#ff9d5c,#ffd9a0);color:#3a2200;border:none;border-radius:10px;padding:12px;font:inherit;font-weight:800;font-size:13px;cursor:pointer;min-height:44px}
+.sv-edit-cancel{flex:1;background:rgba(255,255,255,.1);color:#eef0f6;border:none;border-radius:10px;padding:12px;font:inherit;font-weight:700;font-size:13px;cursor:pointer;min-height:44px}
+.sv-tr-best{margin-top:6vh;text-align:center}
+.sv-lbl{font-size:11px;font-weight:800;letter-spacing:.24em;color:rgba(238,240,246,.55)}
+.sv-tr-best b{display:block;font-size:44px;font-weight:900;color:#ffd9a0;margin-top:6px;text-shadow:0 0 30px rgba(255,157,92,.4)}
+.sv-tr-best b.sv-learning{font-size:24px}
+.sv-tr-note{font-size:12px;color:rgba(238,240,246,.55);margin-top:8px;line-height:1.8}
+.sv-tr-chart{margin-top:5vh}
+.sv-tr-chart .sv-lbl{margin-bottom:12px;display:block}
+.sv-bars{display:flex;align-items:flex-end;gap:5px;height:120px}
+.sv-bar{flex:1;border-radius:5px 5px 0 0;position:relative;
+  background:linear-gradient(180deg, rgba(255,157,92,.85), rgba(255,157,92,.25))}
+.sv-bar.sv-mid{background:linear-gradient(180deg, rgba(255,157,92,.5), rgba(255,157,92,.15))}
+.sv-bar.sv-low{background:linear-gradient(180deg, rgba(127,156,245,.7), rgba(127,156,245,.2))}
+.sv-bar i{position:absolute;top:-18px;left:0;right:0;text-align:center;font-style:normal;font-size:9.5px;color:rgba(238,240,246,.55)}
+.sv-days{display:flex;gap:5px;margin-top:6px}
+.sv-days span{flex:1;text-align:center;font-size:9.5px;color:rgba(238,240,246,.55)}
+.sv-tr-line{margin-top:26px;padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.06);
+  font-size:13.5px;line-height:1.9;color:#e8ddcc}
+@media (max-width:400px){
+  .sv-btn-oyasumi{width:170px;height:170px}
+}
 </style>
 </head>
 <body>
@@ -434,6 +540,7 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
       <button id="vList" class="active" onclick="setView('list')">リスト</button>
       <button id="vCal2" onclick="setView('cal2')">📆 カレンダー</button>
       <button id="vRecord" onclick="setView('record')">📋 記録</button>
+      <button id="vSleep" onclick="setView('sleep')">😴 睡眠</button>
       <button class="jump-today" onclick="jumpToToday()" title="今日のタスクへジャンプ">📅 今日</button>
     </div>
   </div>
@@ -666,6 +773,7 @@ function setView(v){
   document.getElementById("vList").classList.toggle("active", v==="list");
   document.getElementById("vCal2").classList.toggle("active", v==="cal2");
   document.getElementById("vRecord").classList.toggle("active", v==="record");
+  document.getElementById("vSleep").classList.toggle("active", v==="sleep");
   renderCarryBanner();
   renderContent();
   // タブ切替で一番上へ
@@ -778,14 +886,16 @@ function renderContent(){
   if(prevScroll) dvSavedScrollTop = prevScroll.scrollTop;
   const el = document.getElementById("content");
   const isCal2 = currentView==="cal2";
+  const isSleep = currentView==="sleep";
   ["streakBanner","carryBanner","summary","charts"].forEach(id=>{
     const node=document.getElementById(id);
-    if(node) node.style.display = isCal2 ? "none" : "";
+    if(node) node.style.display = (isCal2||isSleep) ? "none" : "";
   });
   // cal2（日ビュー）中はhtml/bodyの外側スクロールをロックし、二重スクロールを防ぐ
   document.body.classList.toggle('cal2-lock', isCal2);
   if(currentView==="record"){ el.innerHTML = renderRecord(); }
   else if(isCal2){ el.innerHTML = renderDayView(); afterDayViewRender(); }
+  else if(isSleep){ el.innerHTML = renderSleep(); afterSleepRender(); }
   else el.innerHTML = renderList();
 }
 
@@ -2485,6 +2595,411 @@ function forceReload(){
     currentY = 0;
   }, {passive: true});
 })();
+
+// ===== 睡眠タブ (sleep_v1) =====
+// 独立キー。tracker2026_v2には入れない（resetMonthで消えないように）。
+const SLEEP_KEY = "sleep_v1";
+const SLEEP_POINTS = [0,28,48,65,82,95]; // index=score(1-5)
+const SLEEP_DEPTH = ["","浅い","浅め","普通","ぐっすり","深い"];
+const SLEEP_EMOJI = ["","😵","😑","🙂","😊","✨"];
+const SLEEP_EMOJI_LABEL = ["","最悪","重い","普通","いい","最高"];
+const SLEEP_WORDS = ["",
+  "無理しない日にしよう。<br>今夜は早めに。",
+  "少し重いね。<br>昼に5分目を閉じよう。",
+  "普通に戦える。<br>いつも通りでいい。",
+  "よく回復してる。<br>今日は攻めていい日だ。",
+  "完璧な朝だ。<br>今日は何でもできる。"];
+const SLEEP_NIGHT_WORDS = [
+  "今日もよく闘った。<br>あとは眠るだけ。",
+  "昨日の自分より、よく休め。",
+  "強さは眠りから作られる。"
+];
+
+// 表示・入力中の一時状態（保存前のUI状態。localStorageには入れない）
+let svTempWake = null;       // {wakeTs} 起床確定～スコア選択待ち
+let svTempWakeScore = null;  // guard confirmキャンセル時、手動修正フォームに渡すスコア
+let svEditingPending = null; // guard confirmキャンセル→pending側の時刻手動修正中フラグ
+let svEditingToday = false;  // 状態Cの「時刻を直す」編集中フラグ
+let svManualOpen = false;    // 状態Aの「ゆうべの記録を手で入れる」フォーム開閉
+
+function loadSleep(){
+  try{
+    const raw = JSON.parse(localStorage.getItem(SLEEP_KEY)||"null");
+    if(raw && typeof raw==="object"){
+      return { pending: raw.pending||null, nights: Array.isArray(raw.nights)?raw.nights:[] };
+    }
+  }catch(e){}
+  return { pending:null, nights:[] };
+}
+function saveSleep(sd){
+  try{ localStorage.setItem(SLEEP_KEY, JSON.stringify(sd)); }catch(e){}
+}
+
+// pendingが20時間より古い→自動破棄（就寝タップ忘れの残骸ガード）
+function sleepCheckPendingExpiry(){
+  const sd = loadSleep();
+  if(sd.pending && (Date.now() - sd.pending.bedTs) > 20*60*60*1000){
+    sd.pending = null;
+    saveSleep(sd);
+    svTempWake = null;
+  }
+}
+
+function fmtDateYMD(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function svFmtHM(ts){ const d=new Date(ts); return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"); }
+function svFmtDur(ms){ const totalMin=Math.max(0,Math.round(ms/60000)); const h=Math.floor(totalMin/60), m=totalMin%60; return h+"時間"+m+"分"; }
+function svFmtDurShort(ms){ const totalMin=Math.max(0,Math.round(ms/60000)); const h=Math.floor(totalMin/60), m=totalMin%60; return h+"h"+(m?String(m).padStart(2,'0')+"m":""); }
+function svApplyTimeToDate(ts, hhmm){
+  const d = new Date(ts);
+  const parts = hhmm.split(":");
+  const h = parseInt(parts[0],10), m = parseInt(parts[1],10);
+  d.setHours(h, m, 0, 0);
+  return d.getTime();
+}
+
+// ===== 導出値 =====
+function sleepStats(sd){
+  const good = sd.nights.filter(n=>n.points>=75);
+  let bestMs = null;
+  if(good.length >= 3){
+    bestMs = good.reduce((a,n)=>a+(n.wakeTs-n.bedTs),0) / good.length;
+  }
+  let recommend = null;
+  if(bestMs!==null){
+    const recent = sd.nights.slice(-7);
+    if(recent.length){
+      // 直近7件の起床「時刻」（時分のみ）の平均。日付は無視し分単位で平均する。
+      // TODO: 起床時刻が日をまたいで大きくばらける場合（例: 6:00と23:50が混在）は
+      // 単純な分平均だと直感に反した値になり得る。v1では簡略化して許容する。
+      const avgWakeMinOfDay = recent.reduce((a,n)=>{
+        const d = new Date(n.wakeTs);
+        return a + d.getHours()*60 + d.getMinutes();
+      },0) / recent.length;
+      const bedMinBeforeWake = bestMs/60000 + 15; // 最適睡眠時間(分) + 入眠余裕15分
+      let recMin = avgWakeMinOfDay - bedMinBeforeWake;
+      recMin = ((recMin % 1440) + 1440) % 1440;
+      recommend = { h: Math.floor(recMin/60), m: Math.round(recMin%60) };
+    }
+  }
+  return { bestMs, goodCount: good.length, recommend };
+}
+
+// ===== データ操作 =====
+function sleepGoBed(){
+  const sd = loadSleep();
+  sd.pending = { bedTs: Date.now() };
+  saveSleep(sd);
+  svTempWake = null;
+  renderContent();
+}
+function sleepCancelBed(){
+  const sd = loadSleep();
+  sd.pending = null;
+  saveSleep(sd);
+  svTempWake = null;
+  svEditingPending = false;
+  renderContent();
+}
+function sleepWakeTap(){
+  svTempWake = { wakeTs: Date.now() };
+  renderContent();
+}
+function sleepScoreTap(v){
+  const sd = loadSleep();
+  if(!sd.pending || !svTempWake) return;
+  const bedTs = sd.pending.bedTs;
+  const wakeTs = svTempWake.wakeTs;
+  const hrs = (wakeTs - bedTs) / 3600000;
+  if(hrs < 1 || hrs > 16){
+    const ok = confirm(svFmtDur(wakeTs-bedTs) + "で記録する？");
+    if(!ok){
+      svTempWakeScore = v;
+      svEditingPending = true;
+      renderContent();
+      return;
+    }
+  }
+  sleepCommitNight(bedTs, wakeTs, v);
+}
+function sleepSavePendingEdit(score){
+  const sd = loadSleep();
+  if(!sd.pending || !svTempWake) return;
+  const bedInput = document.getElementById("svEditBed");
+  const wakeInput = document.getElementById("svEditWake");
+  if(!bedInput || !wakeInput) return;
+  const bedTs = svApplyTimeToDate(sd.pending.bedTs, bedInput.value);
+  const wakeTs = svApplyTimeToDate(svTempWake.wakeTs, wakeInput.value);
+  if(wakeTs <= bedTs){ alert("起床時刻が就寝時刻より前になってる。確認して。"); return; }
+  sleepCommitNight(bedTs, wakeTs, score);
+}
+function sleepCommitNight(bedTs, wakeTs, score){
+  const sd = loadSleep();
+  const points = SLEEP_POINTS[score];
+  const dateStr = fmtDateYMD(new Date(wakeTs));
+  const rec = { id:"n_"+wakeTs, bedTs, wakeTs, score, points, date: dateStr };
+  // 同じ起床日に2件目が来たら上書き（夜の睡眠は1日1件）
+  const idx = sd.nights.findIndex(n=>n.date===dateStr);
+  if(idx>=0) sd.nights[idx] = rec; else sd.nights.push(rec);
+  sd.nights.sort((a,b)=>a.wakeTs-b.wakeTs);
+  sd.pending = null;
+  saveSleep(sd);
+  svTempWake = null;
+  svTempWakeScore = null;
+  svEditingPending = false;
+  svManualOpen = false;
+  renderContent();
+}
+function sleepOpenManual(){ svManualOpen = true; renderContent(); }
+function sleepCloseManual(){ svManualOpen = false; renderContent(); }
+function sleepManualSubmit(v){
+  const bedInput = document.getElementById("svManBed");
+  const wakeInput = document.getElementById("svManWake");
+  if(!bedInput || !wakeInput) return;
+  const now = new Date();
+  const bedD = new Date(now);
+  const bp = bedInput.value.split(":"); bedD.setHours(parseInt(bp[0],10), parseInt(bp[1],10), 0, 0);
+  const wakeD = new Date(now);
+  const wp = wakeInput.value.split(":"); wakeD.setHours(parseInt(wp[0],10), parseInt(wp[1],10), 0, 0);
+  if(wakeD.getTime() <= bedD.getTime()){
+    bedD.setDate(bedD.getDate()-1); // 就寝は前日とみなす（日付跨ぎ）
+  }
+  const bedTs = bedD.getTime(), wakeTs = wakeD.getTime();
+  const hrs = (wakeTs-bedTs)/3600000;
+  if(hrs < 1 || hrs > 16){
+    // キャンセル時はフォームを開いたままにして再入力させる（再renderしない＝入力欄の値は保持される）
+    if(!confirm(svFmtDur(wakeTs-bedTs) + "で記録する？")) return;
+  }
+  sleepCommitNight(bedTs, wakeTs, v);
+}
+function sleepOpenEditToday(){ svEditingToday = true; renderContent(); }
+function sleepCloseEditToday(){ svEditingToday = false; renderContent(); }
+function sleepSaveEditToday(id){
+  const sd = loadSleep();
+  const rec = sd.nights.find(n=>n.id===id);
+  if(!rec){ svEditingToday = false; renderContent(); return; }
+  const bedInput = document.getElementById("svFixBed");
+  const wakeInput = document.getElementById("svFixWake");
+  if(!bedInput || !wakeInput) return;
+  const newBed = svApplyTimeToDate(rec.bedTs, bedInput.value);
+  const newWake = svApplyTimeToDate(rec.wakeTs, wakeInput.value);
+  if(newWake <= newBed){ alert("起床時刻が就寝時刻より前になってる。確認して。"); return; }
+  rec.bedTs = newBed;
+  rec.wakeTs = newWake;
+  saveSleep(sd);
+  svEditingToday = false;
+  renderContent();
+}
+
+// ===== 描画 =====
+function renderSleep(){
+  sleepCheckPendingExpiry();
+  const sd = loadSleep();
+  const todayStr = fmtDateYMD(new Date());
+  const hasToday = sd.nights.some(n=>n.date===todayStr);
+  let hero;
+  if(sd.pending){
+    hero = renderSleepHeroB(sd);
+  } else if(hasToday){
+    hero = renderSleepHeroC(sd, todayStr);
+  } else {
+    hero = renderSleepHeroA(sd);
+  }
+  return `
+    <div class="sv-wrap">
+      <div class="sv-sky">
+        <div class="sv-stars"></div>
+        <div class="sv-moon"></div>
+        <div class="sv-horizon">
+          <div class="sv-dawn" id="svDawn"></div>
+          <div class="sv-dawn-sun" id="svDawnSun"></div>
+          <div class="sv-ridge sv-back"></div>
+          <div class="sv-ridge sv-front"></div>
+        </div>
+      </div>
+      <div class="sv-app">
+        ${hero}
+        ${renderSleepTrend(sd)}
+      </div>
+    </div>
+  `;
+}
+
+function renderSleepHeroA(sd){
+  const now = new Date();
+  const nowStr = svFmtHM(now.getTime());
+  const word = SLEEP_NIGHT_WORDS[Math.floor(Math.random()*SLEEP_NIGHT_WORDS.length)];
+  const hh = now.getHours();
+  const showRescue = hh>=4 && hh<11;
+  if(svManualOpen){
+    return `
+      <div class="sv-tab-title">SLEEP</div>
+      <div class="sv-now">${nowStr}</div>
+      <div class="sv-manual-box">
+        <div class="sv-edit-row">就寝<input type="time" id="svManBed" value="23:00"></div>
+        <div class="sv-edit-row">起床<input type="time" id="svManWake" value="${nowStr}"></div>
+        <div class="sv-m-q" style="margin-top:14px">目覚めはどうだった？（1タップ）</div>
+        <div class="sv-wake-grid">
+          ${[1,2,3,4,5].map(v=>`<button onclick="sleepManualSubmit(${v})">${SLEEP_EMOJI[v]}<span>${SLEEP_EMOJI_LABEL[v]}</span></button>`).join("")}
+        </div>
+        <div class="sv-cancel-link" onclick="sleepCloseManual()">やめる</div>
+      </div>
+    `;
+  }
+  return `
+    <div class="sv-tab-title">SLEEP</div>
+    <div class="sv-now">${nowStr}</div>
+    <div class="sv-night-word">${word}</div>
+    <div class="sv-night-sub">押した時刻がそのまま就寝時刻になる</div>
+    <button class="sv-btn-oyasumi" onclick="sleepGoBed()">おやすみ<small>タップで就寝 ${nowStr}</small></button>
+    ${showRescue ? `<div class="sv-rescue-link" onclick="sleepOpenManual()">ゆうべの記録を手で入れる</div>` : ``}
+  `;
+}
+
+function renderSleepHeroB(sd){
+  const bedStr = svFmtHM(sd.pending.bedTs);
+  if(svTempWake && svEditingPending){
+    // guard confirmキャンセル→手動時刻修正
+    return `
+      <div class="sv-tab-title">SLEEP</div>
+      <div class="sv-now">${bedStr} に就寝した</div>
+      <div class="sv-edit-box">
+        <div class="sv-edit-row">就寝<input type="time" id="svEditBed" value="${svFmtHM(sd.pending.bedTs)}"></div>
+        <div class="sv-edit-row">起床<input type="time" id="svEditWake" value="${svFmtHM(svTempWake.wakeTs)}"></div>
+        <div class="sv-edit-actions">
+          <button class="sv-edit-save" onclick="sleepSavePendingEdit(${svTempWakeScore})">この時刻で保存</button>
+          <button class="sv-edit-cancel" onclick="sleepCancelBed()">就寝を取り消す</button>
+        </div>
+      </div>
+    `;
+  }
+  if(svTempWake){
+    const durMs = svTempWake.wakeTs - sd.pending.bedTs;
+    return `
+      <div class="sv-tab-title">SLEEP</div>
+      <div class="sv-m-head">
+        <div class="sv-m-ohayo">おはよう。</div>
+        <div class="sv-m-slept">${bedStr} → ${svFmtHM(svTempWake.wakeTs)}　<b>${svFmtDur(durMs)}</b> 眠った</div>
+      </div>
+      <div class="sv-m-q">目覚めはどうだった？（1タップ）</div>
+      <div class="sv-wake-grid">
+        ${[1,2,3,4,5].map(v=>`<button onclick="sleepScoreTap(${v})">${SLEEP_EMOJI[v]}<span>${SLEEP_EMOJI_LABEL[v]}</span></button>`).join("")}
+      </div>
+    `;
+  }
+  // 状態B：おやすみボタンは出さない（二度寝タップ事故防止）
+  return `
+    <div class="sv-tab-title">SLEEP</div>
+    <div class="sv-now">${bedStr} に就寝した</div>
+    <button class="sv-btn-ohayo" onclick="sleepWakeTap()">おはよう</button>
+    <div class="sv-cancel-link" onclick="sleepCancelBed()">就寝を取り消す</div>
+  `;
+}
+
+function renderSleepHeroC(sd, todayStr){
+  const rec = sd.nights.find(n=>n.date===todayStr);
+  if(svEditingToday){
+    return `
+      <div class="sv-tab-title">SLEEP</div>
+      <div class="sv-edit-box">
+        <div class="sv-edit-row">就寝<input type="time" id="svFixBed" value="${svFmtHM(rec.bedTs)}"></div>
+        <div class="sv-edit-row">起床<input type="time" id="svFixWake" value="${svFmtHM(rec.wakeTs)}"></div>
+        <div class="sv-edit-actions">
+          <button class="sv-edit-save" onclick="sleepSaveEditToday('${rec.id}')">保存</button>
+          <button class="sv-edit-cancel" onclick="sleepCloseEditToday()">キャンセル</button>
+        </div>
+      </div>
+    `;
+  }
+  const stats = sleepStats(sd);
+  const depth = SLEEP_DEPTH[rec.score];
+  const bestTxt = stats.bestMs!=null ? svFmtDurShort(stats.bestMs) : `学習中（あと${Math.max(0,3-stats.goodCount)}夜）`;
+  const recTxt = stats.recommend ? String(stats.recommend.h).padStart(2,'0')+":"+String(stats.recommend.m).padStart(2,'0') : null;
+  return `
+    <div class="sv-tab-title">SLEEP</div>
+    <div class="sv-now">${svFmtHM(rec.bedTs)} → ${svFmtHM(rec.wakeTs)}　${svFmtDur(rec.wakeTs-rec.bedTs)} 眠った</div>
+    <div class="sv-m-result">
+      <div class="sv-m-score">今朝の回復<b>${rec.points}<small>点</small></b></div>
+      <div class="sv-m-word">${SLEEP_WORDS[rec.score]}</div>
+      <div class="sv-m-depth">
+        <div>推定の深さ<b>${depth}</b></div>
+        <div>君の最適睡眠<b>${bestTxt}</b></div>
+        ${recTxt ? `<div>今夜のおすすめ就寝<b>${recTxt}</b></div>` : ``}
+      </div>
+    </div>
+    <div class="sv-fix-link" onclick="sleepOpenEditToday()">時刻を直す</div>
+  `;
+}
+
+function renderSleepTrend(sd){
+  if(sd.nights.length === 0){
+    return `
+      <div class="sv-tr-best">
+        <div class="sv-lbl">君の最適睡眠時間</div>
+        <div class="sv-tr-note">今夜から始めよう</div>
+      </div>
+    `;
+  }
+  const stats = sleepStats(sd);
+  const nights = sd.nights.slice(-14);
+  const bestBlock = stats.bestMs!=null
+    ? `<b>${svFmtDurShort(stats.bestMs)}</b><div class="sv-tr-note">回復75点を超えた夜の平均から学習中<br>記録が増えるほど正確になる（今${sd.nights.length}夜分）</div>`
+    : `<b class="sv-learning">学習中（あと${Math.max(0,3-stats.goodCount)}夜）</b><div class="sv-tr-note">回復75点を超えた夜が3夜たまると最適睡眠時間がわかる</div>`;
+  const maxDur = Math.max.apply(null, nights.map(n=>n.wakeTs-n.bedTs).concat([1]));
+  const bars = nights.map(n=>{
+    const durMs = n.wakeTs - n.bedTs;
+    const hrs = durMs/3600000;
+    const cls = hrs>=7 ? "" : (hrs<6 ? " sv-low" : " sv-mid");
+    const heightPct = Math.max(4, Math.min(100, Math.round(durMs/maxDur*100)));
+    return `<div class="sv-bar${cls}" style="height:${heightPct}%"><i>${n.points}</i></div>`;
+  }).join("");
+  const days = nights.map(n=>{
+    const d = new Date(n.wakeTs);
+    return `<span>${d.getMonth()+1}/${d.getDate()}</span>`;
+  }).join("");
+  let lineTxt;
+  if(sd.nights.length < 3){
+    lineTxt = "まだ学習中。まずは3夜。";
+  } else if(stats.bestMs!=null){
+    lineTxt = `オレンジの夜＝7時間超え。青い夜＝6時間未満。<br>君の回復は<b>${svFmtDurShort(stats.bestMs)}</b>前後で一番高い。`;
+  } else {
+    lineTxt = "まだ学習中。まずは3夜。";
+  }
+  return `
+    <div class="sv-tr-best">
+      <div class="sv-lbl">君の最適睡眠時間</div>
+      ${bestBlock}
+    </div>
+    <div class="sv-tr-chart">
+      <div class="sv-lbl">睡眠時間と回復（バー=時間・色=回復）</div>
+      <div class="sv-bars">${bars}</div>
+      <div class="sv-days">${days}</div>
+    </div>
+    <div class="sv-tr-line">${lineTxt}</div>
+  `;
+}
+
+function afterSleepRender(){
+  const dawn = document.getElementById("svDawn");
+  const dawnSun = document.getElementById("svDawnSun");
+  if(!dawn || !dawnSun) return;
+  const sd = loadSleep();
+  const todayStr = fmtDateYMD(new Date());
+  let pct = 0;
+  if(sd.pending){
+    pct = svTempWake ? 8 : 0;
+  } else {
+    const rec = sd.nights.find(n=>n.date===todayStr);
+    pct = rec ? rec.points : 0;
+  }
+  dawn.style.height = pct + "%";
+  if(pct > 30){
+    dawnSun.style.opacity = String(Math.min(1, (pct-30)/50));
+    dawnSun.style.transform = "translateX(-50%) translateY(" + (100 - pct) + "px)";
+  } else {
+    dawnSun.style.opacity = "0";
+    dawnSun.style.transform = "translateX(-50%) translateY(100px)";
+  }
+}
 
 // 初期表示を記録タブに（毎回トップは記録）
 setView("record");
