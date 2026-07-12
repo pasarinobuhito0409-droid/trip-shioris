@@ -636,21 +636,414 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 .exp-guide-title{font-size:13px;font-weight:800;color:#fff;margin-bottom:6px}
 .exp-guide-line{font-size:12.5px;color:rgba(255,255,255,.75);line-height:1.7}
 
-/* ===== 🥊MMAタブ（第3弾新設・読み取り専用） ===== */
-.mma-wrap{position:relative;isolation:isolate;padding:0 12px 130px}
-.mma-arena{position:relative;height:60px;margin-bottom:10px;overflow:hidden;border-radius:14px;background:rgba(6,6,10,.6)}
-.mma-rope{position:absolute;left:6%;right:6%;top:50%;height:3px;transform:translateY(-50%);background:#c81e3a;border-radius:2px;box-shadow:0 0 14px 3px rgba(255,40,60,.55), 0 0 28px 8px rgba(255,20,40,.28)}
-.mma-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
-.mma-plan{border-left:3px solid #ff5e73}
-.mma-stat-row{display:flex}
-.mma-stat{flex:1;text-align:center;padding:14px 6px;min-width:0}
-.mma-stat-num{font-size:22px;font-weight:900;color:#fff}
-.mma-stat-x{font-size:13px;color:#8ec6ff;margin-left:6px;font-weight:700}
-.mma-stat-lbl{font-size:11px;color:var(--muted);margin-top:4px}
-.mma-last-date{font-size:12px;color:var(--muted);flex:0 0 auto}
-.mma-last-res{font-size:13px;font-weight:800;color:#fff;flex:0 0 auto}
-.mma-last-aim{font-size:12.5px;color:rgba(255,255,255,.7);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mma-enter-btn{width:100%;justify-content:center;padding:14px;font-size:15px;font-weight:900;border-radius:12px;border:1.5px solid rgba(255,40,60,.55);background:linear-gradient(135deg,rgba(200,30,58,.32),rgba(120,10,30,.32));color:#fff;cursor:pointer;min-height:44px}
+/* ===== 🥊MMAタブ（第5弾・完全移植：mma_fightlog_v2.htmlのアリーナを.mma-appスコープ配下に丸ごと移植）===== */
+.mma-app{
+  --mma-red:#ff3b2a;
+  --mma-red-glow:rgba(255,80,55,.55);
+  --mma-blue:#3aa0ff;
+  --mma-green:#2fd06f;
+  --mma-green-glow:rgba(47,208,111,.4);
+  --mma-gold:#ffd9a0;
+  --mma-ink:#050506;
+  position:relative;isolation:isolate;overflow:hidden;
+  background:var(--mma-ink);color:#f2f0ee;
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic UI","Segoe UI",sans-serif;
+  font-size:15px;line-height:1.5;
+}
+.mma-app *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+.mma-app input,.mma-app textarea{user-select:text;-webkit-user-select:text;font-family:inherit}
+.mma-app button{touch-action:manipulation;font-family:inherit;user-select:none;-webkit-user-select:none;cursor:pointer;font-size:inherit}
+
+/* ---- アリーナ背景（承認済みの魂・タブコンテナ内absoluteでタブ外に漏らさない） ---- */
+.mma-app .arena{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:var(--mma-ink)}
+.mma-app .arena .crowd{position:absolute;left:0;right:0;top:0;height:42%;opacity:.9;
+  background-image:
+    radial-gradient(circle 24px at 6% 18%, rgba(90,100,180,.24), transparent 70%),
+    radial-gradient(circle 20px at 14% 30%, rgba(160,60,70,.20), transparent 70%),
+    radial-gradient(circle 26px at 22% 12%, rgba(90,100,180,.22), transparent 70%),
+    radial-gradient(circle 18px at 30% 26%, rgba(160,60,70,.18), transparent 70%),
+    radial-gradient(circle 26px at 38% 16%, rgba(90,100,180,.22), transparent 70%),
+    radial-gradient(circle 22px at 47% 8%, rgba(160,60,70,.20), transparent 70%),
+    radial-gradient(circle 26px at 55% 20%, rgba(90,100,180,.22), transparent 70%),
+    radial-gradient(circle 18px at 63% 10%, rgba(160,60,70,.18), transparent 70%),
+    radial-gradient(circle 26px at 71% 24%, rgba(90,100,180,.22), transparent 70%),
+    radial-gradient(circle 20px at 79% 14%, rgba(160,60,70,.20), transparent 70%),
+    radial-gradient(circle 26px at 87% 28%, rgba(90,100,180,.22), transparent 70%),
+    radial-gradient(circle 18px at 94% 16%, rgba(160,60,70,.18), transparent 70%),
+    radial-gradient(circle 24px at 60% 32%, rgba(90,100,180,.20), transparent 70%),
+    radial-gradient(circle 2px at 18% 22%, rgba(255,255,255,.9), transparent 75%),
+    radial-gradient(circle 2px at 44% 14%, rgba(255,255,255,.85), transparent 75%),
+    radial-gradient(circle 2px at 68% 26%, rgba(255,255,255,.9), transparent 75%),
+    radial-gradient(circle 2px at 84% 10%, rgba(255,255,255,.8), transparent 75%);
+  mask-image:linear-gradient(180deg,rgba(0,0,0,.95) 0%, rgba(0,0,0,.6) 70%, transparent 100%);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.95) 0%, rgba(0,0,0,.6) 70%, transparent 100%);
+}
+.mma-app .arena .wash{position:absolute;inset:0;background:linear-gradient(180deg, rgba(10,8,14,.35) 0%, rgba(5,5,6,.55) 45%, #050506 90%)}
+.mma-app .arena .truss{position:absolute;left:6%;right:6%;top:0;height:5px;
+  background:linear-gradient(90deg, transparent, rgba(210,210,220,.5) 10%, rgba(210,210,220,.5) 90%, transparent);
+  box-shadow:0 0 10px rgba(200,200,220,.3)}
+.mma-app .arena .lamp{position:absolute;top:2px;width:6px;height:6px;border-radius:50%;background:#fff8e0;
+  box-shadow:0 0 16px 6px rgba(255,244,220,.85), 0 0 34px 14px rgba(255,200,120,.35)}
+.mma-app .arena .lamp.l1{left:22%}.mma-app .arena .lamp.l2{left:50%}.mma-app .arena .lamp.l3{left:78%}
+.mma-app .ray{position:absolute;top:0;height:78%;width:46%;
+  clip-path:polygon(46% 0,54% 0,100% 100%,0 100%);
+  -webkit-clip-path:polygon(46% 0,54% 0,100% 100%,0 100%);
+  background:linear-gradient(180deg, rgba(255,244,220,.24), transparent 85%);
+  will-change:transform,opacity;
+  transform-origin:top center}
+.mma-app .ray.center{left:50%;transform:translateX(-50%);opacity:.95;animation:mmaSwayC 11s ease-in-out infinite}
+.mma-app .ray.left{left:20%;transform:translateX(-50%) rotate(-16deg);opacity:.4;animation:mmaSwayL 13s ease-in-out infinite}
+.mma-app .ray.right{left:80%;transform:translateX(-50%) rotate(16deg);opacity:.4;animation:mmaSwayR 10s ease-in-out infinite}
+@keyframes mmaSwayC{0%,100%{transform:translateX(-50%) rotate(0deg)}50%{transform:translateX(-50%) rotate(1.5deg)}}
+@keyframes mmaSwayL{0%,100%{transform:translateX(-50%) rotate(-16deg)}50%{transform:translateX(-50%) rotate(-14.5deg)}}
+@keyframes mmaSwayR{0%,100%{transform:translateX(-50%) rotate(16deg)}50%{transform:translateX(-50%) rotate(14.5deg)}}
+.mma-app .arena .cage{position:absolute;left:0;right:0;top:30%;height:34%;opacity:.8;
+  background-image:
+    repeating-linear-gradient(52deg, transparent 0 9px, rgba(255,255,255,.055) 9px 10px),
+    repeating-linear-gradient(-52deg, transparent 0 9px, rgba(255,255,255,.055) 9px 10px);
+  mask-image:linear-gradient(180deg, transparent 0%, rgba(0,0,0,.9) 22%, rgba(0,0,0,.9) 78%, transparent 100%);
+  -webkit-mask-image:linear-gradient(180deg, transparent 0%, rgba(0,0,0,.9) 22%, rgba(0,0,0,.9) 78%, transparent 100%);
+}
+.mma-app .arena .rail{position:absolute;left:0;right:0;top:30%;height:2px;background:rgba(255,80,55,.6);
+  box-shadow:0 0 14px rgba(255,80,55,.45), 0 0 4px rgba(255,120,90,.6)}
+.mma-app .arena .post{position:absolute;top:28%;width:6px;height:38%;background:rgba(40,20,20,.5);box-shadow:0 0 10px rgba(255,60,40,.25)}
+.mma-app .arena .post.p1{left:8%}
+.mma-app .arena .post.p2{left:92%}
+.mma-app .arena .floor{position:absolute;left:0;right:0;bottom:0;height:34%;
+  clip-path:polygon(12% 0,88% 0,100% 100%,0 100%);
+  -webkit-clip-path:polygon(12% 0,88% 0,100% 100%,0 100%);
+  background:radial-gradient(ellipse 70% 60% at 50% 100%, rgba(120,20,20,.35), transparent 70%),
+    linear-gradient(180deg, rgba(30,28,30,.9), rgba(12,10,12,.98));
+}
+.mma-app .arena .floor::before{
+  content:"";position:absolute;inset:0;opacity:.16;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
+  background-size:120px 120px;
+}
+.mma-app .arena .emblem{position:absolute;left:50%;bottom:14%;transform:translateX(-50%);width:150px;height:150px;opacity:.16}
+.mma-app .arena .vig{position:absolute;inset:0;background:radial-gradient(ellipse 120% 90% at 50% 40%, transparent 55%, rgba(0,0,0,.75) 100%)}
+.mma-app .ember{
+  position:absolute;bottom:-10px;width:2px;height:2px;border-radius:50%;
+  background:#ffb060;
+  box-shadow:0 0 6px 2px rgba(255,150,70,.85), 0 0 12px 5px rgba(255,90,40,.4);
+  will-change:transform,opacity;
+  animation-name:mmaEmberRise, mmaEmberFlick;
+  animation-timing-function:ease-in, linear;
+  animation-iteration-count:infinite;
+}
+@keyframes mmaEmberRise{
+  0%{transform:translate(0,0);opacity:0}
+  8%{opacity:1}
+  50%{transform:translate(8px,-52vh)}
+  100%{transform:translate(-8px,-105vh);opacity:0}
+}
+@keyframes mmaEmberFlick{0%,100%{opacity:.9}50%{opacity:.35}}
+
+.mma-app #mmaScreens{position:relative;z-index:2;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+.mma-app .mma-screen{display:none;flex:1;flex-direction:column;padding:max(14px,env(safe-area-inset-top)) 0 calc(24px + env(safe-area-inset-bottom))}
+.mma-app .mma-screen.active{display:flex}
+.mma-app .pad{padding-left:18px;padding-right:18px}
+
+/* ---- 放送っぽい共通部品 ---- */
+.mma-app .ticker{
+  display:flex;align-items:center;gap:10px;
+  padding:6px 18px;
+  background:linear-gradient(90deg, rgba(255,59,42,.92), rgba(160,20,14,.85) 55%, rgba(30,8,6,.6));
+  font-size:10.5px;font-weight:800;letter-spacing:.22em;color:#fff;
+  text-transform:uppercase;
+}
+.mma-app .ticker .live{display:inline-block;width:7px;height:7px;border-radius:50%;background:#fff;
+  box-shadow:0 0 8px #fff;animation:mmaBlink 1.6s infinite}
+@keyframes mmaBlink{0%,100%{opacity:1}50%{opacity:.25}}
+.mma-app .ticker .right{margin-left:auto;font-weight:600;letter-spacing:.14em;opacity:.85}
+
+.mma-app .strap{
+  position:relative;margin:0 0 2px 0;
+  background:linear-gradient(90deg, rgba(16,14,16,.96), rgba(16,14,16,.82) 70%, rgba(16,14,16,.4));
+  clip-path:polygon(0 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+  padding:10px 26px 10px 18px;
+}
+.mma-app .strap::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--mma-red)}
+.mma-app .strap.green::before{background:var(--mma-green)}
+.mma-app .strap.blue::before{background:var(--mma-blue)}
+.mma-app .strap .k{font-size:10px;font-weight:800;letter-spacing:.24em;color:rgba(255,255,255,.5);text-transform:uppercase}
+.mma-app .strap .v{font-size:16px;font-weight:700;margin-top:3px;line-height:1.45}
+.mma-app .strap .v.dim{color:rgba(240,232,226,.45);font-weight:500}
+
+.mma-app .bcast-h{font-style:italic;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
+
+/* ---- S1 入場 ---- */
+.mma-app .s1-head{display:flex;align-items:baseline;justify-content:space-between;padding:16px 18px 0}
+.mma-app .s1-logo{font-style:italic;font-weight:900;font-size:21px;letter-spacing:.08em}
+.mma-app .s1-logo b{color:var(--mma-red)}
+.mma-app .s1-reclink{font-size:12px;font-weight:700;letter-spacing:.14em;color:rgba(255,255,255,.55);padding:8px 0 8px 16px;min-height:44px;display:flex;align-items:center}
+.mma-app .s1-event{margin-top:26px;text-align:center;font-size:11px;font-weight:800;letter-spacing:.34em;color:var(--mma-gold);text-transform:uppercase}
+.mma-app .s1-card{margin-top:10px;text-align:center}
+.mma-app .s1-name{font-style:italic;font-weight:900;font-size:29px;letter-spacing:.02em;text-shadow:0 0 24px var(--mma-red-glow)}
+.mma-app .s1-vs{display:inline-block;margin:6px 0;font-style:italic;font-weight:900;font-size:14px;color:var(--mma-red);letter-spacing:.2em}
+.mma-app .s1-rival{font-style:italic;font-weight:900;font-size:20px;color:rgba(240,232,226,.8)}
+
+.mma-app .plan-block{margin-top:26px}
+.mma-app .plan-title{display:flex;align-items:center;gap:8px;padding:0 18px 8px}
+.mma-app .plan-title .bar{width:22px;height:3px;background:var(--mma-red)}
+.mma-app .plan-title span{font-size:11px;font-weight:800;letter-spacing:.26em;color:rgba(255,255,255,.65)}
+.mma-app .plan-title .edit{margin-left:auto;font-size:11.5px;font-weight:700;color:var(--mma-gold);letter-spacing:.1em;padding:6px 0 6px 14px;min-height:44px;display:flex;align-items:center}
+.mma-app .plan-empty{padding:14px 18px;font-size:15px;font-weight:700;color:rgba(240,232,226,.7);line-height:1.6}
+
+.mma-app .tape{display:flex;margin-top:26px;border-top:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12)}
+.mma-app .tape .cell{flex:1;text-align:center;padding:12px 0}
+.mma-app .tape .cell + .cell{border-left:1px solid rgba(255,255,255,.12)}
+.mma-app .tape b{display:block;font-style:italic;font-weight:900;font-size:24px}
+.mma-app .tape span{display:block;margin-top:2px;font-size:9.5px;font-weight:700;letter-spacing:.22em;color:rgba(255,255,255,.4);text-transform:uppercase}
+.mma-app .tape .cell.g b{color:var(--mma-gold);text-shadow:0 0 16px rgba(255,217,160,.4)}
+
+.mma-app .prev-line{margin-top:14px;padding:0 18px;font-size:12.5px;color:rgba(240,232,226,.5);line-height:1.5;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-height:20px}
+
+.mma-app .btn-enter{
+  margin:auto 18px 0;padding:17px;
+  font-style:italic;font-weight:900;font-size:18px;letter-spacing:.14em;color:#fff;
+  background:linear-gradient(180deg, #ff4a36, #c81f12);
+  border:none;clip-path:polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  box-shadow:0 6px 26px rgba(255,60,40,.35);
+  min-height:52px;
+}
+.mma-app .btn-plan{
+  margin:14px 18px 0;padding:15px;
+  font-weight:800;font-size:15px;letter-spacing:.1em;color:var(--mma-gold);
+  background:rgba(255,217,160,.08);
+  border:none;clip-path:polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  min-height:48px;
+}
+
+/* ---- S2 ゲームプラン記入 ---- */
+.mma-app .s2-head{padding:18px 18px 4px}
+.mma-app .s2-kicker{font-size:10px;font-weight:800;letter-spacing:.3em;color:var(--mma-red)}
+.mma-app .s2-title{font-style:italic;font-weight:900;font-size:26px;margin-top:4px}
+.mma-app .s2-title.mini{font-size:19px;font-style:normal;font-weight:700}
+.mma-app .s2-sub{font-size:12.5px;color:rgba(240,232,226,.55);margin-top:6px;line-height:1.6}
+.mma-app .s2-back{font-size:12.5px;color:rgba(255,255,255,.55);font-weight:700;padding:14px 18px 0;min-height:44px;display:flex;align-items:center}
+.mma-app .field{margin-top:18px}
+.mma-app .field .tag{
+  display:inline-block;padding:5px 16px 5px 12px;
+  clip-path:polygon(0 0, 100% 0, calc(100% - 9px) 100%, 0 100%);
+  font-size:11px;font-weight:900;letter-spacing:.18em;color:#fff;
+}
+.mma-app .field .tag.aim{background:linear-gradient(90deg,#ff4a36,#a81a0f)}
+.mma-app .field .tag.ok{background:linear-gradient(90deg,#2fd06f,#178a44)}
+.mma-app .field .tag.ng{background:linear-gradient(90deg,#8a1d14,#5a120c)}
+.mma-app .field .tag.neutral{background:rgba(255,255,255,.16)}
+.mma-app .field textarea{
+  display:block;width:100%;margin-top:0;padding:13px 14px;
+  background:rgba(14,12,14,.88);color:#f2f0ee;
+  border:none;border-left:3px solid rgba(255,255,255,.14);
+  font-size:16px;line-height:1.55;min-height:64px;resize:none;
+}
+.mma-app .field.aim textarea{border-left-color:var(--mma-red)}
+.mma-app .field.ok textarea{border-left-color:var(--mma-green)}
+.mma-app .field.ng textarea{border-left-color:#c2352a}
+.mma-app .hint{font-size:11px;color:rgba(240,232,226,.4);margin-top:5px}
+.mma-app .mma-toast{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+  background:rgba(20,16,16,.96);color:#fff;font-size:13px;font-weight:700;
+  padding:12px 20px;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);
+  z-index:60;opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.mma-app .mma-toast.show{opacity:1}
+
+.mma-app .mic-row{display:flex;justify-content:flex-end;margin-top:10px}
+.mma-app .mic-btn{
+  min-width:48px;min-height:48px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.06);color:#fff;font-size:20px;
+  display:flex;align-items:center;justify-content:center;
+}
+.mma-app .mic-btn.rec{background:var(--mma-red);border-color:var(--mma-red);box-shadow:0 0 18px rgba(255,60,40,.6);animation:mmaMicPulse 1s ease-in-out infinite}
+@keyframes mmaMicPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.mma-app .mic-btn:active{transform:scale(.92)}
+
+/* ---- S2R 記録フロー（ラウンド進行） ---- */
+.mma-app .s2-bars{display:flex;gap:6px;margin-top:6px}
+.mma-app .s2-bars i{flex:1;height:5px;background:rgba(255,255,255,.14);display:block}
+.mma-app .s2-bars i.on{background:var(--mma-red);box-shadow:0 0 10px var(--mma-red-glow)}
+.mma-app .s2-bars i.past{background:rgba(255,80,60,.45)}
+
+.mma-app .tile2-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:18px}
+.mma-app .tile2{
+  min-height:64px;background:rgba(255,255,255,.05);
+  border-left:3px solid rgba(255,255,255,.14);
+  clip-path:polygon(0 0,100% 0,calc(100% - 10px) 100%, 0 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;
+}
+.mma-app .tile2 .tt{font-weight:900;font-size:15px;color:#fff}
+.mma-app .tile2 .ts{font-size:9px;letter-spacing:.15em;color:rgba(255,255,255,.4);font-weight:700;margin-top:2px}
+.mma-app .tile2.on{background:linear-gradient(90deg, rgba(255,59,42,.32), rgba(160,20,14,.28));border-left-color:var(--mma-red)}
+.mma-app .tile2.on .ts{color:rgba(255,210,200,.85)}
+
+.mma-app .condrow{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.08);min-height:44px}
+.mma-app .condrow .cn{font-weight:900;font-size:18px;width:20px;color:#fff}
+.mma-app .condrow .cl{font-size:13.5px;font-weight:700;color:rgba(255,255,255,.6)}
+.mma-app .condrow.on{background:rgba(255,59,42,.14);border-left:3px solid var(--mma-red)}
+.mma-app .condrow.on .cl{color:#fff}
+
+.mma-app .judge{display:flex;gap:2px;margin-top:14px}
+.mma-app .judge button{
+  flex:1;padding:26px 0 22px;border:none;color:#fff;position:relative;
+  font-style:italic;font-weight:900;background:none;min-height:44px;
+}
+.mma-app .judge .o{background:linear-gradient(180deg, rgba(47,208,111,.16), rgba(23,138,68,.10));}
+.mma-app .judge .x{background:linear-gradient(180deg, rgba(200,40,28,.16), rgba(120,20,14,.10));}
+.mma-app .judge .n{background:rgba(255,255,255,.06)}
+.mma-app .judge .mark{display:block;font-size:52px;font-style:normal;line-height:1}
+.mma-app .judge .n .mark{font-size:26px}
+.mma-app .judge .o .mark{color:var(--mma-green);text-shadow:0 0 26px var(--mma-green-glow)}
+.mma-app .judge .x .mark{color:var(--mma-red);text-shadow:0 0 26px var(--mma-red-glow)}
+.mma-app .judge .n .mark{color:rgba(255,255,255,.5)}
+.mma-app .judge .lbl{display:block;margin-top:8px;font-size:12px;letter-spacing:.2em}
+.mma-app .judge button.sel.o{background:linear-gradient(180deg, rgba(47,208,111,.4), rgba(23,138,68,.22));box-shadow:inset 0 0 0 2px var(--mma-green)}
+.mma-app .judge button.sel.x{background:linear-gradient(180deg, rgba(200,40,28,.42), rgba(120,20,14,.24));box-shadow:inset 0 0 0 2px var(--mma-red)}
+.mma-app .judge button.sel.n{background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 2px rgba(255,255,255,.5)}
+
+.mma-app .done-check{
+  display:flex;align-items:center;gap:14px;
+  margin:22px 18px 0;padding:16px;
+  background:rgba(14,12,14,.9);
+  clip-path:polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+  border-left:4px solid var(--mma-gold);
+}
+.mma-app .done-check .box{
+  width:34px;height:34px;flex:none;
+  border:2px solid rgba(255,217,160,.6);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;color:var(--mma-gold);font-weight:900;
+}
+.mma-app .done-check .txt{font-size:14.5px;font-weight:700;line-height:1.5}
+.mma-app .done-check.on{background:rgba(255,217,160,.1)}
+
+.mma-app .stamp{
+  margin:20px 18px 0;text-align:center;padding:22px 0;
+  border-top:2px solid var(--mma-gold);border-bottom:2px solid var(--mma-gold);
+  transform:rotate(-2deg);
+}
+.mma-app .stamp .big{font-style:italic;font-weight:900;font-size:27px;color:var(--mma-gold);
+  text-shadow:0 0 30px rgba(255,217,160,.45);letter-spacing:.04em}
+.mma-app .stamp .small{margin-top:6px;font-size:11px;font-weight:700;letter-spacing:.3em;color:rgba(255,217,160,.7)}
+
+.mma-app .kuyashii{margin:24px 18px 0}
+.mma-app .kuyashii .msg{
+  margin-top:10px;padding:12px 14px;
+  background:linear-gradient(90deg, rgba(255,59,42,.14), transparent);
+  border-left:3px solid var(--mma-red);
+  font-size:13.5px;font-weight:700;line-height:1.65;color:#ffb4a8;
+}
+
+.mma-app .btn-next{
+  margin:22px 18px 0;padding:16px;
+  font-style:italic;font-weight:900;font-size:16px;letter-spacing:.12em;color:#fff;
+  background:linear-gradient(180deg, #ff4a36, #c81f12);
+  border:none;clip-path:polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  min-height:52px;
+}
+.mma-app .btn-next.sec{background:rgba(255,255,255,.08);color:#fff;box-shadow:none}
+
+/* ---- S3 試合後 ---- */
+.mma-app .s3-body{margin-top:8px}
+.mma-app .s3-oneliner{padding:14px 18px 0;font-size:14px;font-weight:700}
+.mma-app .s3-oneliner .mk{font-weight:900;margin-right:8px}
+.mma-app .s3-oneliner .mk.o{color:var(--mma-green)}
+.mma-app .s3-oneliner .mk.x{color:var(--mma-red)}
+
+/* ---- S4 戦績（台帳） ---- */
+.mma-app .s4-head{padding:16px 18px 0;display:flex;align-items:baseline;justify-content:space-between}
+.mma-app .s4-back{font-size:12.5px;color:rgba(255,255,255,.55);font-weight:700;padding:8px 14px 8px 0;min-height:44px;display:flex;align-items:center}
+.mma-app .big-rec{text-align:center;margin-top:14px}
+.mma-app .big-rec b{font-style:italic;font-weight:900;font-size:44px;letter-spacing:.02em;
+  color:var(--mma-gold);text-shadow:0 0 30px rgba(255,217,160,.35)}
+.mma-app .big-rec span{display:block;font-size:10px;font-weight:800;letter-spacing:.32em;color:rgba(255,255,255,.45);margin-top:2px}
+.mma-app .rec-tape{display:flex;margin-top:16px;border-top:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12)}
+.mma-app .rec-tape .cell{flex:1;text-align:center;padding:10px 0}
+.mma-app .rec-tape .cell + .cell{border-left:1px solid rgba(255,255,255,.12)}
+.mma-app .rec-tape b{display:block;font-style:italic;font-weight:900;font-size:19px}
+.mma-app .rec-tape .o b{color:var(--mma-green)}
+.mma-app .rec-tape .x b{color:var(--mma-red)}
+.mma-app .rec-tape span{display:block;font-size:9px;font-weight:700;letter-spacing:.2em;color:rgba(255,255,255,.4);margin-top:1px}
+
+.mma-app .ledger{margin-top:18px}
+.mma-app .s4-empty{text-align:center;padding:40px 18px;color:rgba(240,232,226,.5);font-size:13px;line-height:1.6}
+.mma-app .lrow{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 18px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.mma-app .lrow .res{
+  flex:none;width:30px;height:30px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:17px;
+}
+.mma-app .lrow .res.o{background:rgba(47,208,111,.16);color:var(--mma-green);box-shadow:inset 0 0 0 1.5px rgba(47,208,111,.55)}
+.mma-app .lrow .res.x{background:rgba(255,59,42,.14);color:var(--mma-red);box-shadow:inset 0 0 0 1.5px rgba(255,59,42,.5)}
+.mma-app .lrow .res.n{background:rgba(255,255,255,.06);color:rgba(255,255,255,.35);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.18)}
+.mma-app .lrow .mid{flex:1;min-width:0}
+.mma-app .lrow .date{font-size:10.5px;font-weight:700;letter-spacing:.12em;color:rgba(255,255,255,.42)}
+.mma-app .lrow .aim{
+  font-size:14.5px;font-weight:700;margin-top:2px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.mma-app .lrow .chev{flex:none;color:rgba(255,255,255,.3);font-size:15px}
+
+.mma-app .lrow.open-detail{background:rgba(14,12,14,.92);border-left:3px solid var(--mma-red)}
+.mma-app .detail{padding:4px 18px 16px;background:rgba(14,12,14,.92);border-bottom:1px solid rgba(255,255,255,.08)}
+.mma-app .detail .drow{display:flex;gap:10px;margin-top:9px;font-size:13.5px;line-height:1.6}
+.mma-app .detail .dk{flex:none;width:64px;font-size:10px;font-weight:800;letter-spacing:.14em;
+  color:rgba(255,255,255,.4);padding-top:3px}
+.mma-app .detail .dv{flex:1}
+.mma-app .detail .dv.green{color:#9fe8bd}
+.mma-app .detail .dv.red2{color:#ffb4a8}
+.mma-app .detail .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.mma-app .detail .actions button{
+  flex:1;padding:11px;border:none;font-weight:800;font-size:13.5px;letter-spacing:.08em;
+  clip-path:polygon(7px 0, 100% 0, calc(100% - 7px) 100%, 0 100%);min-height:44px;min-width:80px;
+}
+.mma-app .detail .actions .edit{background:rgba(255,217,160,.12);color:var(--mma-gold)}
+.mma-app .detail .actions .del{background:rgba(255,255,255,.06);color:rgba(255,255,255,.5)}
+.mma-app .detail .actions .rematch{background:rgba(255,59,42,.16);color:#ffb4a8}
+
+/* ---- 編集シート ---- */
+.mma-app .edit-overlay{
+  position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.92);
+  display:none;flex-direction:column;
+}
+.mma-app .edit-overlay.open{display:flex}
+.mma-app .edit-scroll{flex:1;overflow-y:auto;padding:max(18px,env(safe-area-inset-top)) 18px 20px}
+.mma-app .edit-title{font-style:italic;font-weight:900;font-size:20px;margin-bottom:4px}
+.mma-app .edit-date{font-size:12px;color:rgba(255,255,255,.45);margin-bottom:18px}
+.mma-app .edit-label{font-size:10.5px;font-weight:800;letter-spacing:.2em;color:rgba(255,255,255,.5);margin:18px 0 8px;text-transform:uppercase}
+.mma-app .edit-bar{
+  display:flex;gap:10px;padding:12px 18px calc(12px + env(safe-area-inset-bottom));
+  background:rgba(10,8,8,.98);border-top:1px solid rgba(255,255,255,.12);
+}
+.mma-app .edit-bar button{flex:1;padding:14px;border:none;font-weight:800;font-size:14px;letter-spacing:.08em;min-height:48px;
+  clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);}
+.mma-app .edit-bar .cancel{background:rgba(255,255,255,.08);color:#fff}
+.mma-app .edit-bar .save{background:linear-gradient(180deg,#ff4a36,#c81f12);color:#fff}
+
+@media (min-width:600px){
+  .mma-app .mma-screen > *{width:100%;max-width:480px;margin-left:auto;margin-right:auto}
+  .mma-app .strap{max-width:480px}
+  .mma-app .edit-scroll{max-width:480px;margin:0 auto;width:100%}
+  .mma-app .edit-bar{max-width:480px;margin:0 auto;width:100%}
+}
+
+/* ---- 引っ越しゲート（旧世界と新世界の橋・トラッカーのガラス調で中立に） ---- */
+.mma-gate{position:relative;z-index:2;padding:max(18px,env(safe-area-inset-top)) 16px calc(30px + env(safe-area-inset-bottom))}
+.mma-gate-card{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:16px;padding:16px}
+.mma-gate-title{font-size:16px;font-weight:800;color:#fff}
+.mma-gate-desc{font-size:12.5px;color:rgba(255,255,255,.65);line-height:1.9;margin-top:8px}
+.mma-gate-textarea{width:100%;min-height:96px;margin-top:14px;border:1.5px solid var(--glass-border);border-radius:10px;padding:10px;font:inherit;font-size:12.5px;font-family:monospace;resize:vertical;background:rgba(255,255,255,.06);color:#fff}
+.mma-gate-textarea:focus{outline:none;border-color:#5ac8fa}
+.mma-gate-error{margin-top:8px;font-size:12px;color:#ff9aba;line-height:1.6;display:none}
+.mma-gate-error.show{display:block}
+.mma-gate-import-btn{width:100%;margin-top:12px;padding:14px;border:none;border-radius:12px;font-weight:800;font-size:14.5px;letter-spacing:.04em;color:#fff;background:linear-gradient(135deg,#ff5e73,#c81e3a);cursor:pointer;min-height:48px}
+.mma-gate-skip{text-align:center;font-size:12px;font-weight:700;color:rgba(255,255,255,.4);text-decoration:underline;margin-top:16px;min-height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer}
 </style>
 </head>
 <body>
@@ -720,6 +1113,300 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
     <div class="grip"></div>
     <div id="expSheetBody"></div>
   </div>
+</div>
+
+<!-- ============================================================
+     🥊 MMAタブ（第5弾・完全移植） — mma_fightlog_v2.html を丸ごと
+     .mma-app スコープ配下に格納。id/クラスは mma 接頭辞で名前空間分離。
+     ============================================================ -->
+<div class="mma-app" id="mmaApp" style="display:none">
+
+  <div class="arena" aria-hidden="true">
+    <div class="crowd"></div>
+    <div class="wash"></div>
+    <div class="ray left"></div>
+    <div class="ray center"></div>
+    <div class="ray right"></div>
+    <div class="truss"></div>
+    <div class="lamp l1"></div><div class="lamp l2"></div><div class="lamp l3"></div>
+    <div class="cage"></div><div class="rail"></div>
+    <div class="post p1"></div><div class="post p2"></div>
+    <div class="floor">
+      <svg class="emblem" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="50,4 79,18 93,47 79,76 50,90 21,76 7,47 21,18" fill="none" stroke="#ff5540" stroke-width="1.4"/>
+        <text x="50" y="54" text-anchor="middle" font-size="13" font-weight="900" fill="#ff5540" font-family="sans-serif" letter-spacing="1">FIGHT</text>
+      </svg>
+    </div>
+    <div id="mmaEmberField"></div>
+    <div class="vig"></div>
+  </div>
+
+  <!-- 場面A: 引っ越しゲート（データ無し・未スキップ時のみ表示） -->
+  <div class="mma-gate" id="mmaGate" style="display:none">
+    <div class="mma-gate-card">
+      <div class="mma-gate-title">📦 引っ越し</div>
+      <div class="mma-gate-desc">旧MMAアプリから記録を持ってくる<br>①旧アプリを開く ②「引っ越しコードを作る」を押す ③コードをコピーして下に貼る</div>
+      <textarea class="mma-gate-textarea" id="mmaImportArea" placeholder="ここに引っ越しコードを貼り付け"></textarea>
+      <div class="mma-gate-error" id="mmaImportError"></div>
+      <button type="button" class="mma-gate-import-btn" id="mmaImportBtn">取り込む</button>
+    </div>
+    <div class="mma-gate-skip" id="mmaSkipLink" role="button">引っ越しせず新しく始める</div>
+  </div>
+
+  <div id="mmaScreens" style="display:none">
+
+  <!-- ============ S1 入場 ============ -->
+  <section class="mma-screen active" id="mmaScreenS1">
+    <div class="ticker"><span class="live"></span>FIGHT WEEK<span class="right" id="mmaS1TickerDate">2026.01.01 THU</span></div>
+
+    <div class="s1-head">
+      <div class="s1-logo">FIGHT<b>LOG</b></div>
+      <div class="s1-reclink" id="mmaBtnGoS4" role="button">戦績 ›</div>
+    </div>
+
+    <div class="s1-event">Tonight's Main Event</div>
+    <div class="s1-card">
+      <div class="s1-name">三輪 允仁</div>
+      <span class="s1-vs">VS</span>
+      <div class="s1-rival">昨日の自分</div>
+    </div>
+
+    <div class="plan-block" id="mmaPlanBlock"></div>
+
+    <div class="prev-line" id="mmaPrevLine">初陣だ。まずは1本記録しろ。</div>
+
+    <div class="tape">
+      <div class="cell g"><b id="mmaStatDone">0</b><span>実験 完遂</span></div>
+      <div class="cell"><b id="mmaStatOX">0◯ 0✕</b><span>実験結果</span></div>
+      <div class="cell"><b id="mmaStatSince">デビュー戦</b><span>Since Last</span></div>
+    </div>
+
+    <button class="btn-enter" id="mmaBtnEnter">入場する — 今夜の結果を記録</button>
+    <button class="btn-plan" id="mmaBtnPlan">＋ 新しいゲームプランを書く</button>
+  </section>
+
+  <!-- ============ S2 ゲームプラン記入 ============ -->
+  <section class="mma-screen" id="mmaScreenS2">
+    <div class="ticker"><span class="live"></span>GAME PLAN<span class="right">練習前に書く</span></div>
+    <div class="s2-back" id="mmaBtnS2Back">‹ 戻る</div>
+
+    <div class="s2-head">
+      <div class="s2-kicker">ROUND 0 — セコンドの作戦会議</div>
+      <div class="s2-title bcast-h">GAME PLAN</div>
+      <div class="s2-sub">試す前に◯と✕の見た目を決める。<br>後から甘く採点できなくするための作戦書。</div>
+    </div>
+
+    <div class="pad">
+      <div class="field aim">
+        <span class="tag aim">狙い — AIM</span>
+        <textarea id="mmaPlanAim" placeholder="何を良くしたい？"></textarea>
+      </div>
+      <div class="mic-row" id="mmaMicRowAim" style="display:none">
+        <button class="mic-btn" id="mmaMicAim">🎤</button>
+      </div>
+      <div class="field ok">
+        <span class="tag ok">◯ のサイン</span>
+        <textarea id="mmaPlanOk" placeholder="「できた」と何が見えたら分かる？"></textarea>
+        <div class="hint">目で見える具体的なサインで書く</div>
+      </div>
+      <div class="field ng">
+        <span class="tag ng">✕ のサイン</span>
+        <textarea id="mmaPlanNg" placeholder="「ダメ」と何が見えたら分かる？"></textarea>
+      </div>
+    </div>
+
+    <button class="btn-next" id="mmaBtnPlanSave">作戦を保存 — ジムへ</button>
+  </section>
+
+  <!-- ============ S2R 記録フロー（4ラウンド） ============ -->
+  <section class="mma-screen" id="mmaScreenS2r">
+    <div class="ticker"><span class="live"></span><span id="mmaS2rRoundLabel">ROUND 1 / 4</span><span class="right" id="mmaS2rTimer">0:30</span></div>
+    <div class="pad"><div class="s2-bars" id="mmaS2rBars"><i data-r="1"></i><i data-r="2"></i><i data-r="3"></i><i data-r="4"></i></div></div>
+
+    <div class="round-pane pad" id="mmaPaneR1">
+      <div class="s2-title bcast-h mini" style="margin-top:18px">今日、何で闘った？</div>
+      <div class="tile2-grid" id="mmaTagTiles">
+        <div class="tile2" data-tag="打撃"><div class="tt">打撃</div><div class="ts">STRIKING</div></div>
+        <div class="tile2" data-tag="寝技"><div class="tt">寝技</div><div class="ts">GROUND</div></div>
+        <div class="tile2" data-tag="タックル"><div class="tt">タックル</div><div class="ts">WRESTLING</div></div>
+        <div class="tile2" data-tag="スパー"><div class="tt">スパー</div><div class="ts">SPARRING</div></div>
+        <div class="tile2" data-tag="ドリル"><div class="tt">ドリル</div><div class="ts">DRILL</div></div>
+        <div class="tile2" data-tag="フィジカル"><div class="tt">フィジカル</div><div class="ts">PHYSICAL</div></div>
+      </div>
+      <button class="btn-next sec" id="mmaBtnR1Next">次へ</button>
+    </div>
+
+    <div class="round-pane pad" id="mmaPaneR2" style="display:none">
+      <div id="mmaR2WithPlan">
+        <div class="s2-title bcast-h mini" style="margin-top:18px">ジャッジ</div>
+        <div class="strap"><div class="k">狙い — AIM</div><div class="v" id="mmaR2AimText"></div></div>
+        <div class="judge" id="mmaJudgeButtons">
+          <button type="button" class="o" data-r="o"><span class="mark">◯</span><span class="lbl">サイン確認</span></button>
+          <button type="button" class="x" data-r="x"><span class="mark">✕</span><span class="lbl">サイン欠け</span></button>
+        </div>
+        <div class="field" style="margin-top:18px">
+          <span class="tag neutral">結果ひとことメモ</span>
+          <textarea id="mmaR2MemoInput" placeholder="何が効いた／効かなかった？"></textarea>
+        </div>
+        <div class="mic-row" id="mmaMicRowMemo" style="display:none"><button class="mic-btn" id="mmaMicMemo">🎤</button></div>
+      </div>
+      <div id="mmaR2NoPlan" style="display:none">
+        <div class="s2-title bcast-h mini" style="margin-top:18px">気づきを1行</div>
+        <div class="field" style="margin-top:18px">
+          <textarea id="mmaInsightInput" placeholder="例：ジャブの距離が近かった"></textarea>
+        </div>
+        <div class="mic-row" id="mmaMicRowInsight" style="display:none"><button class="mic-btn" id="mmaMicInsight">🎤</button></div>
+      </div>
+      <button class="btn-next sec" id="mmaBtnR2Next">次へ</button>
+    </div>
+
+    <div class="round-pane pad" id="mmaPaneR3" style="display:none">
+      <div class="s2-title bcast-h mini" style="margin-top:18px">やり切った？</div>
+      <div class="done-check" id="mmaDoneCheck">
+        <div class="box" id="mmaDoneBox"></div>
+        <div class="txt">いつものやり方に戻さず、<br>最後まで実験できた？</div>
+      </div>
+      <div class="stamp" id="mmaR3Stamp" style="display:none">
+        <div class="big">実験完了＝成長！</div>
+        <div class="small">EXPERIMENT COMPLETED</div>
+      </div>
+      <div class="kuyashii">
+        <div class="plan-title" style="padding:0 0 8px"><span class="bar"></span><span>悔しさログ</span></div>
+        <div class="field" style="margin-top:0">
+          <textarea id="mmaKuyashiiInput" placeholder="悔しかったこと・負けたことを書いていい"></textarea>
+        </div>
+        <div class="msg" id="mmaKuyashiiMsg" style="display:none">悔しい＝現状に止まっていない証拠。<br>今、成長している。</div>
+      </div>
+      <button class="btn-next sec" id="mmaBtnR3Next">次へ</button>
+    </div>
+
+    <div class="round-pane pad" id="mmaPaneR4" style="display:none">
+      <div class="s2-title bcast-h mini" style="margin-top:18px">コンディション</div>
+      <div id="mmaCondGrid" style="margin-top:14px">
+        <div class="condrow" data-v="1"><span class="cn">1</span><span class="cl">かなり悪い</span></div>
+        <div class="condrow" data-v="2"><span class="cn">2</span><span class="cl">やや悪い</span></div>
+        <div class="condrow" data-v="3"><span class="cn">3</span><span class="cl">ふつう</span></div>
+        <div class="condrow" data-v="4"><span class="cn">4</span><span class="cl">やや良い</span></div>
+        <div class="condrow" data-v="5"><span class="cn">5</span><span class="cl">絶好調</span></div>
+      </div>
+      <button class="btn-next" id="mmaBtnGong">ゴング（保存）</button>
+    </div>
+  </section>
+
+  <!-- ============ S3 ゴング後 ============ -->
+  <section class="mma-screen" id="mmaScreenS3">
+    <div class="ticker"><span class="live"></span>JUDGES' DECISION<span class="right">練習後</span></div>
+    <div class="s3-body pad">
+      <div class="s2-kicker" style="margin-top:10px">今夜の記録</div>
+      <div class="s2-title bcast-h mini" id="mmaS3Date" style="margin-top:6px"></div>
+      <div class="s2-sub" id="mmaS3Tags"></div>
+    </div>
+    <div class="stamp" id="mmaS3Stamp" style="display:none">
+      <div class="big">実験完了＝成長！</div>
+      <div class="small">EXPERIMENT COMPLETED</div>
+    </div>
+    <div class="s3-oneliner" id="mmaS3ExpLine" style="display:none"></div>
+    <button class="btn-next" id="mmaBtnS3Back">入場画面へ</button>
+  </section>
+
+  <!-- ============ S4 戦績（台帳） ============ -->
+  <section class="mma-screen" id="mmaScreenS4">
+    <div class="ticker"><span class="live"></span>FIGHT RECORD<span class="right" id="mmaS4TickerCount">全0戦</span></div>
+    <div class="s4-head"><div class="s4-back" id="mmaBtnBackS1">‹ 入場画面へ</div></div>
+
+    <div class="big-rec">
+      <b id="mmaS4DoneCount">0</b>
+      <span>実験を最後までやり切った数</span>
+    </div>
+
+    <div class="rec-tape">
+      <div class="cell o"><b id="mmaS4OCount">0</b><span>◯ サイン確認</span></div>
+      <div class="cell x"><b id="mmaS4XCount">0</b><span>✕ 次の材料</span></div>
+      <div class="cell"><b id="mmaS4TotalCount">0</b><span>総練習数</span></div>
+    </div>
+
+    <div class="ledger" id="mmaS4List"></div>
+  </section>
+
+  </div>
+
+  <!-- ============ 編集シート ============ -->
+  <div class="edit-overlay" id="mmaEditOverlay">
+    <div class="edit-scroll">
+      <div class="edit-title">記録を編集する</div>
+      <div class="edit-date" id="mmaEditDate"></div>
+
+      <div class="edit-label">タグ</div>
+      <div class="tile2-grid" id="mmaEditTagTiles" style="margin-top:0">
+        <div class="tile2" data-tag="打撃"><div class="tt">打撃</div><div class="ts">STRIKING</div></div>
+        <div class="tile2" data-tag="寝技"><div class="tt">寝技</div><div class="ts">GROUND</div></div>
+        <div class="tile2" data-tag="タックル"><div class="tt">タックル</div><div class="ts">WRESTLING</div></div>
+        <div class="tile2" data-tag="スパー"><div class="tt">スパー</div><div class="ts">SPARRING</div></div>
+        <div class="tile2" data-tag="ドリル"><div class="tt">ドリル</div><div class="ts">DRILL</div></div>
+        <div class="tile2" data-tag="フィジカル"><div class="tt">フィジカル</div><div class="ts">PHYSICAL</div></div>
+      </div>
+
+      <div class="field aim">
+        <span class="tag aim">狙い — AIM</span>
+        <textarea id="mmaEditAim" placeholder="何を良くしたい？"></textarea>
+      </div>
+      <div class="field ok">
+        <span class="tag ok">◯ のサイン</span>
+        <textarea id="mmaEditOk" placeholder="「できた」と何が見えたら分かる？"></textarea>
+      </div>
+      <div class="field ng">
+        <span class="tag ng">✕ のサイン</span>
+        <textarea id="mmaEditNg" placeholder="「ダメ」と何が見えたら分かる？"></textarea>
+      </div>
+
+      <div class="edit-label">結果</div>
+      <div class="judge" id="mmaEditJudge">
+        <button type="button" class="o" data-r="o"><span class="mark">◯</span><span class="lbl">確認</span></button>
+        <button type="button" class="x" data-r="x"><span class="mark">✕</span><span class="lbl">欠け</span></button>
+        <button type="button" class="n" data-r="none"><span class="mark">－</span><span class="lbl">実験なし</span></button>
+      </div>
+
+      <div class="field">
+        <span class="tag neutral">結果メモ</span>
+        <textarea id="mmaEditMemo" placeholder="結果ひとことメモ"></textarea>
+      </div>
+
+      <div class="edit-label">やり切った</div>
+      <div class="done-check" id="mmaEditDoneCheck">
+        <div class="box" id="mmaEditDoneBox"></div>
+        <div class="txt">いつものやり方に戻さず、<br>最後まで実験できた？</div>
+      </div>
+
+      <div class="field">
+        <span class="tag neutral">悔しさ</span>
+        <textarea id="mmaEditKuyashii" placeholder="悔しかったこと"></textarea>
+      </div>
+      <div class="field">
+        <span class="tag neutral">気づき</span>
+        <textarea id="mmaEditInsight" placeholder="気づいたこと"></textarea>
+      </div>
+      <div class="field">
+        <span class="tag neutral">次回の課題</span>
+        <textarea id="mmaEditKadai" placeholder="次回の課題"></textarea>
+      </div>
+
+      <div class="edit-label">コンディション</div>
+      <div id="mmaEditCondGrid">
+        <div class="condrow" data-v="1"><span class="cn">1</span><span class="cl">かなり悪い</span></div>
+        <div class="condrow" data-v="2"><span class="cn">2</span><span class="cl">やや悪い</span></div>
+        <div class="condrow" data-v="3"><span class="cn">3</span><span class="cl">ふつう</span></div>
+        <div class="condrow" data-v="4"><span class="cn">4</span><span class="cl">やや良い</span></div>
+        <div class="condrow" data-v="5"><span class="cn">5</span><span class="cl">絶好調</span></div>
+      </div>
+    </div>
+    <div class="edit-bar">
+      <button class="cancel" id="mmaEditCancel">キャンセル</button>
+      <button class="save" id="mmaEditSave">保存する</button>
+    </div>
+  </div>
+
+  <div class="mma-toast" id="mmaToast"></div>
+
 </div>
 
 <script>
@@ -1033,11 +1720,15 @@ function renderContent(){
   });
   // cal2（日ビュー）中はhtml/bodyの外側スクロールをロックし、二重スクロールを防ぐ
   document.body.classList.toggle('cal2-lock', isCal2);
+  // 🥊MMAタブ（第5弾）：#mmaAppは静的DOM常駐（タイマー等の状態を保つため）。表示/非表示だけ切替
+  const mmaAppEl = document.getElementById("mmaApp");
+  if(mmaAppEl) mmaAppEl.style.display = isMma ? "" : "none";
+  el.style.display = isMma ? "none" : "";
   if(currentView==="record"){ el.innerHTML = renderRecord(); }
   else if(isCal2){ el.innerHTML = renderDayView(); afterDayViewRender(); }
   else if(isSleep){ el.innerHTML = renderSleep(); afterSleepRender(); }
   else if(isExp){ el.innerHTML = renderExp(); }
-  else if(isMma){ el.innerHTML = renderMma(); }
+  else if(isMma){ el.innerHTML = ""; if(typeof mmaOnShow==="function") mmaOnShow(); }
   else el.innerHTML = renderList();
 }
 
@@ -3826,100 +4517,778 @@ function kaizenEndExperiment(){
   renderContent();
 }
 
-// ===== 🥊MMAタブ（第3弾新設・fightlog_v2/fightlog_v2_planは読み取り専用・書き込み禁止） =====
+// ===== 🥊MMAタブ（第5弾・完全移植：mma_fightlog_v2.htmlの全機能をmma接頭辞で名前空間分離して移植） =====
 const MMA_FL_KEY = "fightlog_v2";
 const MMA_PLAN_KEY = "fightlog_v2_plan";
-function mmaGet(key){ try{ return localStorage.getItem(key); }catch(e){ return null; } }
-function mmaFmtDate(dateStr){
+const MMA_FL1_KEY = "fightlog_v1";
+const MMA_OLD_KEY = "mma_log_v1";
+const MMA_MIGRATE_DISMISS_KEY = "mma_migrate_dismissed_v1";
+const MMA_ROUND_SECONDS = 30;
+const mmaWD = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
+
+function mmaLoadV2(){
   try{
-    const d = new Date(dateStr+"T00:00:00");
-    if(isNaN(d.getTime())) return dateStr||'';
-    return `${d.getMonth()+1}/${d.getDate()}（${WD_JP[d.getDay()]}）`;
-  }catch(e){ return dateStr||''; }
+    const raw = localStorage.getItem(MMA_FL_KEY);
+    const parsed = raw ? JSON.parse(raw) : null;
+    if(!parsed || typeof parsed !== "object" || !Array.isArray(parsed.sessions)) return { sessions: [] };
+    return parsed;
+  }catch(e){ return { sessions: [] }; }
 }
-function mmaDaysSince(dateStr){
+function mmaSaveV2(data){ try{ localStorage.setItem(MMA_FL_KEY, JSON.stringify(data)); }catch(e){} }
+function mmaLoadPlan(){
   try{
-    const d = new Date(dateStr+"T00:00:00");
-    if(isNaN(d.getTime())) return null;
-    const today = new Date(); today.setHours(0,0,0,0);
-    return Math.max(0, Math.round((today-d)/86400000));
+    const raw = localStorage.getItem(MMA_PLAN_KEY);
+    const parsed = raw ? JSON.parse(raw) : null;
+    if(!parsed || typeof parsed !== "object") return null;
+    return parsed;
   }catch(e){ return null; }
 }
-function mmaEnterDojo(){
-  location.href = location.hostname.indexOf("github.io")>=0 ? "../mma-tracker/" : "mma_fightlog_v2.html";
+function mmaSavePlan(p){ try{ localStorage.setItem(MMA_PLAN_KEY, JSON.stringify(p)); }catch(e){} }
+function mmaClearPlan(){ try{ localStorage.removeItem(MMA_PLAN_KEY); }catch(e){} }
+
+let mmaFlData = mmaLoadV2();
+let mmaPlan = mmaLoadPlan();
+
+/* ---- 旧バージョンからの一括移行（v2が無い時だけ動く・旧アプリと同一ロジック） ---- */
+(function mmaMigrateToV2(){
+  try{
+    let v2Raw = null;
+    try{ v2Raw = localStorage.getItem(MMA_FL_KEY); }catch(e){}
+    if(v2Raw) return;
+
+    let v1Raw = null;
+    try{ v1Raw = localStorage.getItem(MMA_FL1_KEY); }catch(e){}
+    if(v1Raw){
+      const v1 = JSON.parse(v1Raw);
+      if(v1 && Array.isArray(v1.sessions)){
+        const migrated = v1.sessions.map(s=>({
+          id:s.id, date:s.date, ts:s.ts, tags:s.tags||[],
+          cond:s.cond, insight:s.insight||"", kadai:s.kadai||"",
+          exp:null, done:false, kuyashii:""
+        }));
+        mmaFlData = { sessions: migrated };
+        mmaSaveV2(mmaFlData);
+        return;
+      }
+    }
+
+    let oldRaw = null;
+    try{ oldRaw = localStorage.getItem(MMA_OLD_KEY); }catch(e){}
+    if(oldRaw){
+      const old = JSON.parse(oldRaw);
+      if(old && Array.isArray(old.logs) && old.logs.length > 0){
+        const catMap = {strike:"打撃",clinch:"タックル",ground:"寝技",spar:"スパー",strategy:"ドリル",part:"ドリル"};
+        const byDate = {};
+        old.logs.forEach(log=>{
+          if(!log.date) return;
+          if(!byDate[log.date]) byDate[log.date] = [];
+          byDate[log.date].push(log);
+        });
+        const sessions = [];
+        Object.keys(byDate).sort().forEach(date=>{
+          const logs = byDate[date];
+          const tags = [];
+          const texts = [];
+          logs.forEach(log=>{
+            if(log.cat && catMap[log.cat]){
+              const tag = catMap[log.cat];
+              if(tags.indexOf(tag) === -1) tags.push(tag);
+            }
+            if(log.text && log.cat !== "part") texts.push(log.text);
+          });
+          let cond = 3, kadai = "";
+          if(old.daily && old.daily[date]){
+            if(old.daily[date].focusScore) cond = old.daily[date].focusScore;
+            if(old.daily[date].focus) kadai = old.daily[date].focus;
+          }
+          sessions.push({
+            id:"s_m_"+date.replace(/-/g,""), date:date,
+            ts:new Date(date+"T12:00:00").getTime(), tags:tags, cond:cond,
+            insight:texts.join("／"), kadai:kadai, exp:null, done:false, kuyashii:""
+          });
+        });
+        if(sessions.length > 0){
+          sessions.sort((a,b)=>a.ts-b.ts);
+          mmaFlData = { sessions: sessions };
+          mmaSaveV2(mmaFlData);
+        }
+        return;
+      }
+    }
+  }catch(e){}
+})();
+
+/* ---- helpers ---- */
+function mmaTodayISO(){
+  const d = new Date();
+  return d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate());
 }
-function renderMmaArena(){
-  return `<div class="mma-arena" aria-hidden="true"><div class="mma-rope"></div></div>`;
+function mmaDaysBetween(iso1, iso2){
+  const a = new Date(iso1+"T00:00:00"), b = new Date(iso2+"T00:00:00");
+  return Math.round((b.getTime()-a.getTime())/86400000);
 }
-function renderMma(){
-  const raw = mmaGet(MMA_FL_KEY);
-  const planRaw = mmaGet(MMA_PLAN_KEY);
-  let fl=null, plan=null;
-  try{ fl = raw ? JSON.parse(raw) : null; }catch(e){ fl=null; }
-  try{ plan = planRaw ? JSON.parse(planRaw) : null; }catch(e){ plan=null; }
-  const sessions = (fl && Array.isArray(fl.sessions)) ? fl.sessions : [];
-  const hasData = raw!==null && sessions.length>0;
+function mmaWeekday3FromISO(iso){ const d = new Date(iso+"T00:00:00"); return mmaWD[d.getDay()]; }
+function mmaMMDD(iso){ const p = iso.split("-"); return p[1]+"."+p[2]; }
+function mmaVibrate(pattern){ try{ if(navigator.vibrate){ navigator.vibrate(pattern); } }catch(e){} }
 
-  let html = `<div class="mma-wrap">${renderMmaArena()}<div class="room-cap">ARENA</div>`;
+/* ---- トラッカーstateへ直接反映（同じ箱になったので旧syncToTrackerを単純化） ---- */
+function mmaSyncToTrackerState(session){
+  try{
+    const now = new Date();
+    const key = dayKey(now.getFullYear(), now.getMonth()+1, now.getDate());
+    let dayState = state[key];
+    if(!dayState || typeof dayState !== "object"){ dayState = {}; }
+    if(!Array.isArray(dayState.__custom__)){ dayState.__custom__ = []; }
+    const label = "MMA（練習ログ）";
+    let existing = null;
+    for(let i=0;i<dayState.__custom__.length;i++){
+      if(dayState.__custom__[i] && dayState.__custom__[i].label === label){ existing = dayState.__custom__[i]; break; }
+    }
+    let taskId;
+    if(existing){ taskId = existing.id; }
+    else{
+      taskId = "c_fightlog_"+Date.now();
+      dayState.__custom__.push({ id:taskId, label:label, cat:"custom", start:"19:00", end:"21:00", color:"#c850dc" });
+    }
+    dayState[taskId] = true;
+    state[key] = dayState;
+    saveState(state);
+  }catch(e){}
+}
 
-  if(plan && plan.aim){
-    html += `<div class="es-card mma-card mma-plan">
-      <div class="es-line"><div style="font-size:12px;font-weight:800;color:#ff5e73">今夜の実験</div></div>
-      <div class="es-line"><div style="font-size:14px;color:#fff;line-height:1.5">${escHtml(plan.aim)}</div></div>
-    </div>`;
-  }
+/* ---- toast ---- */
+let mmaToastTimer = null;
+function mmaShowToast(msg){
+  const el = document.getElementById("mmaToast");
+  if(!el) return;
+  el.textContent = msg;
+  el.classList.add("show");
+  if(mmaToastTimer) clearTimeout(mmaToastTimer);
+  mmaToastTimer = setTimeout(()=>{ el.classList.remove("show"); }, 1800);
+}
 
-  if(!hasData){
-    html += `<div class="es-card mma-card">
-      <div class="es-line" style="justify-content:center;padding:18px 14px;flex-direction:column;gap:10px">
-        <div style="font-size:13px;color:var(--muted);text-align:center">まだ記録がない。道場で最初の1本を</div>
-        <button class="mma-enter-btn" onclick="mmaEnterDojo()">🥊 道場へ入場する</button>
-      </div>
-    </div>`;
-    html += `</div>`;
-    return html;
-  }
-
-  const doneCount = sessions.filter(s=>s && s.done===true).length;
-  const oCount = sessions.filter(s=>s && s.exp && s.exp.result==='o').length;
-  const xCount = sessions.filter(s=>s && s.exp && s.exp.result==='x').length;
-  const sorted = sessions.slice().sort((a,b)=>{
-    const ad=a&&a.date||'', bd=b&&b.date||'';
-    if(ad!==bd) return ad<bd ? 1 : -1;
-    return (b&&b.ts||0)-(a&&a.ts||0);
+/* ---- screens ---- */
+const mmaScreens = {
+  s1: document.getElementById("mmaScreenS1"),
+  s2: document.getElementById("mmaScreenS2"),
+  s2r: document.getElementById("mmaScreenS2r"),
+  s3: document.getElementById("mmaScreenS3"),
+  s4: document.getElementById("mmaScreenS4")
+};
+function mmaShowScreen(name){
+  Object.keys(mmaScreens).forEach(k=>{
+    if(mmaScreens[k]) mmaScreens[k].classList.toggle("active", k===name);
   });
-  const last = sorted[0];
-  const daysSince = last ? mmaDaysSince(last.date) : null;
+}
 
-  html += `<div class="es-card mma-card">
-    <div class="mma-stat-row">
-      <div class="mma-stat"><div class="mma-stat-num">${doneCount}</div><div class="mma-stat-lbl">完遂数</div></div>
-      <div class="mma-stat"><div class="mma-stat-num">${oCount}<span class="mma-stat-x">✕${xCount}</span></div><div class="mma-stat-lbl">◯ ✕</div></div>
-      <div class="mma-stat"><div class="mma-stat-num">${daysSince==null?'―':daysSince}</div><div class="mma-stat-lbl">最終戦から何日</div></div>
-    </div>
-  </div>`;
+/* ---- mic ---- */
+function mmaSetupMic(btnId, targetInputId, rowId){
+  const SR = window.webkitSpeechRecognition || window.SpeechRecognition;
+  const row = document.getElementById(rowId);
+  if(!row) return;
+  if(!SR){ row.style.display = "none"; return; }
+  row.style.display = "flex";
+  const btn = document.getElementById(btnId);
+  let recognition = null, listening = false;
+  btn.addEventListener("click", ()=>{
+    if(listening){ if(recognition){ try{ recognition.stop(); }catch(e){} } return; }
+    try{
+      recognition = new SR();
+      recognition.lang = "ja-JP";
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+      recognition.onstart = ()=>{ listening = true; btn.classList.add("rec"); };
+      recognition.onresult = evt=>{
+        const input = document.getElementById(targetInputId);
+        let transcript = "";
+        for(let i=0;i<evt.results.length;i++){ transcript += evt.results[i][0].transcript; }
+        const existing = input.value;
+        input.value = existing ? (existing+transcript) : transcript;
+      };
+      recognition.onerror = ()=>{ listening = false; btn.classList.remove("rec"); };
+      recognition.onend = ()=>{ listening = false; btn.classList.remove("rec"); };
+      recognition.start();
+    }catch(e){ listening = false; btn.classList.remove("rec"); }
+  });
+}
 
-  if(last){
-    const resMark = last.exp ? (last.exp.result==='o'?'◯':(last.exp.result==='x'?'✕':'・')) : '・';
-    const aimTxt = (last.exp && last.exp.aim) ? last.exp.aim : '';
-    html += `<div class="es-card mma-card">
-      <div class="es-line">
-        <div class="mma-last-date">${mmaFmtDate(last.date)}</div>
-        <div class="mma-last-res">${resMark}</div>
-        <div class="mma-last-aim">${escHtml(aimTxt)}</div>
-      </div>
-    </div>`;
+/* ---- S1 render ---- */
+function mmaTicker1Date(){
+  const d = new Date();
+  return d.getFullYear()+"."+pad2(d.getMonth()+1)+"."+pad2(d.getDate())+" "+mmaWD[d.getDay()];
+}
+function mmaExpMarkOf(exp){
+  if(!exp) return "";
+  if(exp.result === "o") return "◯";
+  if(exp.result === "x") return "✕";
+  return "－";
+}
+function mmaRenderS1(){
+  const tickerEl = document.getElementById("mmaS1TickerDate");
+  if(tickerEl) tickerEl.textContent = mmaTicker1Date();
+
+  const sessions = mmaFlData.sessions;
+  const count = sessions.length;
+  const doneCount = sessions.filter(s=>s.done===true).length;
+  const oCount = sessions.filter(s=>s.exp && s.exp.result==="o").length;
+  const xCount = sessions.filter(s=>s.exp && s.exp.result==="x").length;
+
+  document.getElementById("mmaStatDone").textContent = doneCount;
+  document.getElementById("mmaStatOX").textContent = oCount+"◯ "+xCount+"✕";
+
+  const sinceEl = document.getElementById("mmaStatSince");
+  if(count === 0){ sinceEl.textContent = "デビュー戦"; }
+  else{
+    const last = sessions[sessions.length-1];
+    let gap = mmaDaysBetween(last.date, mmaTodayISO());
+    if(gap < 0) gap = 0;
+    sinceEl.textContent = (gap===0) ? "今日" : (gap+"日前");
   }
 
-  html += `<div class="es-card mma-card">
-    <div class="es-line" style="justify-content:center;padding:14px">
-      <button class="mma-enter-btn" onclick="mmaEnterDojo()">🥊 道場へ入場する</button>
-    </div>
-  </div>`;
+  const planBlock = document.getElementById("mmaPlanBlock");
+  if(mmaPlan){
+    planBlock.innerHTML =
+      '<div class="plan-title"><span class="bar"></span><span>今夜のゲームプラン</span><span class="edit" id="mmaPlanEditLink" role="button">編集 ›</span></div>'+
+      '<div class="strap"><div class="k">狙い — AIM</div><div class="v">'+escHtml(mmaPlan.aim)+'</div></div>'+
+      '<div class="strap green"><div class="k">◯ のサイン</div><div class="v">'+escHtml(mmaPlan.ok)+'</div></div>'+
+      '<div class="strap"><div class="k">✕ のサイン</div><div class="v">'+escHtml(mmaPlan.ng)+'</div></div>';
+    document.getElementById("mmaPlanEditLink").addEventListener("click", ()=>{ mmaOpenPlanScreen(); });
+  } else {
+    planBlock.innerHTML = '<div class="plan-empty">今夜の実験、まだ決めてない。</div>';
+  }
 
-  html += `</div>`;
-  return html;
+  const prevLine = document.getElementById("mmaPrevLine");
+  if(count === 0){ prevLine.textContent = "初陣だ。まずは1本記録しろ。"; }
+  else{
+    const last2 = sessions[sessions.length-1];
+    if(last2.exp){ prevLine.textContent = "前回 "+mmaExpMarkOf(last2.exp)+" "+(last2.exp.aim||""); }
+    else{ prevLine.textContent = "前回 （通常練習）"+(last2.insight||""); }
+  }
+
+  document.getElementById("mmaBtnPlan").textContent = mmaPlan ? "ゲームプランを書き直す" : "＋ 新しいゲームプランを書く";
 }
+
+/* ---- 引っ越しゲート（第5弾新設） ---- */
+function mmaShouldShowGate(){
+  try{
+    if(mmaFlData.sessions.length > 0) return false;
+    return localStorage.getItem(MMA_MIGRATE_DISMISS_KEY) !== "1";
+  }catch(e){ return true; }
+}
+function mmaShowGateUI(){
+  document.getElementById("mmaGate").style.display = "block";
+  document.getElementById("mmaScreens").style.display = "none";
+}
+function mmaHideGateUI(){
+  document.getElementById("mmaGate").style.display = "none";
+  document.getElementById("mmaScreens").style.display = "block";
+}
+function mmaShowImportError(msg){
+  const el = document.getElementById("mmaImportError");
+  el.textContent = msg;
+  el.classList.add("show");
+}
+function mmaClearImportError(){
+  const el = document.getElementById("mmaImportError");
+  el.textContent = "";
+  el.classList.remove("show");
+}
+function mmaDoImport(){
+  mmaClearImportError();
+  const area = document.getElementById("mmaImportArea");
+  const raw = (area.value||"").trim();
+  if(!raw){ mmaShowImportError("コードが読めない。全部コピーできてるか確認して"); return; }
+  let obj;
+  try{ obj = JSON.parse(raw); }catch(e){ mmaShowImportError("コードが読めない。全部コピーできてるか確認して"); return; }
+  if(!obj || obj.v !== 1 || !obj.fightlog_v2 || !Array.isArray(obj.fightlog_v2.sessions)){
+    mmaShowImportError("コードが読めない。全部コピーできてるか確認して");
+    return;
+  }
+  const existingKeys = {};
+  mmaFlData.sessions.forEach(s=>{ if(s) existingKeys[(s.date||"")+"|"+(s.ts||"")] = true; });
+  let added = 0;
+  obj.fightlog_v2.sessions.forEach(s=>{
+    if(!s || !s.date) return;
+    const k = (s.date||"")+"|"+(s.ts||"");
+    if(existingKeys[k]) return;
+    existingKeys[k] = true;
+    mmaFlData.sessions.push(s);
+    added++;
+  });
+  mmaFlData.sessions.sort((a,b)=>(a.ts||0)-(b.ts||0));
+  mmaSaveV2(mmaFlData);
+
+  if(!mmaPlan && obj.fightlog_v2_plan && obj.fightlog_v2_plan.aim){
+    mmaPlan = obj.fightlog_v2_plan;
+    mmaSavePlan(mmaPlan);
+  }
+
+  try{ localStorage.setItem(MMA_MIGRATE_DISMISS_KEY, "1"); }catch(e){}
+  area.value = "";
+  mmaClearImportError();
+  mmaHideGateUI();
+  mmaRenderS1();
+  mmaShowScreen("s1");
+  mmaShowToast(added+"戦の記録が引っ越し完了");
+}
+(function mmaBindGate(){
+  const importBtn = document.getElementById("mmaImportBtn");
+  const skipLink = document.getElementById("mmaSkipLink");
+  if(importBtn) importBtn.addEventListener("click", mmaDoImport);
+  if(skipLink) skipLink.addEventListener("click", ()=>{
+    try{ localStorage.setItem(MMA_MIGRATE_DISMISS_KEY, "1"); }catch(e){}
+    mmaHideGateUI();
+    mmaRenderS1();
+    mmaShowScreen("s1");
+  });
+})();
+
+document.getElementById("mmaPrevLine").addEventListener("click", ()=>{ mmaRenderS4(); mmaShowScreen("s4"); });
+document.getElementById("mmaBtnGoS4").addEventListener("click", ()=>{ mmaRenderS4(); mmaShowScreen("s4"); });
+document.getElementById("mmaBtnPlan").addEventListener("click", ()=>{ mmaOpenPlanScreen(); });
+document.getElementById("mmaBtnEnter").addEventListener("click", ()=>{
+  mmaResetRoundState();
+  mmaShowRound(1);
+  mmaShowScreen("s2r");
+});
+
+/* ---- S2 ゲームプラン記入 ---- */
+function mmaOpenPlanScreen(){
+  document.getElementById("mmaPlanAim").value = mmaPlan ? (mmaPlan.aim||"") : "";
+  document.getElementById("mmaPlanOk").value = mmaPlan ? (mmaPlan.ok||"") : "";
+  document.getElementById("mmaPlanNg").value = mmaPlan ? (mmaPlan.ng||"") : "";
+  mmaShowScreen("s2");
+}
+document.getElementById("mmaBtnS2Back").addEventListener("click", ()=>{ mmaRenderS1(); mmaShowScreen("s1"); });
+document.getElementById("mmaBtnPlanSave").addEventListener("click", ()=>{
+  const aim = document.getElementById("mmaPlanAim").value.trim();
+  if(!aim){ mmaShowToast("狙いを書いてから保存しろ"); return; }
+  const ok = document.getElementById("mmaPlanOk").value.trim();
+  const ng = document.getElementById("mmaPlanNg").value.trim();
+  mmaPlan = { aim:aim, ok:ok, ng:ng, ts:Date.now() };
+  mmaSavePlan(mmaPlan);
+  mmaRenderS1();
+  mmaShowScreen("s1");
+});
+
+/* ---- S2R 記録フロー ---- */
+let mmaRoundState = { tags:[], insight:"", cond:0, done:false, kuyashii:"", expResult:null, expMemo:"" };
+let mmaCurrentRound = 1;
+let mmaTimerHandle = null;
+let mmaTimerRemain = MMA_ROUND_SECONDS;
+
+function mmaResetRoundState(){
+  mmaRoundState = { tags:[], insight:"", cond:0, done:false, kuyashii:"", expResult:null, expMemo:"" };
+  mmaCurrentRound = 1;
+
+  document.querySelectorAll("#mmaTagTiles .tile2").forEach(t=>t.classList.remove("on"));
+  document.querySelectorAll("#mmaCondGrid .condrow").forEach(c=>c.classList.remove("on"));
+  document.getElementById("mmaInsightInput").value = "";
+  document.getElementById("mmaR2MemoInput").value = "";
+  document.getElementById("mmaKuyashiiInput").value = "";
+  document.getElementById("mmaKuyashiiMsg").style.display = "none";
+
+  document.getElementById("mmaDoneBox").textContent = "";
+  document.getElementById("mmaDoneCheck").classList.remove("on");
+  document.getElementById("mmaR3Stamp").style.display = "none";
+
+  document.querySelectorAll("#mmaJudgeButtons button").forEach(b=>b.classList.remove("sel"));
+
+  if(mmaPlan){
+    document.getElementById("mmaR2WithPlan").style.display = "block";
+    document.getElementById("mmaR2NoPlan").style.display = "none";
+    document.getElementById("mmaR2AimText").textContent = mmaPlan.aim || "";
+  } else {
+    document.getElementById("mmaR2WithPlan").style.display = "none";
+    document.getElementById("mmaR2NoPlan").style.display = "block";
+  }
+}
+
+function mmaUpdateProgressBars(){
+  document.querySelectorAll("#mmaS2rBars i").forEach(bar=>{
+    const r = parseInt(bar.getAttribute("data-r"), 10);
+    bar.classList.remove("on","past");
+    if(r === mmaCurrentRound){ bar.classList.add("on"); }
+    else if(r < mmaCurrentRound){ bar.classList.add("past"); }
+  });
+  document.getElementById("mmaS2rRoundLabel").textContent = "ROUND "+mmaCurrentRound+" / 4";
+}
+function mmaShowRound(n){
+  mmaCurrentRound = n;
+  ["mmaPaneR1","mmaPaneR2","mmaPaneR3","mmaPaneR4"].forEach((key, idx)=>{
+    const pane = document.getElementById(key);
+    pane.style.display = (idx+1===n) ? "block" : "none";
+  });
+  mmaUpdateProgressBars();
+  if(n === 1){ mmaStartTimer(); }
+}
+function mmaStartTimer(){
+  mmaStopTimer();
+  mmaTimerRemain = MMA_ROUND_SECONDS;
+  mmaRenderTimer();
+  mmaTimerHandle = setInterval(()=>{
+    mmaTimerRemain--;
+    if(mmaTimerRemain <= 0){ mmaTimerRemain = 0; mmaRenderTimer(); mmaStopTimer(); return; }
+    mmaRenderTimer();
+  }, 1000);
+}
+function mmaStopTimer(){ if(mmaTimerHandle){ clearInterval(mmaTimerHandle); mmaTimerHandle = null; } }
+function mmaRenderTimer(){
+  const el = document.getElementById("mmaS2rTimer");
+  if(mmaTimerRemain <= 0){ el.textContent = "延長戦"; }
+  else{ el.textContent = "0:"+pad2(mmaTimerRemain%60); }
+}
+
+document.querySelectorAll("#mmaTagTiles .tile2").forEach(tile=>{
+  tile.addEventListener("click", ()=>{
+    const tag = tile.getAttribute("data-tag");
+    const idx = mmaRoundState.tags.indexOf(tag);
+    if(idx === -1){ mmaRoundState.tags.push(tag); tile.classList.add("on"); }
+    else{ mmaRoundState.tags.splice(idx,1); tile.classList.remove("on"); }
+    mmaVibrate(15);
+  });
+});
+document.getElementById("mmaBtnR1Next").addEventListener("click", ()=>{ mmaShowRound(2); });
+
+document.querySelectorAll("#mmaJudgeButtons button").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    const r = btn.getAttribute("data-r");
+    mmaRoundState.expResult = (mmaRoundState.expResult === r) ? null : r;
+    document.querySelectorAll("#mmaJudgeButtons button").forEach(b=>{
+      b.classList.toggle("sel", b===btn && mmaRoundState.expResult===r);
+    });
+    mmaVibrate(15);
+  });
+});
+document.getElementById("mmaBtnR2Next").addEventListener("click", ()=>{
+  if(mmaPlan){ mmaRoundState.expMemo = document.getElementById("mmaR2MemoInput").value.trim(); }
+  else{ mmaRoundState.insight = document.getElementById("mmaInsightInput").value.trim(); }
+  mmaShowRound(3);
+});
+
+document.getElementById("mmaDoneCheck").addEventListener("click", function(){
+  mmaRoundState.done = !mmaRoundState.done;
+  const box = document.getElementById("mmaDoneBox");
+  const wrap = document.getElementById("mmaDoneCheck");
+  const stamp = document.getElementById("mmaR3Stamp");
+  if(mmaRoundState.done){
+    box.textContent = "✓";
+    wrap.classList.add("on");
+    stamp.style.display = "none";
+    void stamp.offsetWidth;
+    stamp.style.display = "block";
+    mmaVibrate([40,30,60]);
+  } else {
+    box.textContent = "";
+    wrap.classList.remove("on");
+    stamp.style.display = "none";
+  }
+});
+document.getElementById("mmaKuyashiiInput").addEventListener("input", function(){
+  mmaRoundState.kuyashii = this.value;
+  document.getElementById("mmaKuyashiiMsg").style.display = this.value.trim().length>0 ? "block" : "none";
+});
+document.getElementById("mmaBtnR3Next").addEventListener("click", ()=>{ mmaShowRound(4); });
+
+document.querySelectorAll("#mmaCondGrid .condrow").forEach(bar=>{
+  bar.addEventListener("click", ()=>{
+    const v = parseInt(bar.getAttribute("data-v"), 10);
+    mmaRoundState.cond = v;
+    document.querySelectorAll("#mmaCondGrid .condrow").forEach(b=>b.classList.remove("on"));
+    bar.classList.add("on");
+    mmaVibrate(15);
+  });
+});
+
+document.getElementById("mmaBtnGong").addEventListener("click", ()=>{ mmaDoSave(); });
+
+function mmaDoSave(){
+  mmaStopTimer();
+  const session = {
+    id: "s_"+Date.now(),
+    date: mmaTodayISO(),
+    ts: Date.now(),
+    tags: mmaRoundState.tags.slice(),
+    cond: mmaRoundState.cond,
+    insight: mmaPlan ? "" : mmaRoundState.insight,
+    kadai: "",
+    exp: mmaPlan ? { aim:mmaPlan.aim, ok:mmaPlan.ok, ng:mmaPlan.ng, result:mmaRoundState.expResult, memo:mmaRoundState.expMemo } : null,
+    done: mmaRoundState.done,
+    kuyashii: mmaRoundState.kuyashii
+  };
+  mmaFlData.sessions.push(session);
+  mmaSaveV2(mmaFlData);
+  mmaClearPlan();
+  mmaPlan = null;
+  mmaSyncToTrackerState(session);
+  mmaVibrate([60,40,60,40,120]);
+  mmaRenderS3(session);
+  mmaShowScreen("s3");
+}
+
+/* ---- S3 ゴング後 ---- */
+function mmaRenderS3(session){
+  document.getElementById("mmaS3Date").textContent = mmaMMDD(session.date)+" "+mmaWeekday3FromISO(session.date);
+  document.getElementById("mmaS3Tags").textContent = session.tags && session.tags.length ? session.tags.join(" / ") : "（タグなし）";
+
+  const stampEl = document.getElementById("mmaS3Stamp");
+  stampEl.style.display = session.done === true ? "block" : "none";
+
+  const expLine = document.getElementById("mmaS3ExpLine");
+  if(session.exp){
+    const mark = mmaExpMarkOf(session.exp);
+    const mkClass = session.exp.result==="o" ? "o" : (session.exp.result==="x" ? "x" : "");
+    expLine.innerHTML = '<span class="mk '+mkClass+'">'+mark+'</span>'+escHtml(session.exp.aim);
+    expLine.style.display = "block";
+  } else {
+    expLine.style.display = "none";
+  }
+}
+document.getElementById("mmaBtnS3Back").addEventListener("click", ()=>{ mmaRenderS1(); mmaShowScreen("s1"); });
+
+/* ---- S4 戦績（台帳） ---- */
+let mmaOpenedId = null;
+
+function mmaCondDotColor(v){
+  if(!v) return "rgba(255,255,255,.3)";
+  if(v <= 1) return "#ff5050";
+  if(v === 2) return "#ff8c3c";
+  if(v === 3) return "#ffc850";
+  if(v === 4) return "#8cdc64";
+  return "#50c878";
+}
+
+function mmaRenderS4(){
+  const sessions = mmaFlData.sessions;
+  const count = sessions.length;
+  const doneCount = sessions.filter(s=>s && s.done===true).length;
+  const oCount = sessions.filter(s=>s && s.exp && s.exp.result==="o").length;
+  const xCount = sessions.filter(s=>s && s.exp && s.exp.result==="x").length;
+
+  document.getElementById("mmaS4TickerCount").textContent = "全"+count+"戦";
+  document.getElementById("mmaS4DoneCount").textContent = doneCount;
+  document.getElementById("mmaS4OCount").textContent = oCount;
+  document.getElementById("mmaS4XCount").textContent = xCount;
+  document.getElementById("mmaS4TotalCount").textContent = count;
+
+  const listEl = document.getElementById("mmaS4List");
+  listEl.innerHTML = "";
+
+  if(count === 0){
+    const empty = document.createElement("div");
+    empty.className = "s4-empty";
+    empty.textContent = "まだ記録がない。入場して1本目を刻め。";
+    listEl.appendChild(empty);
+    return;
+  }
+
+  const ordered = sessions.slice().reverse();
+  ordered.forEach(s=>{
+    const resClass = (s.exp && s.exp.result==="o") ? "o" : (s.exp && s.exp.result==="x") ? "x" : "n";
+    const resMark = resClass==="o" ? "◯" : resClass==="x" ? "✕" : "—";
+    const oneLiner = s.exp ? (s.exp.aim||"") : ("（通常練習）"+(s.insight||""));
+
+    const row = document.createElement("div");
+    row.className = "lrow";
+    if(mmaOpenedId === s.id) row.classList.add("open-detail");
+    row.innerHTML =
+      '<div class="res '+resClass+'">'+resMark+'</div>'+
+      '<div class="mid">'+
+        '<div class="date">'+mmaMMDD(s.date)+' '+mmaWeekday3FromISO(s.date)+' — '+(s.tags && s.tags.length ? s.tags.join(" / ") : "（タグなし）")+'</div>'+
+        '<div class="aim">'+escHtml(oneLiner)+'</div>'+
+      '</div>'+
+      '<div class="chev">'+(mmaOpenedId===s.id ? "▾" : "▸")+'</div>';
+    row.addEventListener("click", ()=>{ mmaOpenedId = (mmaOpenedId===s.id) ? null : s.id; mmaRenderS4(); });
+    listEl.appendChild(row);
+
+    if(mmaOpenedId === s.id){
+      const detail = document.createElement("div");
+      detail.className = "detail";
+      let rows = "";
+      if(s.exp && s.exp.ok) rows += '<div class="drow"><div class="dk">◯サイン</div><div class="dv green">'+escHtml(s.exp.ok)+'</div></div>';
+      if(s.exp && s.exp.ng) rows += '<div class="drow"><div class="dk">✕サイン</div><div class="dv">'+escHtml(s.exp.ng)+'</div></div>';
+      if(s.exp && s.exp.memo) rows += '<div class="drow"><div class="dk">結果メモ</div><div class="dv">'+escHtml(s.exp.memo)+'</div></div>';
+      if(s.insight) rows += '<div class="drow"><div class="dk">気づき</div><div class="dv">'+escHtml(s.insight)+'</div></div>';
+      if(s.kadai) rows += '<div class="drow"><div class="dk">課題</div><div class="dv">'+escHtml(s.kadai)+'</div></div>';
+      if(s.kuyashii) rows += '<div class="drow"><div class="dk">悔しさ</div><div class="dv red2">'+escHtml(s.kuyashii)+'</div></div>';
+      if(s.cond) rows += '<div class="drow"><div class="dk">コンディション</div><div class="dv"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+mmaCondDotColor(s.cond)+';margin-right:6px;vertical-align:middle"></span>'+s.cond+'</div></div>';
+
+      const actions = '<div class="actions">'+
+        '<button type="button" class="edit" data-act="edit">✎ 編集する</button>'+
+        '<button type="button" class="del" data-act="del">削除</button>'+
+        (s.exp && s.exp.result==="x" ? '<button type="button" class="rematch" data-act="rematch">⟳ 再戦する</button>' : '')+
+        '</div>';
+
+      detail.innerHTML = rows + actions;
+      listEl.appendChild(detail);
+
+      detail.querySelector('[data-act="edit"]').addEventListener("click", evt=>{ evt.stopPropagation(); mmaOpenEditSheet(s.id); });
+      detail.querySelector('[data-act="del"]').addEventListener("click", evt=>{
+        evt.stopPropagation();
+        if(window.confirm("この記録を削除しますか？")){ mmaDeleteSession(s.id); }
+      });
+      const rematchBtn = detail.querySelector('[data-act="rematch"]');
+      if(rematchBtn){ rematchBtn.addEventListener("click", evt=>{ evt.stopPropagation(); mmaRematchSession(s.id); }); }
+    }
+  });
+}
+
+function mmaDeleteSession(id){
+  mmaFlData.sessions = mmaFlData.sessions.filter(s=>s.id !== id);
+  mmaSaveV2(mmaFlData);
+  if(mmaOpenedId === id) mmaOpenedId = null;
+  mmaRenderS4();
+}
+function mmaRematchSession(id){
+  const s = mmaFlData.sessions.filter(x=>x.id===id)[0];
+  if(!s || !s.exp) return;
+  mmaPlan = { aim:s.exp.aim||"", ok:s.exp.ok||"", ng:s.exp.ng||"", ts:Date.now() };
+  mmaSavePlan(mmaPlan);
+  mmaRenderS1();
+  mmaShowScreen("s1");
+}
+document.getElementById("mmaBtnBackS1").addEventListener("click", ()=>{ mmaRenderS1(); mmaShowScreen("s1"); });
+
+/* ---- 編集シート ---- */
+let mmaEditingId = null;
+let mmaEditState = { tags:[], result:null, done:false, cond:0 };
+
+function mmaOpenEditSheet(id){
+  const s = mmaFlData.sessions.filter(x=>x.id===id)[0];
+  if(!s) return;
+  mmaEditingId = id;
+  mmaEditState = {
+    tags: (s.tags||[]).slice(),
+    result: s.exp ? (s.exp.result||null) : "none",
+    done: s.done === true,
+    cond: s.cond || 0
+  };
+
+  document.getElementById("mmaEditDate").textContent = mmaMMDD(s.date)+" "+mmaWeekday3FromISO(s.date)+"（"+s.date+"）";
+
+  document.querySelectorAll("#mmaEditTagTiles .tile2").forEach(t=>{
+    t.classList.toggle("on", mmaEditState.tags.indexOf(t.getAttribute("data-tag")) !== -1);
+  });
+
+  document.getElementById("mmaEditAim").value = s.exp ? (s.exp.aim||"") : "";
+  document.getElementById("mmaEditOk").value = s.exp ? (s.exp.ok||"") : "";
+  document.getElementById("mmaEditNg").value = s.exp ? (s.exp.ng||"") : "";
+  document.getElementById("mmaEditMemo").value = s.exp ? (s.exp.memo||"") : "";
+
+  document.querySelectorAll("#mmaEditJudge button").forEach(b=>{
+    b.classList.toggle("sel", b.getAttribute("data-r") === mmaEditState.result);
+  });
+
+  document.getElementById("mmaEditDoneBox").textContent = mmaEditState.done ? "✓" : "";
+  document.getElementById("mmaEditDoneCheck").classList.toggle("on", mmaEditState.done);
+
+  document.getElementById("mmaEditKuyashii").value = s.kuyashii || "";
+  document.getElementById("mmaEditInsight").value = s.insight || "";
+  document.getElementById("mmaEditKadai").value = s.kadai || "";
+
+  document.querySelectorAll("#mmaEditCondGrid .condrow").forEach(b=>{
+    b.classList.toggle("on", parseInt(b.getAttribute("data-v"),10) === mmaEditState.cond);
+  });
+
+  document.getElementById("mmaEditOverlay").classList.add("open");
+}
+
+document.querySelectorAll("#mmaEditTagTiles .tile2").forEach(tile=>{
+  tile.addEventListener("click", ()=>{
+    const tag = tile.getAttribute("data-tag");
+    const idx = mmaEditState.tags.indexOf(tag);
+    if(idx === -1){ mmaEditState.tags.push(tag); tile.classList.add("on"); }
+    else{ mmaEditState.tags.splice(idx,1); tile.classList.remove("on"); }
+  });
+});
+document.querySelectorAll("#mmaEditJudge button").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    mmaEditState.result = btn.getAttribute("data-r");
+    document.querySelectorAll("#mmaEditJudge button").forEach(b=>b.classList.toggle("sel", b===btn));
+  });
+});
+document.getElementById("mmaEditDoneCheck").addEventListener("click", function(){
+  mmaEditState.done = !mmaEditState.done;
+  document.getElementById("mmaEditDoneBox").textContent = mmaEditState.done ? "✓" : "";
+  this.classList.toggle("on", mmaEditState.done);
+});
+document.querySelectorAll("#mmaEditCondGrid .condrow").forEach(bar=>{
+  bar.addEventListener("click", ()=>{
+    mmaEditState.cond = parseInt(bar.getAttribute("data-v"), 10);
+    document.querySelectorAll("#mmaEditCondGrid .condrow").forEach(b=>b.classList.remove("on"));
+    bar.classList.add("on");
+  });
+});
+
+document.getElementById("mmaEditCancel").addEventListener("click", ()=>{
+  document.getElementById("mmaEditOverlay").classList.remove("open");
+  mmaEditingId = null;
+});
+document.getElementById("mmaEditSave").addEventListener("click", ()=>{
+  if(!mmaEditingId) return;
+  const s = mmaFlData.sessions.filter(x=>x.id===mmaEditingId)[0];
+  if(!s){ document.getElementById("mmaEditOverlay").classList.remove("open"); return; }
+
+  s.tags = mmaEditState.tags.slice();
+  s.cond = mmaEditState.cond || s.cond;
+  s.kuyashii = document.getElementById("mmaEditKuyashii").value;
+  s.insight = document.getElementById("mmaEditInsight").value;
+  s.kadai = document.getElementById("mmaEditKadai").value;
+  s.done = mmaEditState.done === true;
+
+  if(mmaEditState.result === "none" || !mmaEditState.result){ s.exp = null; }
+  else{
+    s.exp = {
+      aim: document.getElementById("mmaEditAim").value,
+      ok: document.getElementById("mmaEditOk").value,
+      ng: document.getElementById("mmaEditNg").value,
+      result: mmaEditState.result,
+      memo: document.getElementById("mmaEditMemo").value
+    };
+  }
+
+  mmaSaveV2(mmaFlData);
+  document.getElementById("mmaEditOverlay").classList.remove("open");
+  mmaEditingId = null;
+  mmaRenderS4();
+});
+
+/* ---- embers ---- */
+function mmaSpawnEmbers(){
+  const field = document.getElementById("mmaEmberField");
+  if(!field || field.childElementCount > 0) return;
+  const count = 8;
+  for(let i=0;i<count;i++){
+    const e = document.createElement("div");
+    e.className = "ember";
+    const leftPct = 8 + Math.random()*84;
+    const dur = 12 + Math.random()*8;
+    const delay = Math.random()*dur;
+    e.style.left = leftPct+"%";
+    e.style.animationDuration = dur+"s, "+(2+Math.random()*2)+"s";
+    e.style.animationDelay = "-"+delay+"s, -"+(Math.random()*2)+"s";
+    field.appendChild(e);
+  }
+}
+
+/* ---- init（ページ読込時に1回だけ・以降はタブ切替で表示/非表示のみ） ---- */
+function mmaInit(){
+  mmaSetupMic("mmaMicAim", "mmaPlanAim", "mmaMicRowAim");
+  mmaSetupMic("mmaMicMemo", "mmaR2MemoInput", "mmaMicRowMemo");
+  mmaSetupMic("mmaMicInsight", "mmaInsightInput", "mmaMicRowInsight");
+  mmaSpawnEmbers();
+  mmaResetRoundState();
+  if(mmaShouldShowGate()){ mmaShowGateUI(); }
+  else{ mmaHideGateUI(); mmaRenderS1(); mmaShowScreen("s1"); }
+}
+// タブを開くたびに呼ばれる。ゲート表示中は何もせず、S1表示中なら最新値に再描画（記録フロー中は一切邪魔しない）
+function mmaOnShow(){
+  const gate = document.getElementById("mmaGate");
+  if(gate && gate.style.display !== "none") return;
+  const s1 = document.getElementById("mmaScreenS1");
+  if(s1 && s1.classList.contains("active")){ mmaRenderS1(); }
+}
+mmaInit();
 
 // 初期表示を記録タブに（毎回トップは記録）
 setView("record");
