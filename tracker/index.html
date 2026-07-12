@@ -534,6 +534,8 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 .sv-list-wrap summary::before{content:"▶ ";font-size:9px;margin-right:2px}
 .sv-list-wrap[open] summary::before{content:"▼ ";margin-right:2px}
 .sv-list-rows{padding:0 12px 12px}
+.sv-lr-memoline{font-size:11px;color:rgba(238,240,246,.55);padding:0 8px 8px 8px;line-height:1.5;cursor:pointer}
+.sv-memo-view{margin-top:14px;font-size:12.5px;color:#f3e9db;line-height:1.7;text-align:center;cursor:pointer}
 .sv-list-empty{padding:0 16px 14px;font-size:12px;color:rgba(238,240,246,.5)}
 .sv-list-row{display:flex;align-items:center;gap:8px;min-height:44px;padding:6px 4px;border-top:1px solid rgba(255,255,255,.08);font-size:12.5px;color:#eef0f6}
 .sv-list-row:first-child{border-top:none}
@@ -635,6 +637,219 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 .exp-guide-close{position:absolute;top:4px;right:4px;width:40px;height:40px;min-width:40px;background:none;border:none;color:rgba(255,255,255,.5);font-size:16px;cursor:pointer}
 .exp-guide-title{font-size:13px;font-weight:800;color:#fff;margin-bottom:6px}
 .exp-guide-line{font-size:12.5px;color:rgba(255,255,255,.75);line-height:1.7}
+
+/* ===== 🧪実験タブ2.0「発明家の夜のラボ」（第6弾・lab_test.html完全移植：.lab-appスコープ配下）=====
+   デザインの正=lab_test.html。CSS/構造/文言はそのまま、選択子だけ .lab-app 配下にスコープして
+   他タブ（MMA/睡眠/カレンダー/リスト/記録）への回帰をゼロにする（.mma-appと同じ手法）。
+   フルスクリーン固定背景(position:fixed)はヘッダー(sticky)と干渉するため、
+   「上部ステージ（電球・棚・ラック・ポスター）→中身（黒板・実験札）→下部ステージ（作業台・顕微鏡・バーナー）」
+   の通常フローの3段構成に再構成（色・質感・SVG器具は一切劣化させず、そのまま使用）。 */
+.lab-app{
+  --ink:#0b0908;
+  --wood1:#2a1d12; --wood2:#1c130b;
+  --brass:#c9a25e; --brass-dim:rgba(201,162,94,.4);
+  --bulb:#ffd9a0;
+  --neon1:#b26bff; --neon1-glow:rgba(178,107,255,.5);
+  --neon2:#4fd8ff; --neon2-glow:rgba(79,216,255,.45);
+  --neon3:#5fd08f; --neon3-glow:rgba(95,208,143,.45);
+  --neon4:#ffa94f; --neon4-glow:rgba(255,169,79,.45);
+  --gold:#ffd76a;
+  --tx:#efe9df; --mut:rgba(239,233,223,.55);
+  position:relative;isolation:isolate;overflow-x:hidden;
+  background:
+    radial-gradient(ellipse 120% 45% at 50% 0%, #171008 0%, transparent 60%),
+    var(--ink);
+  color:var(--tx);
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic UI","Segoe UI",sans-serif;
+  box-shadow:inset 0 0 70px 18px rgba(0,0,0,.55);
+  padding-bottom:110px;
+}
+.lab-app *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+.lab-app button{font-family:inherit;touch-action:manipulation;user-select:none;cursor:pointer}
+
+/* ---- 上部ステージ：吊り電球・光のプール・標本棚＋瓶・試験管ラック・周期表ポスター ---- */
+.lab-app .lab-top-stage{position:relative;height:158px;overflow:visible;pointer-events:none}
+.lab-app .cord{position:absolute;left:50%;top:0;width:2px;height:64px;background:#3a2c1a;transform:translateX(-50%)}
+.lab-app .bulb{position:absolute;left:50%;top:60px;width:26px;height:34px;transform:translateX(-50%);
+  background:radial-gradient(circle at 50% 40%, #fff3d6, var(--bulb) 55%, #b8863f);
+  border-radius:50% 50% 46% 46%;
+  box-shadow:0 0 26px 8px rgba(255,217,160,.55), 0 0 90px 40px rgba(255,190,110,.14);
+  animation:labSwing 7s ease-in-out infinite;transform-origin:50% -60px}
+@keyframes labSwing{0%,100%{transform:translateX(-50%) rotate(-1.6deg)}50%{transform:translateX(-50%) rotate(1.6deg)}}
+.lab-app .pool{position:absolute;left:50%;top:0;width:150%;height:158px;transform:translateX(-50%);
+  background:radial-gradient(ellipse 46% 100% at 50% 0%, rgba(255,205,130,.13), transparent 70%)}
+.lab-app .shelf{position:absolute;left:6%;right:6%;top:118px;height:3px;background:linear-gradient(90deg,transparent,#3a2c1a 8%,#3a2c1a 92%,transparent)}
+.lab-app .shelf::after{content:"";position:absolute;left:0;right:0;top:3px;height:1px;background:rgba(201,162,94,.25)}
+.lab-app .jar{position:absolute;top:84px;width:22px;height:34px;border-radius:6px 6px 4px 4px;
+  background:linear-gradient(180deg, rgba(200,200,190,.08), rgba(200,200,190,.03));
+  border:1px solid rgba(200,200,190,.14)}
+.lab-app .jar::before{content:"";position:absolute;left:2px;right:2px;top:-4px;height:5px;border-radius:3px;background:#3a2c1a}
+.lab-app .jar .sed{position:absolute;left:2px;right:2px;bottom:2px;height:38%;border-radius:0 0 3px 3px;background:rgba(160,150,130,.14)}
+.lab-app .rack{position:absolute;top:96px;width:74px;height:26px}
+.lab-app .rack::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:#3a2c1a}
+.lab-app .tube{position:absolute;bottom:2px;width:9px;height:24px;border-radius:0 0 5px 5px;
+  background:rgba(220,230,235,.07);border:1px solid rgba(220,230,235,.14);border-top:none}
+.lab-app .tube i{position:absolute;left:1px;right:1px;bottom:1px;height:40%;border-radius:0 0 4px 4px;display:block}
+.lab-app .poster{position:absolute;right:8%;top:74px;width:64px;height:44px;padding:5px 4px 3px;
+  background:#151312;border:1px solid rgba(201,162,94,.25);transform:rotate(1.6deg);opacity:.85}
+.lab-app .poster::before{content:"";position:absolute;left:50%;top:-3px;width:5px;height:5px;border-radius:50%;background:var(--brass);transform:translateX(-50%)}
+.lab-app .poster .grid{display:grid;grid-template-columns:repeat(9,1fr);gap:1px}
+.lab-app .poster .cell{height:4px;background:rgba(201,162,94,.22)}
+.lab-app .poster .cell:nth-child(4n){background:rgba(79,216,255,.22)}
+.lab-app .poster .cell:nth-child(7n){background:rgba(178,107,255,.22)}
+.lab-app .poster .t{font-size:5.5px;letter-spacing:.14em;color:rgba(239,233,223,.4);text-align:center;margin-top:2px}
+
+/* ---- 中身 ---- */
+.lab-app .lab-content{position:relative;z-index:2}
+.lab-app .head{padding:16px 20px 0;display:flex;align-items:baseline;justify-content:space-between}
+.lab-app .head .t{font-size:11px;font-weight:800;letter-spacing:.34em;color:var(--brass)}
+.lab-app .head .n{font-size:11px;color:var(--mut)}
+.lab-app .archive-note{text-align:center;margin-top:10px;font-size:10px;color:rgba(239,233,223,.35);letter-spacing:.2em}
+
+/* フラスコ実験カード＝標本札スタイル */
+.lab-app .exp{position:relative;margin:26px 20px 0;padding:18px 18px 16px 96px;min-height:118px;
+  background:linear-gradient(135deg, rgba(30,22,14,.92), rgba(20,14,9,.9));
+  border-top:1px solid var(--brass-dim);
+  clip-path:polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);}
+.lab-app .exp .pin{position:absolute;right:12px;top:10px;width:7px;height:7px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #ffe9b8, var(--brass));box-shadow:0 0 6px rgba(201,162,94,.6)}
+.lab-app .exp .editbtn{position:absolute;right:26px;top:5px;background:none;border:none;color:var(--brass-dim);font-size:11px;padding:8px;min-height:28px;min-width:28px}
+.lab-app .exp .no{position:absolute;left:16px;top:12px;font-size:9px;font-weight:800;letter-spacing:.18em;color:var(--brass-dim)}
+/* フラスコ */
+.lab-app .flask{position:absolute;left:16px;top:34px;width:64px;height:84px}
+.lab-app .flask .neck{position:absolute;left:50%;top:0;width:14px;height:30px;transform:translateX(-50%);
+  background:rgba(220,230,235,.1);border:1px solid rgba(220,230,235,.18);border-bottom:none;border-radius:4px 4px 0 0}
+.lab-app .flask .body{position:absolute;left:0;bottom:0;width:64px;height:58px;
+  clip-path:polygon(38% 0, 62% 0, 100% 82%, 92% 100%, 8% 100%, 0 82%);
+  background:rgba(220,230,235,.07);border:1px solid rgba(220,230,235,.14)}
+.lab-app .flask .liq{position:absolute;left:2px;right:2px;bottom:2px;height:55%;
+  clip-path:polygon(20% 0, 80% 0, 97% 70%, 90% 100%, 10% 100%, 3% 70%);transition:box-shadow .4s}
+.lab-app .exp.n1 .liq{background:linear-gradient(180deg, rgba(178,107,255,.75), rgba(120,60,200,.9));box-shadow:0 0 22px 4px var(--neon1-glow)}
+.lab-app .exp.n2 .liq{background:linear-gradient(180deg, rgba(79,216,255,.7), rgba(30,140,190,.9));box-shadow:0 0 22px 4px var(--neon2-glow)}
+.lab-app .exp.n3 .liq{background:linear-gradient(180deg, rgba(95,208,143,.75), rgba(30,140,80,.9));box-shadow:0 0 22px 4px var(--neon3-glow)}
+.lab-app .exp.n4 .liq{background:linear-gradient(180deg, rgba(255,169,79,.75), rgba(200,110,20,.9));box-shadow:0 0 22px 4px var(--neon4-glow)}
+.lab-app .exp.gold .liq{background:linear-gradient(180deg, rgba(255,215,106,.8), rgba(200,150,40,.95));box-shadow:0 0 26px 6px rgba(255,215,106,.55)}
+.lab-app .flask.pop{animation:labFlaskPop 1s ease}
+@keyframes labFlaskPop{0%{transform:scale(1)}35%{transform:scale(1.1)}100%{transform:scale(1)}}
+.lab-app .bub{position:absolute;bottom:6px;width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.5);opacity:0;
+  animation:labRise 6s ease-in infinite}
+.lab-app .bub.b1{left:30%}.lab-app .bub.b2{left:55%;animation-delay:2s;width:4px;height:4px}.lab-app .bub.b3{left:44%;animation-delay:4s;width:3px;height:3px}
+@keyframes labRise{0%{transform:translateY(0);opacity:0}15%{opacity:.8}85%{opacity:.6}100%{transform:translateY(-36px);opacity:0}}
+.lab-app .flask .marks{position:absolute;right:8px;bottom:8px;width:8px;height:34px;
+  background:repeating-linear-gradient(180deg, rgba(230,235,240,.25) 0 1px, transparent 1px 8px)}
+.lab-app .steam{position:absolute;width:10px;height:26px;border-radius:50%;
+  background:radial-gradient(ellipse, rgba(230,235,240,.16), transparent 70%);
+  opacity:0;animation:labSteam 5s ease-out infinite;pointer-events:none}
+@keyframes labSteam{0%{transform:translateY(0) scaleX(1);opacity:0}20%{opacity:.7}100%{transform:translateY(-46px) scaleX(2.2);opacity:0}}
+/* 札の中身 */
+.lab-app .exp h3{margin:0;font-size:15.5px;font-weight:800;letter-spacing:.02em;color:var(--tx)}
+.lab-app .exp .ifthen{margin-top:5px;font-size:11.5px;color:var(--mut);line-height:1.6}
+/* 定着の階段 */
+.lab-app .ladder{display:flex;gap:5px;margin-top:11px;align-items:center;flex-wrap:wrap}
+.lab-app .rung{font-size:9px;font-weight:800;letter-spacing:.06em;padding:3px 8px;border-radius:3px;
+  background:rgba(255,255,255,.05);color:rgba(239,233,223,.35);border:1px solid rgba(255,255,255,.07)}
+.lab-app .rung.lit{background:rgba(201,162,94,.16);color:var(--gold);border-color:rgba(255,215,106,.4)}
+.lab-app .rung.now{background:rgba(178,107,255,.2);color:#d9b8ff;border-color:var(--neon1);box-shadow:0 0 8px var(--neon1-glow)}
+.lab-app .exp.n2 .rung.now{background:rgba(79,216,255,.16);color:#aee8ff;border-color:var(--neon2);box-shadow:0 0 8px var(--neon2-glow)}
+.lab-app .exp.n3 .rung.now{background:rgba(95,208,143,.18);color:#b9f2d2;border-color:var(--neon3);box-shadow:0 0 8px var(--neon3-glow)}
+.lab-app .exp.n4 .rung.now{background:rgba(255,169,79,.18);color:#ffd9ac;border-color:var(--neon4);box-shadow:0 0 8px var(--neon4-glow)}
+.lab-app .rung.grad{background:linear-gradient(135deg,rgba(255,215,106,.3),rgba(255,180,20,.22));color:#ffe9a8;border-color:var(--gold)}
+.lab-app .exp .next{margin-top:9px;font-size:10.5px;color:var(--brass)}
+
+/* 初週のみ：任意の軽い1タップ記録（強制しない） */
+.lab-app .checkins{display:flex;gap:5px;margin-top:10px}
+.lab-app .ci{flex:1;padding:7px 0;border-radius:4px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);
+  color:rgba(239,233,223,.5);font-size:10px;font-weight:700;min-height:30px}
+.lab-app .ci.on{background:rgba(201,162,94,.22);border-color:var(--brass);color:var(--gold)}
+.lab-app .ci:disabled{opacity:.3}
+.lab-app .ci-cap{font-size:9.5px;color:rgba(239,233,223,.35);letter-spacing:.1em;margin-top:10px}
+
+/* 節目の判定（場面C・札の最上部） */
+.lab-app .judge{background:rgba(201,162,94,.08);border:1px solid var(--brass-dim);border-radius:4px;padding:10px 12px;margin:0 0 12px}
+.lab-app .judge .q{font-size:12.5px;font-weight:800;color:var(--gold)}
+.lab-app .judge .btns{display:flex;gap:8px;margin-top:10px}
+.lab-app .judge button{flex:1;padding:12px;border:none;font-weight:900;font-size:13px;border-radius:4px}
+.lab-app .judge .o{background:rgba(95,208,143,.15);color:#7fe0a8;border:1px solid rgba(95,208,143,.4)}
+.lab-app .judge .x{background:rgba(255,255,255,.06);color:var(--mut);border:1px solid rgba(255,255,255,.12)}
+.lab-app .judge textarea{width:100%;margin-top:8px;border:1px solid rgba(255,255,255,.14);border-radius:4px;padding:8px;
+  font:inherit;font-size:12.5px;background:rgba(0,0,0,.2);color:var(--tx);resize:vertical;min-height:38px}
+/* ✕→「続ける／標本にする」2択（責めない） */
+.lab-app .xchoice .msg{font-size:12.5px;color:var(--tx);line-height:1.7}
+.lab-app .xchoice .btns{display:flex;gap:8px;margin-top:10px}
+.lab-app .xchoice button{flex:1;padding:12px;border:1px solid rgba(255,255,255,.16);border-radius:4px;font-weight:800;font-size:12.5px;
+  background:rgba(255,255,255,.06);color:var(--tx)}
+.lab-app .xchoice .keep{border-color:rgba(79,216,255,.4);color:#aee8ff;background:rgba(79,216,255,.1)}
+
+/* 観察ノート */
+.lab-app .note-btn{display:inline-flex;align-items:center;gap:5px;margin-top:10px;padding:7px 12px;
+  background:rgba(201,162,94,.08);border:1px solid var(--brass-dim);color:var(--brass);
+  font-size:11px;font-weight:800;border-radius:3px}
+.lab-app .notes{margin-top:10px;border-top:1px dashed rgba(201,162,94,.25);padding-top:8px}
+.lab-app .note-row{font-size:11.5px;color:var(--mut);line-height:1.7;padding:2px 0}
+.lab-app .note-row b{color:rgba(239,233,223,.4);font-weight:700;font-size:10px;margin-right:7px}
+
+/* 追加ボタン（常時） */
+.lab-app .add{display:flex;align-items:center;justify-content:center;gap:8px;margin:22px 20px 0;padding:14px;
+  background:none;border:1px dashed var(--brass-dim);color:var(--brass);width:calc(100% - 40px);
+  font-size:13.5px;font-weight:800;letter-spacing:.08em;border-radius:4px}
+.lab-app .add:active{transform:scale(.97)}
+
+/* ===== 拡張: 黒板（動的：本人の実測値＋走行中の実験のif-then） ===== */
+.lab-app .board-wrap{position:relative;margin:26px 20px 0;z-index:2}
+.lab-app .board{position:relative;background:
+  radial-gradient(ellipse 80% 60% at 30% 30%, rgba(255,255,255,.025), transparent),
+  linear-gradient(135deg, #17251d, #101a15);
+  border:10px solid #3a2c1a;border-bottom-width:14px;border-radius:4px;
+  box-shadow:0 4px 18px rgba(0,0,0,.5), inset 0 0 40px rgba(0,0,0,.35);
+  padding:16px 16px 12px;min-height:150px}
+.lab-app .board::after{content:"";position:absolute;left:12%;right:12%;bottom:-12px;height:5px;background:#4a3a24;border-radius:2px}
+.lab-app .chalk{color:rgba(240,240,230,.85);font-size:13px;line-height:1.9;letter-spacing:.04em}
+.lab-app .chalk .y{color:rgba(255,235,150,.8)}
+.lab-app .chalk .p{color:rgba(255,190,210,.75)}
+.lab-app .chalk .rot1{display:inline-block;transform:rotate(-1.2deg)}
+.lab-app .chalk .rot2{display:inline-block;transform:rotate(.8deg)}
+.lab-app .chalk .circle{display:inline-block;padding:1px 8px;border:1.5px dashed rgba(255,235,150,.6);border-radius:50%}
+.lab-app .chalk .u{border-bottom:2px solid rgba(240,240,230,.4)}
+.lab-app .chalk .small{font-size:10.5px;opacity:.65}
+.lab-app .chalk-piece{position:absolute;right:18%;bottom:-9px;width:26px;height:6px;background:#e8e6da;border-radius:2px;box-shadow:0 1px 2px rgba(0,0,0,.5)}
+.lab-app .board-title{position:absolute;top:-7px;left:22px;font-size:9px;font-weight:800;letter-spacing:.3em;color:var(--brass-dim);background:var(--ink);padding:0 8px}
+
+/* 散らばる方眼メモ（下部ステージ） */
+.lab-app .memo-paper{position:absolute;bottom:100px;opacity:.5;
+  background:
+   repeating-linear-gradient(0deg, rgba(120,160,200,.15) 0 1px, transparent 1px 7px),
+   repeating-linear-gradient(90deg, rgba(120,160,200,.15) 0 1px, transparent 1px 7px),
+   rgba(230,232,236,.06);
+  border:1px solid rgba(230,232,236,.1);width:52px;height:38px}
+
+/* ---- 下部ステージ：木の作業台・SVG顕微鏡・SVGバーナー＋ビーカー ---- */
+.lab-app .lab-bottom-stage{position:relative;height:150px;margin-top:30px;overflow:hidden;pointer-events:none}
+.lab-app .bench{position:absolute;left:0;right:0;bottom:0;height:120px;
+  background:
+    repeating-linear-gradient(90deg, rgba(0,0,0,.16) 0 3px, transparent 3px 68px),
+    linear-gradient(180deg, var(--wood1), var(--wood2))}
+.lab-app .bench::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;
+  background:linear-gradient(90deg, transparent, var(--brass-dim) 15%, var(--brass-dim) 85%, transparent)}
+.lab-app .flame-g{animation:labFlick .9s ease-in-out infinite alternate}
+@keyframes labFlick{0%{transform:scaleY(1) scaleX(1)}100%{transform:scaleY(1.25) scaleX(.85)}}
+
+/* 記録庫（開閉・標本＝終わった実験） */
+.lab-app .archive{margin:26px 20px 0;position:relative;z-index:2}
+.lab-app .archive summary{list-style:none;font-size:11px;font-weight:800;letter-spacing:.22em;color:rgba(239,233,223,.4);cursor:pointer;padding:6px 0;min-height:44px;display:flex;align-items:center}
+.lab-app .archive summary::-webkit-details-marker{display:none}
+.lab-app .archive summary::before{content:"▸ ";color:var(--brass-dim)}
+.lab-app .archive[open] summary::before{content:"▾ "}
+.lab-app .arch-item{display:flex;justify-content:space-between;gap:10px;padding:10px 4px;border-bottom:1px solid rgba(255,255,255,.06);font-size:12.5px;color:var(--mut)}
+.lab-app .arch-item span{color:var(--tx)}
+.lab-app .arch-item small{color:rgba(239,233,223,.35);text-align:right;flex:0 0 auto}
+.lab-app .arch-item.grad span::before{content:"🎓 "}
+.lab-app .arch-empty{font-size:12px;color:rgba(239,233,223,.35);padding:8px 4px}
+
+/* ===== 新しい実験を仕込むシート（既存 #expBg/#expSheetBody を流用） ===== */
+.lab-guide{background:rgba(255,255,255,.08);border:1px dashed rgba(201,162,94,.35);border-radius:14px;padding:14px 42px 14px 14px;margin:26px 20px 0;position:relative}
+.lab-guide-close{position:absolute;top:4px;right:4px;width:40px;height:40px;min-width:40px;background:none;border:none;color:rgba(255,255,255,.5);font-size:16px;cursor:pointer}
+.lab-guide-title{font-size:13px;font-weight:800;color:#fff;margin-bottom:6px}
+.lab-guide-line{font-size:12.5px;color:rgba(255,255,255,.75);line-height:1.7}
 
 /* ===== 🥊MMAタブ（第5弾・完全移植：mma_fightlog_v2.htmlのアリーナを.mma-appスコープ配下に丸ごと移植）===== */
 .mma-app{
@@ -1108,7 +1323,7 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 </div>
 <div class="diary-toast" id="diaryToast"></div>
 
-<div class="ds-bg" id="expBg" onclick="if(event.target===this)kaizenCloseNewSheet()">
+<div class="ds-bg" id="expBg" onclick="if(event.target===this){kaizenCloseNewSheet();labCloseSheet();}">
   <div class="ds">
     <div class="grip"></div>
     <div id="expSheetBody"></div>
@@ -1237,6 +1452,7 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
     </div>
 
     <div class="round-pane pad" id="mmaPaneR2" style="display:none">
+      <div class="mma-round-back" data-to="1" style="font-size:12px;color:rgba(255,255,255,.5);font-weight:700;padding:6px 0 2px;cursor:pointer;min-height:32px">&#8249; 前のラウンドへ</div>
       <div id="mmaR2WithPlan">
         <div class="s2-title bcast-h mini" style="margin-top:18px">ジャッジ</div>
         <div class="strap"><div class="k">狙い — AIM</div><div class="v" id="mmaR2AimText"></div></div>
@@ -1261,6 +1477,7 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
     </div>
 
     <div class="round-pane pad" id="mmaPaneR3" style="display:none">
+      <div class="mma-round-back" data-to="2" style="font-size:12px;color:rgba(255,255,255,.5);font-weight:700;padding:6px 0 2px;cursor:pointer;min-height:32px">&#8249; 前のラウンドへ</div>
       <div class="s2-title bcast-h mini" style="margin-top:18px">やり切った？</div>
       <div class="done-check" id="mmaDoneCheck">
         <div class="box" id="mmaDoneBox"></div>
@@ -1281,6 +1498,7 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
     </div>
 
     <div class="round-pane pad" id="mmaPaneR4" style="display:none">
+      <div class="mma-round-back" data-to="3" style="font-size:12px;color:rgba(255,255,255,.5);font-weight:700;padding:6px 0 2px;cursor:pointer;min-height:32px">&#8249; 前のラウンドへ</div>
       <div class="s2-title bcast-h mini" style="margin-top:18px">コンディション</div>
       <div id="mmaCondGrid" style="margin-top:14px">
         <div class="condrow" data-v="1"><span class="cn">1</span><span class="cl">かなり悪い</span></div>
@@ -1307,6 +1525,7 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
     </div>
     <div class="s3-oneliner" id="mmaS3ExpLine" style="display:none"></div>
     <button class="btn-next" id="mmaBtnS3Back">入場画面へ</button>
+    <button class="btn-plan" id="mmaBtnS3Rec">戦績を見る ›</button>
   </section>
 
   <!-- ============ S4 戦績（台帳） ============ -->
@@ -2005,11 +2224,28 @@ function walkFightlogWeek(monday){
   });
   return {oCount, doneCount};
 }
-// 改善実験＝その週の判定（kaizen_v1）。対象週が無ければnull
+// 改善実験＝その週の判定（第6弾でkaizen_v2を読むように更新。無ければkaizen_v1にフォールバック）
 function walkKaizenMissing(){
-  try{ return localStorage.getItem("kaizen_v1")===null; }catch(e){ return true; }
+  try{ return localStorage.getItem("kaizen_v2")===null && localStorage.getItem("kaizen_v1")===null; }catch(e){ return true; }
 }
 function walkKaizenWeek(monday){
+  let k2;
+  try{ k2 = JSON.parse(localStorage.getItem("kaizen_v2")||"null"); }catch(e){ k2=null; }
+  if(k2 && Array.isArray(k2.experiments) && k2.experiments.length){
+    const startStr = walkYMD(monday);
+    const endDt = new Date(monday); endDt.setDate(endDt.getDate()+7);
+    const endStr = walkYMD(endDt);
+    let sawO=false, sawX=false;
+    k2.experiments.forEach(exp=>{
+      (exp.checks||[]).forEach(c=>{
+        if(c && c.date>=startStr && c.date<endStr){ if(c.result==='o') sawO=true; else if(c.result==='x') sawX=true; }
+      });
+    });
+    if(sawO) return 'o';
+    if(sawX) return 'x';
+    return null;
+  }
+  // フォールバック：まだ移行前（kaizen_v2未生成）のブラウザ向け
   let kd;
   try{ kd = JSON.parse(localStorage.getItem("kaizen_v1")||"null"); }catch(e){ kd=null; }
   if(!kd || !kd.active || !Array.isArray(kd.active.weeks) || !kd.active.weeks.length) return null;
@@ -3986,8 +4222,21 @@ function renderSleepHeroC(sd, todayStr){
         ${recTxt ? `<div>今夜のおすすめ就寝<b>${recTxt}</b></div>` : ``}
       </div>
     </div>
+    ${rec.memo ? `<div class="sv-memo-view" onclick="sleepEditMemo('${rec.id}')">🖋 ${escHtml(rec.memo)}</div>` : ``}
+    <div class="sv-fix-link" onclick="sleepEditMemo('${rec.id}')">${rec.memo?"ひとことを直す":"＋ ひとこと（この夜の記録に）"}</div>
     <div class="sv-fix-link" onclick="sleepOpenEditToday()">時刻を直す</div>
   `;
+}
+
+function sleepEditMemo(id){
+  const sd = loadSleep();
+  const n = sd.nights.find(x=>x.id===id);
+  if(!n) return;
+  const t = prompt("この夜のひとこと（1行でOK・空で消去）", n.memo||"");
+  if(t===null) return;
+  n.memo = t.trim();
+  saveSleep(sd);
+  renderContent();
 }
 
 function renderSleepList(sd){
@@ -4003,8 +4252,9 @@ function renderSleepList(sd){
       <span class="sv-lr-date">${dateStr}</span>
       <span class="sv-lr-dur">${dur}</span>
       <span class="sv-lr-pts">${n.points}点</span>
+      <button class="sv-lr-del" onclick="sleepEditMemo('${n.id}')" style="color:#ffd9a0">🖋</button>
       <button class="sv-lr-del" onclick="sleepDeleteNight('${n.id}')">削除</button>
-    </div>`;
+    </div>${n.memo ? `<div class="sv-lr-memoline" onclick="sleepEditMemo('${n.id}')">${escHtml(n.memo)}</div>` : ``}`;
   }).join("");
   return `<details class="sv-list-wrap"><summary>記録の一覧（${nights.length}件）</summary><div class="sv-list-rows">${rows}</div></details>`;
 }
@@ -4514,6 +4764,552 @@ function kaizenEndExperiment(){
   kd.active = null;
   saveKaizen(kd);
   diaryToast("実験を終了");
+  renderContent();
+}
+
+// ===== 🧪実験タブ2.0「発明家の夜のラボ」(kaizen_v2・第6弾) =====
+// kaizen_v1(単一実験・週単位)→kaizen_v2(複数実験・定着の階段)へ自動移行。元キー(kaizen_v1)は消さない安全網。
+const KAIZEN2_KEY = "kaizen_v2";
+const LAB_STAGES = ["w1","w2","m1","m3","h1"];
+const LAB_STAGE_LADDER_LABEL = {w1:"1週",w2:"2週",m1:"1ヶ月",m3:"3ヶ月",h1:"半年"};
+const LAB_STAGE_JUDGE_LABEL = {w1:"1週間",w2:"2週間",m1:"1ヶ月",m3:"3ヶ月",h1:"半年"};
+const LAB_COLORS = ["n1","n2","n3","n4"];
+
+function loadKaizen2(){
+  try{
+    const raw = JSON.parse(localStorage.getItem(KAIZEN2_KEY)||"null");
+    if(raw && typeof raw==="object" && Array.isArray(raw.experiments)){
+      return { experiments: raw.experiments, archive: Array.isArray(raw.archive)?raw.archive:[], guideDismissed: !!raw.guideDismissed };
+    }
+  }catch(e){}
+  return null;
+}
+function saveKaizen2(k2){ try{ localStorage.setItem(KAIZEN2_KEY, JSON.stringify(k2)); }catch(e){} }
+function labTodayStr(){ return fmtDateYMD(new Date()); }
+// kaizen_v1の第1号→EXP-001として引き継ぐ（weeks→checksへ変換・stage=w1から再スタート）
+// TODO: v1にはEXP番号の概念が無かったため、移行時に001から仮の連番を振っている（本物の履歴はweeks/checksに保持）
+function labMigrateFromV1(){
+  const v1 = loadKaizen(); // 既存(第5弾)のローダーをそのまま再利用。v1は一切書き換えない
+  const k2 = { experiments: [], archive: [], guideDismissed: false };
+  let no = 1;
+  if(v1.active){
+    const a = v1.active;
+    const checks = (a.weeks||[]).filter(w=>w && w.result).map(w=>({date:w.start, result:w.result, memo:w.memo||""}));
+    // stage=w1固定で引き継ぐが、stageStartは「今まさに走行中だった週」の開始日を使う
+    // （＝判定済みweeksは履歴として保持しつつ、移行直後にいきなり判定を迫らないように）
+    let stageStart = a.startDate || labTodayStr();
+    if(a.weeks && a.weeks.length){
+      const lastWeek = a.weeks[a.weeks.length-1];
+      stageStart = (lastWeek && !lastWeek.result) ? lastWeek.start : labTodayStr();
+    }
+    k2.experiments.push({
+      id: a.id || ("e_"+Date.now()),
+      no: "EXP-"+String(no++).padStart(3,'0'),
+      title:a.title||"", ifThen:a.ifThen||"", aim:a.aim||"", ok:a.ok||"", ng:a.ng||"",
+      targetWeekday: (a.targetWeekday===undefined ? null : a.targetWeekday),
+      color: "n1",
+      startDate: a.startDate || labTodayStr(),
+      stage: "w1",
+      stageStart,
+      checks, notes: [], checkins: {},
+      repRid: a.repRid || null
+    });
+  }
+  (v1.habits||[]).forEach(h=>{
+    k2.archive.push({
+      id:h.id||("e_"+Date.now()+"_"+no), no:"EXP-"+String(no++).padStart(3,'0'),
+      title:h.title||"", ifThen:h.ifThen||"", aim:h.aim||"", ok:h.ok||"", ng:h.ng||"",
+      targetWeekday:(h.targetWeekday===undefined?null:h.targetWeekday), color:"n1",
+      startDate:h.startDate||"", stage:"h1", stageStart:h.startDate||"",
+      checks:(h.weeks||[]).filter(w=>w&&w.result).map(w=>({date:w.start,result:w.result,memo:w.memo||""})),
+      notes:[], checkins:{}, repRid:null,
+      endedAt:h.graduatedAt||labTodayStr(), endKind:"graduated", learn:""
+    });
+  });
+  (v1.ended||[]).forEach(e=>{
+    k2.archive.push({
+      id:e.id||("e_"+Date.now()+"_"+no), no:"EXP-"+String(no++).padStart(3,'0'),
+      title:e.title||"", ifThen:e.ifThen||"", aim:e.aim||"", ok:e.ok||"", ng:e.ng||"",
+      targetWeekday:(e.targetWeekday===undefined?null:e.targetWeekday), color:"n1",
+      startDate:e.startDate||"", stage:"w1", stageStart:e.startDate||"",
+      checks:(e.weeks||[]).filter(w=>w&&w.result).map(w=>({date:w.start,result:w.result,memo:w.memo||""})),
+      notes:[], checkins:{}, repRid:null,
+      endedAt:e.endedAt||labTodayStr(), endKind:"stopped", learn:""
+    });
+  });
+  return k2;
+}
+function kaizen2EnsureLoaded(){
+  let k2 = loadKaizen2();
+  if(k2) return k2;
+  k2 = labMigrateFromV1();
+  saveKaizen2(k2);
+  return k2;
+}
+
+// ---- 定着の階段：日付計算 ----
+function labAddDays(dateStr, days){
+  const d = new Date(dateStr+"T00:00:00"); d.setDate(d.getDate()+days); return fmtDateYMD(d);
+}
+function labAddMonths(dateStr, months){
+  const d = new Date(dateStr+"T00:00:00"); d.setMonth(d.getMonth()+months); return fmtDateYMD(d);
+}
+function labCheckpointDate(stageStart, stage){
+  switch(stage){
+    case "w1": return labAddDays(stageStart,7);
+    case "w2": return labAddDays(stageStart,14);
+    case "m1": return labAddMonths(stageStart,1);
+    case "m3": return labAddMonths(stageStart,3);
+    case "h1": return labAddMonths(stageStart,6);
+    default: return labAddDays(stageStart,7);
+  }
+}
+function labNextStage(stage){
+  const i = LAB_STAGES.indexOf(stage);
+  if(i<0 || i>=LAB_STAGES.length-1) return null; // h1の次はnull=殿堂
+  return LAB_STAGES[i+1];
+}
+function labScene(exp){
+  const cp = labCheckpointDate(exp.stageStart, exp.stage);
+  if(labTodayStr() >= cp) return {type:'judge', cpDate:cp};
+  return {type:'running', cpDate:cp};
+}
+// 次の実験日（実行の曜日 or 毎日）
+function labNextDoDate(exp){
+  const today = new Date(); today.setHours(0,0,0,0);
+  if(exp.targetWeekday===null || exp.targetWeekday===undefined) return today;
+  const dt = new Date(today);
+  let guard=0;
+  while(dt.getDay()!==exp.targetWeekday && guard<8){ dt.setDate(dt.getDate()+1); guard++; }
+  return dt;
+}
+function labTodayHasGoldCheck(exp){
+  if(!exp.checks || !exp.checks.length) return false;
+  const last = exp.checks[exp.checks.length-1];
+  return !!(last && last.date===labTodayStr() && last.result==='o');
+}
+
+// ---- 描画：上部ステージ（電球・棚・瓶・ラック・ポスター）／下部ステージ（作業台・顕微鏡・バーナー） ----
+function labTopStageHTML(){
+  return `<div class="lab-top-stage" aria-hidden="true">
+    <div class="pool"></div>
+    <div class="cord"></div><div class="bulb"></div>
+    <div class="shelf"></div>
+    <div class="jar" style="left:12%"><div class="sed"></div></div>
+    <div class="jar" style="left:24%"><div class="sed" style="height:55%"></div></div>
+    <div class="jar" style="right:18%"><div class="sed" style="height:30%"></div></div>
+    <div class="rack" style="right:32%">
+      <span class="tube" style="left:2px"><i style="background:rgba(178,107,255,.35)"></i></span>
+      <span class="tube" style="left:16px"><i style="background:rgba(79,216,255,.3)"></i></span>
+      <span class="tube" style="left:30px"><i style="background:rgba(255,215,106,.3)"></i></span>
+      <span class="tube" style="left:44px"><i style="background:rgba(95,208,143,.3)"></i></span>
+      <span class="tube" style="left:58px"><i style="background:rgba(230,235,240,.15)"></i></span>
+    </div>
+    <div class="poster"><div class="grid">${'<span class="cell"></span>'.repeat(36)}</div><div class="t">ELEMENTS</div></div>
+  </div>`;
+}
+function labBottomStageHTML(){
+  return `<div class="lab-bottom-stage" aria-hidden="true">
+    <svg viewBox="0 0 100 130" width="76" height="99" style="position:absolute;right:6%;bottom:96px">
+      <defs>
+        <linearGradient id="labMtl" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5a4c3a"/><stop offset=".45" stop-color="#332a20"/><stop offset="1" stop-color="#1c1610"/></linearGradient>
+        <linearGradient id="labBrs" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e8c583"/><stop offset=".5" stop-color="#c9a25e"/><stop offset="1" stop-color="#7a5c2e"/></linearGradient>
+      </defs>
+      <ellipse cx="50" cy="122" rx="34" ry="7" fill="#241d15"/>
+      <path d="M22 120 Q24 108 40 104 L60 104 Q76 108 78 120 Z" fill="url(#labMtl)"/>
+      <path d="M62 108 C74 96 76 74 64 58 C58 50 52 46 48 40 L56 34 C64 42 74 50 78 66 C82 88 78 102 70 112 Z" fill="url(#labMtl)"/>
+      <rect x="26" y="72" width="40" height="6" rx="2.5" fill="#2e2620"/>
+      <rect x="30" y="70" width="10" height="2.5" rx="1" fill="url(#labBrs)" opacity=".7"/>
+      <g transform="rotate(-18 46 34)">
+        <rect x="40" y="8" width="13" height="44" rx="5" fill="url(#labMtl)"/>
+        <rect x="40" y="8" width="4" height="44" rx="2" fill="rgba(255,220,160,.14)"/>
+        <rect x="38" y="2" width="17" height="9" rx="3.5" fill="url(#labBrs)"/>
+        <rect x="41" y="48" width="11" height="8" rx="3" fill="url(#labBrs)" opacity=".9"/>
+      </g>
+      <circle cx="66" cy="86" r="6.5" fill="url(#labBrs)"/>
+      <circle cx="66" cy="86" r="3" fill="#3a2c14"/>
+      <path d="M62 108 C74 96 76 74 64 58" stroke="rgba(255,215,150,.35)" stroke-width="1.4" fill="none"/>
+    </svg>
+    <svg viewBox="0 0 90 130" width="66" height="95" style="position:absolute;left:7%;bottom:96px">
+      <defs>
+        <linearGradient id="labGlass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="rgba(220,230,235,.22)"/><stop offset=".5" stop-color="rgba(220,230,235,.05)"/><stop offset="1" stop-color="rgba(220,230,235,.16)"/></linearGradient>
+        <radialGradient id="labFlm" cx="50%" cy="85%" r="70%"><stop offset="0" stop-color="#dff2ff"/><stop offset=".35" stop-color="#7fc4ff"/><stop offset=".8" stop-color="rgba(80,140,255,.25)"/><stop offset="1" stop-color="transparent"/></radialGradient>
+        <linearGradient id="labLiq2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(120,230,170,.45)"/><stop offset="1" stop-color="rgba(40,150,100,.6)"/></linearGradient>
+      </defs>
+      <ellipse cx="45" cy="92" rx="44" ry="40" fill="rgba(255,205,130,.05)"/>
+      <path d="M20 70 L14 122 M70 70 L76 122 M45 74 L45 122" stroke="#57452e" stroke-width="4.5" stroke-linecap="round"/>
+      <ellipse cx="45" cy="70" rx="30" ry="5" fill="none" stroke="#6a5638" stroke-width="3.5"/>
+      <ellipse cx="45" cy="68" rx="24" ry="4" fill="rgba(190,178,150,.28)"/>
+      <path d="M28 30 L28 62 Q28 67 34 67 L56 67 Q62 67 62 62 L62 30 L64 26 L26 26 Z" fill="url(#labGlass)" stroke="rgba(230,235,240,.5)" stroke-width="1.3"/>
+      <path d="M30 46 L60 46 L60 62 Q60 65 56 65 L34 65 Q30 65 30 62 Z" fill="url(#labLiq2)"/>
+      <ellipse cx="45" cy="46" rx="15" ry="2.5" fill="rgba(160,255,200,.3)"/>
+      <circle cx="40" cy="56" r="1.6" fill="rgba(255,255,255,.5)"><animate attributeName="cy" values="58;48" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;.7;0" dur="3s" repeatCount="indefinite"/></circle>
+      <circle cx="50" cy="58" r="1.2" fill="rgba(255,255,255,.45)"><animate attributeName="cy" values="60;48" dur="4s" begin="1.2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;.6;0" dur="4s" begin="1.2s" repeatCount="indefinite"/></circle>
+      <rect x="40" y="88" width="10" height="30" rx="3" fill="url(#labMtl)" stroke="rgba(255,215,150,.25)" stroke-width=".8"/>
+      <rect x="38" y="96" width="14" height="6" rx="3" fill="url(#labBrs)"/>
+      <ellipse cx="45" cy="120" rx="14" ry="4" fill="#3a2e1f"/>
+      <g style="transform-origin:45px 88px" class="flame-g">
+        <path d="M45 68 C51 76 52 82 45 88 C38 82 39 76 45 68 Z" fill="url(#labFlm)"/>
+        <path d="M45 76 C48 80 48 84 45 87 C42 84 42 80 45 76 Z" fill="#eaf6ff" opacity=".85"/>
+      </g>
+    </svg>
+    <div class="memo-paper" style="left:38%;transform:rotate(-5deg)"></div>
+    <div class="memo-paper" style="left:52%;transform:rotate(3deg);bottom:92px"></div>
+    <div class="bench"></div>
+  </div>`;
+}
+
+// ---- 黒板：THEORY BOARD（動的＝走行中の実験のif-then。数式は本人の実測値） ----
+function labBoardHTML(k2){
+  const running = k2.experiments;
+  let ifthenLine;
+  if(!running.length){ ifthenLine = "まだ実験なし。＋で仕込む"; }
+  else if(running.length===1){ ifthenLine = "if " + running[0].ifThen; }
+  else { ifthenLine = running.map(e=>e.title).join(" ／ "); }
+  return `<div class="board-wrap"><div class="board">
+    <span class="board-title">THEORY BOARD</span>
+    <div class="chalk">
+      <span class="rot1">週30分 × 52週 ＝ <span class="y">26h/年</span> … 遅い！</span><br>
+      <span class="rot2">週<span class="circle y">2.5h</span> → 星の入口 <span class="u">44歳</span></span><br>
+      <span class="rot1 p">${escHtml(ifthenLine)}</span><br>
+      <span class="small rot2">E=mc² ／ 対戦相手は、昨日の自分。</span>
+    </div>
+    <span class="chalk-piece"></span>
+  </div></div>`;
+}
+
+// ---- 使い方ガイド（初回のみ・✕で永久に閉じる） ----
+const LAB_GUIDE_KEY = "kaizen_v2_guide_dismissed";
+function labGuideDismissed(){ try{ return localStorage.getItem(LAB_GUIDE_KEY)==='1'; }catch(e){ return false; } }
+function labDismissGuide(){ try{ localStorage.setItem(LAB_GUIDE_KEY,'1'); }catch(e){} renderContent(); }
+function labGuideHTML(){
+  if(labGuideDismissed()) return '';
+  return `<div class="lab-guide">
+    <button class="lab-guide-close" onclick="labDismissGuide()">✕</button>
+    <div class="lab-guide-title">このラボの使い方は4つだけ</div>
+    <div class="lab-guide-line">① 実験は何本でも仕込める（下の＋から）</div>
+    <div class="lab-guide-line">② 気づいたらいつでも🖋観察メモ</div>
+    <div class="lab-guide-line">③ 節目が来たら◯か✕を押すだけ</div>
+    <div class="lab-guide-line">④ ✕でも責めない。続けるか標本にするか選ぶだけ</div>
+  </div>`;
+}
+
+// ---- 定着の階段（ラダー表示） ----
+function labLadderHTML(exp){
+  const curIdx = LAB_STAGES.indexOf(exp.stage);
+  return '<div class="ladder">' + LAB_STAGES.map((s,i)=>{
+    let cls = 'rung';
+    if(i<curIdx) cls += ' lit'; else if(i===curIdx) cls += ' now';
+    return `<span class="${cls}">${LAB_STAGE_LADDER_LABEL[s]}</span>`;
+  }).join('') + '</div>';
+}
+// 初週(w1)のみ：軽い1タップ記録（任意・強制しない）
+function labCheckinRow(exp){
+  if(exp.stage!=='w1') return '';
+  const start = new Date(exp.stageStart+"T00:00:00");
+  const todayStr = labTodayStr();
+  let btns = '';
+  for(let i=0;i<7;i++){
+    const d = new Date(start); d.setDate(d.getDate()+i);
+    const ds = fmtDateYMD(d);
+    const on = exp.checkins && exp.checkins[ds];
+    const future = ds > todayStr;
+    btns += `<button class="ci${on?' on':''}" ${future?'disabled':''} onclick="labToggleCheckin('${exp.id}','${ds}')">${WD_JP[d.getDay()]}</button>`;
+  }
+  return `<div class="checkins">${btns}</div><div class="ci-cap">初週メモ（任意・やった日だけタップ）</div>`;
+}
+function labToggleCheckin(expId, ds){
+  const k2 = kaizen2EnsureLoaded();
+  const exp = k2.experiments.find(e=>e.id===expId);
+  if(!exp) return;
+  if(!exp.checkins) exp.checkins = {};
+  exp.checkins[ds] = !exp.checkins[ds];
+  saveKaizen2(k2);
+  renderContent();
+}
+
+// ---- 実験札（フラスコ標本カード） ----
+let labXPending = new Set(); // ✕→「続ける/標本にする」の2択待ち（一時状態・保存しない）
+let labJustJudgedId = null;  // 直前に◯判定したexp.id（フラスコの1回だけの演出用）
+function labExpCardHTML(exp){
+  const goldToday = labTodayHasGoldCheck(exp);
+  const classAttr = exp.color + (goldToday ? ' gold' : '');
+  const flaskPop = (labJustJudgedId===exp.id) ? ' pop' : '';
+  if(labJustJudgedId===exp.id) labJustJudgedId = null; // 一度だけ
+  let topBlock = '';
+  if(labXPending.has(exp.id)){
+    topBlock = `<div class="judge xchoice">
+      <div class="msg">材料が増えた。責めなくていい。<br>続ける？　終わって標本にする？</div>
+      <div class="btns">
+        <button class="keep" onclick="labXKeep('${exp.id}')">続ける</button>
+        <button onclick="labXArchive('${exp.id}')">終わって標本にする</button>
+      </div>
+    </div>`;
+  } else if(labScene(exp).type==='judge'){
+    const stageLabel = LAB_STAGE_JUDGE_LABEL[exp.stage];
+    topBlock = `<div class="judge">
+      <div class="q">${stageLabel}の判定: ◯ おおむねできた ／ ✕ 材料が増えた</div>
+      <div class="btns">
+        <button class="o" onclick="labJudgeOk('${exp.id}')">◯ おおむねできた</button>
+        <button class="x" onclick="labJudgeX('${exp.id}')">✕ 材料が増えた</button>
+      </div>
+      <textarea id="labJudgeMemo_${exp.id}" placeholder="メモ（任意）"></textarea>
+    </div>`;
+  }
+  const nextLine = `次の実験日 ${fmtMD(labNextDoDate(exp))} ・ 判定はその夜`;
+  const notesHTML = (exp.notes||[]).map(n=>`<div class="note-row"><b>${escHtml(n.ts)}</b>${escHtml(n.text)}</div>`).join('');
+  return `<div class="exp ${classAttr}" style="padding-top:30px">
+    <span class="no">${escHtml(exp.no)}</span>
+    <span class="pin"></span>
+    <button class="editbtn" onclick="labOpenEditSheet('${exp.id}')" title="編集">✎</button>
+    <div class="flask${flaskPop}">
+      <div class="neck"></div>
+      <span class="steam" style="left:24px;top:-30px"></span>
+      <span class="steam" style="left:34px;top:-26px;animation-delay:2.5s"></span>
+      <div class="body"><div class="liq"><span class="bub b1"></span><span class="bub b2"></span><span class="bub b3"></span></div><div class="marks"></div></div>
+    </div>
+    ${topBlock}
+    <h3>${escHtml(exp.title)}</h3>
+    <div class="ifthen">${escHtml(exp.ifThen)}</div>
+    ${labLadderHTML(exp)}
+    <div class="next">${nextLine}</div>
+    ${labCheckinRow(exp)}
+    <button class="note-btn" onclick="labAddNote('${exp.id}')">🖋 観察メモ（いつでも書ける）</button>
+    <div class="notes">${notesHTML}</div>
+  </div>`;
+}
+
+// ---- 記録庫（標本＝終わった実験。消さない） ----
+function labArchiveHTML(k2){
+  const list = (k2.archive||[]).slice().reverse();
+  const items = list.length ? list.map(e=>{
+    const cls = e.endKind==='graduated' ? 'arch-item grad' : 'arch-item';
+    const outcome = e.endKind==='graduated'
+      ? `${e.endedAt||''} 殿堂入り`
+      : `${e.endedAt||''} 標本化${e.learn?'・学び: '+escHtml(e.learn):''}`;
+    return `<div class="${cls}"><span>${escHtml(e.title)}</span><small>${outcome}</small></div>`;
+  }).join('') : `<div class="arch-empty">まだ標本なし</div>`;
+  return `<div class="archive"><details>
+    <summary>記録庫 — 終わった実験の標本（${list.length}）</summary>
+    ${items}
+  </details></div>`;
+}
+
+// ---- メイン描画 ----
+function renderExp(){
+  const k2 = kaizen2EnsureLoaded();
+  let html = `<div class="lab-app">`;
+  html += labTopStageHTML();
+  html += `<div class="lab-content">`;
+  html += `<div class="head"><span class="t">LAB — 実験室</span><span class="n">走行中 ${k2.experiments.length}</span></div>`;
+  html += `<div class="archive-note">↑ 棚の瓶 ＝ 終わった実験の標本（消さない）</div>`;
+  html += labGuideHTML();
+  html += labBoardHTML(k2);
+  html += k2.experiments.map(labExpCardHTML).join('');
+  html += `<button class="add" onclick="labOpenNewSheet()">＋ 新しい実験を仕込む</button>`;
+  html += labArchiveHTML(k2);
+  html += `</div>`;
+  html += labBottomStageHTML();
+  html += `</div>`;
+  return html;
+}
+
+// ---- 観察メモ（いつでも・時刻つき） ----
+function labAddNote(expId){
+  const t = prompt("観察メモ（1行でOK）","");
+  if(!t || !t.trim()) return;
+  const k2 = kaizen2EnsureLoaded();
+  const exp = k2.experiments.find(e=>e.id===expId);
+  if(!exp) return;
+  const d = new Date();
+  const ts = `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+  if(!exp.notes) exp.notes = [];
+  exp.notes.push({ts, text:t.trim()});
+  saveKaizen2(k2);
+  renderContent();
+}
+
+// ---- 節目の判定：◯（金の演出→次の段。半年◯は殿堂） ----
+function labJudgeOk(expId){
+  const k2 = kaizen2EnsureLoaded();
+  const exp = k2.experiments.find(e=>e.id===expId);
+  if(!exp) return;
+  const today = labTodayStr();
+  const memoEl = document.getElementById('labJudgeMemo_'+expId);
+  const memo = memoEl ? memoEl.value.trim() : '';
+  exp.checks.push({date:today, result:'o', memo});
+  const nextStage = labNextStage(exp.stage);
+  labJustJudgedId = expId;
+  if(nextStage){
+    exp.stage = nextStage;
+    exp.stageStart = today;
+    saveKaizen2(k2);
+    diaryToast("🏅 フラスコが金色に——次の段へ");
+    renderContent();
+  } else {
+    saveKaizen2(k2);
+    renderContent();
+    setTimeout(()=>{ labGraduateHall(expId); }, 900);
+  }
+}
+function labGraduateHall(expId){
+  const k2 = kaizen2EnsureLoaded();
+  const idx = k2.experiments.findIndex(e=>e.id===expId);
+  if(idx<0) return;
+  const exp = k2.experiments[idx];
+  try{ if(exp.repRid) removeSeriesFrom(exp.repRid, kaizenTomorrow()); saveState(state); }catch(e){}
+  exp.endedAt = labTodayStr();
+  exp.endKind = 'graduated';
+  exp.learn = exp.learn || '';
+  k2.experiments.splice(idx,1);
+  k2.archive.push(exp);
+  saveKaizen2(k2);
+  diaryToast("🎓 殿堂入り！習慣になった");
+  renderContent();
+}
+// ---- 節目の判定：✕（責めない。「続ける/標本にする」の2択） ----
+function labJudgeX(expId){
+  labXPending.add(expId);
+  renderContent();
+}
+function labXKeep(expId){
+  const k2 = kaizen2EnsureLoaded();
+  const exp = k2.experiments.find(e=>e.id===expId);
+  if(!exp) return;
+  const today = labTodayStr();
+  exp.checks.push({date:today, result:'x', memo:''});
+  exp.stageStart = today; // 同じ段をもう1回
+  labXPending.delete(expId);
+  saveKaizen2(k2);
+  diaryToast("続ける。材料が増えただけ");
+  renderContent();
+}
+function labXArchive(expId){
+  const k2 = kaizen2EnsureLoaded();
+  const idx = k2.experiments.findIndex(e=>e.id===expId);
+  if(idx<0) return;
+  const exp = k2.experiments[idx];
+  const learn = prompt("学び（1行でOK）","");
+  const today = labTodayStr();
+  exp.checks.push({date:today, result:'x', memo:''});
+  try{ if(exp.repRid) removeSeriesFrom(exp.repRid, kaizenTomorrow()); saveState(state); }catch(e){}
+  exp.endedAt = today;
+  exp.endKind = 'stopped';
+  exp.learn = (learn||'').trim();
+  labXPending.delete(expId);
+  k2.experiments.splice(idx,1);
+  k2.archive.push(exp);
+  saveKaizen2(k2);
+  diaryToast("標本にしました");
+  renderContent();
+}
+
+// ===== 新しい実験を仕込む／編集シート（既存 #expBg / #expSheetBody を流用） =====
+let labDraftWeekday = null;
+let labEditingId = null;
+function labOpenNewSheet(){ labOpenSheetInner(null); }
+function labOpenEditSheet(expId){
+  const k2 = kaizen2EnsureLoaded();
+  const exp = k2.experiments.find(e=>e.id===expId);
+  if(!exp){ diaryToast("見つからない"); return; }
+  labOpenSheetInner(exp);
+}
+function labOpenSheetInner(editExp){
+  labEditingId = editExp ? editExp.id : null;
+  labDraftWeekday = editExp ? (editExp.targetWeekday===undefined ? null : editExp.targetWeekday) : null;
+  const body = document.getElementById('expSheetBody');
+  const wdBtns = [`<button class="rep-opt${labDraftWeekday===null?' sel':''}" data-wd="null" onclick="labPickWeekday(null)">毎日</button>`]
+    .concat(WD_JP.map((w,i)=>`<button class="rep-opt${labDraftWeekday===i?' sel':''}" data-wd="${i}" onclick="labPickWeekday(${i})">${w}</button>`)).join('');
+  const t = editExp || {};
+  body.innerHTML = `
+    <div class="es-topbar">
+      <button class="es-cancel" onclick="labCloseSheet()">キャンセル</button>
+      <div class="es-title">${editExp ? '実験を編集' : '新しい実験を仕込む'}</div>
+      <button class="es-savebtn" onclick="labSaveSheet()">${editExp ? '保存' : '仕込む'}</button>
+    </div>
+    <div class="es-card"><div class="es-line"><input type="text" id="labTitle" placeholder="短い名前（例：日曜の最初の2時間を算数に）" value="${escHtml(t.title||'')}"></div></div>
+    <div class="es-card"><div class="es-line"><input type="text" id="labIfThen" placeholder="if-then文（例：昼寝から起きたら、算数2時間→AI解禁）" value="${escHtml(t.ifThen||'')}"></div></div>
+    <div class="es-card"><div class="es-line"><input type="text" id="labAim" placeholder="狙い" value="${escHtml(t.aim||'')}"></div></div>
+    <div class="es-card"><div class="es-line"><input type="text" id="labOk" placeholder="◯のサイン" value="${escHtml(t.ok||'')}"></div></div>
+    <div class="es-card"><div class="es-line"><input type="text" id="labNg" placeholder="✕のサイン" value="${escHtml(t.ng||'')}"></div></div>
+    <div class="es-card">
+      <div class="es-line" style="flex-direction:column;align-items:stretch;gap:8px">
+        <div class="es-lbl">実行する曜日（チェック周期の開始は標準=1週から）</div>
+        <div class="es-repseg" id="labWdSeg" style="grid-template-columns:repeat(4,1fr)">${wdBtns}</div>
+      </div>
+    </div>
+  `;
+  document.getElementById('expBg').classList.add('show');
+}
+function labPickWeekday(wd){
+  labDraftWeekday = wd;
+  document.querySelectorAll('#labWdSeg .rep-opt').forEach(b=>{
+    const match = (wd===null) ? (b.dataset.wd==='null') : (b.dataset.wd===String(wd));
+    b.classList.toggle('sel', match);
+  });
+}
+function labCloseSheet(){
+  const bg = document.getElementById('expBg');
+  if(bg) bg.classList.remove('show');
+  labEditingId = null;
+}
+function labSaveSheet(){
+  const title=(document.getElementById('labTitle').value||'').trim();
+  const ifThen=(document.getElementById('labIfThen').value||'').trim();
+  const aim=(document.getElementById('labAim').value||'').trim();
+  const ok=(document.getElementById('labOk').value||'').trim();
+  const ng=(document.getElementById('labNg').value||'').trim();
+  if(!title){ diaryToast("名前を入れてね"); return; }
+  const k2 = kaizen2EnsureLoaded();
+  if(labEditingId){
+    const exp = k2.experiments.find(e=>e.id===labEditingId);
+    if(!exp){ labCloseSheet(); return; }
+    const oldWd = (exp.targetWeekday===undefined) ? null : exp.targetWeekday;
+    const wdChanged = oldWd !== labDraftWeekday;
+    exp.title=title; exp.ifThen=ifThen; exp.aim=aim; exp.ok=ok; exp.ng=ng;
+    if(wdChanged){
+      try{
+        if(exp.repRid) removeSeriesFrom(exp.repRid, kaizenTomorrow());
+        const first = kaizenFirstOccurrenceFromToday(labDraftWeekday);
+        const freq = (labDraftWeekday===null) ? 'daily' : 'weekly';
+        exp.repRid = createRepeatSeries(first.y, first.m, first.d, {label:"🧪"+title, start:"14:00", end:"16:00", color:"#c850dc"}, freq, null);
+        saveState(state);
+      }catch(e){}
+      exp.targetWeekday = labDraftWeekday;
+    } else {
+      try{
+        if(exp.repRid){
+          const today0 = new Date(); today0.setHours(0,0,0,0);
+          forEachRidOccurrence(exp.repRid, (pd,s,t2)=>{ if(dateCmp(pd,date2ymd(today0))>=0) t2.label="🧪"+title; });
+          saveState(state);
+        }
+      }catch(e){}
+    }
+    saveKaizen2(k2);
+    labCloseSheet();
+    diaryToast("✓ 保存");
+    renderContent();
+    return;
+  }
+  const today = labTodayStr();
+  const no = "EXP-"+String(k2.experiments.length + k2.archive.length + 1).padStart(3,'0');
+  const color = LAB_COLORS[k2.experiments.length % LAB_COLORS.length];
+  const exp = {
+    id:"e_"+Date.now(), no, title, ifThen, aim, ok, ng,
+    targetWeekday: labDraftWeekday, color,
+    startDate: today, stage:"w1", stageStart: today,
+    checks: [], notes: [], checkins: {}, repRid: null
+  };
+  try{
+    const first = kaizenFirstOccurrenceFromToday(labDraftWeekday);
+    const freq = (labDraftWeekday===null) ? 'daily' : 'weekly';
+    exp.repRid = createRepeatSeries(first.y, first.m, first.d, {label:"🧪"+title, start:"14:00", end:"16:00", color:"#c850dc"}, freq, null);
+    saveState(state);
+  }catch(e){}
+  k2.experiments.push(exp);
+  saveKaizen2(k2);
+  labCloseSheet();
+  diaryToast("✓ 実験を仕込んだ");
   renderContent();
 }
 
@@ -5148,6 +5944,11 @@ function mmaRematchSession(id){
   mmaShowScreen("s1");
 }
 document.getElementById("mmaBtnBackS1").addEventListener("click", ()=>{ mmaRenderS1(); mmaShowScreen("s1"); });
+document.getElementById("mmaBtnS3Rec").addEventListener("click", ()=>{ mmaRenderS4(); mmaShowScreen("s4"); });
+// ラウンド中の「‹前へ」戻り（ゴング前の入力は保持される）
+document.querySelectorAll(".mma-round-back").forEach(el=>{
+  el.addEventListener("click", ()=>{ mmaShowRound(parseInt(el.dataset.to,10)); });
+});
 
 /* ---- 編集シート ---- */
 let mmaEditingId = null;
@@ -5289,6 +6090,7 @@ function mmaOnShow(){
   if(s1 && s1.classList.contains("active")){ mmaRenderS1(); }
 }
 mmaInit();
+try{ kaizen2EnsureLoaded(); }catch(e){} // kaizen_v1→v2移行を起動時に一度実行（記録タブの歩みボードが即反映されるように）
 
 // 初期表示を記録タブに（毎回トップは記録）
 setView("record");
