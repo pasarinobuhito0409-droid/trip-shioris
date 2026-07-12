@@ -54,7 +54,8 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700;color:#fff}
 .month-pager .mp-arrow{flex:0 0 auto;border:none;background:var(--glass);color:#fff;font-size:16px;font-weight:800;width:32px;height:32px;border-radius:50%;border:1px solid var(--glass-border);cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .month-pager .mp-arrow:active{transform:scale(.9)}
 .month-pager .mp-label{flex:0 0 auto;font-size:15px;font-weight:800;color:#fff;padding:0 2px;cursor:pointer;white-space:nowrap}
-.view-toggle{display:flex;gap:5px;margin-left:auto}
+.view-toggle{display:flex;gap:5px;margin-left:auto;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x;scrollbar-width:none;-ms-overflow-style:none}
+.view-toggle::-webkit-scrollbar{display:none}
 .jump-today{background:linear-gradient(135deg,#0a84ff,#5ac8fa);color:#fff;border:none;font-size:12px;font-weight:800;padding:8px 12px;border-radius:999px;cursor:pointer;box-shadow:0 2px 12px rgba(10,132,255,.4);transition:transform .1s;display:flex;align-items:center;gap:3px;white-space:nowrap}
 .jump-today:active{transform:scale(.94)}
 button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.month-pager button,.month-pager .mp-label{touch-action:manipulation}
@@ -524,6 +525,34 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 @media (max-width:400px){
   .sv-btn-oyasumi{width:170px;height:170px}
 }
+
+/* ===== 睡眠：記録の一覧（修正C） ===== */
+.sv-list-wrap{margin-top:26px;background:rgba(255,255,255,.06);border-radius:16px;overflow:hidden}
+.sv-list-wrap summary{padding:13px 16px;font-size:12.5px;font-weight:800;color:rgba(238,240,246,.7);cursor:pointer;list-style:none;min-height:44px;display:flex;align-items:center}
+.sv-list-wrap summary::-webkit-details-marker{display:none}
+.sv-list-wrap summary::before{content:"▶ ";font-size:9px;margin-right:2px}
+.sv-list-wrap[open] summary::before{content:"▼ ";margin-right:2px}
+.sv-list-rows{padding:0 12px 12px}
+.sv-list-empty{padding:0 16px 14px;font-size:12px;color:rgba(238,240,246,.5)}
+.sv-list-row{display:flex;align-items:center;gap:8px;min-height:44px;padding:6px 4px;border-top:1px solid rgba(255,255,255,.08);font-size:12.5px;color:#eef0f6}
+.sv-list-row:first-child{border-top:none}
+.sv-lr-date{flex:0 0 44px;font-weight:800}
+.sv-lr-dur{flex:1;color:rgba(238,240,246,.7)}
+.sv-lr-pts{flex:0 0 44px;text-align:right;color:#ffd9a0;font-weight:700}
+.sv-lr-del{flex:0 0 auto;background:rgba(255,100,100,.14);border:none;color:#ff8a8a;font-size:11px;font-weight:700;padding:7px 11px;border-radius:8px;cursor:pointer;min-height:32px}
+
+/* ===== 実験タブ (kaizen_v1・機能A) ===== */
+.exp-wrap{padding:0 12px 24px}
+.exp-card{padding-top:2px}
+.exp-card .es-line textarea{width:100%;border:1.5px solid var(--glass-border);border-radius:10px;padding:9px;font:inherit;font-size:13px;background:rgba(255,255,255,.06);color:#fff;resize:vertical;min-height:44px}
+.exp-card .es-line textarea:focus{outline:none;border-color:#5ac8fa}
+.exp-shelf{margin-top:6px;background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;overflow:hidden}
+.exp-shelf summary{padding:12px 14px;font-size:13px;font-weight:800;color:#fff;cursor:pointer;list-style:none;min-height:44px;display:flex;align-items:center}
+.exp-shelf summary::-webkit-details-marker{display:none}
+.exp-shelf-list{padding:0 14px 12px;display:flex;flex-direction:column;gap:6px}
+.exp-shelf-item{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;padding:8px 10px;background:rgba(255,255,255,.06);border-radius:9px}
+.exp-shelf-item small{color:var(--muted);font-size:11px;white-space:nowrap}
+.exp-month-sum{margin-top:10px;padding:12px 14px;background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;font-size:12.5px;color:rgba(255,255,255,.75);text-align:center}
 </style>
 </head>
 <body>
@@ -541,6 +570,7 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
       <button id="vCal2" onclick="setView('cal2')">📆 カレンダー</button>
       <button id="vRecord" onclick="setView('record')">📋 記録</button>
       <button id="vSleep" onclick="setView('sleep')">😴 睡眠</button>
+      <button id="vExp" onclick="setView('exp')">🧪 実験</button>
       <button class="jump-today" onclick="jumpToToday()" title="今日のタスクへジャンプ">📅 今日</button>
     </div>
   </div>
@@ -585,6 +615,13 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
   </div>
 </div>
 <div class="diary-toast" id="diaryToast"></div>
+
+<div class="ds-bg" id="expBg" onclick="if(event.target===this)kaizenCloseNewSheet()">
+  <div class="ds">
+    <div class="grip"></div>
+    <div id="expSheetBody"></div>
+  </div>
+</div>
 
 <script>
 // ===== 予定（calendar_v43.py 同期） =====
@@ -774,6 +811,7 @@ function setView(v){
   document.getElementById("vCal2").classList.toggle("active", v==="cal2");
   document.getElementById("vRecord").classList.toggle("active", v==="record");
   document.getElementById("vSleep").classList.toggle("active", v==="sleep");
+  document.getElementById("vExp").classList.toggle("active", v==="exp");
   renderCarryBanner();
   renderContent();
   // タブ切替で一番上へ
@@ -887,15 +925,17 @@ function renderContent(){
   const el = document.getElementById("content");
   const isCal2 = currentView==="cal2";
   const isSleep = currentView==="sleep";
+  const isExp = currentView==="exp";
   ["streakBanner","carryBanner","summary","charts"].forEach(id=>{
     const node=document.getElementById(id);
-    if(node) node.style.display = (isCal2||isSleep) ? "none" : "";
+    if(node) node.style.display = (isCal2||isSleep||isExp) ? "none" : "";
   });
   // cal2（日ビュー）中はhtml/bodyの外側スクロールをロックし、二重スクロールを防ぐ
   document.body.classList.toggle('cal2-lock', isCal2);
   if(currentView==="record"){ el.innerHTML = renderRecord(); }
   else if(isCal2){ el.innerHTML = renderDayView(); afterDayViewRender(); }
   else if(isSleep){ el.innerHTML = renderSleep(); afterSleepRender(); }
+  else if(isExp){ el.innerHTML = renderExp(); }
   else el.innerHTML = renderList();
 }
 
@@ -2930,6 +2970,31 @@ function renderSleepHeroC(sd, todayStr){
   `;
 }
 
+function renderSleepList(sd){
+  const nights = sd.nights.slice(-14).slice().reverse();
+  if(!nights.length){
+    return `<details class="sv-list-wrap"><summary>記録の一覧</summary><div class="sv-list-empty">まだ記録が無い</div></details>`;
+  }
+  const rows = nights.map(n=>{
+    const d = new Date(n.wakeTs);
+    const dateStr = `${d.getMonth()+1}/${d.getDate()}`;
+    const dur = svFmtDurShort(n.wakeTs-n.bedTs);
+    return `<div class="sv-list-row">
+      <span class="sv-lr-date">${dateStr}</span>
+      <span class="sv-lr-dur">${dur}</span>
+      <span class="sv-lr-pts">${n.points}点</span>
+      <button class="sv-lr-del" onclick="sleepDeleteNight('${n.id}')">削除</button>
+    </div>`;
+  }).join("");
+  return `<details class="sv-list-wrap"><summary>記録の一覧（${nights.length}件）</summary><div class="sv-list-rows">${rows}</div></details>`;
+}
+function sleepDeleteNight(id){
+  if(!confirm("この夜の記録を削除する？")) return;
+  const sd = loadSleep();
+  sd.nights = sd.nights.filter(n=>n.id!==id);
+  saveSleep(sd);
+  renderContent();
+}
 function renderSleepTrend(sd){
   if(sd.nights.length === 0){
     return `
@@ -2937,6 +3002,7 @@ function renderSleepTrend(sd){
         <div class="sv-lbl">君の最適睡眠時間</div>
         <div class="sv-tr-note">今夜から始めよう</div>
       </div>
+      ${renderSleepList(sd)}
     `;
   }
   const stats = sleepStats(sd);
@@ -2975,6 +3041,7 @@ function renderSleepTrend(sd){
       <div class="sv-days">${days}</div>
     </div>
     <div class="sv-tr-line">${lineTxt}</div>
+    ${renderSleepList(sd)}
   `;
 }
 
@@ -2999,6 +3066,315 @@ function afterSleepRender(){
     dawnSun.style.opacity = "0";
     dawnSun.style.transform = "translateX(-50%) translateY(100px)";
   }
+}
+
+// ===== 実験タブ (kaizen_v1・機能A) =====
+const KAIZEN_KEY = "kaizen_v1";
+function escHtml(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function loadKaizen(){
+  try{
+    const raw = JSON.parse(localStorage.getItem(KAIZEN_KEY)||"null");
+    if(raw && typeof raw==="object"){
+      return { active: raw.active||null, habits: Array.isArray(raw.habits)?raw.habits:[], ended: Array.isArray(raw.ended)?raw.ended:[] };
+    }
+  }catch(e){}
+  return { active:null, habits:[], ended:[] };
+}
+function saveKaizen(kd){
+  try{ localStorage.setItem(KAIZEN_KEY, JSON.stringify(kd)); }catch(e){}
+}
+function mondayOnOrBefore(date){
+  const d = new Date(date); d.setHours(0,0,0,0);
+  const wd = d.getDay();
+  const diff = (wd===0) ? 6 : wd-1;
+  d.setDate(d.getDate()-diff);
+  return d;
+}
+function kaizenFirstOccurrenceFromToday(targetWeekday){
+  const today = new Date(); today.setHours(0,0,0,0);
+  if(targetWeekday===null || targetWeekday===undefined) return date2ymd(today);
+  const dt = new Date(today);
+  let guard=0;
+  while(dt.getDay() !== targetWeekday && guard<8){ dt.setDate(dt.getDate()+1); guard++; }
+  return date2ymd(dt);
+}
+function kaizenTomorrow(){
+  const d = new Date(); d.setDate(d.getDate()+1);
+  return {y:d.getFullYear(), m:d.getMonth()+1, d:d.getDate()};
+}
+function kaizenWeekTargetDate(weekStartStr, targetWeekday){
+  const start = new Date(weekStartStr+"T00:00:00");
+  if(targetWeekday===null || targetWeekday===undefined) return start;
+  const startWd = start.getDay();
+  let diff = targetWeekday - startWd;
+  if(diff < 0) diff += 7;
+  const dt = new Date(start);
+  dt.setDate(dt.getDate()+diff);
+  return dt;
+}
+function kaizenEnsureCurrentWeek(exp){
+  if(!exp.weeks || !exp.weeks.length) return;
+  const today = new Date(); today.setHours(0,0,0,0);
+  let lastStart = new Date(exp.weeks[exp.weeks.length-1].start+"T00:00:00");
+  let guard=0;
+  while(guard<520){
+    const weekEnd = new Date(lastStart); weekEnd.setDate(weekEnd.getDate()+6);
+    if(today <= weekEnd) break;
+    const nextStart = new Date(lastStart); nextStart.setDate(nextStart.getDate()+7);
+    exp.weeks.push({ start: fmtDateYMD(nextStart), result:null, memo:"" });
+    lastStart = nextStart;
+    guard++;
+  }
+}
+function kaizenCanGraduate(exp){
+  const w = exp.weeks;
+  if(!w || w.length<3) return false;
+  return w[w.length-1].result==='o' && w[w.length-2].result==='o' && w[w.length-3].result==='o';
+}
+function kaizenSeedIfNeeded(){
+  let existing;
+  try{ existing = localStorage.getItem(KAIZEN_KEY); }catch(e){ return; }
+  if(existing) return;
+  const kd = { active:null, habits:[], ended:[] };
+  kd.active = {
+    id: "e_"+Date.now(),
+    title: "日曜の最初の2時間を算数に",
+    ifThen: "昼寝から起きたら、まず算数を2時間。終わったらAIは無制限に解禁",
+    aim: "星への速度を週30分→週2.5時間にする",
+    ok: "日曜の夜、算数が2時間進んでいる。AIも罪悪感なく楽しめた",
+    ng: "気づいたらAIを先に開いていた",
+    startDate: "2026-07-13",
+    targetWeekday: 0,
+    repRid: null,
+    weeks: [ { start:"2026-07-13", result:null, memo:"" } ]
+  };
+  saveKaizen(kd);
+  try{
+    const first = kaizenFirstOccurrenceFromToday(0);
+    const rid = createRepeatSeries(first.y, first.m, first.d, {label:"🧪"+kd.active.title, start:"14:00", end:"16:00", color:"#c850dc"}, "weekly", null);
+    kd.active.repRid = rid;
+    saveState(state);
+    saveKaizen(kd);
+  }catch(e){}
+}
+
+// ===== 描画 =====
+function renderExp(){
+  kaizenSeedIfNeeded();
+  const kd = loadKaizen();
+  let html = `<div class="exp-wrap">`;
+  if(kd.active){
+    const exp = kd.active;
+    kaizenEnsureCurrentWeek(exp);
+    saveKaizen(kd);
+    html += renderExpActiveCard(exp);
+    html += renderExpJudge(exp);
+    html += renderExpProgress(exp);
+  } else {
+    html += renderExpEmpty();
+  }
+  html += renderExpHabitShelf(kd.habits);
+  html += renderExpMonthSummary(kd);
+  html += `</div>`;
+  return html;
+}
+function renderExpActiveCard(exp){
+  const weekNo = exp.weeks.length;
+  return `
+    <div class="es-card exp-card">
+      <div class="es-line" style="flex-direction:column;align-items:flex-start;gap:6px">
+        <div style="font-size:18px;font-weight:800;color:#fff">${escHtml(exp.title)}</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.75);line-height:1.5">${escHtml(exp.ifThen)}</div>
+        <div style="font-size:11px;color:var(--muted)">第${weekNo}週</div>
+      </div>
+      <div class="es-line"><div style="font-size:12px;color:#6ee090">◯ ${escHtml(exp.ok)}</div></div>
+      <div class="es-line"><div style="font-size:12px;color:#ff9aba">✕ ${escHtml(exp.ng)}</div></div>
+    </div>
+  `;
+}
+function renderExpJudge(exp){
+  const idx = exp.weeks.length-1;
+  const week = exp.weeks[idx];
+  const today = new Date(); today.setHours(0,0,0,0);
+  const targetDate = kaizenWeekTargetDate(week.start, exp.targetWeekday);
+  if(today < targetDate){
+    const diffDays = Math.ceil((targetDate-today)/86400000);
+    return `<div class="es-card exp-card">
+      <div class="es-line"><div style="font-size:13px;color:var(--muted)">今週の判定はあと${diffDays}日で解禁</div></div>
+    </div>`;
+  }
+  if(week.result){
+    const resTxt = week.result==='o' ? '◯ おおむねできた' : '✕ できなかった';
+    const resCol = week.result==='o' ? '#6ee090' : '#ff9aba';
+    return `<div class="es-card exp-card">
+      <div class="es-line"><div style="font-size:15px;font-weight:800;color:${resCol}">${resTxt}</div>
+        <button class="chip" style="margin-left:auto" onclick="kaizenRejudge(${idx})">やり直す</button></div>
+      ${week.memo ? `<div class="es-line"><div style="font-size:13px;color:rgba(255,255,255,.8);white-space:pre-wrap">${escHtml(week.memo)}</div></div>` : ``}
+    </div>`;
+  }
+  return `<div class="es-card exp-card">
+    <div class="es-line"><div style="font-size:13px;font-weight:800;color:#fff">今週の判定</div></div>
+    <div class="es-line" style="gap:8px">
+      <button class="chip cat-daily" style="flex:1;justify-content:center;padding:12px" onclick="kaizenJudge(${idx},'o')">◯ おおむねできた</button>
+      <button class="chip cat-rest" style="flex:1;justify-content:center;padding:12px" onclick="kaizenJudge(${idx},'x')">✕ できなかった</button>
+    </div>
+    <div class="es-line"><textarea id="expMemo${idx}" placeholder="ひとことメモ（任意）">${escHtml(week.memo||"")}</textarea></div>
+  </div>`;
+}
+function kaizenJudge(idx, result){
+  const kd = loadKaizen();
+  if(!kd.active || !kd.active.weeks[idx]) return;
+  const memoEl = document.getElementById('expMemo'+idx);
+  const memo = memoEl ? memoEl.value : (kd.active.weeks[idx].memo||"");
+  kd.active.weeks[idx].result = result;
+  kd.active.weeks[idx].memo = memo;
+  saveKaizen(kd);
+  renderContent();
+}
+function kaizenRejudge(idx){
+  const kd = loadKaizen();
+  if(!kd.active || !kd.active.weeks[idx]) return;
+  kd.active.weeks[idx].result = null;
+  saveKaizen(kd);
+  renderContent();
+}
+function renderExpProgress(exp){
+  const dots = exp.weeks.map(w=> w.result==='o' ? '◯' : (w.result==='x' ? '✕' : '・')).join(' ');
+  let grad = '';
+  if(kaizenCanGraduate(exp)){
+    grad = `<button class="chip" style="margin-top:10px;background:linear-gradient(135deg,#ffd700,#ffb300);color:#3a2e00;font-weight:800;width:100%;justify-content:center;padding:12px" onclick="kaizenGraduate()">🎓 軌道に乗った！習慣候補へ</button>`;
+  }
+  return `<div class="es-card exp-card">
+    <div class="es-line"><div style="font-size:12px;font-weight:800;color:var(--muted)">歩み</div></div>
+    <div class="es-line"><div style="font-size:16px;letter-spacing:3px">${dots}</div></div>
+    ${grad}
+    <div class="es-line" style="justify-content:center"><div style="font-size:12px;color:rgba(255,255,255,.4);cursor:pointer;text-decoration:underline;min-height:44px;display:flex;align-items:center" onclick="kaizenEndExperiment()">実験をやめる</div></div>
+  </div>`;
+}
+function renderExpEmpty(){
+  return `<div class="es-card exp-card">
+    <div class="es-line" style="justify-content:center;padding:20px 14px">
+      <button class="chip chip-add" style="padding:12px 20px;font-size:14px" onclick="kaizenOpenNewSheet()">＋ 新しい実験を始める</button>
+    </div>
+  </div>`;
+}
+function renderExpHabitShelf(habits){
+  const list = (habits||[]).slice().reverse();
+  return `<details class="exp-shelf">
+    <summary>🎓 習慣候補の棚（${list.length}）— 2ヶ月続いて本物</summary>
+    <div class="exp-shelf-list">
+      ${list.length ? list.map(h=>`<div class="exp-shelf-item"><span>${escHtml(h.title)}</span><small>${escHtml(h.graduatedAt||'')}卒業</small></div>`).join('') : `<div style="font-size:12px;color:var(--muted);padding:8px 0">まだ無い</div>`}
+    </div>
+  </details>`;
+}
+function renderExpMonthSummary(kd){
+  const now = new Date();
+  const ym = now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
+  let o=0, x=0, grad=0;
+  const allExps = [].concat(kd.active?[kd.active]:[], kd.habits||[], kd.ended||[]);
+  allExps.forEach(exp=>{
+    (exp.weeks||[]).forEach(w=>{
+      if(w.result && w.start && w.start.slice(0,7)===ym){
+        if(w.result==='o') o++; else if(w.result==='x') x++;
+      }
+    });
+  });
+  (kd.habits||[]).forEach(h=>{ if(h.graduatedAt && h.graduatedAt.slice(0,7)===ym) grad++; });
+  return `<div class="exp-month-sum">${now.getMonth()+1}月: ◯${o} ✕${x} ／ 卒業${grad}</div>`;
+}
+
+// ===== 新しい実験シート =====
+let expDraftWeekday = null;
+function kaizenOpenNewSheet(){
+  expDraftWeekday = null;
+  const body = document.getElementById('expSheetBody');
+  const wdBtns = [`<button class="rep-opt sel" data-wd="null" onclick="kaizenPickWeekday(null)">毎日</button>`]
+    .concat(WD_JP.map((w,i)=>`<button class="rep-opt" data-wd="${i}" onclick="kaizenPickWeekday(${i})">${w}</button>`)).join('');
+  body.innerHTML = `
+    <div class="es-topbar">
+      <button class="es-cancel" onclick="kaizenCloseNewSheet()">キャンセル</button>
+      <div class="es-title">新しい実験</div>
+      <button class="es-savebtn" onclick="kaizenSaveNew()">開始</button>
+    </div>
+    <div class="es-card"><div class="es-line"><input type="text" id="expTitle" placeholder="短い名前（例：日曜の最初の2時間を算数に）"></div></div>
+    <div class="es-card"><div class="es-line"><input type="text" id="expIfThen" placeholder="if-then文（例：昼寝から起きたら、算数2時間→AI解禁）"></div></div>
+    <div class="es-card"><div class="es-line"><input type="text" id="expAim" placeholder="狙い"></div></div>
+    <div class="es-card"><div class="es-line"><input type="text" id="expOk" placeholder="◯のサイン"></div></div>
+    <div class="es-card"><div class="es-line"><input type="text" id="expNg" placeholder="✕のサイン"></div></div>
+    <div class="es-card">
+      <div class="es-line" style="flex-direction:column;align-items:stretch;gap:8px">
+        <div class="es-lbl">実行する曜日</div>
+        <div class="es-repseg" id="expWdSeg" style="grid-template-columns:repeat(4,1fr)">${wdBtns}</div>
+      </div>
+    </div>
+  `;
+  document.getElementById('expBg').classList.add('show');
+}
+function kaizenPickWeekday(wd){
+  expDraftWeekday = wd;
+  document.querySelectorAll('#expWdSeg .rep-opt').forEach(b=>{
+    const match = (wd===null) ? (b.dataset.wd==='null') : (b.dataset.wd===String(wd));
+    b.classList.toggle('sel', match);
+  });
+}
+function kaizenCloseNewSheet(){
+  const bg = document.getElementById('expBg');
+  if(bg) bg.classList.remove('show');
+}
+function kaizenSaveNew(){
+  const title=(document.getElementById('expTitle').value||'').trim();
+  const ifThen=(document.getElementById('expIfThen').value||'').trim();
+  const aim=(document.getElementById('expAim').value||'').trim();
+  const ok=(document.getElementById('expOk').value||'').trim();
+  const ng=(document.getElementById('expNg').value||'').trim();
+  if(!title){ diaryToast("名前を入れてね"); return; }
+  const kd = loadKaizen();
+  if(kd.active){ diaryToast("実験は1個だけ"); return; }
+  const startDate = fmtDateYMD(mondayOnOrBefore(new Date()));
+  const exp = {
+    id: "e_"+Date.now(), title, ifThen, aim, ok, ng,
+    startDate, targetWeekday: expDraftWeekday,
+    repRid: null,
+    weeks: [ { start: startDate, result:null, memo:"" } ]
+  };
+  try{
+    const first = kaizenFirstOccurrenceFromToday(expDraftWeekday);
+    const freq = (expDraftWeekday===null) ? 'daily' : 'weekly';
+    const rid = createRepeatSeries(first.y, first.m, first.d, {label:"🧪"+title, start:"14:00", end:"16:00", color:"#c850dc"}, freq, null);
+    exp.repRid = rid;
+    saveState(state);
+  }catch(e){}
+  kd.active = exp;
+  saveKaizen(kd);
+  kaizenCloseNewSheet();
+  diaryToast("✓ 実験を開始");
+  renderContent();
+}
+function kaizenGraduate(){
+  const kd = loadKaizen();
+  if(!kd.active) return;
+  if(!confirm("3週間続いた＝軌道に乗った。習慣候補の棚へ移す？（本物の習慣認定は2ヶ月継続後）")) return;
+  const exp = kd.active;
+  try{ if(exp.repRid) removeSeriesFrom(exp.repRid, kaizenTomorrow()); saveState(state); }catch(e){}
+  exp.graduatedAt = fmtDateYMD(new Date());
+  kd.habits.push(exp);
+  kd.active = null;
+  saveKaizen(kd);
+  diaryToast("🎓 軌道に乗った");
+  renderContent();
+}
+function kaizenEndExperiment(){
+  const kd = loadKaizen();
+  if(!kd.active) return;
+  if(!confirm("この実験をやめる？材料は残るよ。")) return;
+  const exp = kd.active;
+  try{ if(exp.repRid) removeSeriesFrom(exp.repRid, kaizenTomorrow()); saveState(state); }catch(e){}
+  exp.endedAt = fmtDateYMD(new Date());
+  kd.ended.push(exp);
+  kd.active = null;
+  saveKaizen(kd);
+  diaryToast("実験を終了");
+  renderContent();
 }
 
 // 初期表示を記録タブに（毎回トップは記録）
