@@ -579,7 +579,7 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
   -webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;padding:4px 24px 8px;margin:0 -20px;
   scrollbar-width:none;-ms-overflow-style:none}
 .exp-deck::-webkit-scrollbar{display:none}
-.exp-deck-slot{flex:0 0 82%;scroll-snap-align:center;min-width:0}
+.exp-deck-slot{flex:0 0 92%;scroll-snap-align:center;min-width:0}
 .exp-deck-slot .exp{margin-left:0;margin-right:0}
 .exp-deck-dots{display:flex;justify-content:center;gap:7px;margin-top:10px}
 .exp-deck-dots .dd{width:7px;height:7px;border-radius:50%;background:rgba(255,217,160,.25);transition:background .2s}
@@ -860,7 +860,10 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 .lab-app .exp-sections{margin-top:10px}
 .lab-app .exp-sec{padding:10px 0;border-top:1px dashed rgba(201,162,94,.12)}
 .lab-app .exp-sec:first-child{border-top:none;padding-top:4px}
-.lab-app .exp-sec-ifthen{font-size:15px;font-weight:700;color:#fff;line-height:1.55}
+.lab-app .exp-sec-ifthen{font-size:15px;font-weight:700;color:#fff;line-height:1.9;
+  padding:12px 14px;background:rgba(178,107,255,.07);border-left:3px solid rgba(178,107,255,.6);border-radius:0 8px 8px 0}
+.lab-app .exp-sec-ifthen .line b{color:#d9b8ff;font-weight:900;margin-right:2px}
+.lab-app .exp-sec-aim .body,.lab-app .exp-sec-signs .sign span{line-height:1.85}
 .lab-app .exp-sec-aim .lbl{font-size:9px;font-weight:800;letter-spacing:.1em;color:var(--brass)}
 .lab-app .exp-sec-aim .body{margin-top:4px;font-size:12.5px;color:var(--tx);line-height:1.6}
 .lab-app .exp-sec-signs{display:flex;flex-direction:column;gap:4px}
@@ -5405,7 +5408,7 @@ function labExpCardHTML(exp){
     ${topBlock}
     <h3>${escHtml(exp.title)}</h3>
     <div class="exp-sections">
-      <div class="exp-sec exp-sec-ifthen">${escHtml(exp.ifThen)}</div>
+      <div class="exp-sec exp-sec-ifthen">${labIfThenHTML(exp.ifThen)}</div>
       <div class="exp-sec exp-sec-aim"><span class="lbl">狙い</span><div class="body">${exp.aim?escHtml(exp.aim):'（未設定）'}</div></div>
       <div class="exp-sec exp-sec-signs">
         <div class="sign ok"><i class="dot"></i><span>${exp.ok?escHtml(exp.ok):'（未設定）'}</span></div>
@@ -5420,6 +5423,25 @@ function labExpCardHTML(exp){
       </div>
     </div>
   </div>`;
+}
+
+// 第9弾: if-then文を「もし→そして」の段落に分解して読みやすく
+function labIfThenHTML(text){
+  if(!text) return '（未設定）';
+  // 「→」「。」で行に割り、先頭の「〜たら、/〜なら、」は条件と行動に分ける
+  let parts = text.split(/→|。/).map(s=>s.trim()).filter(Boolean);
+  if(parts.length){
+    const m = parts[0].match(/^(.+?(?:たら|なら|とき|時))[、,]\s*(.+)$/);
+    if(m) parts = [m[1], m[2]].concat(parts.slice(1));
+  }
+  if(parts.length <= 1) return escHtml(text);
+  return parts.map((p,i)=>{
+    if(i===0){
+      const mosi = /(たら|なら|とき|時)$/.test(p) ? '<b>もし</b> ' : '';
+      return `<div class="line">${mosi}${escHtml(p)}</div>`;
+    }
+    return `<div class="line"><b>→</b> ${escHtml(p)}</div>`;
+  }).join('');
 }
 
 // 項目3: 観察メモ（新しい順・4件目から折りたたみ・タップで編集）
@@ -6775,6 +6797,119 @@ render();
     }).join("");
   }
   updateBadge();
+})();
+</script>
+<!-- ===== 📌改良メモ（第9弾・旧付箋パッドは中の入口から） ===== -->
+<style>
+.mp-fab{display:none !important} /* 旧付箋の玄関は改良メモパネル内へ移設 */
+.kairyo-fab{position:fixed;right:14px;bottom:18px;z-index:300;width:54px;height:54px;border-radius:50%;border:none;
+  background:linear-gradient(135deg,#ffb95a,#e8862a);font-size:22px;box-shadow:0 4px 18px rgba(232,134,42,.5);cursor:pointer}
+.kairyo-bg{position:fixed;inset:0;z-index:310;background:rgba(0,0,0,.6);display:none;align-items:flex-end}
+.kairyo-bg.show{display:flex}
+.kairyo-panel{width:100%;max-width:520px;margin:0 auto;background:#17151f;border-radius:18px 18px 0 0;
+  border:1px solid rgba(255,190,90,.3);border-bottom:none;max-height:78vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.kairyo-head{display:flex;align-items:center;padding:14px 16px;background:rgba(255,190,90,.1);font-weight:900;font-size:14px;color:#efe9df}
+.kairyo-head small{margin-left:auto;font-weight:600;font-size:10px;color:rgba(239,233,223,.5)}
+.kairyo-head .kx{margin-left:12px;background:none;border:none;color:#efe9df;font-size:16px;padding:4px 8px;cursor:pointer}
+.kairyo-tags{display:flex;gap:6px;padding:12px 14px 0;flex-wrap:wrap}
+.kairyo-tags span{font-size:11px;font-weight:800;padding:6px 12px;border-radius:99px;background:rgba(255,255,255,.06);
+  color:rgba(239,233,223,.6);border:1px solid rgba(255,255,255,.1);cursor:pointer}
+.kairyo-tags span.on{background:rgba(255,190,90,.18);color:#ffd28a;border-color:rgba(255,190,90,.5)}
+.kairyo-input{display:flex;gap:8px;padding:12px 14px}
+.kairyo-input input{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;
+  padding:11px 12px;font:inherit;font-size:14px;color:#efe9df}
+.kairyo-input button{border:none;border-radius:10px;padding:0 18px;font-weight:900;background:#ffb95a;color:#3a2708;cursor:pointer}
+.kairyo-list{padding:0 14px 8px}
+.kairyo-row{display:flex;gap:10px;align-items:baseline;padding:9px 2px;border-top:1px solid rgba(255,255,255,.07);
+  font-size:13px;line-height:1.6;color:#efe9df}
+.kairyo-row .kt{flex:none;font-size:12px}
+.kairyo-row .kd{flex:none;font-size:10px;color:rgba(239,233,223,.35);margin-left:auto}
+.kairyo-row .kdel{flex:none;background:none;border:none;color:rgba(239,233,223,.4);font-size:12px;cursor:pointer;padding:2px 6px}
+.kairyo-export{display:block;margin:6px 14px 6px;padding:12px;width:calc(100% - 28px);border:1px dashed rgba(255,190,90,.4);
+  background:none;color:#ffd28a;font-weight:800;font-size:12.5px;border-radius:10px;cursor:pointer}
+.kairyo-old{display:block;margin:0 14px 16px;padding:10px;width:calc(100% - 28px);border:none;
+  background:none;color:rgba(239,233,223,.45);font-weight:700;font-size:11.5px;cursor:pointer;text-decoration:underline}
+</style>
+<button class="kairyo-fab" id="kairyoFab">📌</button>
+<div class="kairyo-bg" id="kairyoBg">
+  <div class="kairyo-panel">
+    <div class="kairyo-head">📌 改良メモ<small>次に相棒へ見せる紙</small><button class="kx" id="kairyoClose">✕</button></div>
+    <div class="kairyo-tags" id="kairyoTags"></div>
+    <div class="kairyo-input"><input id="kairyoInput" placeholder="1行でメモ（例：円グラフを月切替に）"><button id="kairyoAdd">追加</button></div>
+    <div class="kairyo-list" id="kairyoList"></div>
+    <button class="kairyo-export" id="kairyoExport">📋 全部コピーして相棒に渡す</button>
+    <button class="kairyo-old" id="kairyoOldPad">🗒 昔の付箋メモを開く</button>
+  </div>
+</div>
+<script>
+(function(){
+  var KKEY = "kairyo_v1";
+  var TAGS = ["⭐北極星","リスト","📆カレンダー","📋記録","😴睡眠","🧪実験","🥊MMA","その他"];
+  var curTag = "その他";
+  function kload(){ try{ return JSON.parse(localStorage.getItem(KKEY)||'{"items":[]}'); }catch(e){ return {items:[]}; } }
+  function ksave(d){ try{ localStorage.setItem(KKEY, JSON.stringify(d)); }catch(e){} }
+  function esc2(t){ return (t||"").replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+  function renderTags(){
+    document.getElementById("kairyoTags").innerHTML = TAGS.map(function(t){
+      return '<span class="'+(t===curTag?'on':'')+'" data-t="'+t+'">'+t+'</span>';
+    }).join("");
+  }
+  function renderList(){
+    var d = kload();
+    document.getElementById("kairyoList").innerHTML = d.items.slice().reverse().map(function(it){
+      var dt = new Date(it.ts);
+      return '<div class="kairyo-row"><span class="kt">'+esc2(it.tag.slice(0,2))+'</span><span>'+esc2(it.text)+'</span>'
+        + '<span class="kd">'+(dt.getMonth()+1)+'/'+dt.getDate()+'</span>'
+        + '<button class="kdel" data-ts="'+it.ts+'">✕</button></div>';
+    }).join("") || '<div class="kairyo-row" style="color:rgba(239,233,223,.4)">まだ無い。気づいた瞬間に1行。</div>';
+  }
+  document.getElementById("kairyoFab").addEventListener("click", function(){
+    // 今開いてるタブを初期タグに
+    try{
+      var map = {hoshi:"⭐北極星", list:"リスト", cal2:"📆カレンダー", record:"📋記録", sleep:"😴睡眠", exp:"🧪実験", mma:"🥊MMA"};
+      if(typeof currentView !== "undefined" && map[currentView]) curTag = map[currentView];
+    }catch(e){}
+    document.getElementById("kairyoBg").classList.add("show");
+    renderTags(); renderList();
+  });
+  document.getElementById("kairyoClose").addEventListener("click", function(){
+    document.getElementById("kairyoBg").classList.remove("show");
+  });
+  document.getElementById("kairyoBg").addEventListener("click", function(e){
+    if(e.target === this) this.classList.remove("show");
+  });
+  document.getElementById("kairyoTags").addEventListener("click", function(e){
+    var s = e.target.closest("span[data-t]"); if(!s) return;
+    curTag = s.dataset.t; renderTags();
+  });
+  document.getElementById("kairyoAdd").addEventListener("click", function(){
+    var inp = document.getElementById("kairyoInput");
+    var t = (inp.value||"").trim(); if(!t) return;
+    var d = kload(); d.items.push({ts:Date.now(), tag:curTag, text:t}); ksave(d);
+    inp.value = ""; renderList();
+  });
+  document.getElementById("kairyoList").addEventListener("click", function(e){
+    var b = e.target.closest(".kdel"); if(!b) return;
+    var d = kload(); d.items = d.items.filter(function(it){ return String(it.ts) !== b.dataset.ts; });
+    ksave(d); renderList();
+  });
+  document.getElementById("kairyoExport").addEventListener("click", function(){
+    var d = kload();
+    var text = "【改良メモ】\n" + d.items.map(function(it){
+      var dt = new Date(it.ts);
+      return (dt.getMonth()+1)+"/"+dt.getDate()+" "+it.tag+" "+it.text;
+    }).join("\n");
+    var btn = this;
+    function done(ok){ btn.textContent = ok ? "✅ コピーした。相棒に貼るだけ" : "コピー失敗。長押しで選択して"; }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ done(true); }).catch(function(){ done(false); });
+    } else done(false);
+  });
+  document.getElementById("kairyoOldPad").addEventListener("click", function(){
+    document.getElementById("kairyoBg").classList.remove("show");
+    var old = document.querySelector(".mp-fab");
+    if(old) old.click();
+  });
 })();
 </script>
 </body>

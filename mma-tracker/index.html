@@ -407,12 +407,28 @@ button{touch-action:manipulation;font-family:inherit;user-select:none;-webkit-us
   .edit-bar{max-width:480px;margin:0 auto;width:100%}
 }
 
-/* ===== 🎯目標バー＋📤同期（第8弾追加） ===== */
+/* ===== 🎯目標プレート＋📤同期（第9弾で大型化） ===== */
 .goal-bar{
-  padding:8px 18px;font-size:12.5px;font-weight:800;color:var(--gold);
-  background:linear-gradient(90deg, rgba(255,217,160,.10), rgba(255,217,160,.02));
-  border-bottom:1px solid rgba(255,217,160,.18);cursor:pointer;min-height:36px;
-  display:flex;align-items:center;gap:8px}
+  padding:14px 18px 13px;cursor:pointer;
+  background:linear-gradient(180deg, rgba(255,217,160,.10), rgba(255,217,160,.02));
+  border-bottom:1px solid rgba(255,217,160,.25)}
+.goal-bar .gk{display:flex;align-items:center;gap:8px;font-size:10px;font-weight:900;letter-spacing:.3em;color:rgba(255,217,160,.7)}
+.goal-bar .gbig{margin-top:7px;font-size:19px;font-weight:900;line-height:1.5;color:var(--gold);
+  text-shadow:0 0 22px rgba(255,217,160,.3)}
+/* 目標入力（ゲームプラン式） */
+.gi-tag{display:inline-block;padding:5px 16px 5px 12px;
+  clip-path:polygon(0 0, 100% 0, calc(100% - 9px) 100%, 0 100%);
+  font-size:11px;font-weight:900;letter-spacing:.18em;color:#fff;
+  background:linear-gradient(90deg,#c8963c,#8a6420)}
+.gi-ta{border-left-color:var(--gold) !important}
+.gi-span{display:flex;gap:10px;margin-top:14px}
+.gi-span button{flex:1;padding:13px;border:none;font-weight:900;font-size:14px;color:#fff;
+  clip-path:polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);background:rgba(255,255,255,.08)}
+.gi-span button.on{background:linear-gradient(180deg,#c8963c,#8a6420)}
+/* 種目円グラフ */
+.pie-wrap{margin:20px 18px 0;text-align:center}
+.pie-legend{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:center;margin-top:12px;font-size:11px;color:rgba(240,232,226,.7)}
+.pie-legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:middle;font-style:normal}
 .goal-bar .gspan{font-size:9.5px;font-weight:900;letter-spacing:.12em;color:rgba(255,217,160,.75);
   border:1px solid rgba(255,217,160,.4);border-radius:3px;padding:1px 6px;flex:none}
 .goal-bar .gmain{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -640,7 +656,33 @@ button{touch-action:manipulation;font-family:inherit;user-select:none;-webkit-us
     <div class="cell"><b id="s4TotalCount">0</b><span>総練習数</span></div>
   </div>
 
+  <div class="pie-wrap" id="s4PieWrap" style="display:none">
+    <svg width="170" height="170" viewBox="0 0 170 170" id="s4PieSvg"></svg>
+    <div class="pie-legend" id="s4PieLegend"></div>
+  </div>
+
   <div class="ledger" id="s4List"></div>
+</section>
+
+<!-- ============ 目標入力（ゲームプラン式・第9弾） ============ -->
+<section class="screen" id="screen-goal">
+  <div class="ticker"><span class="live"></span>GOAL<span class="right">セコンドの指示</span></div>
+  <div class="s2-head pad">
+    <div class="s2-kicker">GOAL — セコンドの指示</div>
+    <div class="s2-title bcast-h">目標を立てる</div>
+  </div>
+  <div class="pad">
+    <div class="field">
+      <span class="gi-tag">🎯 目標 — GOAL</span>
+      <textarea class="input-big gi-ta" id="goalTextInput" placeholder="例：組み際に頭を外に置く。全スパーで意識し続ける。"></textarea>
+    </div>
+    <div class="gi-span">
+      <button type="button" id="goalSpanWeek">今週の目標</button>
+      <button type="button" id="goalSpanMonth">今月の目標</button>
+    </div>
+    <button class="btn-next" id="goalSaveBtn" style="margin-top:16px">目標を掲げる</button>
+    <div class="s4-back" id="goalBackBtn" style="margin-top:14px;text-align:center">‹ 戻る（保存しない）</div>
+  </div>
 </section>
 
 </div>
@@ -928,7 +970,8 @@ var screens = {
   s2: document.getElementById("screen-s2"),
   s2r: document.getElementById("screen-s2r"),
   s3: document.getElementById("screen-s3"),
-  s4: document.getElementById("screen-s4")
+  s4: document.getElementById("screen-s4"),
+  goal: document.getElementById("screen-goal")
 };
 function showScreen(name){
   Object.keys(screens).forEach(function(k){
@@ -1295,6 +1338,8 @@ function renderS4(){
   document.getElementById("s4XCount").textContent = xCount;
   document.getElementById("s4TotalCount").textContent = count;
 
+  renderS4Pie(sessions);
+
   var listEl = document.getElementById("s4List");
   listEl.innerHTML = "";
 
@@ -1517,6 +1562,44 @@ document.getElementById("editSave").addEventListener("click", function(){
   renderS4();
 });
 
+/* ---------- 種目の円グラフ（第9弾・旧v1の魂） ---------- */
+var PIE_COLORS = {"打撃":"#ff5a48","寝技":"#b26bff","タックル":"#ff9b3c","スパー":"#e850dc","ドリル":"#4fa8ff","フィジカル":"#2fd06f"};
+function renderS4Pie(sessions){
+  var wrap = document.getElementById("s4PieWrap");
+  var svg = document.getElementById("s4PieSvg");
+  var leg = document.getElementById("s4PieLegend");
+  if(!wrap || !svg || !leg) return;
+  var now = new Date();
+  var counts = {}, total = 0, monthFights = 0;
+  sessions.forEach(function(s){
+    var d = new Date(s.ts || 0);
+    if(d.getFullYear() !== now.getFullYear() || d.getMonth() !== now.getMonth()) return;
+    monthFights++;
+    (s.tags || []).forEach(function(t){
+      if(!PIE_COLORS[t]) return;
+      counts[t] = (counts[t] || 0) + 1;
+      total++;
+    });
+  });
+  if(total === 0){ wrap.style.display = "none"; return; }
+  wrap.style.display = "block";
+  var C = 2 * Math.PI * 60; // 半径60の円周
+  var off = 0, arcs = "", legend = "";
+  Object.keys(PIE_COLORS).forEach(function(tag){
+    var n = counts[tag] || 0;
+    if(!n) return;
+    var len = C * n / total;
+    arcs += '<circle cx="85" cy="85" r="60" fill="none" stroke="'+PIE_COLORS[tag]+'" stroke-width="34" stroke-dasharray="'+len.toFixed(1)+' '+(C-len).toFixed(1)+'" stroke-dashoffset="'+(-off).toFixed(1)+'"/>';
+    legend += '<span><i style="background:'+PIE_COLORS[tag]+'"></i>'+tag+' '+n+'</span>';
+    off += len;
+  });
+  svg.innerHTML = '<g transform="rotate(-90 85 85)">'+arcs+'</g>'
+    + '<circle cx="85" cy="85" r="36" fill="#0c0a0c"/>'
+    + '<text x="85" y="80" text-anchor="middle" font-size="11" fill="#c9c0b4">今月</text>'
+    + '<text x="85" y="100" text-anchor="middle" font-size="18" font-weight="900" fill="#ffd9a0">'+monthFights+'戦</text>';
+  leg.innerHTML = legend;
+}
+
 /* ---------- 🎯目標バー（第8弾・週/月の目標1つを毎回トップに） ---------- */
 var GOAL_KEY = "fightlog_v2_goal";
 function loadGoal(){ try{ return JSON.parse(localStorage.getItem(GOAL_KEY)||"null"); }catch(e){ return null; } }
@@ -1532,46 +1615,48 @@ function renderGoalBar(){
   var bar = document.getElementById("goalBar");
   var g = loadGoal();
   if(!g || !g.text){
-    bar.innerHTML = '<span class="gmain">🎯 ＋今週の目標を1つ決める</span>';
+    bar.innerHTML = '<div class="gk">🎯 目標</div><div class="gbig" style="color:rgba(255,217,160,.55);font-size:15px">＋今週・今月の目標を1つ掲げる</div>';
     return;
   }
   var spanJp = g.span === "month" ? "今月" : "今週";
   var pastJp = g.span === "month" ? "先月" : "先週";
-  var togJp  = g.span === "month" ? "月" : "週";
   var nowKey = goalPeriodKey(g);
   var stale = g.periodKey && g.periodKey !== nowKey && g.ackKey !== nowKey;
-  var html = '<span class="gmain">🎯 '+spanJp+'の目標｜' + g.text.replace(/&/g,"&amp;").replace(/</g,"&lt;") + '</span>'
-    + '<span class="gspan" id="goalSpanTog">'+togJp+'</span>';
-  if(stale){
-    html += '<span class="gstale" id="goalStaleKeep">'+pastJp+'のまま。そのまま▸</span>';
-  }
-  bar.innerHTML = html;
-  var tog = document.getElementById("goalSpanTog");
-  if(tog) tog.addEventListener("click", function(ev){
-    ev.stopPropagation();
-    g.span = (g.span === "month") ? "week" : "month";
+  bar.innerHTML = '<div class="gk">🎯 '+spanJp+'の目標'
+    + (stale ? '<span style="margin-left:auto;letter-spacing:.06em;color:rgba(255,180,150,.9)">'+pastJp+'のまま。タップで見直し</span>' : '<span style="margin-left:auto;letter-spacing:.06em;opacity:.6">タップで編集</span>')
+    + '</div>'
+    + '<div class="gbig">' + g.text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/\n/g,"<br>") + '</div>';
+}
+/* 目標入力画面（ゲームプラン式・第9弾） */
+var goalDraftSpan = "week";
+function openGoalScreen(){
+  var g = loadGoal() || {};
+  document.getElementById("goalTextInput").value = g.text || "";
+  goalDraftSpan = g.span || "week";
+  syncGoalSpanBtns();
+  showScreen("goal");
+}
+function syncGoalSpanBtns(){
+  document.getElementById("goalSpanWeek").classList.toggle("on", goalDraftSpan === "week");
+  document.getElementById("goalSpanMonth").classList.toggle("on", goalDraftSpan === "month");
+}
+document.getElementById("goalBar").addEventListener("click", openGoalScreen);
+document.getElementById("goalSpanWeek").addEventListener("click", function(){ goalDraftSpan = "week"; syncGoalSpanBtns(); });
+document.getElementById("goalSpanMonth").addEventListener("click", function(){ goalDraftSpan = "month"; syncGoalSpanBtns(); });
+document.getElementById("goalSaveBtn").addEventListener("click", function(){
+  var t = (document.getElementById("goalTextInput").value || "").trim();
+  if(!t){ localStorage.removeItem(GOAL_KEY); }
+  else{
+    var g = { text: t, span: goalDraftSpan, setAt: Date.now() };
     g.periodKey = goalPeriodKey(g);
     g.ackKey = g.periodKey;
-    saveGoal(g); renderGoalBar();
-  });
-  var keep = document.getElementById("goalStaleKeep");
-  if(keep) keep.addEventListener("click", function(ev){
-    ev.stopPropagation();
-    g.ackKey = nowKey;
-    saveGoal(g); renderGoalBar();
-  });
-}
-document.getElementById("goalBar").addEventListener("click", function(){
-  var g = loadGoal() || { span:"week" };
-  var t = prompt("目標を1つ（空で消去）", g.text||"");
-  if(t === null) return;
-  if(!t.trim()){ localStorage.removeItem(GOAL_KEY); renderGoalBar(); return; }
-  g.text = t.trim();
-  g.setAt = Date.now();
-  g.periodKey = goalPeriodKey(g);
-  g.ackKey = g.periodKey;
-  saveGoal(g); renderGoalBar();
+    saveGoal(g);
+  }
+  renderGoalBar();
+  showToast("🎯 目標を掲げた");
+  showScreen("s1");
 });
+document.getElementById("goalBackBtn").addEventListener("click", function(){ showScreen("s1"); });
 renderGoalBar();
 
 /* ---------- 📤 ゴング後にトラッカーへ送る（同期コードv2） ---------- */
@@ -1645,6 +1730,105 @@ resetRoundState();
 renderS1();
 showScreen("s1");
 
+})();
+</script>
+<!-- ===== 📌改良メモ（第9弾・全アプリ共通の目安箱） ===== -->
+<style>
+.kairyo-fab{position:fixed;right:14px;bottom:14px;z-index:80;width:52px;height:52px;border-radius:50%;border:none;
+  background:linear-gradient(135deg,#ffb95a,#e8862a);font-size:22px;box-shadow:0 4px 18px rgba(232,134,42,.5);cursor:pointer}
+.kairyo-bg{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.6);display:none;align-items:flex-end}
+.kairyo-bg.show{display:flex}
+.kairyo-panel{width:100%;max-width:520px;margin:0 auto;background:#17151f;border-radius:18px 18px 0 0;
+  border:1px solid rgba(255,190,90,.3);border-bottom:none;max-height:78vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.kairyo-head{display:flex;align-items:center;padding:14px 16px;background:rgba(255,190,90,.1);font-weight:900;font-size:14px;color:#efe9df}
+.kairyo-head small{margin-left:auto;font-weight:600;font-size:10px;color:rgba(239,233,223,.5)}
+.kairyo-head .kx{margin-left:12px;background:none;border:none;color:#efe9df;font-size:16px;padding:4px 8px;cursor:pointer}
+.kairyo-tags{display:flex;gap:6px;padding:12px 14px 0;flex-wrap:wrap}
+.kairyo-tags span{font-size:11px;font-weight:800;padding:6px 12px;border-radius:99px;background:rgba(255,255,255,.06);
+  color:rgba(239,233,223,.6);border:1px solid rgba(255,255,255,.1);cursor:pointer}
+.kairyo-tags span.on{background:rgba(255,190,90,.18);color:#ffd28a;border-color:rgba(255,190,90,.5)}
+.kairyo-input{display:flex;gap:8px;padding:12px 14px}
+.kairyo-input input{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;
+  padding:11px 12px;font:inherit;font-size:14px;color:#efe9df}
+.kairyo-input button{border:none;border-radius:10px;padding:0 18px;font-weight:900;background:#ffb95a;color:#3a2708;cursor:pointer}
+.kairyo-list{padding:0 14px 8px}
+.kairyo-row{display:flex;gap:10px;align-items:baseline;padding:9px 2px;border-top:1px solid rgba(255,255,255,.07);
+  font-size:13px;line-height:1.6;color:#efe9df}
+.kairyo-row .kt{flex:none;font-size:12px}
+.kairyo-row .kd{flex:none;font-size:10px;color:rgba(239,233,223,.35);margin-left:auto}
+.kairyo-row .kdel{flex:none;background:none;border:none;color:rgba(239,233,223,.4);font-size:12px;cursor:pointer;padding:2px 6px}
+.kairyo-export{display:block;margin:6px 14px 16px;padding:12px;width:calc(100% - 28px);border:1px dashed rgba(255,190,90,.4);
+  background:none;color:#ffd28a;font-weight:800;font-size:12.5px;border-radius:10px;cursor:pointer}
+</style>
+<button class="kairyo-fab" id="kairyoFab">📌</button>
+<div class="kairyo-bg" id="kairyoBg">
+  <div class="kairyo-panel">
+    <div class="kairyo-head">📌 改良メモ<small>次に相棒へ見せる紙</small><button class="kx" id="kairyoClose">✕</button></div>
+    <div class="kairyo-tags" id="kairyoTags"></div>
+    <div class="kairyo-input"><input id="kairyoInput" placeholder="1行でメモ（例：円グラフを月切替に）"><button id="kairyoAdd">追加</button></div>
+    <div class="kairyo-list" id="kairyoList"></div>
+    <button class="kairyo-export" id="kairyoExport">📋 全部コピーして相棒に渡す</button>
+  </div>
+</div>
+<script>
+(function(){
+  var KKEY = "kairyo_v1";
+  var TAGS = ["🥊MMA","😴睡眠","🧪実験","📆カレンダー","⭐北極星","その他"];
+  var curTag = "🥊MMA";
+  function kload(){ try{ return JSON.parse(localStorage.getItem(KKEY)||'{"items":[]}'); }catch(e){ return {items:[]}; } }
+  function ksave(d){ try{ localStorage.setItem(KKEY, JSON.stringify(d)); }catch(e){} }
+  function esc(t){ return (t||"").replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+  function renderTags(){
+    document.getElementById("kairyoTags").innerHTML = TAGS.map(function(t){
+      return '<span class="'+(t===curTag?'on':'')+'" data-t="'+t+'">'+t+'</span>';
+    }).join("");
+  }
+  function renderList(){
+    var d = kload();
+    document.getElementById("kairyoList").innerHTML = d.items.slice().reverse().map(function(it){
+      var dt = new Date(it.ts);
+      return '<div class="kairyo-row"><span class="kt">'+esc(it.tag.slice(0,2))+'</span><span>'+esc(it.text)+'</span>'
+        + '<span class="kd">'+(dt.getMonth()+1)+'/'+dt.getDate()+'</span>'
+        + '<button class="kdel" data-ts="'+it.ts+'">✕</button></div>';
+    }).join("") || '<div class="kairyo-row" style="color:rgba(239,233,223,.4)">まだ無い。気づいた瞬間に1行。</div>';
+  }
+  document.getElementById("kairyoFab").addEventListener("click", function(){
+    document.getElementById("kairyoBg").classList.add("show");
+    renderTags(); renderList();
+  });
+  document.getElementById("kairyoClose").addEventListener("click", function(){
+    document.getElementById("kairyoBg").classList.remove("show");
+  });
+  document.getElementById("kairyoBg").addEventListener("click", function(e){
+    if(e.target === this) this.classList.remove("show");
+  });
+  document.getElementById("kairyoTags").addEventListener("click", function(e){
+    var s = e.target.closest("span[data-t]"); if(!s) return;
+    curTag = s.dataset.t; renderTags();
+  });
+  document.getElementById("kairyoAdd").addEventListener("click", function(){
+    var inp = document.getElementById("kairyoInput");
+    var t = (inp.value||"").trim(); if(!t) return;
+    var d = kload(); d.items.push({ts:Date.now(), tag:curTag, text:t}); ksave(d);
+    inp.value = ""; renderList();
+  });
+  document.getElementById("kairyoList").addEventListener("click", function(e){
+    var b = e.target.closest(".kdel"); if(!b) return;
+    var d = kload(); d.items = d.items.filter(function(it){ return String(it.ts) !== b.dataset.ts; });
+    ksave(d); renderList();
+  });
+  document.getElementById("kairyoExport").addEventListener("click", function(){
+    var d = kload();
+    var text = "【改良メモ】\n" + d.items.map(function(it){
+      var dt = new Date(it.ts);
+      return (dt.getMonth()+1)+"/"+dt.getDate()+" "+it.tag+" "+it.text;
+    }).join("\n");
+    var btn = this;
+    function done(ok){ btn.textContent = ok ? "✅ コピーした。相棒に貼るだけ" : "コピー失敗。長押しで選択して"; }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ done(true); }).catch(function(){ done(false); });
+    } else done(false);
+  });
 })();
 </script>
 </body>
