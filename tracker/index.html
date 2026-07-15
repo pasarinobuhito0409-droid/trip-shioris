@@ -536,6 +536,11 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 @media (max-width:400px){
   .sv-btn-oyasumi{width:170px;height:170px}
 }
+.sv-tonight{margin-top:34px;text-align:center;padding-top:18px;border-top:1px dashed rgba(238,240,246,.14)}
+.sv-tonight-line{font-size:11px;font-weight:800;letter-spacing:.24em;color:rgba(238,240,246,.45)}
+.sv-btn-oyasumi-c{width:150px;height:150px;margin-top:16px;font-size:18px}
+@media (min-width:0){
+}
 
 /* ===== ⭐北極星タブ（第8弾・毎日夢が目に入る間） ===== */
 .hoshi-wrap{position:relative;padding:8px 16px 60px;min-height:70vh;
@@ -4491,6 +4496,10 @@ function renderSleepHeroC(sd, todayStr){
     ${rec.memo ? `<div class="sv-memo-view" onclick="sleepEditMemo('${rec.id}')">🖋 ${escHtml(rec.memo)}</div>` : ``}
     <div class="sv-fix-link" onclick="sleepEditMemo('${rec.id}')">${rec.memo?"ひとことを直す":"＋ ひとこと（この夜の記録に）"}</div>
     <div class="sv-fix-link" onclick="sleepOpenEditToday()">時刻を直す</div>
+    <div class="sv-tonight">
+      <div class="sv-tonight-line">今夜も、ここから</div>
+      <button class="sv-btn-oyasumi sv-btn-oyasumi-c" id="svBtnOyasumi">おやすみ<small id="svNowABtn">タップで就寝 ${svFmtHM(Date.now())}</small></button>
+    </div>
   `;
 }
 
