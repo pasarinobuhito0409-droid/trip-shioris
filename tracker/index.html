@@ -537,6 +537,49 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
   .sv-btn-oyasumi{width:170px;height:170px}
 }
 
+/* ===== ⭐北極星タブ（第8弾・毎日夢が目に入る間） ===== */
+.hoshi-wrap{position:relative;padding:8px 16px 60px;min-height:70vh;
+  background:
+    radial-gradient(circle 1px at 12% 6%, rgba(255,255,255,.9), transparent 60%),
+    radial-gradient(circle 1px at 34% 3%, rgba(255,255,255,.7), transparent 60%),
+    radial-gradient(circle 1.4px at 58% 8%, rgba(255,255,255,.85), transparent 60%),
+    radial-gradient(circle 1px at 81% 4%, rgba(255,255,255,.7), transparent 60%),
+    radial-gradient(circle 1px at 93% 10%, rgba(255,255,255,.6), transparent 60%),
+    radial-gradient(ellipse 120% 40% at 50% 0%, rgba(20,26,58,.55), transparent 70%)}
+.hoshi-creed{margin:18px 4px 22px;text-align:center}
+.hoshi-creed .star{font-size:22px;filter:drop-shadow(0 0 12px rgba(255,217,160,.8))}
+.hoshi-creed p{margin:12px 0 0;font-size:14.5px;font-weight:700;line-height:2.05;color:#f3ead9;
+  text-shadow:0 0 24px rgba(255,217,160,.25)}
+.hoshi-creed p b{color:var(--gold, #ffd9a0);color:#ffd9a0}
+.hoshi-creed .sub{margin-top:10px;font-size:10px;letter-spacing:.3em;color:rgba(243,234,217,.4)}
+.hoshi-hero{position:relative;margin-top:18px;border-radius:18px;overflow:hidden;
+  box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.hoshi-hero img{display:block;width:100%;height:auto}
+.hoshi-hero .cap{position:absolute;left:0;right:0;bottom:0;padding:34px 16px 12px;
+  background:linear-gradient(180deg, transparent, rgba(5,6,12,.88));
+  font-size:13.5px;font-weight:800;color:#f3ead9;letter-spacing:.04em}
+.hoshi-hero .cap small{display:block;font-size:10px;font-weight:600;color:rgba(243,234,217,.55);margin-top:2px}
+.hoshi-woop{margin-top:22px;padding:16px 18px;border-radius:14px;
+  background:rgba(255,255,255,.045);border-left:3px solid rgba(255,217,160,.5)}
+.hoshi-woop .row{display:flex;gap:10px;font-size:13px;line-height:1.7;padding:4px 0;cursor:pointer}
+.hoshi-woop .k{flex:none;width:74px;font-size:10px;font-weight:800;letter-spacing:.12em;color:rgba(255,217,160,.8);padding-top:3px}
+.hoshi-woop .v{color:#e9e4da}
+.hoshi-woop .v.empty{color:rgba(233,228,218,.4)}
+.hoshi-dist{margin-top:16px;text-align:center;font-size:12px;color:rgba(233,228,218,.6);line-height:1.9}
+.hoshi-dist b{color:#ffd9a0;font-weight:900}
+.hoshi-note{margin-top:20px;text-align:center;font-size:10px;color:rgba(233,228,218,.35)}
+
+/* ===== 実験の手札スライド（第8.5弾） ===== */
+.exp-deck{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;padding:4px 24px 8px;margin:0 -20px;
+  scrollbar-width:none;-ms-overflow-style:none}
+.exp-deck::-webkit-scrollbar{display:none}
+.exp-deck-slot{flex:0 0 82%;scroll-snap-align:center;min-width:0}
+.exp-deck-slot .exp{margin-left:0;margin-right:0}
+.exp-deck-dots{display:flex;justify-content:center;gap:7px;margin-top:10px}
+.exp-deck-dots .dd{width:7px;height:7px;border-radius:50%;background:rgba(255,217,160,.25);transition:background .2s}
+.exp-deck-dots .dd.on{background:#ffd9a0;box-shadow:0 0 8px rgba(255,217,160,.6)}
+
 /* ===== 睡眠：記録の一覧（修正C） ===== */
 .sv-list-wrap{margin-top:26px;background:rgba(255,255,255,.06);border-radius:16px;overflow:hidden}
 .sv-list-wrap summary{padding:13px 16px;font-size:12.5px;font-weight:800;color:rgba(238,240,246,.7);cursor:pointer;list-style:none;min-height:44px;display:flex;align-items:center}
@@ -1310,6 +1353,10 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 .mma-gate-title{font-size:16px;font-weight:800;color:#fff}
 .mma-gate-desc{font-size:12.5px;color:rgba(255,255,255,.65);line-height:1.9;margin-top:8px}
 .mma-gate-textarea{width:100%;min-height:96px;margin-top:14px;border:1.5px solid var(--glass-border);border-radius:10px;padding:10px;font:inherit;font-size:12.5px;font-family:monospace;resize:vertical;background:rgba(255,255,255,.06);color:#fff}
+.mma-sync-box{margin:0 18px 8px;padding:12px 14px;background:rgba(14,12,14,.9);border-left:3px solid rgba(255,217,160,.4)}
+.mma-sync-box .mma-gate-textarea{min-height:64px;margin-top:8px}
+.mma-sync-hint{font-size:11px;color:rgba(240,232,226,.6);line-height:1.6}
+.mma-app .s4-week-head{padding:16px 18px 6px;font-size:10.5px;font-weight:900;letter-spacing:.24em;color:rgba(255,217,160,.7);border-bottom:1px solid rgba(255,217,160,.15)}
 .mma-gate-textarea:focus{outline:none;border-color:#5ac8fa}
 .mma-gate-error{margin-top:8px;font-size:12px;color:#ff9aba;line-height:1.6;display:none}
 .mma-gate-error.show{display:block}
@@ -1328,6 +1375,7 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
   <div class="row">
     <div class="month-tabs" id="monthTabs"></div>
     <div class="view-toggle">
+      <button id="vHoshi" onclick="setView('hoshi')">⭐ 北極星</button>
       <button id="vList" class="active" onclick="setView('list')">リスト</button>
       <button id="vCal2" onclick="setView('cal2')">📆 カレンダー</button>
       <button id="vRecord" onclick="setView('record')">📋 記録</button>
@@ -1593,7 +1641,17 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
   <!-- ============ S4 戦績（台帳） ============ -->
   <section class="mma-screen" id="mmaScreenS4">
     <div class="ticker"><span class="live"></span>FIGHT RECORD<span class="right" id="mmaS4TickerCount">全0戦</span></div>
-    <div class="s4-head"><div class="s4-back" id="mmaBtnBackS1">‹ 入場画面へ</div></div>
+    <div class="mma-goal-bar" id="mmaGoalBarS4"></div>
+    <div class="s4-head">
+      <div class="s4-back" id="mmaBtnBackS1">‹ 記録する（タブ内道場）</div>
+      <div class="s4-back" id="mmaSyncOpen" style="margin-left:auto">📥 同期</div>
+    </div>
+    <div class="mma-sync-box" id="mmaSyncBox" style="display:none">
+      <div class="mma-sync-hint">道場アプリの「📤トラッカーへ送る」でコピー→ここに貼る</div>
+      <textarea class="mma-gate-textarea" id="mmaSyncArea" placeholder="同期コードを貼り付け"></textarea>
+      <div class="mma-gate-error" id="mmaSyncError"></div>
+      <button type="button" class="mma-gate-import-btn" id="mmaSyncBtn">取り込む</button>
+    </div>
 
     <div class="big-rec">
       <b id="mmaS4DoneCount">0</b>
@@ -1883,6 +1941,15 @@ function setView(v){
   document.getElementById("vSleep").classList.toggle("active", v==="sleep");
   document.getElementById("vExp").classList.toggle("active", v==="exp");
   document.getElementById("vMma").classList.toggle("active", v==="mma");
+  document.getElementById("vHoshi") && document.getElementById("vHoshi").classList.toggle("active", v==="hoshi");
+  // 🥊タブは「復習の間」＝記録があれば戦績(S4)から開く（第8弾）
+  if(v==="mma"){
+    try{
+      if(mmaFlData && mmaFlData.sessions && mmaFlData.sessions.length){
+        mmaRenderS4(); mmaShowScreen("s4");
+      }
+    }catch(e){}
+  }
   renderCarryBanner();
   renderContent();
   // タブ切替で一番上へ
@@ -1998,9 +2065,10 @@ function renderContent(){
   const isSleep = currentView==="sleep";
   const isExp = currentView==="exp";
   const isMma = currentView==="mma";
+  const isHoshi = currentView==="hoshi";
   ["streakBanner","carryBanner","summary","charts"].forEach(id=>{
     const node=document.getElementById(id);
-    if(node) node.style.display = (isCal2||isSleep||isExp||isMma) ? "none" : "";
+    if(node) node.style.display = (isCal2||isSleep||isExp||isMma||isHoshi) ? "none" : "";
   });
   // cal2（日ビュー）中はhtml/bodyの外側スクロールをロックし、二重スクロールを防ぐ
   document.body.classList.toggle('cal2-lock', isCal2);
@@ -2013,7 +2081,91 @@ function renderContent(){
   else if(isSleep){ el.innerHTML = renderSleep(); afterSleepRender(); }
   else if(isExp){ el.innerHTML = renderExp(); }
   else if(isMma){ el.innerHTML = ""; if(typeof mmaOnShow==="function") mmaOnShow(); }
+  else if(isHoshi){ el.innerHTML = renderHoshi(); }
   else el.innerHTML = renderList();
+}
+
+// ===== ⭐北極星（第8弾・Fable直組み） =====
+function labDeckScroll(deck){
+  const slots = deck.querySelectorAll(".exp-deck-slot");
+  if(!slots.length) return;
+  const idx = Math.round(deck.scrollLeft / (slots[0].offsetWidth + 12));
+  const dots = deck.parentElement.querySelectorAll(".exp-deck-dots .dd");
+  dots.forEach((d,i)=>d.classList.toggle("on", i===Math.min(idx, dots.length-1)));
+}
+const HOSHI_KEY = "hoshi_v1";
+function loadHoshi(){ try{ return JSON.parse(localStorage.getItem(HOSHI_KEY)||"{}"); }catch(e){ return {}; } }
+function saveHoshi(h){ try{ localStorage.setItem(HOSHI_KEY, JSON.stringify(h)); }catch(e){} }
+function hoshiEdit(field, label){
+  const h = loadHoshi();
+  const t = prompt(label + "（空で消去）", h[field]||"");
+  if(t===null) return;
+  h[field] = t.trim();
+  saveHoshi(h); renderContent();
+}
+// 画像が無い間の仮シーン（Codex納品で自動的に写真へ切替）
+function hoshiPh(kind){
+  if(kind===1) return `<svg viewBox="0 0 390 260" style="display:block;width:100%;background:#07080f">
+    <defs><linearGradient id="hg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0c1230"/><stop offset="1" stop-color="#07080f"/></linearGradient></defs>
+    <rect width="390" height="260" fill="url(#hg1)"/>
+    <rect x="40" y="60" width="120" height="80" rx="5" fill="rgba(90,160,255,.13)" stroke="rgba(120,180,255,.35)"/>
+    <rect x="170" y="50" width="130" height="92" rx="5" fill="rgba(90,160,255,.16)" stroke="rgba(120,180,255,.4)"/>
+    <rect x="310" y="66" width="60" height="72" rx="5" fill="rgba(255,190,110,.1)" stroke="rgba(255,200,130,.3)"/>
+    ${[0,1,2,3,4].map(i=>`<line x1="180" y1="${64+i*16}" x2="${240+((i*37)%50)}" y2="${64+i*16}" stroke="rgba(160,210,255,.5)" stroke-width="1.5"/>`).join("")}
+    ${[0,1,2].map(i=>`<line x1="50" y1="${76+i*20}" x2="${100+((i*29)%40)}" y2="${76+i*20}" stroke="rgba(160,210,255,.35)" stroke-width="1.2"/>`).join("")}
+    <text x="235" y="135" font-size="11" fill="rgba(160,210,255,.7)" font-family="monospace">∂S/∂t = ?</text>
+    <ellipse cx="195" cy="210" rx="46" ry="40" fill="#04050a"/>
+    <ellipse cx="195" cy="176" rx="20" ry="22" fill="#05060c"/>
+    <path d="M149 260 Q160 196 195 192 Q230 196 241 260 Z" fill="#05060c"/>
+    <ellipse cx="195" cy="150" rx="120" ry="60" fill="rgba(120,180,255,.05)"/>
+    <rect x="0" y="238" width="390" height="22" fill="#0b0a10"/>
+  </svg>`;
+  return `<svg viewBox="0 0 390 260" style="display:block;width:100%;background:#08070c">
+    <defs><radialGradient id="hg2" cx="35%" cy="45%" r="60%"><stop offset="0" stop-color="#141024"/><stop offset="1" stop-color="#08070c"/></radialGradient></defs>
+    <rect width="390" height="260" fill="url(#hg2)"/>
+    <rect x="210" y="40" width="150" height="110" rx="6" fill="rgba(90,160,255,.1)" stroke="rgba(120,180,255,.3)"/>
+    ${[0,1,2,3].map(i=>`<line x1="222" y1="${58+i*18}" x2="${290+((i*31)%50)}" y2="${58+i*18}" stroke="rgba(160,210,255,.4)" stroke-width="1.3"/>`).join("")}
+    <circle cx="336" cy="126" r="11" fill="none" stroke="rgba(120,255,170,.8)" stroke-width="2"/>
+    <path d="M330 126 L335 131 L343 120" stroke="rgba(120,255,170,.9)" stroke-width="2.5" fill="none"/>
+    <rect x="0" y="212" width="390" height="48" fill="#160f08"/>
+    <rect x="0" y="212" width="390" height="2" fill="rgba(201,162,94,.4)"/>
+    <ellipse cx="120" cy="188" rx="26" ry="8" fill="rgba(255,217,160,.12)"/>
+    <rect x="108" y="168" width="24" height="22" rx="4" fill="rgba(220,230,235,.1)" stroke="rgba(220,230,235,.3)"/>
+    <circle cx="120" cy="179" r="6" fill="rgba(178,107,255,.8)"><animate attributeName="opacity" values=".5;1;.5" dur="3s" repeatCount="indefinite"/></circle>
+    <ellipse cx="120" cy="150" rx="70" ry="46" fill="rgba(178,107,255,.06)"/>
+    <path d="M28 260 Q36 200 62 194 Q84 190 92 260 Z" fill="#060509"/>
+    <ellipse cx="62" cy="178" rx="15" ry="17" fill="#070610"/>
+  </svg>`;
+}
+function renderHoshi(){
+  const h = loadHoshi();
+  const img1 = `<img src="img/hokkyokusei_1.png" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.hoshi-ph').style.display='block'">
+    <div class="hoshi-ph" style="display:none">${hoshiPh(1)}</div>`;
+  const img2 = `<img src="img/hokkyokusei_2.png" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.hoshi-ph').style.display='block'">
+    <div class="hoshi-ph" style="display:none">${hoshiPh(2)}</div>`;
+  return `<div class="hoshi-wrap">
+    <div class="hoshi-creed">
+      <div class="star">⭐</div>
+      <p>まず、<b>理論と設計図</b>を、1人で完成させる。<br>
+      ——それが、一番<b>ワクワクする</b>場所だから。<br>
+      世の中のすべての「なぜ」を解き、<br>
+      常識が180度回転する<b>天変地異</b>を起こす。<br>
+      形にするのも、できれば自分の手で。<br>
+      そのために、<b>死ぬまで学び続ける</b>。</p>
+      <div class="sub">NORTH STAR — 2026.07.12 確定</div>
+    </div>
+    <div class="hoshi-hero">${img1}<div class="cap">未知の法則を、AIと数式で解く<small>SCENE 01 — 夜の研究机</small></div></div>
+    <div class="hoshi-hero">${img2}<div class="cap">証明が、発明として形になる<small>SCENE 02 — 工房の勝利</small></div></div>
+    <div class="hoshi-woop">
+      <div class="row" onclick="hoshiEdit('wall','今週の壁（夢の前に立ちはだかる現実）')"><span class="k">今週の壁</span><span class="v ${h.wall?'':'empty'}">${h.wall?escHtml(h.wall):'タップして書く（例：日曜のAI沼）'}</span></div>
+      <div class="row" onclick="hoshiEdit('step','壁への一歩（if-thenの形が強い）')"><span class="k">壁への一歩</span><span class="v ${h.step?'':'empty'}">${h.step?escHtml(h.step):'タップして書く（例：昼寝から起きたら算数2時間）'}</span></div>
+    </div>
+    <div class="hoshi-dist">
+      星の入口（大学の生物学）試算 <b>44歳</b>（週2.5時間ペース）<br>
+      覆した壁 <b onclick="hoshiEdit('kabe','覆した壁の数')" style="cursor:pointer">${escHtml(h.kabe||'0')}</b> ／ 走行中の実験 <b>${(function(){try{const k=JSON.parse(localStorage.getItem('kaizen_v2')||'{}');return (k.experiments||[]).length;}catch(e){return 0;}})()}</b>
+    </div>
+    <div class="hoshi-note">写真はCodexの納品で自動的に本物へ切り替わる（img/hokkyokusei_1.png / _2.png）</div>
+  </div>`;
 }
 
 // ===== リスト =====
@@ -4260,7 +4412,7 @@ function renderSleepHeroA(sd){
     <div class="sv-now" id="svNowA">${nowStr}</div>
     <div class="sv-night-word">${word}</div>
     <div class="sv-night-sub">押した時刻がそのまま就寝時刻になる</div>
-    <button class="sv-btn-oyasumi" onclick="sleepGoBed()">おやすみ<small id="svNowABtn">タップで就寝 ${nowStr}</small></button>
+    <button class="sv-btn-oyasumi" id="svBtnOyasumi">おやすみ<small id="svNowABtn">タップで就寝 ${nowStr}</small></button>
     ${showRescue ? `<div class="sv-rescue-link" onclick="sleepOpenManual()">ゆうべの記録を手で入れる</div>` : ``}
   `;
 }
@@ -4429,7 +4581,36 @@ function renderSleepTrend(sd){
   `;
 }
 
+// ===== おやすみ誤作動ガード（第8.5弾・スクロール止めタップ/お化けタップを弾く） =====
+let svLastScrollTs = 0, svTabShownTs = 0, svBedFiredTs = 0;
+window.addEventListener("scroll", ()=>{ svLastScrollTs = Date.now(); }, {passive:true});
+function svBindOyasumiGuard(){
+  const btn = document.getElementById("svBtnOyasumi");
+  if(!btn) return;
+  let t0 = 0, x0 = 0, y0 = 0, moved = false;
+  const start = (x,y)=>{ t0 = Date.now(); x0 = x; y0 = y; moved = false; };
+  const move = (x,y)=>{ if(Math.abs(x-x0) > 10 || Math.abs(y-y0) > 10) moved = true; };
+  const end = ()=>{
+    const now = Date.now();
+    if(moved) return;                          // 指が動いた＝スクロール
+    if(now - t0 > 600) return;                 // 長すぎ＝タップじゃない
+    if(now - svLastScrollTs < 400) return;     // スクロール直後＝勢い止めタップ
+    if(now - svTabShownTs < 400) return;       // タブ表示直後＝お化けタップ
+    if(now - svBedFiredTs < 1200) return;      // 連打
+    svBedFiredTs = now;
+    sleepGoBed();
+  };
+  btn.addEventListener("touchstart", e=>{ const t=e.touches[0]; start(t.clientX, t.clientY); }, {passive:true});
+  btn.addEventListener("touchmove",  e=>{ const t=e.touches[0]; move(t.clientX, t.clientY); }, {passive:true});
+  btn.addEventListener("touchend",   ()=>{ end(); }, {passive:true});
+  btn.addEventListener("click", e=>{
+    // タッチ端末はtouchendで処理済み。PCマウスだけclickを通す
+    if(e.pointerType === "mouse" || !("ontouchstart" in window)){ sleepGoBed(); }
+  });
+}
 function afterSleepRender(){
+  svTabShownTs = Date.now();
+  svBindOyasumiGuard();
   const dawn = document.getElementById("svDawn");
   const dawnSun = document.getElementById("svDawnSun");
   sleepMaintainClock();
@@ -5295,7 +5476,13 @@ function renderExp(){
   html += `<div class="archive-note">↑ 棚の瓶 ＝ 終わった実験の標本（消さない）</div>`;
   html += labGuideHTML();
   html += labBoardHTML(k2);
-  html += k2.experiments.map(labExpCardHTML).join('');
+  // 手札スライド（第8.5弾・本人指定: カードゲームの手札のように横にめくる）
+  if(k2.experiments.length > 1){
+    html += `<div class="exp-deck" onscroll="labDeckScroll(this)">` + k2.experiments.map(e=>`<div class="exp-deck-slot">${labExpCardHTML(e)}</div>`).join('') + `</div>`;
+    html += `<div class="exp-deck-dots">` + k2.experiments.map((e,i)=>`<span class="dd${i===0?' on':''}"></span>`).join('') + `</div>`;
+  } else {
+    html += k2.experiments.map(labExpCardHTML).join('');
+  }
   html += `<button class="add" onclick="labOpenNewSheet()">＋ 新しい実験を仕込む</button>`;
   html += labArchiveHTML(k2);
   html += `</div>`;
@@ -5795,11 +5982,11 @@ function mmaGoalPeriodKey(ts, span){
   return String(mmaWeekStartMonday(ts));
 }
 function mmaRenderGoalBar(){
-  const el = document.getElementById("mmaGoalBar");
-  if(!el) return;
+  const els = [document.getElementById("mmaGoalBar"), document.getElementById("mmaGoalBarS4")].filter(Boolean);
+  if(!els.length) return;
   const g = mmaLoadGoal();
   if(!g){
-    el.innerHTML = '<div class="mma-goal-row"><span class="mma-goal-empty" onclick="mmaGoalEdit(event)">🎯 ＋今週の目標を1つ決める</span></div>';
+    els.forEach(el=>{ el.innerHTML = '<div class="mma-goal-row"><span class="mma-goal-empty" onclick="mmaGoalEdit(event)">🎯 ＋今週の目標を1つ決める</span></div>'; });
     return;
   }
   const spanLabel = g.span==="month" ? "今月" : "今週";
@@ -5818,7 +6005,7 @@ function mmaRenderGoalBar(){
       + '<span class="mma-goal-stale-edit" onclick="mmaGoalEdit(event)">再設定</span>'
       + '</div>';
   }
-  el.innerHTML = html;
+  els.forEach(el=>{ el.innerHTML = html; });
 }
 function mmaGoalEdit(e){
   if(e) e.stopPropagation();
@@ -5868,24 +6055,29 @@ function mmaHideGateUI(){
   document.getElementById("mmaGate").style.display = "none";
   document.getElementById("mmaScreens").style.display = "block";
 }
+let mmaImportAreaId = "mmaImportArea", mmaImportErrId = "mmaImportError";
 function mmaShowImportError(msg){
-  const el = document.getElementById("mmaImportError");
+  const el = document.getElementById(mmaImportErrId);
+  if(!el) return;
   el.textContent = msg;
   el.classList.add("show");
 }
 function mmaClearImportError(){
-  const el = document.getElementById("mmaImportError");
+  const el = document.getElementById(mmaImportErrId);
+  if(!el) return;
   el.textContent = "";
   el.classList.remove("show");
 }
-function mmaDoImport(){
+function mmaDoImport(areaId, errId){
+  mmaImportAreaId = areaId || "mmaImportArea";
+  mmaImportErrId = errId || "mmaImportError";
   mmaClearImportError();
-  const area = document.getElementById("mmaImportArea");
+  const area = document.getElementById(mmaImportAreaId);
   const raw = (area.value||"").trim();
   if(!raw){ mmaShowImportError("コードが読めない。全部コピーできてるか確認して"); return; }
   let obj;
   try{ obj = JSON.parse(raw); }catch(e){ mmaShowImportError("コードが読めない。全部コピーできてるか確認して"); return; }
-  if(!obj || obj.v !== 1 || !obj.fightlog_v2 || !Array.isArray(obj.fightlog_v2.sessions)){
+  if(!obj || (obj.v !== 1 && obj.v !== 2) || !obj.fightlog_v2 || !Array.isArray(obj.fightlog_v2.sessions)){
     mmaShowImportError("コードが読めない。全部コピーできてるか確認して");
     return;
   }
@@ -5908,18 +6100,36 @@ function mmaDoImport(){
     mmaSavePlan(mmaPlan);
   }
 
+  // v2の同期コードは🎯目標も運ぶ（道場側が正・上書き）
+  if(obj.v === 2 && obj.goal && obj.goal.text){
+    try{ localStorage.setItem("fightlog_v2_goal", JSON.stringify(obj.goal)); }catch(e){}
+  }
   try{ localStorage.setItem(MMA_MIGRATE_DISMISS_KEY, "1"); }catch(e){}
   area.value = "";
   mmaClearImportError();
   mmaHideGateUI();
-  mmaRenderS1();
-  mmaShowScreen("s1");
-  mmaShowToast(added+"戦の記録が引っ越し完了");
+  mmaRenderS4();
+  mmaShowScreen("s4");
+  mmaShowToast(added+"戦の記録を同期した");
 }
 (function mmaBindGate(){
   const importBtn = document.getElementById("mmaImportBtn");
   const skipLink = document.getElementById("mmaSkipLink");
-  if(importBtn) importBtn.addEventListener("click", mmaDoImport);
+  if(importBtn) importBtn.addEventListener("click", ()=>mmaDoImport("mmaImportArea","mmaImportError"));
+  // 復習の間の常設同期口（第8弾）
+  const syncOpen = document.getElementById("mmaSyncOpen");
+  const syncBox = document.getElementById("mmaSyncBox");
+  const syncBtn = document.getElementById("mmaSyncBtn");
+  if(syncOpen && syncBox) syncOpen.addEventListener("click", ()=>{
+    syncBox.style.display = (syncBox.style.display==="none") ? "block" : "none";
+  });
+  if(syncBtn) syncBtn.addEventListener("click", ()=>{
+    mmaDoImport("mmaSyncArea","mmaSyncError");
+    mmaRenderGoalBar();
+    const sb = document.getElementById("mmaSyncBox");
+    const fl = (mmaFlData && mmaFlData.sessions) ? mmaFlData.sessions.length : 0;
+    if(sb && fl) sb.style.display = "none";
+  });
   if(skipLink) skipLink.addEventListener("click", ()=>{
     try{ localStorage.setItem(MMA_MIGRATE_DISMISS_KEY, "1"); }catch(e){}
     mmaHideGateUI();
@@ -6182,6 +6392,7 @@ function mmaRenderTagPie(){
 }
 
 function mmaRenderS4(){
+  mmaRenderGoalBar();
   const sessions = mmaFlData.sessions;
   const count = sessions.length;
   const doneCount = sessions.filter(s=>s && s.done===true).length;
@@ -6207,8 +6418,22 @@ function mmaRenderS4(){
     return;
   }
 
-  const ordered = sessions.slice().reverse();
+  // 新しい順＋週ごとの区切り（第8.5弾・本人指定）
+  const mmaThisWeek = mmaWeekStartMonday(Date.now());
+  const ordered = sessions.slice().sort((a,b)=>(b.ts||0)-(a.ts||0));
+  let mmaLastWeek = null;
   ordered.forEach(s=>{
+    const wk = mmaWeekStartMonday(s.ts || Date.now());
+    if(wk !== mmaLastWeek){
+      mmaLastWeek = wk;
+      const head = document.createElement("div");
+      head.className = "s4-week-head";
+      const wd = new Date(wk);
+      head.textContent = (wk === mmaThisWeek) ? "今週" :
+        (wk === mmaThisWeek - 7*24*3600*1000) ? "先週" :
+        (wd.getMonth()+1) + "/" + wd.getDate() + "〜の週";
+      listEl.appendChild(head);
+    }
     const resClass = (s.exp && s.exp.result==="o") ? "o" : (s.exp && s.exp.result==="x") ? "x" : "n";
     const resMark = resClass==="o" ? "◯" : resClass==="x" ? "✕" : "—";
     const oneLiner = s.exp ? (s.exp.aim||"") : ("（通常練習）"+(s.insight||""));

@@ -407,6 +407,23 @@ button{touch-action:manipulation;font-family:inherit;user-select:none;-webkit-us
   .edit-bar{max-width:480px;margin:0 auto;width:100%}
 }
 
+/* ===== 🎯目標バー＋📤同期（第8弾追加） ===== */
+.goal-bar{
+  padding:8px 18px;font-size:12.5px;font-weight:800;color:var(--gold);
+  background:linear-gradient(90deg, rgba(255,217,160,.10), rgba(255,217,160,.02));
+  border-bottom:1px solid rgba(255,217,160,.18);cursor:pointer;min-height:36px;
+  display:flex;align-items:center;gap:8px}
+.goal-bar .gspan{font-size:9.5px;font-weight:900;letter-spacing:.12em;color:rgba(255,217,160,.75);
+  border:1px solid rgba(255,217,160,.4);border-radius:3px;padding:1px 6px;flex:none}
+.goal-bar .gmain{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.goal-bar .gspan{cursor:pointer;min-width:28px;text-align:center}
+.goal-bar .gstale{margin-left:4px;font-size:10px;color:rgba(255,180,150,.9);flex:none;cursor:pointer}
+.s3-goal-line{margin:14px 18px 0;padding:10px 14px;font-size:12.5px;font-weight:700;color:var(--gold);
+  background:rgba(255,217,160,.07);border-left:3px solid rgba(255,217,160,.5)}
+.s3-send-hint{text-align:center;font-size:11px;color:rgba(240,232,226,.55);margin-top:8px;min-height:15px}
+.s4-week-head{padding:16px 18px 6px;font-size:10.5px;font-weight:900;letter-spacing:.24em;color:rgba(255,217,160,.7);
+  border-bottom:1px solid rgba(255,217,160,.15)}
+
 /* ===== 引っ越しコード生成（第5弾追加・他は1文字も変えない） ===== */
 .s1-migrate-link{font-size:12px;font-weight:700;color:rgba(255,255,255,.4);text-align:center;margin-top:14px;text-decoration:underline;cursor:pointer;min-height:44px;display:flex;align-items:center;justify-content:center}
 .migrate-panel{margin:10px 18px 0;padding:14px;background:rgba(14,12,14,.9);border-left:3px solid var(--gold);clip-path:polygon(0 0, 100% 0, calc(100% - 10px) 100%, 0 100%)}
@@ -443,11 +460,8 @@ button{touch-action:manipulation;font-family:inherit;user-select:none;-webkit-us
 
 <!-- ============ S1 入場 ============ -->
 <section class="screen active" id="screen-s1">
-  <div id="homeBanner" role="button" onclick="location.href='tracker.html'" style="cursor:pointer;margin:10px 14px 0;padding:10px 12px;background:linear-gradient(135deg,#2a2015,#1a140d);border:1px solid rgba(201,162,94,.4);border-radius:10px;display:flex;flex-direction:column;gap:3px">
-    <div style="color:#e8c887;font-size:13px;font-weight:700;line-height:1.4">🏠 MMAの新しい家はトラッカーの🥊タブ ＞ここを押して移動</div>
-    <div style="color:rgba(255,255,255,.45);font-size:11px">過去の記録の引っ越しは下の📦から</div>
-  </div>
   <div class="ticker"><span class="live"></span>FIGHT WEEK<span class="right" id="s1TickerDate">2026.01.01 THU</span></div>
+  <div class="goal-bar" id="goalBar" role="button"></div>
 
   <div class="s1-head">
     <div class="s1-logo">FIGHT<b>LOG</b></div>
@@ -604,7 +618,10 @@ button{touch-action:manipulation;font-family:inherit;user-select:none;-webkit-us
     <div class="small">EXPERIMENT COMPLETED</div>
   </div>
   <div class="s3-oneliner" id="s3ExpLine" style="display:none"></div>
-  <button class="btn-next" id="btnS3Back">入場画面へ</button>
+  <div class="s3-goal-line" id="s3GoalLine" style="display:none"></div>
+  <button class="btn-next" id="btnS3Send">📤 トラッカーへ送る（同期コードをコピー）</button>
+  <div class="s3-send-hint" id="s3SendHint"></div>
+  <button class="btn-plan" id="btnS3Back">入場画面へ</button>
 </section>
 
 <!-- ============ S4 戦績（台帳） ============ -->
@@ -1289,8 +1306,27 @@ function renderS4(){
     return;
   }
 
-  var ordered = sessions.slice().reverse();
+  // 新しい順＋週ごとの区切り（第8.5弾・本人指定）
+  function weekStartOf(ts){
+    var d = new Date(ts); d.setHours(0,0,0,0);
+    var day = d.getDay(); d.setDate(d.getDate() + (day===0 ? -6 : 1-day));
+    return d.getTime();
+  }
+  var thisWeek = weekStartOf(Date.now());
+  var ordered = sessions.slice().sort(function(a,b){ return (b.ts||0)-(a.ts||0); });
+  var lastWeekKey = null;
   ordered.forEach(function(s){
+    var wk = weekStartOf(s.ts || Date.now());
+    if(wk !== lastWeekKey){
+      lastWeekKey = wk;
+      var head = document.createElement("div");
+      head.className = "s4-week-head";
+      var wd = new Date(wk);
+      head.textContent = (wk === thisWeek) ? "今週" :
+        (wk === thisWeek - 7*24*3600*1000) ? "先週" :
+        (wd.getMonth()+1) + "/" + wd.getDate() + "〜の週";
+      listEl.appendChild(head);
+    }
     var resClass = (s.exp && s.exp.result === "o") ? "o" : (s.exp && s.exp.result === "x") ? "x" : "n";
     var resMark = resClass === "o" ? "◯" : resClass === "x" ? "✕" : "—";
     var oneLiner = s.exp ? (s.exp.aim || "") : ("（通常練習）" + (s.insight || ""));
@@ -1481,9 +1517,86 @@ document.getElementById("editSave").addEventListener("click", function(){
   renderS4();
 });
 
+/* ---------- 🎯目標バー（第8弾・週/月の目標1つを毎回トップに） ---------- */
+var GOAL_KEY = "fightlog_v2_goal";
+function loadGoal(){ try{ return JSON.parse(localStorage.getItem(GOAL_KEY)||"null"); }catch(e){ return null; } }
+function saveGoal(g){ try{ localStorage.setItem(GOAL_KEY, JSON.stringify(g)); }catch(e){} }
+function goalPeriodKey(g){
+  var d = new Date();
+  if(g && g.span === "month") return d.getFullYear()+"-"+(d.getMonth()+1);
+  // 週=月曜起点
+  var t = new Date(d); t.setDate(d.getDate() - ((d.getDay()+6)%7));
+  return "w" + t.getFullYear() + "-" + (t.getMonth()+1) + "-" + t.getDate();
+}
+function renderGoalBar(){
+  var bar = document.getElementById("goalBar");
+  var g = loadGoal();
+  if(!g || !g.text){
+    bar.innerHTML = '<span class="gmain">🎯 ＋今週の目標を1つ決める</span>';
+    return;
+  }
+  var spanJp = g.span === "month" ? "今月" : "今週";
+  var pastJp = g.span === "month" ? "先月" : "先週";
+  var togJp  = g.span === "month" ? "月" : "週";
+  var nowKey = goalPeriodKey(g);
+  var stale = g.periodKey && g.periodKey !== nowKey && g.ackKey !== nowKey;
+  var html = '<span class="gmain">🎯 '+spanJp+'の目標｜' + g.text.replace(/&/g,"&amp;").replace(/</g,"&lt;") + '</span>'
+    + '<span class="gspan" id="goalSpanTog">'+togJp+'</span>';
+  if(stale){
+    html += '<span class="gstale" id="goalStaleKeep">'+pastJp+'のまま。そのまま▸</span>';
+  }
+  bar.innerHTML = html;
+  var tog = document.getElementById("goalSpanTog");
+  if(tog) tog.addEventListener("click", function(ev){
+    ev.stopPropagation();
+    g.span = (g.span === "month") ? "week" : "month";
+    g.periodKey = goalPeriodKey(g);
+    g.ackKey = g.periodKey;
+    saveGoal(g); renderGoalBar();
+  });
+  var keep = document.getElementById("goalStaleKeep");
+  if(keep) keep.addEventListener("click", function(ev){
+    ev.stopPropagation();
+    g.ackKey = nowKey;
+    saveGoal(g); renderGoalBar();
+  });
+}
+document.getElementById("goalBar").addEventListener("click", function(){
+  var g = loadGoal() || { span:"week" };
+  var t = prompt("目標を1つ（空で消去）", g.text||"");
+  if(t === null) return;
+  if(!t.trim()){ localStorage.removeItem(GOAL_KEY); renderGoalBar(); return; }
+  g.text = t.trim();
+  g.setAt = Date.now();
+  g.periodKey = goalPeriodKey(g);
+  g.ackKey = g.periodKey;
+  saveGoal(g); renderGoalBar();
+});
+renderGoalBar();
+
+/* ---------- 📤 ゴング後にトラッカーへ送る（同期コードv2） ---------- */
+function buildSyncPayload(){
+  return JSON.stringify({ v: 2, fightlog_v2: flData, fightlog_v2_plan: plan, goal: loadGoal() });
+}
+document.getElementById("btnS3Send").addEventListener("click", function(){
+  var code = buildSyncPayload();
+  var hint = document.getElementById("s3SendHint");
+  function done(ok){
+    hint.textContent = ok ? "コピーした。トラッカーの🥊タブを開いて貼るだけ。" : "コピー失敗。戦績下の📦から手動でコピーして";
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(code).then(function(){ done(true); }).catch(function(){ done(false); });
+  } else { done(false); }
+});
+(function renderS3Goal(){
+  var g = loadGoal();
+  var el = document.getElementById("s3GoalLine");
+  if(g && g.text){ el.textContent = "🎯 目標: " + g.text; el.style.display = "block"; }
+})();
+
 /* ---------- 引っ越しコード生成（第5弾追加・トラッカー🥊タブへの一方向エクスポート） ---------- */
 document.getElementById("btnMakeCode").addEventListener("click", function(){
-  var payload = { v: 1, fightlog_v2: flData, fightlog_v2_plan: plan };
+  var payload = { v: 2, fightlog_v2: flData, fightlog_v2_plan: plan, goal: loadGoal() };
   var code;
   try{ code = JSON.stringify(payload); }catch(e){ code = ""; }
   document.getElementById("migrateCodeArea").value = code;
