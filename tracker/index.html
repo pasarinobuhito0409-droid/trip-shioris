@@ -579,7 +579,7 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
   -webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;padding:4px 24px 8px;margin:0 -20px;
   scrollbar-width:none;-ms-overflow-style:none}
 .exp-deck::-webkit-scrollbar{display:none}
-.exp-deck-slot{flex:0 0 92%;scroll-snap-align:center;min-width:0}
+.exp-deck-slot{flex:0 0 96%;scroll-snap-align:center;min-width:0}
 .exp-deck-slot .exp{margin-left:0;margin-right:0}
 .exp-deck-dots{display:flex;justify-content:center;gap:7px;margin-top:10px}
 .exp-deck-dots .dd{width:7px;height:7px;border-radius:50%;background:rgba(255,217,160,.25);transition:background .2s}
@@ -2064,7 +2064,11 @@ function renderCharts(){
   `;
 }
 
+let rcLastView = null;
 function renderContent(){
+  // 掟: 書き込みで勝手に先頭へ戻らない（同じタブ内の再描画はスクロール位置を保持）
+  const keepY = (rcLastView === currentView) ? window.scrollY : null;
+  rcLastView = currentView;
   removeGhost();
   const prevScroll = document.getElementById('dvScroll');
   if(prevScroll) dvSavedScrollTop = prevScroll.scrollTop;
@@ -2091,6 +2095,9 @@ function renderContent(){
   else if(isMma){ el.innerHTML = ""; if(typeof mmaOnShow==="function") mmaOnShow(); }
   else if(isHoshi){ el.innerHTML = renderHoshi(); }
   else el.innerHTML = renderList();
+  if(keepY !== null){
+    requestAnimationFrame(()=>window.scrollTo(0, keepY));
+  }
 }
 
 // ===== ⭐北極星（第8弾・Fable直組み） =====
