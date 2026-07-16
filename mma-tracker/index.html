@@ -95,6 +95,20 @@ button{touch-action:manipulation;font-family:inherit;user-select:none;-webkit-us
   background-size:120px 120px;
 }
 .arena .emblem{position:absolute;left:50%;bottom:14%;transform:translateX(-50%);width:150px;height:150px;opacity:.16}
+/* ===== 第11弾: 会場の質感（金網・粒子ノイズ・スポットライト・革コーナーパッド） ===== */
+.arena .mesh{position:absolute;inset:0;pointer-events:none;opacity:.45;
+  background:repeating-linear-gradient(63deg,transparent 0 11px,rgba(190,195,205,.16) 11px 12.5px,rgba(90,95,105,.10) 12.5px 13.5px,transparent 13.5px 24px),
+    repeating-linear-gradient(-63deg,transparent 0 11px,rgba(190,195,205,.16) 11px 12.5px,rgba(90,95,105,.10) 12.5px 13.5px,transparent 13.5px 24px)}
+.arena .grain{position:absolute;inset:0;pointer-events:none;opacity:.4;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='fl11n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23fl11n)' opacity='.5'/%3E%3C/svg%3E")}
+.arena .lights{position:absolute;inset:0;pointer-events:none;
+  background:conic-gradient(from 168deg at 28% -8%,transparent 0deg,rgba(255,244,214,.13) 7deg,transparent 15deg),
+    conic-gradient(from 178deg at 55% -10%,transparent 0deg,rgba(255,244,214,.17) 8deg,transparent 17deg),
+    conic-gradient(from 190deg at 80% -8%,transparent 0deg,rgba(255,244,214,.12) 6deg,transparent 13deg)}
+.corner-pad{position:absolute;top:64px;width:80px;height:50px;pointer-events:none;z-index:1}
+.corner-pad.l{left:0;border-radius:0 0 24px 0;background:radial-gradient(circle at 0 0,#7d1620,#4a0c13 70%);box-shadow:inset -4px -5px 12px rgba(0,0,0,.7),inset 2px 2px 6px rgba(255,120,130,.18)}
+.corner-pad.r{right:0;border-radius:0 0 0 24px;background:radial-gradient(circle at 100% 0,#7d1620,#4a0c13 70%);box-shadow:inset 4px -5px 12px rgba(0,0,0,.7),inset -2px 2px 6px rgba(255,120,130,.18)}
+.corner-pad i{position:absolute;inset:7px;border:1.5px dashed rgba(255,220,200,.28);border-radius:inherit}
 .arena .vig{position:absolute;inset:0;background:radial-gradient(ellipse 120% 90% at 50% 40%, transparent 55%, rgba(0,0,0,.75) 100%)}
 .ember{
   position:absolute;bottom:-10px;width:2px;height:2px;border-radius:50%;
@@ -437,7 +451,7 @@ button{touch-action:manipulation;font-family:inherit;user-select:none;-webkit-us
 .gi-span button.on{background:linear-gradient(180deg,#c8963c,#8a6420)}
 /* 種目円グラフ */
 .pie-wrap{margin:20px 18px 0;text-align:center}
-.pie-legend{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:center;margin-top:12px;font-size:11px;color:rgba(240,232,226,.7)}
+.pie-legend{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:center;margin-top:12px;font-size:11.5px;font-weight:700;color:#e8e8e8}
 .pie-legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:middle;font-style:normal}
 .goal-bar .gspan{font-size:9.5px;font-weight:900;letter-spacing:.12em;color:rgba(255,217,160,.75);
   border:1px solid rgba(255,217,160,.4);border-radius:3px;padding:1px 6px;flex:none}
@@ -479,6 +493,11 @@ button{touch-action:manipulation;font-family:inherit;user-select:none;-webkit-us
     </svg>
   </div>
   <div id="emberField"></div>
+  <div class="mesh"></div>
+  <div class="grain"></div>
+  <div class="lights"></div>
+  <div class="corner-pad l"><i></i></div>
+  <div class="corner-pad r"><i></i></div>
   <div class="vig"></div>
 </div>
 
@@ -1595,16 +1614,22 @@ function renderS4Pie(sessions){
   if(total === 0){ wrap.style.display = "none"; return; }
   wrap.style.display = "block";
   var C = 2 * Math.PI * 60; // 半径60の円周
-  var off = 0, arcs = "", legend = "";
+  var off = 0, arcs = "", labels = "", legend = "";
   Object.keys(PIE_COLORS).forEach(function(tag){
     var n = counts[tag] || 0;
     if(!n) return;
     var len = C * n / total;
     arcs += '<circle cx="85" cy="85" r="60" fill="none" stroke="'+PIE_COLORS[tag]+'" stroke-width="34" stroke-dasharray="'+len.toFixed(1)+' '+(C-len).toFixed(1)+'" stroke-dashoffset="'+(-off).toFixed(1)+'"/>';
-    legend += '<span><i style="background:'+PIE_COLORS[tag]+'"></i>'+tag+' '+n+'</span>';
+    // 第11弾: セグメント中央にラベル（白・太字・統一サイズ。種目ごとの色文字はやめる）
+    var midAng = (-90 + ((off + len / 2) / C) * 360) * Math.PI / 180;
+    var lx = (85 + 60 * Math.cos(midAng)).toFixed(1);
+    var ly = (85 + 60 * Math.sin(midAng)).toFixed(1);
+    labels += '<text x="'+lx+'" y="'+ly+'" text-anchor="middle" dominant-baseline="middle" font-size="11.5" font-weight="800" fill="#fff" stroke="rgba(0,0,0,.55)" stroke-width="3" paint-order="stroke">'+tag+' '+n+'</text>';
+    legend += '<span><i style="background:'+PIE_COLORS[tag]+'"></i>'+tag+'　'+n+'回</span>';
     off += len;
   });
   svg.innerHTML = '<g transform="rotate(-90 85 85)">'+arcs+'</g>'
+    + labels
     + '<circle cx="85" cy="85" r="36" fill="#0c0a0c"/>'
     + '<text x="85" y="80" text-anchor="middle" font-size="11" fill="#c9c0b4">今月</text>'
     + '<text x="85" y="100" text-anchor="middle" font-size="18" font-weight="900" fill="#ffd9a0">'+monthFights+'戦</text>';
