@@ -413,8 +413,18 @@ button{touch-action:manipulation;font-family:inherit;user-select:none;-webkit-us
   background:linear-gradient(180deg, rgba(255,217,160,.10), rgba(255,217,160,.02));
   border-bottom:1px solid rgba(255,217,160,.25)}
 .goal-bar .gk{display:flex;align-items:center;gap:8px;font-size:10px;font-weight:900;letter-spacing:.3em;color:rgba(255,217,160,.7)}
-.goal-bar .gbig{margin-top:7px;font-size:19px;font-weight:900;line-height:1.5;color:var(--gold);
-  text-shadow:0 0 22px rgba(255,217,160,.3)}
+.goal-bar .gbig{margin-top:9px;font-size:22px;font-weight:900;line-height:1.55;color:var(--gold);
+  text-shadow:0 0 26px rgba(255,217,160,.35)}
+/* 自分VS自分の対戦盤（第10弾） */
+.goal-vs{display:flex;align-items:center;margin-top:14px;border-top:1px solid rgba(255,255,255,.12);
+  border-bottom:1px solid rgba(255,255,255,.12)}
+.goal-vs .side{flex:1;text-align:center;padding:11px 0}
+.goal-vs .side .lb{font-size:9px;font-weight:800;letter-spacing:.24em;color:rgba(255,255,255,.45);display:block}
+.goal-vs .side b{display:block;font-style:italic;font-weight:900;font-size:19px;margin-top:3px}
+.goal-vs .side.now b{color:var(--gold);text-shadow:0 0 16px rgba(255,217,160,.4)}
+.goal-vs .side.last b{color:rgba(240,232,226,.6)}
+.goal-vs .vsm{flex:none;font-style:italic;font-weight:900;font-size:14px;color:var(--red);padding:0 12px}
+.goal-verdict{margin-top:9px;text-align:center;font-size:11.5px;font-weight:800;color:#7fe0a8}
 /* 目標入力（ゲームプラン式） */
 .gi-tag{display:inline-block;padding:5px 16px 5px 12px;
   clip-path:polygon(0 0, 100% 0, calc(100% - 9px) 100%, 0 100%);
@@ -503,6 +513,7 @@ button{touch-action:manipulation;font-family:inherit;user-select:none;-webkit-us
 
   <button class="btn-enter" id="btnEnter">入場する — 今夜の結果を記録</button>
   <button class="btn-plan" id="btnPlan">＋ 新しいゲームプランを書く</button>
+  <button class="btn-plan" id="btnGoal">🎯 目標を掲げる</button>
 
   <div class="s1-migrate-link" id="btnMakeCode" role="button">📦 引っ越しコードを作る</div>
   <div class="migrate-panel" id="migratePanel" style="display:none">
@@ -1625,7 +1636,45 @@ function renderGoalBar(){
   bar.innerHTML = '<div class="gk">🎯 '+spanJp+'の目標'
     + (stale ? '<span style="margin-left:auto;letter-spacing:.06em;color:rgba(255,180,150,.9)">'+pastJp+'のまま。タップで見直し</span>' : '<span style="margin-left:auto;letter-spacing:.06em;opacity:.6">タップで編集</span>')
     + '</div>'
-    + '<div class="gbig">' + g.text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/\n/g,"<br>") + '</div>';
+    + '<div class="gbig">' + g.text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/\n/g,"<br>") + '</div>'
+    + goalVsHTML(g.span);
+}
+/* 自分VS自分（今期間 vs 前期間の戦績） */
+function goalVsHTML(span){
+  function statsIn(from, to){
+    var f = 0, o = 0;
+    (flData.sessions||[]).forEach(function(s){
+      var t = s.ts || 0;
+      if(t >= from && t < to){ f++; if(s.exp && s.exp.result === "o") o++; }
+    });
+    return {f:f, o:o};
+  }
+  var now = new Date(), curFrom, curTo, lastFrom, lastTo, nowLb, lastLb;
+  if(span === "month"){
+    curFrom = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+    curTo = Date.now() + 1;
+    lastFrom = new Date(now.getFullYear(), now.getMonth()-1, 1).getTime();
+    lastTo = curFrom;
+    nowLb = "今月の俺"; lastLb = "先月の俺";
+  } else {
+    var d = new Date(now); d.setHours(0,0,0,0);
+    var wd = d.getDay(); d.setDate(d.getDate() + (wd===0 ? -6 : 1-wd));
+    curFrom = d.getTime(); curTo = Date.now() + 1;
+    lastFrom = curFrom - 7*24*3600*1000; lastTo = curFrom;
+    nowLb = "今週の俺"; lastLb = "先週の俺";
+  }
+  var cur = statsIn(curFrom, curTo), last = statsIn(lastFrom, lastTo);
+  var verdict;
+  if(last.f === 0 && cur.f === 0) verdict = "";
+  else if(cur.o > last.o) verdict = "◯の数、" + lastLb.replace("の俺","") + "の自分をもう超えた";
+  else if(cur.o === last.o && cur.o > 0) verdict = "◯の数、" + lastLb.replace("の俺","") + "の自分に並んだ。あと1つで超える";
+  else verdict = lastLb.replace("の俺","") + "の自分まで ◯あと" + (last.o - cur.o) + "つ";
+  return '<div class="goal-vs">'
+    + '<div class="side now"><span class="lb">'+nowLb+'</span><b>'+cur.f+'戦 ◯'+cur.o+'</b></div>'
+    + '<div class="vsm">VS</div>'
+    + '<div class="side last"><span class="lb">'+lastLb+'</span><b>'+last.f+'戦 ◯'+last.o+'</b></div>'
+    + '</div>'
+    + (verdict ? '<div class="goal-verdict">'+verdict+'</div>' : '');
 }
 /* 目標入力画面（ゲームプラン式・第9弾） */
 var goalDraftSpan = "week";
@@ -1641,6 +1690,7 @@ function syncGoalSpanBtns(){
   document.getElementById("goalSpanMonth").classList.toggle("on", goalDraftSpan === "month");
 }
 document.getElementById("goalBar").addEventListener("click", openGoalScreen);
+document.getElementById("btnGoal").addEventListener("click", openGoalScreen);
 document.getElementById("goalSpanWeek").addEventListener("click", function(){ goalDraftSpan = "week"; syncGoalSpanBtns(); });
 document.getElementById("goalSpanMonth").addEventListener("click", function(){ goalDraftSpan = "month"; syncGoalSpanBtns(); });
 document.getElementById("goalSaveBtn").addEventListener("click", function(){

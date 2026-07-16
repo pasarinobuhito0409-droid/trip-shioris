@@ -326,6 +326,24 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 .list-day .tag{font-size:9px;font-weight:700;color:var(--muted);margin-top:3px;letter-spacing:.05em}
 .list-day .tasks{padding:8px 10px;display:flex;flex-wrap:wrap;gap:5px;align-content:center}
 
+/* === 第10弾: リストA案「駅の発車標」スキン（琥珀LED盤面） === */
+.list{background:linear-gradient(180deg,#101216,#0a0c10);border:1px solid #23262e;border-radius:16px;margin:0 8px 24px;padding:10px 8px 18px;box-shadow:inset 0 0 46px rgba(0,0,0,.65),0 4px 20px rgba(0,0,0,.4);position:relative}
+.list::before{content:"";position:absolute;inset:0;border-radius:16px;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.015) 0 1px,transparent 1px 3px)}
+.depa-head{display:flex;justify-content:space-between;align-items:baseline;padding:6px 8px 8px;border-bottom:2px solid rgba(255,176,32,.28);margin-bottom:6px;font-family:"Courier New",ui-monospace,monospace}
+.depa-head .dl{font-size:15px;font-weight:900;letter-spacing:.18em;color:#ffb020;text-shadow:0 0 10px rgba(255,176,32,.6)}
+.depa-head .dr{font-size:10px;letter-spacing:.22em;color:rgba(255,176,32,.55)}
+.depa-cols{display:grid;grid-template-columns:56px 1fr 48px;padding:0 2px 6px;font-family:"Courier New",monospace;font-size:9px;letter-spacing:.16em;color:rgba(255,176,32,.5)}
+.depa-cols span:last-child{text-align:center}
+.list .list-day{background:#07090d;border:1px solid rgba(255,176,32,.14);border-radius:8px;backdrop-filter:none;-webkit-backdrop-filter:none;grid-template-columns:56px 1fr 48px}
+.list .list-day.today{border-color:rgba(255,196,64,.65);border-width:2px;box-shadow:0 0 16px rgba(255,176,32,.22)}
+.list .list-day .num{font-family:"Courier New",monospace;color:#ffcf6a;text-shadow:0 0 8px rgba(255,176,32,.45)}
+.list .list-day .tag{color:rgba(255,207,106,.6)}
+.depa-stcol{display:flex;align-items:center;justify-content:center;padding:4px 2px;border-left:1px dashed rgba(255,176,32,.15)}
+.depa-st{font-family:"Courier New",monospace;font-size:9px;font-weight:700;letter-spacing:.08em;color:rgba(255,176,32,.55);text-align:center;line-height:1.4}
+.depa-st.go{color:#39e07a;text-shadow:0 0 8px rgba(57,224,122,.5)}
+.depa-st.now{color:#ffd94a;text-shadow:0 0 10px rgba(255,217,74,.7);animation:depablink 1.6s ease-in-out infinite}
+@keyframes depablink{0%,100%{opacity:1}50%{opacity:.4}}
+
 /* === TASK CHIP（タップで完了切替） === */
 .chip{appearance:none;border:none;font:inherit;font-size:12px;font-weight:600;background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);padding:6px 11px;border-radius:8px;cursor:pointer;line-height:1.3;border:1.5px solid rgba(255,255,255,.12);transition:all .15s;display:inline-flex;align-items:center;gap:3px;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 .chip:active{transform:scale(.94)}
@@ -573,6 +591,47 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 .hoshi-dist{margin-top:16px;text-align:center;font-size:12px;color:rgba(233,228,218,.6);line-height:1.9}
 .hoshi-dist b{color:#ffd9a0;font-weight:900}
 .hoshi-note{margin-top:20px;text-align:center;font-size:10px;color:rgba(233,228,218,.35)}
+/* 第10弾: 数式宇宙 */
+.hoshi-fx{position:absolute;font-family:Georgia,'Times New Roman',serif;font-style:italic;
+  color:rgba(140,180,255,.2);pointer-events:none;white-space:nowrap;
+  text-shadow:0 0 18px rgba(120,170,255,.35);animation:hoshifx 14s ease-in-out infinite alternate;z-index:0}
+.hoshi-fx.hot{color:rgba(255,217,160,.38);text-shadow:0 0 22px rgba(255,200,120,.45)}
+@keyframes hoshifx{0%{transform:translateY(0) rotate(var(--r,0deg))}100%{transform:translateY(-14px) rotate(var(--r,0deg))}}
+.hoshi-ai{position:absolute;width:13px;height:13px;border-radius:50%;z-index:0;pointer-events:none;
+  background:radial-gradient(circle at 35% 30%, #dff2ff, #4fa8ff 60%, #1a4a8a);
+  box-shadow:0 0 18px 6px rgba(90,170,255,.55), 0 0 56px 22px rgba(90,170,255,.14);
+  animation:hoshiai 3.2s ease-in-out infinite}
+@keyframes hoshiai{0%,100%{opacity:.9}50%{opacity:1;transform:scale(1.15)}}
+.hoshi-ailink{position:absolute;height:1px;z-index:0;pointer-events:none;
+  background:linear-gradient(90deg, rgba(90,170,255,.45), transparent);transform-origin:left center}
+/* 第10弾: ロードマップ＋関所 */
+.hoshi-rmap{position:relative;margin:28px 2px 0;padding-left:34px;z-index:1}
+.hoshi-rmap::before{content:"";position:absolute;left:12px;top:8px;bottom:8px;width:2px;
+  background:linear-gradient(180deg, #ffd9a0 0%, rgba(255,217,160,.5) 16%, rgba(120,170,255,.35) 60%, rgba(178,107,255,.5) 100%)}
+.hoshi-rnode{position:relative;padding:10px 0 8px 6px}
+.hoshi-rnode::before{content:"";position:absolute;left:-28px;top:16px;width:12px;height:12px;border-radius:50%;
+  background:#20263f;border:2px solid rgba(140,180,255,.4)}
+.hoshi-rnode.now::before{background:radial-gradient(circle at 35% 30%, #fff3d6, #ffd9a0);border-color:#ffd9a0;
+  box-shadow:0 0 14px 4px rgba(255,217,160,.55);animation:hoshiai 3s ease-in-out infinite}
+.hoshi-rnode .rt{font-size:14.5px;font-weight:800}
+.hoshi-rnode.now .rt{color:#ffd9a0;font-size:16px}
+.hoshi-rnode.far .rt{color:rgba(239,233,223,.55)}
+.hoshi-rnode .rs{font-size:11px;color:rgba(239,233,223,.5);margin-top:2px;line-height:1.7}
+.hoshi-rnode.now .rs{color:rgba(255,217,160,.75)}
+.hoshi-gate{position:relative;margin:2px 0 2px 6px;padding:10px 12px;cursor:pointer;
+  background:linear-gradient(90deg, rgba(255,90,72,.12), transparent);border-left:3px solid #ff5a48;min-height:44px}
+.hoshi-gate::before{content:"⚔️";position:absolute;left:-36px;top:9px;font-size:15px;filter:drop-shadow(0 0 6px rgba(255,90,72,.7))}
+.hoshi-gate .gt{font-size:12.5px;font-weight:900;color:#ffb4a8}
+.hoshi-gate .gs{font-size:10.5px;color:rgba(255,180,168,.65);margin-top:2px}
+.hoshi-trial{margin:8px 0 8px 6px;padding:16px;background:#141020;border:1px solid rgba(255,90,72,.35);border-radius:12px}
+.hoshi-trial .tk{font-size:10px;font-weight:900;letter-spacing:.24em;color:#ff8a7a}
+.hoshi-trial .tq{margin-top:10px;font-size:14.5px;font-weight:700;line-height:1.95}
+.hoshi-trial .tans{margin-top:12px;padding:12px 14px;background:rgba(47,208,111,.1);border-left:3px solid rgba(47,208,111,.6);
+  font-size:13px;line-height:1.85;color:#b8ecc9}
+.hoshi-trial .tbtns{display:flex;gap:10px;margin-top:14px}
+.hoshi-trial .tbtns button{flex:1;padding:12px;border:none;border-radius:8px;font-weight:800;font-size:13px}
+.hoshi-trial .ta{background:rgba(47,208,111,.15);color:#7fe0a8;border:1px solid rgba(47,208,111,.4)}
+.hoshi-trial .tn{background:rgba(255,255,255,.07);color:rgba(239,233,223,.7);border:1px solid rgba(255,255,255,.12)}
 
 /* ===== 実験の手札スライド（第8.5弾） ===== */
 .exp-deck{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;
@@ -1383,7 +1442,7 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
   <div class="row">
     <div class="month-tabs" id="monthTabs"></div>
     <div class="view-toggle">
-      <button id="vHoshi" onclick="setView('hoshi')">⭐ 北極星</button>
+      <button id="vHoshi" onclick="setView('hoshi')">⭐ 夢の設計図</button>
       <button id="vList" class="active" onclick="setView('list')">リスト</button>
       <button id="vCal2" onclick="setView('cal2')">📆 カレンダー</button>
       <button id="vRecord" onclick="setView('record')">📋 記録</button>
@@ -2152,6 +2211,82 @@ function hoshiPh(kind){
     <ellipse cx="62" cy="178" rx="15" ry="17" fill="#070610"/>
   </svg>`;
 }
+// ===== 第10弾: 腕試しの関所（自作問題・著作権フリー） =====
+const HOSHI_TRIALS = [
+  { // 関所①: 小学算数の卒業試験（今の単元=割合の実戦）
+    title:"関所①：小学算数の卒業試験", sub:"中学入試レベル＋算数オリンピック入門 — タップで挑戦", open:true,
+    problems:[
+      {q:"ある品物に、仕入れ値の40%の利益を見込んで定価をつけた。<br>売れないので定価の25%引きで売ったら、利益は150円だった。<br>仕入れ値はいくら？",
+       a:"仕入れ値を①とすると定価は1.4、売値は1.4×0.75＝1.05。<br>利益は0.05＝150円 → ①＝<b>3000円</b>"},
+      {q:"ある学校は生徒の60%が男子。<br>男子の25%と女子の40%がメガネをかけている。<br>メガネの生徒は全体の何%？",
+       a:"男子: 60×0.25＝15%　女子: 40×0.4＝16%<br>合わせて <b>31%</b>"},
+      {q:"8%の食塩水300gから水だけを蒸発させて、12%の食塩水にしたい。<br>水を何g蒸発させればいい？",
+       a:"塩は300×0.08＝24gで変わらない。<br>24g÷0.12＝200g → 300−200＝<b>100g蒸発</b>"}
+    ]},
+  { title:"関所②：高校入試＋数学オリンピック(ジュニア)", sub:"中学数学クリアで開く", open:false },
+  { title:"関所③：大学入試の実戦問題", sub:"高校数学クリアで開く", open:false },
+  { title:"最終関所：数学オリンピック級", sub:"大学数学クリアで開く", open:false }
+];
+let hoshiGateOpen = -1, hoshiTrialIdx = 0, hoshiTrialAns = false;
+function hoshiGateTap(i){
+  if(!HOSHI_TRIALS[i].open){
+    diaryToast("この関所は前の段をクリアで開く");
+    return;
+  }
+  hoshiGateOpen = (hoshiGateOpen === i) ? -1 : i;
+  hoshiTrialIdx = 0; hoshiTrialAns = false;
+  renderContent();
+}
+function hoshiTrialShowAns(){ hoshiTrialAns = true; renderContent(); }
+function hoshiTrialNext(){
+  const g = HOSHI_TRIALS[hoshiGateOpen]; if(!g) return;
+  hoshiTrialIdx = (hoshiTrialIdx + 1) % g.problems.length;
+  hoshiTrialAns = false; renderContent();
+}
+function hoshiTrialHTML(i){
+  const g = HOSHI_TRIALS[i];
+  if(hoshiGateOpen !== i || !g.open) return "";
+  const p = g.problems[hoshiTrialIdx];
+  return `<div class="hoshi-trial">
+    <div class="tk">⚔️ 腕試し ${hoshiTrialIdx+1}/${g.problems.length}</div>
+    <div class="tq">${p.q}</div>
+    ${hoshiTrialAns ? `<div class="tans">${p.a}</div>` : ``}
+    <div class="tbtns">
+      ${hoshiTrialAns ? `` : `<button class="ta" onclick="hoshiTrialShowAns()">こたえを見る</button>`}
+      <button class="tn" onclick="hoshiTrialNext()">別の問題</button>
+    </div>
+  </div>`;
+}
+function hoshiRoadmapHTML(){
+  const gate = i => `<div class="hoshi-gate" onclick="hoshiGateTap(${i})">
+    <div class="gt">⚔️ ${HOSHI_TRIALS[i].title}</div>
+    <div class="gs">${HOSHI_TRIALS[i].sub}</div>
+  </div>${hoshiTrialHTML(i)}`;
+  return `<div class="hoshi-rmap">
+    <div class="hoshi-rnode now"><div class="rt">小学算数 — 割合を攻略中</div><div class="rs">🔥 今ここ　毎朝の算25＋日曜2時間。星への1段目</div></div>
+    ${gate(0)}
+    <div class="hoshi-rnode"><div class="rt">中学数学</div><div class="rs">2027年・方程式と関数（IT訓練で時間が増える年）</div></div>
+    ${gate(1)}
+    <div class="hoshi-rnode"><div class="rt">高校数学</div><div class="rs">2028年春・微分積分＝物理の言葉</div></div>
+    ${gate(2)}
+    <div class="hoshi-rnode"><div class="rt">物理・化学</div><div class="rs">2028年秋・世界のルールブックを読む</div></div>
+    <div class="hoshi-rnode far"><div class="rt">大学の生物学 — 星の入口</div><div class="rs">2029〜30年（試算44歳）・老化の設計図を読む</div></div>
+    ${gate(3)}
+    <div class="hoshi-rnode far"><div class="rt">AI×数学で「無理」を証明する</div><div class="rs">不老の理論ノート。AIと一緒に、誰も解いてない式を解く</div></div>
+    <div class="hoshi-rnode far"><div class="rt">発明として形にする</div><div class="rs">証明を、自分の手で物にする。——命さえも</div></div>
+  </div>`;
+}
+function hoshiSpaceHTML(){
+  return `
+    <span class="hoshi-fx" style="left:5%;top:54px;font-size:15px;--r:-8deg">E = mc²</span>
+    <span class="hoshi-fx hot" style="right:12%;top:88px;font-size:13px;--r:5deg;animation-delay:2s">eiπ + 1 = 0</span>
+    <span class="hoshi-fx" style="left:14%;top:140px;font-size:12px;--r:3deg;animation-delay:4s">∇·E = ρ/ε₀</span>
+    <span class="hoshi-fx" style="right:5%;top:330px;font-size:14px;--r:-4deg;animation-delay:1s">∂S/∂t = ?</span>
+    <span class="hoshi-fx hot" style="left:8%;top:480px;font-size:12px;--r:-3deg;animation-delay:5s">寿命 ≠ 定数</span>
+    <div class="hoshi-ai" style="right:8%;top:180px"></div>
+    <div class="hoshi-ailink" style="right:10%;top:186px;width:80px;transform:rotate(155deg)"></div>
+    <div class="hoshi-ailink" style="right:10%;top:187px;width:100px;transform:rotate(-135deg)"></div>`;
+}
 function renderHoshi(){
   const h = loadHoshi();
   const img1 = `<img src="img/hokkyokusei_1.png" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.hoshi-ph').style.display='block'">
@@ -2159,8 +2294,10 @@ function renderHoshi(){
   const img2 = `<img src="img/hokkyokusei_2.png" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.hoshi-ph').style.display='block'">
     <div class="hoshi-ph" style="display:none">${hoshiPh(2)}</div>`;
   return `<div class="hoshi-wrap">
-    <div class="hoshi-creed">
+    ${hoshiSpaceHTML()}
+    <div class="hoshi-creed" style="position:relative;z-index:1">
       <div class="star">⭐</div>
+      <div style="font-size:12px;font-weight:900;letter-spacing:.34em;color:#ffd9a0;margin-top:6px">夢 の 設 計 図</div>
       <p>まず、<b>理論と設計図</b>を、1人で完成させる。<br>
       ——それが、一番<b>ワクワクする</b>場所だから。<br>
       世の中のすべての「なぜ」を解き、<br>
@@ -2169,6 +2306,7 @@ function renderHoshi(){
       そのために、<b>死ぬまで学び続ける</b>。</p>
       <div class="sub">NORTH STAR — 2026.07.12 確定</div>
     </div>
+    ${hoshiRoadmapHTML()}
     <div class="hoshi-hero">${img1}<div class="cap">未知の法則を、AIと数式で解く<small>SCENE 01 — 夜の研究机</small></div></div>
     <div class="hoshi-hero">${img2}<div class="cap">証明が、発明として形になる<small>SCENE 02 — 工房の勝利</small></div></div>
     <div class="hoshi-woop">
@@ -2259,6 +2397,8 @@ function renderList(){
     chips += `<button class="chip chip-add" onclick="addCustomTask(${currentMonth},${x.d})" title="タスク追加">+ 追加</button>`;
     const diaryMark = hasDiary(currentMonth, x.d) ? `<div class="diary-mark">📝</div>` : `<div class="diary-mark" style="opacity:.25">📝</div>`;
     const pastCls = isPastDay(currentMonth, x.d) ? "past" : "";
+    const stTxt = isToday(x.d) ? "発車中" : (pastCls ? "出発済" : "定刻");
+    const stCls = isToday(x.d) ? "now" : (pastCls ? "go" : "");
     return `
       <div class="list-day ${todayCls} ${pastCls}">
         <div class="date-col ${typeCls}" onclick="openDiary(${currentMonth},${x.d})" title="タップで日記">
@@ -2268,10 +2408,14 @@ function renderList(){
           ${diaryMark}
         </div>
         <div class="tasks">${chips}</div>
+        <div class="depa-stcol"><span class="depa-st ${stCls}">${stTxt}</span></div>
       </div>
     `;
   }).join("");
-  return `<div class="list">${html}${renderRoadScene()}</div>`;
+  return `<div class="list">
+    <div class="depa-head"><span class="dl">DEPARTURES</span><span class="dr">出発案内</span></div>
+    <div class="depa-cols"><span>TIME</span><span>行き先（予定）</span><span>状態</span></div>
+    ${html}${renderRoadScene()}</div>`;
 }
 
 // ===== 記録ビュー =====
