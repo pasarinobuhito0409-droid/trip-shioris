@@ -2289,9 +2289,9 @@ function hoshiSpaceHTML(){
 }
 function renderHoshi(){
   const h = loadHoshi();
-  const img1 = `<img src="img/hokkyokusei_1.png" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.hoshi-ph').style.display='block'">
+  const img1 = `<img src="img/hokkyokusei_1.png?v=20260716-1" alt="AIと数式で未知の法則を研究する夜" width="1536" height="1024" loading="lazy" decoding="async" onerror="this.style.display='none';this.parentElement.querySelector('.hoshi-ph').style.display='block'">
     <div class="hoshi-ph" style="display:none">${hoshiPh(1)}</div>`;
-  const img2 = `<img src="img/hokkyokusei_2.png" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.hoshi-ph').style.display='block'">
+  const img2 = `<img src="img/hokkyokusei_2.png?v=20260716-1" alt="AIとの証明を発明として形にした瞬間" width="1536" height="1024" loading="lazy" decoding="async" onerror="this.style.display='none';this.parentElement.querySelector('.hoshi-ph').style.display='block'">
     <div class="hoshi-ph" style="display:none">${hoshiPh(2)}</div>`;
   return `<div class="hoshi-wrap">
     ${hoshiSpaceHTML()}
@@ -2317,7 +2317,7 @@ function renderHoshi(){
       星の入口（大学の生物学）試算 <b>44歳</b>（週2.5時間ペース）<br>
       覆した壁 <b onclick="hoshiEdit('kabe','覆した壁の数')" style="cursor:pointer">${escHtml(h.kabe||'0')}</b> ／ 走行中の実験 <b>${(function(){try{const k=JSON.parse(localStorage.getItem('kaizen_v2')||'{}');return (k.experiments||[]).length;}catch(e){return 0;}})()}</b>
     </div>
-    <div class="hoshi-note">写真はCodexの納品で自動的に本物へ切り替わる（img/hokkyokusei_1.png / _2.png）</div>
+    <div class="hoshi-note">毎日見るたび、今日の一歩を北極星へつなげる。</div>
   </div>`;
 }
 
