@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>算数・理科番付 — 大人の学び直し 徹底調査</title>
+<meta name="description" content="大人の学び直しに合う小学算数・理科教材を、実ユーザーの声と学習科学の両面から徹底調査した番付。今の教材と挑戦者を正面比較。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1a130d; --ink2:#241a12; --paper:#f6f1ea; --gold:#c8a44d; --gold-soft:#e3cd8f;
+  --mid:#e0a15b; --hot:#e0704b; --line:rgba(224,161,91,.28);
+  --txt:#ece5db; --txt2:#b0a595;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Zen Kaku Gothic New",sans-serif;background:var(--ink);color:var(--txt);line-height:1.8;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:0 18px}
+.hero{position:relative;overflow:hidden;text-align:center;padding:72px 16px 56px;border-bottom:1px solid var(--line)}
+.hero .bgchar{position:absolute;top:50%;left:50%;transform:translate(-50%,-54%);font-size:min(78vw,480px);font-family:"Shippori Mincho",serif;font-weight:800;color:rgba(224,161,91,.06);pointer-events:none;user-select:none;line-height:1}
+.hero .kicker{letter-spacing:.42em;font-size:12px;color:var(--mid);margin-bottom:18px}
+.hero h1{font-family:"Shippori Mincho",serif;font-weight:800;font-size:clamp(30px,8vw,52px);letter-spacing:.06em;color:var(--paper)}
+.hero h1 .gr{color:var(--mid)}
+.hero .sub{margin-top:14px;font-size:13.5px;color:var(--txt2);letter-spacing:.14em}
+.hero .badge{display:inline-block;margin-top:22px;border:1px solid var(--line);border-radius:999px;padding:7px 20px;font-size:12px;letter-spacing:.22em;color:var(--gold-soft)}
+.qnav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:18px 12px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(26,19,13,.92);backdrop-filter:blur(8px);z-index:50}
+.qnav a{font-size:12.5px;color:var(--txt2);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:6px 14px;letter-spacing:.06em;transition:.25s}
+.qnav a:hover{color:var(--gold-soft);border-color:var(--gold)}
+.sec{padding:54px 0 8px;text-align:center}
+.sec .en{font-size:11px;letter-spacing:.4em;color:var(--mid);text-transform:uppercase}
+.sec h2{font-family:"Shippori Mincho",serif;font-size:26px;letter-spacing:.14em;color:var(--paper);margin-top:8px}
+.sec .rule{width:46px;height:1px;background:var(--mid);margin:18px auto 0}
+.champ{position:relative;margin:38px 0 26px;background:linear-gradient(160deg,#2e2114,#241a12);border:1px solid var(--mid);border-radius:20px;padding:38px 28px 30px;text-align:center;box-shadow:0 18px 50px rgba(0,0,0,.45)}
+.champ .crown{position:absolute;top:-17px;left:50%;transform:translateX(-50%);background:var(--mid);color:#241505;font-size:12px;font-weight:700;letter-spacing:.26em;border-radius:999px;padding:7px 24px}
+.champ .rankword{font-family:"Shippori Mincho",serif;color:var(--mid);font-size:14px;letter-spacing:.5em;margin-bottom:10px}
+.champ h3{font-family:"Shippori Mincho",serif;font-size:clamp(24px,6vw,34px);font-weight:800;color:var(--paper);letter-spacing:.06em}
+.champ .place{margin-top:8px;font-size:13px;color:var(--txt2);letter-spacing:.12em}
+.champ .copy{margin:18px auto 0;max-width:520px;font-size:14.5px;color:var(--txt);line-height:2}
+.champ .stars{margin-top:14px;color:var(--gold);letter-spacing:6px;font-size:17px}
+.champ .hours{margin-top:8px;font-size:12px;color:var(--txt2)}
+.voice{margin:16px auto 0;max-width:520px;text-align:left;background:rgba(224,161,91,.07);border-left:3px solid var(--mid);border-radius:0 12px 12px 0;padding:14px 18px;font-size:13px;color:var(--txt2);line-height:1.9}
+.voice b{color:var(--paper);font-weight:700}
+.card{display:flex;gap:18px;background:var(--ink2);border:1px solid rgba(224,161,91,.18);border-radius:18px;padding:24px 22px;margin-bottom:16px;transition:transform .3s,border-color .3s;opacity:0;transform:translateY(18px)}
+.card.show{opacity:1;transform:translateY(0)}
+.card:hover{transform:translateY(-3px);border-color:var(--mid)}
+.medal{flex-shrink:0;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"Shippori Mincho",serif;font-weight:800;font-size:22px;border:1px solid var(--line);color:var(--txt2);background:#1c140c}
+.m2{background:linear-gradient(150deg,#d9dde3,#9aa3ad);color:#2c3540;border:none}
+.m3{background:linear-gradient(150deg,#e0a172,#a8632f);color:#3d2008;border:none}
+.mx{background:rgba(224,112,75,.15);color:#f0a184;border:1px solid rgba(224,112,75,.4);font-size:15px}
+.cbody{flex:1;min-width:0}
+.crow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cname{font-family:"Shippori Mincho",serif;font-size:19px;font-weight:700;color:var(--paper);letter-spacing:.02em}
+.pill{font-size:11px;font-weight:700;letter-spacing:.1em;border-radius:999px;padding:3px 12px;background:rgba(224,161,91,.14);color:#f0c896;border:1px solid rgba(224,161,91,.45)}
+.pill.far{background:rgba(224,112,75,.12);color:#f0a184;border-color:rgba(224,112,75,.4)}
+.ccatch{margin-top:6px;font-size:13px;color:var(--gold-soft);letter-spacing:.06em}
+.cev{margin-top:8px;font-size:13.5px;color:var(--txt2);line-height:1.9}
+.cev b{color:var(--paper)}
+.cq{margin-top:10px;font-size:12.5px;color:var(--txt2);background:rgba(224,161,91,.06);border-left:2px solid var(--mid);padding:8px 12px;border-radius:0 8px 8px 0;line-height:1.8}
+.chours{margin-top:6px;font-size:12px;color:#8a7c6a}
+.acts{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.acts a{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;text-decoration:none;border-radius:999px;padding:8px 16px;border:1px solid var(--line);color:var(--txt);transition:.25s;min-height:38px}
+.acts a:hover{border-color:var(--gold);color:var(--gold-soft)}
+.note{background:rgba(200,164,77,.07);border:1px solid rgba(200,164,77,.25);border-left:3px solid var(--gold);border-radius:0 14px 14px 0;padding:20px 22px;margin:34px 0;font-size:13.5px;color:var(--txt2)}
+.note p{margin:5px 0}
+.note b{color:var(--gold-soft)}
+.note.warm{border-color:rgba(224,161,91,.3);border-left-color:var(--mid);background:rgba(224,161,91,.06)}
+.note.warm b{color:#f0c896}
+footer{text-align:center;padding:46px 18px 60px;border-top:1px solid var(--line);margin-top:50px}
+footer .fchar{font-family:"Shippori Mincho",serif;font-size:30px;color:var(--mid);letter-spacing:.5em;margin-bottom:14px}
+footer p{font-size:12px;color:#8a7c6a;line-height:2}
+footer a{color:#b89c78;text-decoration:none;border-bottom:1px dotted #b89c78}
+.wave{display:block;width:100%;height:34px;color:rgba(224,161,91,.25);margin:8px 0 0}
+@media(max-width:540px){
+  .card{padding:20px 16px;gap:13px}
+  .medal{width:42px;height:42px;font-size:18px}
+  .cname{font-size:16px}
+  .acts a{font-size:12.5px;padding:8px 13px}
+}
+</style>
+</head><body>
+
+<header class="hero">
+  <div class="bgchar" aria-hidden="true">数</div>
+  <p class="kicker">SANSU × RIKA — RESTUDY</p>
+  <h1>算数・理科<span class="gr">番付</span></h1>
+  <p class="sub">今の王者は防衛できるか ── 挑戦者と正面比較</p>
+  <span class="badge">二〇二六年七月 四部隊 徹底調査</span>
+</header>
+
+<nav class="qnav">
+  <a href="#verdict">⚖️ 判定</a>
+  <a href="#sansu">🔢 算数</a>
+  <a href="#rika">🔬 理科</a>
+  <a href="#science">🧠 科学ルール</a>
+  <a href="../kokugo/">📖 国語番付へ</a>
+</nav>
+
+<main class="wrap">
+
+  <div id="verdict" class="note warm" style="margin-top:30px">
+    <p><b>先に判定：乗り換え不要。王者「やさしくまるごと」は防衛。</b></p>
+    <p>理由＝科学的に一番強いのは「続いていること」そのもの。楽しく続いている教材を捨てるのは悪手。</p>
+    <p>ただし王者には弱点も見つかった（下記）。<b>補強パーツを2つ追加</b>するのが最適解。</p>
+  </div>
+
+  <section id="sansu" class="sec">
+    <p class="en">mathematics</p>
+    <h2>算数の番付</h2>
+    <div class="rule"></div>
+  </section>
+
+  <div class="champ">
+    <span class="crown">王者防衛</span>
+    <p class="rankword">継続中こそ最強</p>
+    <h3>やさしくまるごと小学算数</h3>
+    <p class="place">学研 ── 6年分1冊・マンガ＋全単元YouTube無料授業・2,420円</p>
+    <p class="copy">
+      6年分を1冊で・マンガ導入・
+      全単元に無料動画。
+      君が「楽しい」と感じて
+      毎日続いている事実が最大の強み。
+      挑戦者はこれを上回れなかった。
+    </p>
+    <p class="stars">★★★★☆</p>
+    <p class="hours">⚠️ 弱点も判明：動画は「単調・語りが遅い」の声複数／小数など難所があっさりの指摘</p>
+    <div class="voice">
+      <b>実ユーザーの声</b>：「1〜6年を分野別に教えてくれるのはありがたい」／批判：「テキスト読んでるだけの先生」「難しい分野はあっさり流される」→ 動画が退屈になったら下のスタサプが控え
+    </div>
+    <div class="acts" style="justify-content:center">
+      <a href="https://gakken-ep.jp/extra/yasamaru_p/movie/index.html">▶ 公式動画一覧</a>
+      <a href="https://sansumama.livedoor.blog/archives/12389293.html">📝 実使用レビュー</a>
+    </div>
+  </div>
+
+  <svg class="wave" viewBox="0 0 600 30" preserveAspectRatio="none" aria-hidden="true"><path d="M0 18 Q 50 4 100 18 T 200 18 T 300 18 T 400 18 T 500 18 T 600 18" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+
+  <div class="card">
+    <div class="medal m2">補</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">陰山メソッド 徹底反復「百ます計算」</span><span class="pill">補強① 今日から併用</span></div>
+      <p class="ccatch">── 君の作戦「計算の自動化」専用の武器。660円</p>
+      <p class="cev">計算を「考えずに出る」まで自動化して<b>頭の作業台（ワーキングメモリ）を空ける</b>。君が自分で立てた作戦は学習科学的に正しいと確認済み。1日1枚2分。33歳の実践記で2週間でタイム短縮の記録あり。</p>
+      <p class="cq">「2分をクリアできれば小学校の計算でつまずくことはない」（陰山氏）／33歳実践記: 2週間で明確にタイム短縮</p>
+      <p class="chours">📖 小学館・660円・「なぜ」はゼロなので王者と役割分担</p>
+      <div class="acts">
+        <a href="https://www.amazon.co.jp/s?k=陰山+徹底反復+百ます計算">🛒 Amazon</a>
+        <a href="https://gintomochi.hatenablog.com/entry/2018/06/19/210346">📝 33歳の実践記</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="medal m3">次</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">小学校6年分の算数が教えられるほどよくわかる</span><span class="pill">次の1冊＝「なぜ」担当</span></div>
+      <p class="ccatch">── さくらんぼ算の原理まで説明する「なぜ」特化本</p>
+      <p class="cev">著者は学び直し定番の小杉拓也。副題が<b>「なぜ？を解決！」</b>で、手順でなく原理を説明する。王者を完走した後、「なぜ」を深める2冊目として最有力。同著者で中学版→高校版に接続できるのも君のルートと相性良。</p>
+      <p class="cq">「すっごく分かりやすくてなるほどーーと思う点がたくさん」（読者レビュー）</p>
+      <p class="chours">📖 ベレ出版・動画なし・演習量は少なめ</p>
+      <div class="acts">
+        <a href="https://www.beret.co.jp/book/46233">🌐 ベレ出版公式</a>
+        <a href="https://www.amazon.co.jp/s?k=6年分の算数が教えられるほどよくわかる">🛒 Amazon</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="medal">4</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">スタディサプリ 小学講座</span><span class="pill">動画の控え投手</span></div>
+      <p class="ccatch">── 王者の動画が退屈になったらこれ</p>
+      <p class="cev">月1,815円〜で<b>小1〜高3まで全学年見放題・倍速可</b>。「小5の算数からやり直している」大人の声あり。プロ講師の動画は王者の動画より質の評価が高い。訓練校の予習（中学数学）まで同じ料金で行けるのが構造上の強み。</p>
+      <p class="cq">「昔から算数が苦手で小学5年の算数からやり直している」「倍速で聞ける。通勤時間にも」（大人ユーザー・アフィリエイト記事内の体験談のため割引いて読むこと）</p>
+      <p class="chours">📱 月額制・質問機能なし・強制力なし</p>
+      <div class="acts">
+        <a href="https://studysapuri.jp/course/elementary/">🌐 公式</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="medal">5</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">小学校6年間の算数が1冊でしっかりわかる本</span><span class="pill far">今回は見送り</span></div>
+      <p class="ccatch">── 学び直し定番だが「説明不足」の声</p>
+      <p class="cev">128ページで6年分＝圧縮しすぎで「分かりにくかったり説明不足だったり」「載っていないものもありました」の声。<b>王者と役割が丸かぶりで、薄い分だけ説明が負ける</b>。復習用の索引本としてなら有り。</p>
+      <p class="chours">📖 かんき出版・1,100円・動画なし（特典PDF のみ）</p>
+      <div class="acts">
+        <a href="https://kanki-pub.co.jp/gakusan/book/elementary/9784761274658/">🌐 かんき出版</a>
+      </div>
+    </div>
+  </div>
+
+  <section id="rika" class="sec">
+    <p class="en">science</p>
+    <h2>理科の番付</h2>
+    <div class="rule"></div>
+  </section>
+
+  <div class="champ">
+    <span class="crown">王者防衛</span>
+    <p class="rankword">ただし挑戦者が強い</p>
+    <h3>やさしくまるごと小学理科</h3>
+    <p class="place">学研 ── 小3〜小6を1冊・マンガ＋全単元YouTube無料授業</p>
+    <p class="copy">
+      算数版と同じく、
+      続いている事実が最強。
+      完走までは王者のまま。
+      ただし理科は下の挑戦者が
+      君の「なぜ」欲に
+      より深く刺さる。完走後に交代へ。
+    </p>
+    <p class="stars">★★★★☆</p>
+    <p class="hours">⚠️ 弱点：「動画の語りが遅い」「学年またぎ構成が使いづらい」「基礎事項に漏れ」の声</p>
+    <div class="acts" style="justify-content:center">
+      <a href="https://hon.gakken.jp/book/1130509800">🌐 学研公式</a>
+      <a href="https://gakken-ep.jp/extra/yasamaru_shogaku_mov/">▶ 公式動画</a>
+    </div>
+  </div>
+
+  <svg class="wave" viewBox="0 0 600 30" preserveAspectRatio="none" aria-hidden="true"><path d="M0 18 Q 50 4 100 18 T 200 18 T 300 18 T 400 18 T 500 18 T 600 18" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+
+  <div class="card">
+    <div class="medal m2">挑</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">小学理科のなぜ？が1冊でしっかりわかる本</span><span class="pill">挑戦者筆頭＝次の1冊</span></div>
+      <p class="ccatch">── 全編が「なぜそうなる？」クイズ形式。君のための本</p>
+      <p class="cev">身近な現象を「なぜ？」で出題→原理を解説する<b>完全な理解型</b>。192ページで薄い。公式の売り文句が「暗記では身につかない本質的な理解力」。著者・佐川大三は<b>スタディサプリ理科の講師</b>＝動画と地続き。2024年刊で大人のレビュー蓄積がまだ薄い点だけ注意。</p>
+      <p class="chours">📖 かんき出版・1,540円・192p・マンガ導入あり</p>
+      <div class="acts">
+        <a href="https://kanki-pub.co.jp/gakusan/book/elementary/9784761231255/">🌐 かんき出版</a>
+        <a href="https://www.amazon.co.jp/s?k=小学理科のなぜ？が1冊でしっかりわかる本">🛒 Amazon</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="medal m3">補</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">NHK for School（ふしぎエンドレス）</span><span class="pill">補強② 無料・今日から</span></div>
+      <p class="ccatch">── 無料の実験映像庫。視覚で「なぜ」を体感</p>
+      <p class="cev">小3〜小6の理科番組＋実験クリップが<b>完全無料</b>。「ふしぎを見つける→予想→検証」の問題解決型で、答えを言わずに考えさせる設計。1本10分だから隙間時間向き。<b>大人の学び直し用の派生番組も存在</b>。教科書で読んだ単元の実物映像をここで見る使い方が最強。</p>
+      <p class="chours">📺 無料・カリキュラム管理は自分持ち（主軸でなく補強枠）</p>
+      <div class="acts">
+        <a href="https://edu.web.nhk/school/rika/">🌐 NHK for School 理科</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="medal">4</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">大人の教科書ワーク 理科</span><span class="pill">ダークホース</span></div>
+      <p class="ccatch">── 学参老舗が作った「大人専用」学び直し</p>
+      <p class="cev">大人200名への聞き取りから30テーマを構成した<b>大人専用設計</b>。「日常の疑問→教科書知識で解説」の理解型・オールカラー。本屋で挑戦者と見比べる価値あり。</p>
+      <p class="chours">📖 文理・1,430円・動画なし</p>
+      <div class="acts">
+        <a href="https://portal.bunri.jp/naruhodo/news_otonawork20240111">🌐 文理公式</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="medal">5</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">eboard（イーボード）</span><span class="pill">無料の控え</span></div>
+      <p class="ccatch">── NPO運営・無料で体系的な小学理科動画</p>
+      <p class="cev">小学理科の単元一覧＋動画＋デジタル問題を<b>無料で体系的に</b>提供する希少枠。NHKより「順番に全部やる」管理がしやすい。</p>
+      <div class="acts">
+        <a href="https://www.eboard.jp/list/15/">🌐 eboard 小学理科</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="medal mx">外</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">Z会グレードアップ問題集 理科</span><span class="pill far">番外</span></div>
+      <p class="cev">良書だが解説が<b>「子に教える親」向け設計</b>で、大人の独学インプットには不向きと判定。</p>
+      <div class="acts">
+        <a href="https://www.zkai.co.jp/books/guide/id-5338/">🌐 Z会公式</a>
+      </div>
+    </div>
+  </div>
+
+  <section id="science" class="sec">
+    <p class="en">learning science</p>
+    <h2>科学の使い方ルール</h2>
+    <div class="rule"></div>
+  </section>
+
+  <div class="note warm">
+    <p><b>① 君の「計算の自動化」作戦は科学的に正しい。</b>基礎計算が自動化されると頭の作業台が空き、ワーキングメモリが弱い人ほど恩恵が大きい。百ます計算はその実行装置。</p>
+    <p><b>② 初心者は「解く」より「解答例を読む」。</b>解説の厚い教材が正しい理由（例題学習効果・繰り返し実証済み）。読むとき「なぜこの手順？」と自分に説明すると定着が上がる。</p>
+    <p><b>③ 分散復習は最強クラス。</b>1日にまとめてやるより、毎日少し＋前の単元を混ぜて復習。</p>
+    <p><b>④ 時間制限で自分を追い込まない。</b>数学の不安は頭の作業台を食い潰す。スモールステップで成功体験を積む設計が正解（百ますのタイム計測は「自分との比較」だけにする）。</p>
+    <p><b>⑤ 理科は「よくある勘違い」を潰すのが本体。</b>「重い物ほど速く落ちる」のような思い込みを名指しで直す教材・映像が科学的に最も効く。挑戦者「なぜ？が1冊」はまさにこの型。</p>
+  </div>
+
+  <div class="note">
+    <p><b>⚠️ 正直に言うべきこと：「視覚型だから視覚教材」説は科学的根拠なし。</b></p>
+    <p>「学習スタイルに合わせると伸びる」説は研究で支持されていない（俗説判定）。</p>
+    <p>ただし君に図・映像が効くのは本当。理由が違う：<b>①ワーキングメモリの外部化になる ②言葉×図のセット（マルチモーダル）は誰にでも効く</b>（効果量大）。</p>
+    <p>→ 実務上の結論は変わらない（図の多い教材でOK）。でも「視覚型だから」で選択肢を狭めないこと。</p>
+  </div>
+
+  <div class="note">
+    <p><b>今日からの動き（変更ゼロ・追加2つ）</b></p>
+    <p>① 算数：王者を継続＋<b>百ます計算を1日1枚</b>（660円）</p>
+    <p>② 理科：王者を継続＋読んだ単元を<b>NHK for Schoolで映像確認</b>（無料）</p>
+    <p>③ 王者を完走したら：算数→「教えられるほどよくわかる」／理科→「なぜ？が1冊」へ</p>
+    <p>※ 体験談調査の鉄則も再確認：<b>始めるレベルは今より2学年下の「スラスラ解ける」所から</b>。挫折組は全員「飛び級」だった。</p>
+  </div>
+
+</main>
+
+<footer>
+  <p class="fchar">数</p>
+  <p>調査日 2026.07.20 ｜ 4部隊並列調査（算数教材・理科教材・学習科学・大人の体験談）＋王者の直接裏取り</p>
+  <p>主な出典：<a href="https://gakken-ep.jp/extra/yasamaru_p/movie/index.html">学研やさまる公式</a> ・ <a href="https://kanki-pub.co.jp/gakusan/book/elementary/9784761231255/">かんき出版</a> ・ <a href="https://www.beret.co.jp/book/46233">ベレ出版</a> ・ <a href="https://edu.web.nhk/school/rika/">NHK for School</a> ・ <a href="https://www.eboard.jp/list/15/">eboard</a> ・ <a href="https://portal.bunri.jp/naruhodo/news_otonawork20240111">文理</a> ・ 実ユーザーレビュー多数</p>
+  <p>※ 価格・仕様は調査時点。購入前に公式で最終確認を。｜ <a href="../kokugo/">📖 国語番付へ</a></p>
+</footer>
+
+<script>
+const io = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.card').forEach(c => io.observe(c));
+</script>
+</body></html>
