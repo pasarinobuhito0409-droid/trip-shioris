@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>国語番付 — 大人の学び直し・読解と論理 徹底調査</title>
+<meta name="description" content="大人の学び直しに合う小学国語（読解・論理）教材を、実ユーザーの声と脳科学の両面から徹底調査した番付ランキング。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0d1220; --ink2:#131a2b; --paper:#eef1f6; --gold:#c8a44d; --gold-soft:#e3cd8f;
+  --mid:#7ea8d8; --hot:#e0704b; --line:rgba(126,168,216,.28);
+  --txt:#e2e6ec; --txt2:#9aa5b5;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Zen Kaku Gothic New",sans-serif;background:var(--ink);color:var(--txt);line-height:1.8;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:0 18px}
+
+.hero{position:relative;overflow:hidden;text-align:center;padding:72px 16px 56px;border-bottom:1px solid var(--line)}
+.hero .bgchar{position:absolute;top:50%;left:50%;transform:translate(-50%,-54%);font-size:min(78vw,480px);font-family:"Shippori Mincho",serif;font-weight:800;color:rgba(126,168,216,.06);pointer-events:none;user-select:none;line-height:1}
+.hero .kicker{letter-spacing:.42em;font-size:12px;color:var(--mid);margin-bottom:18px}
+.hero h1{font-family:"Shippori Mincho",serif;font-weight:800;font-size:clamp(34px,9vw,56px);letter-spacing:.08em;color:var(--paper)}
+.hero h1 .gr{color:var(--mid)}
+.hero .sub{margin-top:14px;font-size:13.5px;color:var(--txt2);letter-spacing:.14em}
+.hero .badge{display:inline-block;margin-top:22px;border:1px solid var(--line);border-radius:999px;padding:7px 20px;font-size:12px;letter-spacing:.22em;color:var(--gold-soft)}
+
+.qnav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:18px 12px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(13,18,32,.92);backdrop-filter:blur(8px);z-index:50}
+.qnav a{font-size:12.5px;color:var(--txt2);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:6px 14px;letter-spacing:.06em;transition:.25s}
+.qnav a:hover{color:var(--gold-soft);border-color:var(--gold)}
+
+.sec{padding:54px 0 8px;text-align:center}
+.sec .en{font-size:11px;letter-spacing:.4em;color:var(--mid);text-transform:uppercase}
+.sec h2{font-family:"Shippori Mincho",serif;font-size:26px;letter-spacing:.14em;color:var(--paper);margin-top:8px}
+.sec .rule{width:46px;height:1px;background:var(--mid);margin:18px auto 0}
+
+.champ{position:relative;margin:38px 0 26px;background:linear-gradient(160deg,#1a2338,#131a2b);border:1px solid var(--mid);border-radius:20px;padding:38px 28px 30px;text-align:center;box-shadow:0 18px 50px rgba(0,0,0,.45)}
+.champ .crown{position:absolute;top:-17px;left:50%;transform:translateX(-50%);background:var(--mid);color:#0b1426;font-size:12px;font-weight:700;letter-spacing:.26em;border-radius:999px;padding:7px 24px}
+.champ .rankword{font-family:"Shippori Mincho",serif;color:var(--mid);font-size:14px;letter-spacing:.5em;margin-bottom:10px}
+.champ h3{font-family:"Shippori Mincho",serif;font-size:clamp(26px,6.4vw,36px);font-weight:800;color:var(--paper);letter-spacing:.06em}
+.champ .place{margin-top:8px;font-size:13px;color:var(--txt2);letter-spacing:.12em}
+.champ .copy{margin:18px auto 0;max-width:520px;font-size:14.5px;color:var(--txt);line-height:2}
+.champ .stars{margin-top:14px;color:var(--gold);letter-spacing:6px;font-size:17px}
+.champ .hours{margin-top:8px;font-size:12px;color:var(--txt2)}
+
+.voice{margin:16px auto 0;max-width:520px;text-align:left;background:rgba(126,168,216,.07);border-left:3px solid var(--mid);border-radius:0 12px 12px 0;padding:14px 18px;font-size:13px;color:var(--txt2);line-height:1.9}
+.voice b{color:var(--paper);font-weight:700}
+
+.card{display:flex;gap:18px;background:var(--ink2);border:1px solid rgba(126,168,216,.18);border-radius:18px;padding:24px 22px;margin-bottom:16px;transition:transform .3s,border-color .3s;opacity:0;transform:translateY(18px)}
+.card.show{opacity:1;transform:translateY(0)}
+.card:hover{transform:translateY(-3px);border-color:var(--mid)}
+.medal{flex-shrink:0;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"Shippori Mincho",serif;font-weight:800;font-size:22px;border:1px solid var(--line);color:var(--txt2);background:#0f1524}
+.m2{background:linear-gradient(150deg,#d9dde3,#9aa3ad);color:#2c3540;border:none}
+.m3{background:linear-gradient(150deg,#e0a172,#a8632f);color:#3d2008;border:none}
+.mx{background:rgba(224,112,75,.15);color:#f0a184;border:1px solid rgba(224,112,75,.4);font-size:15px}
+.cbody{flex:1;min-width:0}
+.crow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cname{font-family:"Shippori Mincho",serif;font-size:20px;font-weight:700;color:var(--paper);letter-spacing:.03em}
+.pill{font-size:11px;font-weight:700;letter-spacing:.1em;border-radius:999px;padding:3px 12px;background:rgba(126,168,216,.14);color:#a9c7e8;border:1px solid rgba(126,168,216,.45)}
+.pill.far{background:rgba(224,112,75,.12);color:#f0a184;border-color:rgba(224,112,75,.4)}
+.ccatch{margin-top:6px;font-size:13px;color:var(--gold-soft);letter-spacing:.06em}
+.cev{margin-top:8px;font-size:13.5px;color:var(--txt2);line-height:1.9}
+.cev b{color:var(--paper)}
+.cq{margin-top:10px;font-size:12.5px;color:var(--txt2);background:rgba(126,168,216,.06);border-left:2px solid var(--mid);padding:8px 12px;border-radius:0 8px 8px 0;line-height:1.8}
+.chours{margin-top:6px;font-size:12px;color:#6d7a90}
+.acts{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.acts a{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;text-decoration:none;border-radius:999px;padding:8px 16px;border:1px solid var(--line);color:var(--txt);transition:.25s;min-height:38px}
+.acts a:hover{border-color:var(--gold);color:var(--gold-soft)}
+
+.note{background:rgba(200,164,77,.07);border:1px solid rgba(200,164,77,.25);border-left:3px solid var(--gold);border-radius:0 14px 14px 0;padding:20px 22px;margin:34px 0;font-size:13.5px;color:var(--txt2)}
+.note p{margin:5px 0}
+.note b{color:var(--gold-soft)}
+.note.blue{border-color:rgba(126,168,216,.3);border-left-color:var(--mid);background:rgba(126,168,216,.06)}
+.note.blue b{color:#a9c7e8}
+footer{text-align:center;padding:46px 18px 60px;border-top:1px solid var(--line);margin-top:50px}
+footer .fchar{font-family:"Shippori Mincho",serif;font-size:30px;color:var(--mid);letter-spacing:.5em;margin-bottom:14px}
+footer p{font-size:12px;color:#6d7a90;line-height:2}
+footer a{color:#8a9cb8;text-decoration:none;border-bottom:1px dotted #8a9cb8}
+.wave{display:block;width:100%;height:34px;color:rgba(126,168,216,.25);margin:8px 0 0}
+@media(max-width:540px){
+  .card{padding:20px 16px;gap:13px}
+  .medal{width:42px;height:42px;font-size:18px}
+  .cname{font-size:17px}
+  .acts a{font-size:12.5px;padding:8px 13px}
+}
+</style>
+</head><body>
+
+<header class="hero">
+  <div class="bgchar" aria-hidden="true">読</div>
+  <p class="kicker">KOKUGO × LOGIC — RESTUDY</p>
+  <h1>国語<span class="gr">番付</span></h1>
+  <p class="sub">大人の学び直し ── 暗記でなく、読解と論理を</p>
+  <span class="badge">二〇二六年七月 四部隊 徹底調査</span>
+</header>
+
+<nav class="qnav">
+  <a href="#no1">👑 横綱</a>
+  <a href="#ranks">番付一覧</a>
+  <a href="#science">🧠 脳科学ルール</a>
+  <a href="#check">🏬 本屋チェック</a>
+</nav>
+
+<main class="wrap">
+
+  <div class="note blue" style="margin-top:30px">
+    <p><b>最重要の答え：市販「論理エンジン」に動画・音声は付かない</b>（水王舎公式ショップで確認・2026-07-20）。</p>
+    <p>音声講座は中高生向け書籍の別売りのみ。小学生向けには対応なし。</p>
+    <p>→ だから番付は「動画前提」を外し、<b>紙の質 × 実ユーザーの声 × 脳科学</b>で組み直した。</p>
+  </div>
+
+  <section id="no1" class="sec">
+    <p class="en">grand champion</p>
+    <h2>横綱 ── 総合一位</h2>
+    <div class="rule"></div>
+  </section>
+
+  <div class="champ">
+    <span class="crown">総合 1 位</span>
+    <p class="rankword">教科書型・解説厚</p>
+    <h3>出口式 はじめての論理国語</h3>
+    <p class="place">水王舎 ── 小1〜小6レベル・全6冊・1,320〜1,540円/冊・無学年制</p>
+    <p class="copy">
+      フルカラー・文字大きめ・穴埋め式。
+      問題は少なく、解説がとにかく厚い。
+      「なぜその答えか」を論理で全部言語化する。
+      大人が小1レベルから積み直しても
+      恥ずかしくない設計（無学年制が公式方針）。
+      「薄い・解説厚い・なぜがわかる」に最合致。
+    </p>
+    <p class="stars">★★★★★</p>
+    <p class="hours">📖 別冊解説は「大人向け」に書かれている ＝ 学び直しにはむしろ好都合</p>
+    <div class="voice">
+      <b>実ユーザーの声</b>：「文字が大きく、シンプルで分かりやすい」「フルカラーで綺麗」「穴埋め式なので記述が苦手でもできる」／注意の声：「解説本は完全に保護者向け」（→大人には長所）
+    </div>
+    <div class="acts" style="justify-content:center">
+      <a href="https://ship.suiohsha.net/category/reference/primary/">🌐 水王舎公式ショップ</a>
+      <a href="https://www.amazon.co.jp/s?k=出口式+はじめての論理国語">🛒 Amazonで見る</a>
+      <a href="https://www.google.com/search?tbm=isch&q=はじめての論理国語+中身">📷 中身の写真</a>
+    </div>
+  </div>
+
+  <section id="ranks" class="sec">
+    <p class="en">ranking</p>
+    <h2>番付一覧</h2>
+    <div class="rule"></div>
+  </section>
+
+  <svg class="wave" viewBox="0 0 600 30" preserveAspectRatio="none" aria-hidden="true"><path d="M0 18 Q 50 4 100 18 T 200 18 T 300 18 T 400 18 T 500 18 T 600 18" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+
+  <div class="card">
+    <div class="medal m2">2</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">ふくしま式「本当の国語力」が身につく問題集</span><span class="pill">大関</span></div>
+      <p class="ccatch">── 中身は出口式とほぼ同じ。無料YouTubeが付く唯一の存在</p>
+      <p class="cev">国語力を<b>言いかえる力・くらべる力・たどる力の3つだけ</b>に絞って反復。複数の比較記事が「出口式と言っていることは同じ」で一致。解説ぎっしり・160ページ・<b>7日で完走した報告あり</b>。著者本人の無料YouTubeチャンネルを併用できる。白黒なのが唯一の弱点。</p>
+      <p class="cq">「解答・解説がぎっしりされていて、むしろ解説全部読むのが大変なほど」／挫折の声：「シンプルな演習ゆえ"できた"と感じて途中でやめる人が少なくない」</p>
+      <p class="chours">📖 大和出版・約1,300円／「超ベーシック」→「ベーシック」→「小学生版」の階段あり</p>
+      <div class="acts">
+        <a href="https://www.amazon.co.jp/s?k=ふくしま式+本当の国語力">🛒 Amazon</a>
+        <a href="https://www.youtube.com/@fukukoku">▶ 著者YouTube（無料）</a>
+        <a href="https://www.google.com/search?tbm=isch&q=ふくしま式+問題集+中身">📷 中身の写真</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="medal m3">3</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">サイパー 文の組み立て特訓</span><span class="pill">関脇</span></div>
+      <p class="ccatch">── 文を「図で組み立てる」。視覚優勢に一番刺さる方式</p>
+      <p class="cev">主語・述語・修飾語の関係を<b>すべて図で組む</b>珍しい教材。「さるは 動物です」レベルから1段ずつ長文化するスモールステップ。<b>57ページ・600円</b>で最薄・最安。1テーマ1冊方式（約36冊のシリーズ）なので、これ1冊で読解全体はカバーしない点だけ注意。</p>
+      <p class="cq">「国語が苦手な子でも『パズルみたい』と楽しんでいた」「普通の問題集が"日本語はわかっている前提"なのに対し、土台の文法から体系的に教える」</p>
+      <p class="chours">📖 認知工学／書店に置いていないことが多く通販中心</p>
+      <div class="acts">
+        <a href="https://ninchi.sch.jp/cogtec/index.html">🌐 出版社公式</a>
+        <a href="https://www.amazon.co.jp/s?k=サイパー+文の組み立て特訓">🛒 Amazon</a>
+        <a href="https://www.google.com/search?tbm=isch&q=サイパー+文の組み立て特訓+中身">📷 中身の写真</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="medal">4</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">国語読解力「奇跡のドリル」</span><span class="pill">小結</span></div>
+      <p class="ccatch">── 1つの物語だけを最後まで精読する</p>
+      <p class="cev">新美南吉『手袋を買いに』<b>1作だけ</b>を3段階の設問で精読する形式。灘校の「1冊を3年かける授業」がコンセプト。96ページ・880円。<b>30代の大人本人の完走体験記がある</b>希少な教材。到達点は低めなので入口〜2冊目向け。</p>
+      <p class="cq">30代の体験記：「物語を注意深く読む癖がついた」「（小1・2向けなのに）意外と答えられない問題もありました」</p>
+      <p class="chours">📖 小学館・伊藤氏貴</p>
+      <div class="acts">
+        <a href="https://dps.shogakukan.co.jp/kisekinodoriru/">🌐 小学館公式</a>
+        <a href="https://note.com/mama_yuki/n/ne0b42bcee777">📝 大人の体験記</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="medal">5</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">大人のための国語ゼミ（野矢茂樹）</span><span class="pill">前頭・次の段</span></div>
+      <p class="ccatch">── 型が入った後の「到達目標」。今は買わない</p>
+      <p class="cev">哲学者による大人の学び直し定番書。実体験レビューが最も多く、完走者の満足度が高い。ただし<b>288ページ・活字中心</b>で「薄い1冊をやり切る」条件に合わない。<b>横綱〜関脇を終えた後のご褒美枠</b>。02ファイルの『論理トレーニング』と同じ著者。</p>
+      <p class="cq">「今まで自分が如何に曖昧に文章を書いていたのかが痛感させられました」「勉強って脳がすごく疲れるなーと思い出しました」</p>
+      <p class="chours">📖 筑摩書房（増補版）</p>
+      <div class="acts">
+        <a href="https://www.chikumashobo.co.jp/product/9784480816801/">🌐 筑摩書房</a>
+        <a href="https://booklog.jp/item/1/4634151219">📝 読者レビュー</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="medal">6</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">論理エンジン小学生版（どっかいトレーニング）</span><span class="pill far">要注意</span></div>
+      <p class="ccatch">── 02ファイルの元候補。「いきなり長文」の壁がある</p>
+      <p class="cev">同じ出口式でもこちらは<b>問題集型</b>。最初から長文を読む構成で、実ユーザーが「最大の壁」と報告。解説も「はじめての論理国語」より簡素。<b>横綱（はじめての論理国語）を終えた後の2周目教材</b>としてなら有力。</p>
+      <p class="cq">「はじめから長文を読まなければならない」のが壁で、親が隣について音読する運用でようやく回った、という報告</p>
+      <p class="chours">📖 水王舎・各約1,430円・全6冊</p>
+      <div class="acts">
+        <a href="https://ship.suiohsha.net/category/reference/primary/">🌐 水王舎公式</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="medal mx">外</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">5分で論理的思考力ドリル</span><span class="pill far">番外・降格</span></div>
+      <p class="ccatch">── 面白い。でも「国語の読解」ではない</p>
+      <p class="cev">02ファイルのサブ候補だったが、調査の結果<b>文章読解ではなくパズル型の論理問題集</b>と判明。「問題が面白すぎる」と評判は良いが、目的（読解・論理の国語力）から外れる。買うなら娯楽・頭の準備運動枠として。</p>
+      <p class="chours">📖 学研・1,320円・104ページ35問</p>
+      <div class="acts">
+        <a href="https://hon.gakken.jp/book/1130490300">🌐 学研公式</a>
+      </div>
+    </div>
+  </div>
+
+  <section id="science" class="sec">
+    <p class="en">brain science</p>
+    <h2>脳科学の使い方ルール</h2>
+    <div class="rule"></div>
+  </section>
+
+  <div class="note blue">
+    <p><b>① 型ドリルは1〜2周でいい。</b>論理の型は短期で入る道具。何周もしても伸び続けない（研究者の見解）。</p>
+    <p><b>② 読解の土台は語彙と背景知識。</b>型が入ったら、興味ある分野の本の多読へ移る（これが研究で最も強く支持されている）。</p>
+    <p><b>③ 最強の勉強法は「分散 × 想起」。</b>日をあけて復習＋本を閉じて「何が書いてあった？」と思い出す。マーカー・再読は効率最下位。</p>
+    <p><b>④ 脳トレ・音読神話に金をかけない。</b>ワーキングメモリを鍛える系は読解に波及しないと複数研究の統合分析で否定済み。</p>
+    <p><b>⑤ 雑念は紙に書き出して外部化。</b>ADHD当事者が実証した継続のコツ。鉛筆とキャンパスノート戦略は科学的に正しい。</p>
+  </div>
+
+  <section id="check" class="sec">
+    <p class="en">bookstore checklist</p>
+    <h2>本屋での現物チェック</h2>
+    <div class="rule"></div>
+  </section>
+
+  <div class="note">
+    <p><b>買う順番（提案）</b>：① はじめての論理国語（レベルは現物で選ぶ）→ ② サイパー文の組み立て特訓（併用サブ）→ ③ ふくしま式 → ④ 大人のための国語ゼミ</p>
+    <p><b>現物で確かめること</b>：</p>
+    <p>☐ 1ページ読んで、文章の長さが苦にならないか</p>
+    <p>☐ 小1〜小6のどのレベルから始めるか（見栄を張らず、スラスラ解ける1つ下から）</p>
+    <p>☐ 解説を1問分読んで「なぜ」が頭に映像で浮かぶか</p>
+    <p>※ 1冊を最後まで。並行は最大2冊（メイン＋サイパー）まで。</p>
+  </div>
+
+</main>
+
+<footer>
+  <p class="fchar">読</p>
+  <p>調査日 2026.07.20 ｜ 4部隊並列調査（教材実態・対抗馬・脳科学・大人の体験談）</p>
+  <p>主な出典：<a href="https://ship.suiohsha.net/category/reference/primary/">水王舎公式ショップ</a> ・ <a href="https://ninchi.sch.jp/cogtec/index.html">認知工学</a> ・ <a href="https://hon.gakken.jp/book/1130490300">学研</a> ・ <a href="https://note.com/mama_yuki/n/ne0b42bcee777">大人の体験記(note)</a> ・ 実ユーザーレビュー多数</p>
+  <p>※ 教材の付属品・価格は調査時点。購入前に公式ページで最終確認を。</p>
+</footer>
+
+<script>
+const io = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.card').forEach(c => io.observe(c));
+</script>
+</body></html>
