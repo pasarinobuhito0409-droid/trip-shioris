@@ -145,6 +145,20 @@ button{touch-action:manipulation;font-family:inherit;user-select:none;-webkit-us
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 .ticker .right{margin-left:auto;font-weight:600;letter-spacing:.14em;opacity:.85}
 
+/* ===== 第12弾: 出席盤（FIGHT WEEKバーの直下・目標プレートの上） ===== */
+.att{position:relative;margin:14px 18px;padding:16px 14px;background:rgba(10,9,8,.85);border:1px solid rgba(201,164,74,.3);border-radius:16px}
+.att .tt{font-size:10px;letter-spacing:.3em;color:#c9a44a;font-weight:800;text-align:center;margin-bottom:12px}
+.att .week{display:flex;justify-content:space-between;gap:4px}
+.att .day{text-align:center;flex:1;cursor:pointer}
+.att .day small{display:block;font-size:10px;color:rgba(255,255,255,.55);margin-bottom:6px}
+.att .day b{display:flex;align-items:center;justify-content:center;width:38px;height:38px;margin:0 auto;border-radius:50%;font-size:18px;font-style:italic}
+.att .day.ok b{border:2.5px solid #3fe07a;color:#3fe07a;text-shadow:0 0 10px rgba(63,224,122,.5);box-shadow:0 0 14px rgba(63,224,122,.25)}
+.att .day.today b{border:2.5px dashed #ffd94a;color:#ffd94a;font-size:10px;animation:attBlink 1.6s infinite}
+@keyframes attBlink{50%{opacity:.5}}
+.att .day.no b{border:2px solid rgba(255,255,255,.25);color:rgba(255,255,255,.35)}
+.att .sum{text-align:center;margin-top:13px;font-size:12px;color:rgba(255,255,255,.75)}
+.att .sum b{color:#ffd94a;font-size:16px;font-style:italic}
+
 .strap{
   position:relative;margin:0 0 2px 0;
   background:linear-gradient(90deg, rgba(16,14,16,.96), rgba(16,14,16,.82) 70%, rgba(16,14,16,.4));
@@ -506,6 +520,7 @@ button{touch-action:manipulation;font-family:inherit;user-select:none;-webkit-us
 <!-- ============ S1 入場 ============ -->
 <section class="screen active" id="screen-s1">
   <div class="ticker"><span class="live"></span>FIGHT WEEK<span class="right" id="s1TickerDate">2026.01.01 THU</span></div>
+  <div class="att" id="attBoard"></div>
   <div class="goal-bar" id="goalBar" role="button"></div>
 
   <div class="s1-head">
@@ -1315,6 +1330,7 @@ function doSave(){
   clearPlan();
   plan = null;
   syncToTracker(session);
+  if(typeof renderAttBoard === "function") renderAttBoard(); // 第12弾: 出席盤にも即反映
   vibrate([60,40,60,40,120]);
   renderS3(session);
   showScreen("s3");
@@ -1636,6 +1652,100 @@ function renderS4Pie(sessions){
   leg.innerHTML = legend;
 }
 
+/* ---------- 第12弾: 出席盤（今週7日・◯=行けた日） ---------- */
+var ATT_KEY = "fightlog_v2_att";
+var ATT_WD_JP = ["月","火","水","木","金","土","日"]; // 週=月曜起点（goalVsHTMLと同じ週の切り方）
+function loadAtt(){
+  try{ var v = JSON.parse(localStorage.getItem(ATT_KEY)||"{}"); return (v && typeof v==="object") ? v : {}; }
+  catch(e){ return {}; }
+}
+function saveAtt(a){ try{ localStorage.setItem(ATT_KEY, JSON.stringify(a)); }catch(e){} }
+function attHasSession(ds){
+  return (flData.sessions||[]).some(function(s){ return s.date === ds; });
+}
+function attHasDay(ds, att){ return !!att[ds] || attHasSession(ds); }
+function attWeekDates(){
+  var d = new Date(); d.setHours(0,0,0,0);
+  var wd = d.getDay();
+  var mon = new Date(d); mon.setDate(d.getDate() + (wd===0 ? -6 : 1-wd));
+  var arr = [];
+  for(var i=0;i<7;i++){
+    var dt = new Date(mon); dt.setDate(mon.getDate()+i);
+    arr.push(dt.getFullYear()+"-"+pad2(dt.getMonth()+1)+"-"+pad2(dt.getDate()));
+  }
+  return arr;
+}
+function attMonthCounts(){
+  var att = loadAtt();
+  var allDates = {};
+  Object.keys(att).forEach(function(d){ if(att[d]) allDates[d]=true; });
+  (flData.sessions||[]).forEach(function(s){ if(s.date) allDates[s.date]=true; });
+  var now = new Date();
+  var curY=now.getFullYear(), curM=now.getMonth();
+  var lastM=curM-1, lastY=curY; if(lastM<0){ lastM=11; lastY--; }
+  var cur=0, last=0;
+  Object.keys(allDates).forEach(function(ds){
+    var p = ds.split("-"); var y=parseInt(p[0],10), m=parseInt(p[1],10)-1;
+    if(y===curY && m===curM) cur++;
+    else if(y===lastY && m===lastM) last++;
+  });
+  return {cur:cur, last:last};
+}
+// goalVsHTMLの文体（超えた/並んだ/あとn回）に合わせる
+function attVerdict(cur, last){
+  if(last===0 && cur===0) return "";
+  if(cur > last) return "もう先月の俺を超えた";
+  if(cur === last) return "もう並んだ、あと1回で超える";
+  return "先月の俺まで あと"+(last-cur)+"回";
+}
+function renderAttBoard(){
+  var box = document.getElementById("attBoard");
+  if(!box) return;
+  var att = loadAtt();
+  var dates = attWeekDates();
+  var todayStr = todayISO();
+  var daysHTML = dates.map(function(ds, i){
+    var has = attHasDay(ds, att);
+    var isToday = ds === todayStr;
+    var cls, inner;
+    if(has){ cls="day ok"; inner="◯"; }
+    else if(isToday){ cls="day today"; inner="今夜"; }
+    else { cls="day no"; inner="—"; }
+    return '<div class="'+cls+'" data-d="'+ds+'"><small>'+ATT_WD_JP[i]+'</small><b>'+inner+'</b></div>';
+  }).join("");
+  var counts = attMonthCounts();
+  var verdict = attVerdict(counts.cur, counts.last);
+  box.innerHTML =
+    '<div class="tt">今 週 、 道 場 に 行 け た か</div>'
+    + '<div class="week">'+daysHTML+'</div>'
+    + '<div class="sum">今月 <b>'+counts.cur+'回</b>　VS　先月の俺 <b>'+counts.last+'回</b>'+(verdict?'　— '+verdict:'')+'</div>';
+}
+function attTap(ds){
+  var att = loadAtt();
+  if(attHasSession(ds)){
+    showToast("この日は入場記録あり");
+    return;
+  }
+  if(att[ds]){
+    if(!confirm("「行けた」記録を取り消す？")) return;
+    delete att[ds];
+    saveAtt(att);
+    vibrate(15);
+    renderAttBoard();
+    return;
+  }
+  att[ds] = true;
+  saveAtt(att);
+  vibrate(20);
+  showToast("◯ 今夜、行けた");
+  renderAttBoard();
+}
+document.getElementById("attBoard").addEventListener("click", function(e){
+  var d = e.target.closest(".day");
+  if(!d) return;
+  attTap(d.getAttribute("data-d"));
+});
+
 /* ---------- 🎯目標バー（第8弾・週/月の目標1つを毎回トップに） ---------- */
 var GOAL_KEY = "fightlog_v2_goal";
 function loadGoal(){ try{ return JSON.parse(localStorage.getItem(GOAL_KEY)||"null"); }catch(e){ return null; } }
@@ -1733,6 +1843,7 @@ document.getElementById("goalSaveBtn").addEventListener("click", function(){
 });
 document.getElementById("goalBackBtn").addEventListener("click", function(){ showScreen("s1"); });
 renderGoalBar();
+renderAttBoard();
 
 /* ---------- 📤 ゴング後にトラッカーへ送る（同期コードv2） ---------- */
 function buildSyncPayload(){
@@ -1827,6 +1938,8 @@ showScreen("s1");
   padding:11px 12px;font:inherit;font-size:14px;color:#efe9df}
 .kairyo-input button{border:none;border-radius:10px;padding:0 18px;font-weight:900;background:#ffb95a;color:#3a2708;cursor:pointer}
 .kairyo-list{padding:0 14px 8px}
+.kairyo-group{margin-top:6px}
+.kairyo-gh{font-size:10.5px;font-weight:900;letter-spacing:.1em;color:rgba(255,190,90,.85);padding:6px 2px 2px}
 .kairyo-row{display:flex;gap:10px;align-items:baseline;padding:9px 2px;border-top:1px solid rgba(255,255,255,.07);
   font-size:13px;line-height:1.6;color:#efe9df}
 .kairyo-row .kt{flex:none;font-size:12px}
@@ -1858,14 +1971,30 @@ showScreen("s1");
       return '<span class="'+(t===curTag?'on':'')+'" data-t="'+t+'">'+t+'</span>';
     }).join("");
   }
+  // 第12弾: 一覧をタブタグごとに見出しで固めて表示
   function renderList(){
     var d = kload();
-    document.getElementById("kairyoList").innerHTML = d.items.slice().reverse().map(function(it){
-      var dt = new Date(it.ts);
-      return '<div class="kairyo-row"><span class="kt">'+esc(it.tag.slice(0,2))+'</span><span>'+esc(it.text)+'</span>'
-        + '<span class="kd">'+(dt.getMonth()+1)+'/'+dt.getDate()+'</span>'
-        + '<button class="kdel" data-ts="'+it.ts+'">✕</button></div>';
-    }).join("") || '<div class="kairyo-row" style="color:rgba(239,233,223,.4)">まだ無い。気づいた瞬間に1行。</div>';
+    var groups = {};
+    d.items.forEach(function(it){
+      var tag = it.tag || "その他";
+      if(!groups[tag]) groups[tag] = [];
+      groups[tag].push(it);
+    });
+    var order = TAGS.filter(function(t){ return groups[t] && groups[t].length; });
+    Object.keys(groups).forEach(function(t){ if(order.indexOf(t)===-1) order.push(t); });
+    if(!order.length){
+      document.getElementById("kairyoList").innerHTML = '<div class="kairyo-row" style="color:rgba(239,233,223,.4)">まだ無い。気づいた瞬間に1行。</div>';
+      return;
+    }
+    document.getElementById("kairyoList").innerHTML = order.map(function(tag){
+      var rows = groups[tag].slice().reverse().map(function(it){
+        var dt = new Date(it.ts);
+        return '<div class="kairyo-row"><span class="kt">'+esc(it.tag.slice(0,2))+'</span><span>'+esc(it.text)+'</span>'
+          + '<span class="kd">'+(dt.getMonth()+1)+'/'+dt.getDate()+'</span>'
+          + '<button class="kdel" data-ts="'+it.ts+'">✕</button></div>';
+      }).join("");
+      return '<div class="kairyo-group"><div class="kairyo-gh">'+esc(tag)+'</div>'+rows+'</div>';
+    }).join("");
   }
   document.getElementById("kairyoFab").addEventListener("click", function(){
     document.getElementById("kairyoBg").classList.add("show");
