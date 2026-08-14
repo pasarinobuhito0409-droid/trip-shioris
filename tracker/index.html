@@ -2333,10 +2333,13 @@ function renderContent(){
   const isMma = currentView==="mma";
   const isHoshi = currentView==="hoshi";
   const isNote = currentView==="note";
-  const isRecord = currentView==="record"; // 第14弾: 積み上げでは旧サマリー/グラフも出さない（データは温存）
+  const isRecord = currentView==="record"; // 第14弾: 積み上げでは旧サマリー/グラフは出さない（データは温存）
+  // 活動継続日（🔥何ヶ月継続）だけは積み上げの一番上に残す（本人指示 2026-08-15）
   ["streakBanner","carryBanner","summary","charts"].forEach(id=>{
     const node=document.getElementById(id);
-    if(node) node.style.display = (isRecord||isCal2||isSleep||isExp||isMma||isHoshi||isNote) ? "none" : "";
+    if(!node) return;
+    const hideOnRecord = (id !== "streakBanner");
+    node.style.display = ((isRecord && hideOnRecord)||isCal2||isSleep||isExp||isMma||isHoshi||isNote) ? "none" : "";
   });
   // cal2（日ビュー）中はhtml/bodyの外側スクロールをロックし、二重スクロールを防ぐ
   document.body.classList.toggle('cal2-lock', isCal2);
