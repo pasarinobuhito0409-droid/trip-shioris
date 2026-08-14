@@ -201,9 +201,9 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 .es-card .es-diary-line:active{background:rgba(201,162,94,.12)}
 
 /* === 繰り返し（iPhone式リピート） === */
-.es-repseg{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
-.es-repseg .rep-opt{border:none;background:rgba(255,255,255,.1);color:rgba(255,255,255,.75);font:inherit;font-size:12.5px;font-weight:700;padding:9px 0;border-radius:9px;cursor:pointer}
-.es-repseg .rep-opt.sel{background:#5ac8fa;color:#04222e}
+.es-repseg{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.es-repseg .rep-opt{border:1.5px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);color:rgba(255,255,255,.7);font:inherit;font-size:12px;font-weight:800;padding:9px 14px;border-radius:99px;cursor:pointer;min-height:38px;-webkit-tap-highlight-color:transparent}
+.es-repseg .rep-opt.sel{background:rgba(90,168,255,.16);border-color:#5aa8ff;color:#9cc5ff}
 .es-line input[type=date]{border:none;background:rgba(255,255,255,.1);border-radius:8px;padding:6px 8px;font:inherit;font-size:14px;color:#5ac8fa;font-weight:700;color-scheme:dark;margin-left:auto}
 
 /* === アクションシート（この予定のみ／これ以降すべて） === */
@@ -1606,6 +1606,87 @@ body.stage-record{background:linear-gradient(180deg,#111320 0%,#0d0f1a 100%) fix
 .stk-cn-row input{flex:1 1 auto;min-width:0;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);border-radius:9px;color:#fff;font:inherit;font-size:13px;font-weight:700;padding:9px 10px}
 .stk-cn-row input:focus{outline:none;border-color:rgba(255,217,74,.6)}
 .stk-ov-note{font-size:10.5px;color:rgba(255,255,255,.45);line-height:1.8;margin-top:10px}
+
+/* ==================== 第15弾: タグ制（p17_test.html / p16_test.html 準拠） ==================== */
+/* --- 銅（金・銀と同じ流儀。発光は弱め） --- */
+.dv-ev.bronze{background:linear-gradient(160deg,#e8b088,#9a5a2e);color:#2e1608;border-color:rgba(154,90,46,.55);box-shadow:0 2px 10px rgba(0,0,0,.2),0 0 9px rgba(232,176,136,.3)}
+.dv-ev.bronze .nm{text-shadow:none}
+.rec-log .rl-chip.bronze{background:linear-gradient(135deg,#e8b088,#9a5a2e);color:#2e1608}
+/* --- 入力シートのタグ列 --- */
+.es-tagrow{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.es-tag{font:inherit;font-size:12px;font-weight:800;padding:9px 14px;border-radius:99px;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.16);color:rgba(255,255,255,.7);cursor:pointer;min-height:38px;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.es-tag:active{transform:scale(.96)}
+.es-tag.on{background:rgba(77,208,126,.16);border-color:#4dd07e;color:#8ff0b0;box-shadow:0 0 10px rgba(77,208,126,.25)}
+.es-tag.guess{border-style:dashed;border-color:rgba(255,217,74,.5);color:rgba(255,217,74,.75)}
+.es-subnote{font-size:10px;color:rgba(255,255,255,.45);margin-top:9px;line-height:1.7}
+.es-subnote b{color:rgba(255,217,74,.8)}
+/* --- 見張り⚠（食い違った時だけ） --- */
+.tgw-bg{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .18s}
+.tgw-bg.show{opacity:1}
+.tgw{width:100%;max-width:360px;background:#1a1610;border:1.5px solid rgba(255,180,60,.6);border-radius:18px;padding:17px 16px;box-shadow:0 16px 40px rgba(0,0,0,.6)}
+.tgw-t{font-size:14px;font-weight:900;color:#ffcf6a;margin-bottom:9px}
+.tgw p{font-size:12.5px;line-height:1.9;color:rgba(255,255,255,.85);margin-bottom:6px}
+.tgw p b{color:#fff}
+.tgw p.dim{color:rgba(255,255,255,.6)}
+.tgw-btns{display:flex;gap:9px;margin-top:12px}
+.tgw-btns button{flex:1;text-align:center;padding:12px 6px;border-radius:11px;font:inherit;font-size:12.5px;font-weight:900;border:none;cursor:pointer;min-height:46px}
+.tgw-btns .fix{background:linear-gradient(180deg,#ffe9ab,#f5c542);color:#3a2800}
+.tgw-btns .keep{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.8)}
+/* --- タグ編集シート（長押し） --- */
+/* 1タグ＝1行に収める（スマホ幅で折り返さない） */
+.tge-row{display:grid;grid-template-columns:44px minmax(0,1fr) 32px 28px 28px 28px;gap:5px;align-items:center;padding:5px 0;border-bottom:1px dashed rgba(255,255,255,.08)}
+.tge-row:last-of-type{border-bottom:none}
+.tge-row input{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);border-radius:9px;color:#fff;font:inherit;font-size:13px;font-weight:700;padding:10px 6px;min-width:0;width:100%}
+.tge-row input:focus{outline:none;border-color:rgba(255,217,74,.6)}
+.tge-emoji{text-align:center;font-size:15px}
+.tge-row button{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:rgba(255,255,255,.75);font:inherit;font-size:13px;font-weight:800;border-radius:9px;cursor:pointer;padding:0;height:40px;position:relative;-webkit-tap-highlight-color:transparent}
+.tge-row button::before{content:"";position:absolute;left:-5px;right:-5px;top:-3px;bottom:-3px}
+.tge-col{border-radius:9px}
+.tge-del{color:#ff8a8a}
+.tge-pal{display:none;grid-column:1 / -1;flex-wrap:wrap;gap:7px;padding:4px 0 8px}
+.tge-row.open .tge-pal{display:flex}
+.tge-pal button{width:30px;height:30px;border-radius:50%;border:2px solid rgba(255,255,255,.25)}
+.tge-add{width:100%;margin-top:10px;padding:12px;border-radius:12px;border:1px dashed rgba(255,217,74,.5);background:rgba(255,217,74,.08);color:#ffd94a;font:inherit;font-size:13px;font-weight:800;cursor:pointer;min-height:46px}
+/* --- 積み上げ v3: 期間ピル + ‹› --- */
+.stk-pills{display:flex;gap:6px;justify-content:center;margin-bottom:12px}
+.stk-pill{font:inherit;font-size:12px;font-weight:800;padding:8px 18px;border-radius:99px;border:1px solid rgba(255,255,255,.18);background:transparent;color:rgba(255,255,255,.6);cursor:pointer;min-height:38px;-webkit-tap-highlight-color:transparent}
+.stk-pill.on{border-color:rgba(255,217,74,.6);background:rgba(255,217,74,.16);color:#ffd94a}
+.stk-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:13px;font-weight:800;color:#fff;gap:8px}
+.stk-nav button{width:34px;height:34px;flex:0 0 34px;border-radius:50%;border:none;background:rgba(255,255,255,.1);color:#fff;font:inherit;font-size:14px;font-weight:900;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.stk-nav button:active{background:rgba(255,255,255,.2)}
+.stk-nav span{flex:1 1 auto;text-align:center;line-height:1.5}
+.stk-pie{display:block;width:100%}
+.stk-pie text{font-family:-apple-system,"Hiragino Sans","Yu Gothic UI",sans-serif}
+/* --- 内訳リスト --- */
+.stk-brow{display:grid;grid-template-columns:14px 1fr 52px 84px;gap:10px;align-items:center;padding:9px 2px;border-bottom:1px dashed rgba(255,255,255,.09)}
+.stk-brow:last-child{border-bottom:none}
+.stk-brow i{width:12px;height:12px;border-radius:4px}
+.stk-brow .nm{font-size:13px;font-weight:800;color:#fff;min-width:0}
+.stk-brow .nm small{display:block;font-size:9.5px;font-weight:600;color:rgba(255,255,255,.45);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stk-brow .ct{font-size:14px;font-weight:900;font-style:italic;text-align:right;color:#fff}
+.stk-brow .ct small{font-size:9px;color:rgba(255,255,255,.5);font-style:normal;margin-left:2px}
+.stk-brow .bar{height:7px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
+.stk-brow .bar b{display:block;height:100%;border-radius:99px}
+.stk-brow.untag{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.stk-brow.untag:active{background:rgba(255,255,255,.05)}
+.stk-brow.untag .nm small{color:rgba(255,217,74,.7)}
+/* --- 「日」表示のリスト --- */
+.stk-dhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.stk-dhead b{font-size:13px;font-weight:800;color:#fff}
+.stk-dhead small{font-size:10.5px;color:rgba(255,255,255,.5)}
+.stk-drow{display:flex;align-items:center;gap:9px;padding:10px 2px;border-bottom:1px dashed rgba(255,255,255,.09)}
+.stk-drow:last-child{border-bottom:none}
+.stk-drow .ck{width:22px;height:22px;flex:0 0 22px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;background:rgba(255,255,255,.08);color:rgba(255,255,255,.3)}
+.stk-drow.done .ck{background:#4dd07e;color:#06280f}
+.stk-drow .lb{flex:1 1 auto;min-width:0;font-size:13px;font-weight:700;color:rgba(255,255,255,.85);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stk-drow.done .lb{color:#fff}
+.stk-drow .tg{flex:0 0 auto;font-size:10px;font-weight:800;padding:4px 9px;border-radius:99px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.6)}
+/* --- まとめてタグ付け --- */
+.stk-ut-row{padding:10px 2px;border-bottom:1px dashed rgba(255,255,255,.1)}
+.stk-ut-row:last-child{border-bottom:none}
+.stk-ut-nm{font-size:13.5px;font-weight:800;color:#fff;margin-bottom:8px}
+.stk-ut-nm small{font-size:10.5px;font-weight:700;color:rgba(255,255,255,.45);margin-left:7px}
+.stk-ut-tags{display:flex;flex-wrap:wrap;gap:7px}
 </style>
 </head>
 <body>
@@ -2025,6 +2106,128 @@ function getDayState(m,d,y){
   const k = dayKey(y,m,d);
   state[k] = state[k] || {};
   return state[k];
+}
+
+/* ==================== 第15弾: タグ基盤 ====================
+   新しく増やす localStorage キーはこの2つ（tags_v1 / tagdict_v1）だけ。
+   既存の tracker2026_v2 は「カスタム予定に tag」「日別に __ptag__」を足すだけで、
+   既存フィールド（__custom__ / __hidden__ / __ptime__ / __pcolor__ / __diary__）は1つも触らない。 */
+const TAGS_KEY = "tags_v1";
+const TAGDICT_KEY = "tagdict_v1";
+const TAG_NONE = "__none__";              // 未分類の内部キー（保存はしない）
+const TAG_NONE_COLOR = "#777";
+const SPECIAL_COLORS = ["gold","silver","bronze"];   // 金・銀・銅はグラデ扱い
+function isSpecialColor(c){ return SPECIAL_COLORS.indexOf(c) >= 0; }
+// グラデ色をSVG/棒グラフ用の単色に落とす（p16/p17モックの実値）
+function stkSolidColor(c){
+  if(c==="gold") return "#e8c877";
+  if(c==="silver") return "#aab3c0";
+  if(c==="bronze") return "#c98a56";
+  return c;
+}
+const DEFAULT_TAGS = [
+  {id:"sport", emoji:"🏃", name:"運動", color:"#5aa8ff"},
+  {id:"study", emoji:"📚", name:"勉強", color:"#4dd07e"},
+  {id:"play",  emoji:"🎮", name:"遊び", color:"#c85adc"},
+  {id:"rest",  emoji:"🛁", name:"休養", color:"#5ad0dc"},
+  {id:"spec",  emoji:"⭐", name:"特別", color:"#e8c877"},
+  {id:"duty",  emoji:"🏥", name:"用事", color:"#aab3c0"}
+];
+const DEFAULT_TAGDICT = {
+  "MMA":"sport", "WT":"sport", "ハンド":"sport", "ハンドボール":"sport", "スパー":"sport",
+  "算数":"study", "勉強":"study", "学び":"study", "復習":"study",
+  "温泉":"rest",  "サウナ":"rest"
+};
+let tagsCache = null;
+function loadTags(){
+  if(tagsCache) return tagsCache;
+  let v = null;
+  try{ v = JSON.parse(localStorage.getItem(TAGS_KEY)||"null"); }catch(e){ v = null; }
+  if(!Array.isArray(v) || !v.length){
+    v = DEFAULT_TAGS.map(t=>({id:t.id, emoji:t.emoji, name:t.name, color:t.color}));
+    try{ localStorage.setItem(TAGS_KEY, JSON.stringify(v)); }catch(e){}
+  }
+  tagsCache = v.filter(t=>t && typeof t==="object" && t.id).map(t=>({
+    id: String(t.id),
+    emoji: String(t.emoji || "🏷"),
+    name: String(t.name || "名前なし"),
+    color: stkNormColor(t.color || "#8e8e93")
+  }));
+  return tagsCache;
+}
+function saveTags(list){
+  try{ localStorage.setItem(TAGS_KEY, JSON.stringify(list)); }catch(e){}
+  tagsCache = null;
+  loadTags();
+}
+function tagById(id){
+  if(!id || id===TAG_NONE) return null;
+  const list = loadTags();
+  for(let i=0;i<list.length;i++){ if(list[i].id===id) return list[i]; }
+  return null;
+}
+function tagLabel(id){ const t=tagById(id); return t ? (t.emoji+" "+t.name) : "未分類"; }
+function newTagId(){ return "tg_"+Date.now().toString(36)+Math.floor(Math.random()*1296).toString(36); }
+
+// ---- 単語帳（見張りの記憶 ＝ 昔の予定の自動仕分け。事実は1つだけ持つ） ----
+function loadTagDict(){
+  let v = null;
+  try{ v = JSON.parse(localStorage.getItem(TAGDICT_KEY)||"null"); }catch(e){ v = null; }
+  if(!v || typeof v!=="object" || Array.isArray(v)){
+    // キーがまだ無い時だけ初期辞書を書く（一度消した学習は復活させない）
+    v = Object.assign({}, DEFAULT_TAGDICT);
+    try{ localStorage.setItem(TAGDICT_KEY, JSON.stringify(v)); }catch(e){}
+  }
+  return v;
+}
+function saveTagDict(d){ try{ localStorage.setItem(TAGDICT_KEY, JSON.stringify(d)); }catch(e){} }
+function tagDictLearn(name, tagId){
+  const k = roundName(name);
+  if(!k || !tagId) return;
+  const d = loadTagDict();
+  if(d[k] === tagId) return;
+  d[k] = tagId;
+  saveTagDict(d);
+}
+
+// ---- 丸め名前: 全角半角そろえ → 朝:/昼:/夜: を落とす → 括弧以降を落とす ----
+function roundName(s){
+  let t = String(s==null ? "" : s);
+  try{ t = t.normalize("NFKC"); }catch(e){}
+  t = t.trim().replace(/^(朝|昼|夜)\s*[:：]\s*/, "");
+  t = t.split(/[（(]/)[0];
+  return t.trim();
+}
+
+// ---- 実効タグ: ①自分で付けたタグ → ②単語帳 → ③未分類 ----
+function effTagOf(explicitTagId, label){
+  if(explicitTagId && tagById(explicitTagId)) return explicitTagId;
+  return guessTagOf(label);
+}
+function guessTagOf(label){
+  const k = roundName(label);
+  if(!k) return null;
+  const g = loadTagDict()[k];
+  return (g && tagById(g)) ? g : null;
+}
+
+// ---- 予定1件のタグ読み書き（既存の入れ物を壊さない） ----
+function getEvTagExplicit(s, kind, id){
+  if(kind === "custom"){
+    const t = (s.__custom__||[]).find(t=>t.id===id);
+    return (t && t.tag) ? t.tag : null;
+  }
+  return (s.__ptag__ && s.__ptag__[id]) ? s.__ptag__[id] : null;
+}
+function setEvTagExplicit(s, kind, id, tagId){
+  if(kind === "custom"){
+    const t = (s.__custom__||[]).find(t=>t.id===id);
+    if(!t) return;
+    if(tagId) t.tag = tagId; else delete t.tag;
+    return;
+  }
+  if(tagId){ if(!s.__ptag__) s.__ptag__ = {}; s.__ptag__[id] = tagId; }
+  else if(s.__ptag__){ delete s.__ptag__[id]; }
 }
 
 // ===== 日生成 =====
@@ -3366,7 +3569,7 @@ function renderRecordLegacy(){
     const wd=WD_JP[x.wd];
     const chips=items.map(it=>{
       const col=it.color||DOT_COLORS[it.cat]||'#8e44ad';
-      const isGS = col==='gold'||col==='silver';
+      const isGS = isSpecialColor(col);
       const bg = isGS ? '' : `background:linear-gradient(135deg,${col}dd,${col}99)`;
       return `<span class="rl-chip ${isGS?col:''}" style="${bg}">✓ ${esc(it.label)}</span>`;
     }).join('');
@@ -3391,10 +3594,10 @@ function loadColorNames(){
 }
 function saveColorNames(o){ try{ localStorage.setItem(COLOR_NAMES_KEY, JSON.stringify(o)); }catch(e){} }
 
-// 色は必ず #xxx / #xxxxxx / gold / silver に正規化（style属性に直接入れるため）
+// 色は必ず #xxx / #xxxxxx / gold / silver / bronze に正規化（style属性に直接入れるため）
 function stkNormColor(c){
   const s = String(c==null?"":c).trim().toLowerCase();
-  if(s==="gold" || s==="silver") return s;
+  if(isSpecialColor(s)) return s;
   if(/^#[0-9a-f]{3}$/.test(s) || /^#[0-9a-f]{6}$/.test(s)) return s;
   return DOT_COLORS.custom;
 }
@@ -3447,11 +3650,13 @@ function stkColorLabel(c){
 function stkSwatchStyle(c){
   if(c==="gold") return "background:linear-gradient(180deg,#f6dd8f,#c9982f)";
   if(c==="silver") return "background:linear-gradient(180deg,#e8ecf2,#9aa3b0)";
+  if(c==="bronze") return "background:linear-gradient(180deg,#e8b088,#9a5a2e)";
   return "background:"+c;
 }
 function stkBrickStyle(c){
   if(c==="gold") return "background:linear-gradient(180deg,#f6dd8f,#c9982f)";
   if(c==="silver") return "background:linear-gradient(180deg,#e8ecf2,#9aa3b0)";
+  if(c==="bronze") return "background:linear-gradient(180deg,#e8b088,#9a5a2e)";
   const rgb = stkHex2rgb(c);
   if(!rgb) return "background:"+c;
   return "background:linear-gradient(180deg,"+c+",rgb("+Math.round(rgb[0]*.56)+","+Math.round(rgb[1]*.56)+","+Math.round(rgb[2]*.56)+"))";
@@ -3536,7 +3741,9 @@ function stkTowerRows(list, perRow, markNew, plain){
   return rows.join("");
 }
 
-function renderRecord(){
+/* 第14弾の4段（輪・草・山・塔）。第15弾で画面からは外したが、関数もデータもそのまま残す。
+   戻したい時は renderRecord() の中でこれを呼べばいい。 */
+function renderRecord14Legacy(){
   const today = new Date(); today.setHours(0,0,0,0);
   const tY = today.getFullYear(), tM = today.getMonth()+1, tD = today.getDate();
   const walk = stkYearWalk(tY, today);
@@ -3649,7 +3856,8 @@ function stkCloseOv(){
   stkOvKind = null;
   const el = document.getElementById("stkOv");
   if(el && el.parentNode) el.parentNode.removeChild(el);
-  if(kind === "colors" && currentView === "record") renderContent();
+  if(kind === "tags") evRefreshTagRow();   // 第15弾: タグを直したらシートのタグ列も直す
+  if((kind === "colors" || kind === "tags" || kind === "untag") && currentView === "record") renderContent();
 }
 function stkOpenOv(kind, title, bodyHTML, note){
   if(stkOvKind === kind) return; // 連打で二重に開かない
@@ -3697,6 +3905,436 @@ function stkSetColorName(c, v){
   const t = String(v==null?"":v).trim();
   if(t) names[c] = t; else delete names[c];
   saveColorNames(names);
+}
+
+/* ==================== 第15弾: タグ編集シート（タグを長押しで開く） ==================== */
+const TAG_COLOR_CHOICES = ["#5aa8ff","#4dd07e","#c85adc","#5ad0dc","#e8c877","#aab3c0",
+                           "#ff9d6c","#ff6b8a","#9aa0ff","#7bd88f","gold","silver","bronze"];
+function tagEditOpen(){
+  const tags = loadTags();
+  const rows = tags.map((t,i)=>`<div class="tge-row" data-i="${i}">
+      <input class="tge-emoji" type="text" maxlength="4" value="${stkEscAttr(t.emoji)}" data-k="emoji">
+      <input class="tge-name" type="text" maxlength="10" value="${stkEscAttr(t.name)}" data-k="name">
+      <button type="button" class="tge-col" style="${stkSwatchStyle(t.color)}" data-act="color" title="色"></button>
+      <button type="button" data-act="up" title="上へ">↑</button>
+      <button type="button" data-act="down" title="下へ">↓</button>
+      <button type="button" class="tge-del" data-act="del" title="消す">✕</button>
+      <div class="tge-pal">${TAG_COLOR_CHOICES.map(c=>`<button type="button" data-act="pick" data-c="${c}" style="${stkSwatchStyle(c)}"></button>`).join("")}</div>
+    </div>`).join("");
+  const body = `<div id="tgeList">${rows}</div>
+    <button type="button" class="tge-add" onclick="tagEditAdd()">＋ タグを追加</button>`;
+  stkOvKind = null;   // 開き直しでも必ず作り直す
+  stkOpenOv("tags", "タ グ の 編 集", body,
+    "絵文字・名前・色・並びを変えられる。ここで決めた色が、積み上げの円グラフの帯の色になる。");
+  tagEditBind();
+}
+function tagEditReopen(){ tagEditOpen(); evRefreshTagRow(); }
+function tagEditAdd(){
+  const tags = loadTags().slice();
+  tags.push({id:newTagId(), emoji:"🏷", name:"新しいタグ", color:"#8e8e93"});
+  saveTags(tags);
+  tagEditReopen();
+}
+function tagEditBind(){
+  const list = document.getElementById("tgeList");
+  if(!list) return;
+  list.addEventListener("input", e=>{
+    const inp = e.target.closest("input"); if(!inp) return;
+    const row = inp.closest(".tge-row"); if(!row) return;
+    const i = +row.dataset.i;
+    const tags = loadTags().slice();
+    if(!tags[i]) return;
+    const k = inp.dataset.k;
+    const val = String(inp.value||"").trim();
+    tags[i] = Object.assign({}, tags[i]);
+    tags[i][k] = val || (k==="emoji" ? "🏷" : "名前なし");
+    saveTags(tags);       // 入力のたびに保存（画面は作り直さない＝入力中にカーソルが飛ばない）
+  });
+  list.addEventListener("click", e=>{
+    const btn = e.target.closest("[data-act]"); if(!btn) return;
+    const row = btn.closest(".tge-row"); if(!row) return;
+    const i = +row.dataset.i;
+    let tags = loadTags().slice();
+    if(!tags[i]) return;
+    const act = btn.dataset.act;
+    if(act === "color"){ row.classList.toggle("open"); return; }
+    if(act === "pick"){
+      tags[i] = Object.assign({}, tags[i], {color: btn.dataset.c});
+      saveTags(tags); tagEditReopen(); return;
+    }
+    if(act === "up"){
+      if(i <= 0) return;
+      const t = tags[i]; tags[i] = tags[i-1]; tags[i-1] = t;
+      saveTags(tags); tagEditReopen(); return;
+    }
+    if(act === "down"){
+      if(i >= tags.length-1) return;
+      const t = tags[i]; tags[i] = tags[i+1]; tags[i+1] = t;
+      saveTags(tags); tagEditReopen(); return;
+    }
+    if(act === "del"){
+      if(!confirm("「"+tags[i].name+"」を消す？\n（このタグが付いてた予定は未分類に戻る）")) return;
+      const gone = tags[i].id;
+      tags = tags.filter((x,j)=>j!==i);
+      saveTags(tags);
+      const d = loadTagDict(); let changed = false;
+      Object.keys(d).forEach(k=>{ if(d[k] === gone){ delete d[k]; changed = true; } });
+      if(changed) saveTagDict(d);
+      if(evCtx && evCtx.tag === gone) evCtx.tag = null;
+      tagEditReopen(); return;
+    }
+  });
+}
+
+/* ==================== 第15弾: 積み上げ v3（p16_test.html 準拠） ====================
+   🔥継続日（#streakBanner・既存のまま）→ 円グラフ主役 → 今年の山。の3つだけ。
+   集計は「色」ではなく「タグ」。円の帯＝タグごとの✓数、灰色のすき間＝まだの分。 */
+let stkPeriod = "month";     // day / week / month / year
+let stkAnchor = null;        // 積み上げ専用の基準日。カレンダーの表示月とは連動しない
+function stkToday(){ const t = new Date(); t.setHours(0,0,0,0); return t; }
+function stkGetAnchor(){ if(!stkAnchor) stkAnchor = stkToday(); return stkAnchor; }
+function stkDayDiff(a,b){
+  return Math.round((Date.UTC(b.getFullYear(),b.getMonth(),b.getDate())
+                   - Date.UTC(a.getFullYear(),a.getMonth(),a.getDate())) / 86400000);
+}
+function stkSetPeriod(p){
+  if(stkPeriod === p) return;
+  stkPeriod = p;
+  stkAnchor = stkToday();    // 期間を変えたら今日に戻る（迷子にならない）
+  renderContent();
+}
+function stkShift(delta){
+  const a = new Date(stkGetAnchor());
+  if(stkPeriod === "day") a.setDate(a.getDate()+delta);
+  else if(stkPeriod === "week") a.setDate(a.getDate()+7*delta);
+  else if(stkPeriod === "month") a.setMonth(a.getMonth()+delta, 1);
+  else a.setFullYear(a.getFullYear()+delta, 0, 1);
+  stkAnchor = a;
+  renderContent();
+}
+function stkRange(period, anchor){
+  const a = new Date(anchor); a.setHours(0,0,0,0);
+  let s, e, label;
+  if(period === "day"){
+    s = new Date(a); e = new Date(a);
+    label = `${a.getMonth()+1}月${a.getDate()}日（${WD_JP[a.getDay()]}）`;
+  } else if(period === "week"){
+    const off = (a.getDay()===0) ? 6 : (a.getDay()-1);
+    s = new Date(a); s.setDate(a.getDate()-off);
+    e = new Date(s); e.setDate(s.getDate()+6);
+    label = `${s.getMonth()+1}/${s.getDate()}〜${e.getMonth()+1}/${e.getDate()}`;
+  } else if(period === "month"){
+    s = new Date(a.getFullYear(), a.getMonth(), 1);
+    e = new Date(a.getFullYear(), a.getMonth()+1, 0);
+    label = `${a.getMonth()+1}月`;
+  } else {
+    s = new Date(a.getFullYear(), 0, 1);
+    e = new Date(a.getFullYear(), 11, 31);
+    label = `${a.getFullYear()}年`;
+  }
+  return {s:s, e:e, label:label};
+}
+function stkPrevAnchor(period, anchor){
+  const a = new Date(anchor);
+  if(period === "day") a.setDate(a.getDate()-1);
+  else if(period === "week") a.setDate(a.getDate()-7);
+  else if(period === "month") a.setMonth(a.getMonth()-1, 1);
+  else a.setFullYear(a.getFullYear()-1, 0, 1);
+  return a;
+}
+
+// 期間内の予定を全部数える。total=入れた予定の数 / done=✓した数 / byTag=タグ別の✓
+function stkCollect(s0, e0){
+  const out = {total:0, done:0, byTag:{}, perDay:{}, items:[]};
+  if(!s0 || !e0) return out;
+  const endNum = stkYmdNum(e0);
+  const monthCache = {};
+  const cur = new Date(s0);
+  let guard = 0;
+  while(stkYmdNum(cur) <= endNum && guard++ < 800){
+    const y = cur.getFullYear(), m = cur.getMonth()+1, d = cur.getDate();
+    const mk = y+"|"+m;
+    if(!monthCache[mk]){ try{ monthCache[mk] = buildMonth(m,y) || []; }catch(err){ monthCache[mk] = []; } }
+    const x = monthCache[mk].find(q=>q.d===d);
+    const s = state[dayKey(y,m,d)] || {};
+    const hid = Array.isArray(s.__hidden__) ? s.__hidden__ : [];
+    const push = (label, explicit, done, color)=>{
+      out.total++;
+      out.items.push({label:label, done:done, tag:effTagOf(explicit,label), color:color, y:y, m:m, d:d});
+      if(!done) return;
+      out.done++;
+      const dk = y*10000 + m*100 + d;
+      out.perDay[dk] = (out.perDay[dk]||0) + 1;
+      const tg = effTagOf(explicit, label) || TAG_NONE;
+      const b = out.byTag[tg] || (out.byTag[tg] = {n:0, names:{}});
+      b.n++;
+      const rn = roundName(label) || String(label||"名前なし");
+      b.names[rn] = (b.names[rn]||0) + 1;
+    };
+    if(x){
+      let preset = [];
+      try{ preset = tasksOf(x) || []; }catch(err){ preset = []; }
+      for(let j=0;j<preset.length;j++){
+        const tk = preset[j];
+        if(hid.indexOf(tk.id) >= 0) continue;
+        push(tk.label, (s.__ptag__ && s.__ptag__[tk.id]) || null, !!s[tk.id],
+             stkNormColor((s.__pcolor__ && s.__pcolor__[tk.id]) || DOT_COLORS[tk.cat] || DOT_COLORS.custom));
+      }
+    }
+    const cus = Array.isArray(s.__custom__) ? s.__custom__ : [];
+    for(let j=0;j<cus.length;j++){
+      const t = cus[j];
+      if(!t) continue;
+      push(t.label, t.tag || null, !!s[t.id], stkNormColor(t.color || DOT_COLORS.custom));
+    }
+    cur.setDate(cur.getDate()+1);
+  }
+  return out;
+}
+// 前の期間の「同じところまで」の✓数。データが無ければ null（＝比べない）
+function stkCompare(){
+  const rg = stkRange(stkPeriod, stkGetAnchor());
+  const td = stkToday();
+  const capEnd = (stkYmdNum(td) < stkYmdNum(rg.e)) ? td : rg.e;
+  if(stkYmdNum(capEnd) < stkYmdNum(rg.s)) return null;      // まだ来てない期間
+  const elapsed = stkDayDiff(rg.s, capEnd);
+  const pr = stkRange(stkPeriod, stkPrevAnchor(stkPeriod, stkGetAnchor()));
+  let pEnd = new Date(pr.s); pEnd.setDate(pr.s.getDate()+elapsed);
+  if(stkYmdNum(pEnd) > stkYmdNum(pr.e)) pEnd = new Date(pr.e);
+  const prev = stkCollect(pr.s, pEnd);
+  if(prev.total === 0) return null;
+  return {prevDone: prev.done};
+}
+// 両方0なら比べるものが無い（データ不足＝出さない）
+function stkCompareShown(agg){
+  const cmp = stkCompare();
+  if(!cmp) return null;
+  if(cmp.prevDone === 0 && agg.done === 0) return null;
+  return cmp;
+}
+// タグごとの行（多い順）＋ 未分類を必ず最後に
+function stkTagRows(agg){
+  const rows = [];
+  loadTags().forEach(t=>{
+    const b = agg.byTag[t.id];
+    if(!b || !b.n) return;
+    rows.push({id:t.id, label:t.emoji+" "+t.name, color:stkSolidColor(t.color), n:b.n, names:b.names});
+  });
+  rows.sort((a,b)=>b.n-a.n);
+  const u = agg.byTag[TAG_NONE];
+  if(u && u.n) rows.push({id:TAG_NONE, label:"⬜ 未分類", color:TAG_NONE_COLOR, n:u.n, names:u.names, untag:true});
+  return rows;
+}
+function stkTop3(names){
+  const ks = Object.keys(names).sort((a,b)=>names[b]-names[a]).slice(0,3);
+  return ks.map(k=>k+" "+names[k]+"回").join(" ・ ");
+}
+function stkPillsHTML(){
+  const defs = [["day","日"],["week","週"],["month","月"],["year","年"]];
+  return `<div class="stk-pills">${defs.map(p=>
+    `<button type="button" class="stk-pill${stkPeriod===p[0]?' on':''}" onclick="stkSetPeriod('${p[0]}')">${p[1]}</button>`
+  ).join("")}</div>`;
+}
+function stkNavHTML(label, tail){
+  return `<div class="stk-nav">
+    <button type="button" onclick="stkShift(-1)">‹</button>
+    <span>${escHtml(label)}${tail?`<br><small style="font-weight:600;font-size:10.5px;color:rgba(255,255,255,.5)">${escHtml(tail)}</small>`:""}</span>
+    <button type="button" onclick="stkShift(1)">›</button>
+  </div>`;
+}
+// 円の右に出す説明。出さない行は詰める（穴を開けない）
+function stkInfoLines(agg, rg){
+  const L = [];
+  L.push({t:"グラフの帯＝タグごとの✓数", s:10, f:"rgba(255,255,255,.5)", pre:0});
+  L.push({t:"灰色のすき間＝まだの分",   s:10, f:"rgba(255,255,255,.5)", pre:22});
+  const cmp = stkCompareShown(agg);
+  if(cmp){
+    const diff = agg.done - cmp.prevDone;
+    const lab = stkPeriod==="day" ? "昨日" : (stkPeriod==="week" ? "先週" : (stkPeriod==="month" ? "先月" : "去年"));
+    L.push({t:lab+"同時点より", s:10, f:"rgba(255,255,255,.5)", pre:28});
+    L.push({t:(diff>0 ? "▲ +"+diff+"回 速い" : (diff<0 ? "▼ "+Math.abs(diff)+"回" : "＝ 同じペース")), s:15, w:900,
+            f:(diff>0 ? "#3fe07a" : (diff<0 ? "#ff9d6c" : "#fff")), pre:22});
+  }
+  // 平均は「まだ来てない日」で薄めない。今日までの経過日数で割る
+  const td = stkToday();
+  const capEnd = (stkYmdNum(td) < stkYmdNum(rg.e)) ? td : rg.e;
+  const days = Math.max(1, stkDayDiff(rg.s, capEnd) + 1);
+  if(agg.done > 0 && days > 1){
+    L.push({t:"1日平均", s:10, f:"rgba(255,255,255,.5)", pre:28});
+    L.push({t:(agg.done/days).toFixed(1)+"回", s:14, w:900, f:"#fff", pre:21});
+  }
+  if(agg.done > 0){
+    let bk = null, bv = 0;
+    Object.keys(agg.perDay).forEach(k=>{ if(agg.perDay[k] > bv){ bv = agg.perDay[k]; bk = k; } });
+    if(bk){
+      const mm = Math.floor((+bk % 10000)/100), dd = (+bk % 100);
+      L.push({t:"一番多い日", s:10, f:"rgba(255,255,255,.5)", pre:27});
+      L.push({t:mm+"/"+dd+"（"+bv+"回）", s:14, w:900, f:"#fff", pre:20});
+    }
+  }
+  let y = 0;
+  return L.map(l=>{ y += l.pre;
+    return `<text x="0" y="${y}" font-size="${l.s}" ${l.w?`font-weight="${l.w}"`:""} fill="${l.f}">${escHtml(l.t)}</text>`;
+  }).join("");
+}
+function stkPiePanel(rg, agg){
+  const C = 352, R = 56;              // 円周352 = 2πr（p16モックの実寸）
+  const rows = stkTagRows(agg);
+  const pct = agg.total ? Math.round(100*agg.done/agg.total) : 0;
+  let off = 0, segs = "";
+  rows.forEach(r=>{
+    if(!r.n || !agg.total) return;
+    const len = C * r.n / agg.total;
+    segs += `<circle r="${R}" fill="none" stroke="${r.color}" stroke-width="26" stroke-linecap="butt" `
+          + `stroke-dasharray="${len.toFixed(2)} ${(C-len).toFixed(2)}" stroke-dashoffset="${(-off).toFixed(2)}" transform="rotate(-90)"/>`;
+    off += len;
+  });
+  const maxN = rows.length ? rows[0].n : 1;
+  const breakdown = rows.length ? rows.map(r=>{
+    const sub = stkTop3(r.names);
+    const w = Math.max(4, Math.round(100*r.n/Math.max(1,maxN)));
+    const cls = r.untag ? "stk-brow untag" : "stk-brow";
+    const tap = r.untag ? ` onclick="stkOpenUntagged()"` : "";
+    const subLine = r.untag
+      ? `<small>タップでまとめてタグ付け</small>`   // 狭い画面でも誘導が消えないよう、ここは短く
+      : (sub ? `<small>${escHtml(sub)}</small>` : "");
+    return `<div class="${cls}"${tap}>
+      <i style="${stkSwatchStyle(r.color)}"></i>
+      <div class="nm">${escHtml(r.label)}${subLine}</div>
+      <div class="ct">${r.n}<small>回</small></div>
+      <div class="bar"><b style="width:${w}%;${stkSwatchStyle(r.color)}"></b></div>
+    </div>`;
+  }).join("") : `<div class="stk-empty">まだ✓なし<br><small>カレンダーで予定を✓すると、ここにタグ別で出る</small></div>`;
+  return `<div class="stk-sect">
+    ${stkPillsHTML()}
+    ${stkNavHTML(rg.label, "入れた予定のうち、何％✓できたか")}
+    <svg class="stk-pie" width="100%" height="196" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid meet">
+      <g transform="translate(100,100)">
+        <circle r="${R}" fill="none" stroke="rgba(255,255,255,.09)" stroke-width="26"/>
+        ${segs}
+        <text x="0" y="-2" text-anchor="middle" font-size="26" font-weight="900" fill="#fff">${pct}%</text>
+        <text x="0" y="17" text-anchor="middle" font-size="9.5" fill="rgba(255,255,255,.6)">予定${agg.total}個中 ✓${agg.done}個</text>
+      </g>
+      <g transform="translate(196,30)">${stkInfoLines(agg, rg)}</g>
+    </svg>
+    <div class="stk-breakdown">${breakdown}</div>
+  </div>`;
+}
+// タグチップの淡い下地（色が読めなければ既定の灰）
+function stkTagChipStyle(tagId){
+  const t = tagById(tagId);
+  if(!t) return "";
+  const rgb = stkHex2rgb(stkSolidColor(t.color));
+  if(!rgb) return "";
+  return `background:rgba(${rgb[0]},${rgb[1]},${rgb[2]},.2);color:#fff`;
+}
+// 「日」は円だと1〜3個でスカスカなので、その日の予定リストにする
+function stkDayPanel(rg, agg){
+  const pct = agg.total ? Math.round(100*agg.done/agg.total) : 0;
+  const list = agg.items.length ? agg.items.map(it=>`<div class="stk-drow${it.done?' done':''}">
+      <span class="ck">${it.done?'✓':''}</span>
+      <span class="lb">${escHtml(it.label)}</span>
+      <span class="tg" style="${stkTagChipStyle(it.tag)}">${escHtml(tagLabel(it.tag))}</span>
+    </div>`).join("") : `<div class="stk-empty">この日は予定なし</div>`;
+  return `<div class="stk-sect">
+    ${stkPillsHTML()}
+    ${stkNavHTML(rg.label, "この日に入れた予定と✓")}
+    <div class="stk-dhead"><b>${agg.done}／${agg.total} 個 ✓</b><small>${pct}%</small></div>
+    ${list}
+  </div>`;
+}
+/* 山: 1/1〜今日の「日ごと」累積。足し算だけで作るので、原理的に下がらない。 */
+function stkYearWalkDaily(y, upto){
+  const map = stkYearMap(y);
+  const end = stkYmdNum(upto);
+  const pts = [{i:0, v:0}];
+  let cum = 0, idx = 0;
+  const cur = new Date(y, 0, 1);
+  let guard = 0;
+  while(stkYmdNum(cur) <= end && guard++ < 400){
+    const items = map[(cur.getMonth()+1)+"-"+cur.getDate()];
+    const n = (items && items.length) ? items.length : 0;
+    cum += n;                       // ここは足し算のみ。引き算もclampも書かない
+    idx++;
+    pts.push({i:idx, v:cum});
+    cur.setDate(cur.getDate()+1);
+  }
+  if(pts.length < 2) pts.push({i:1, v:cum});
+  return {pts:pts, total:cum, days:idx};
+}
+// 検証用（window.__STK_ASSERT__=1 の時だけ動く。普段は何も出さない）
+function stkAssertMonotonic(pts){
+  if(!window.__STK_ASSERT__) return true;
+  let ok = true;
+  for(let i=1;i<pts.length;i++){
+    const good = pts[i].v >= pts[i-1].v;
+    if(!good){ ok = false; }
+    console.assert(good, "山の累積が下がった: i="+i+" "+pts[i-1].v+" → "+pts[i].v);
+  }
+  console.assert(pts[0].v === 0, "山の起点が0でない: "+pts[0].v);
+  console.log("[STK] 単調非減少チェック "+(ok?"OK":"NG")+" / 点数="+pts.length+" / 合計="+pts[pts.length-1].v);
+  return ok;
+}
+function stkMountainPanel(today){
+  const tY = today.getFullYear();
+  const walk = stkYearWalkDaily(tY, today);
+  stkAssertMonotonic(walk.pts);
+  const X0 = 14, X1 = 336, YB = 132, YT = 46;
+  const maxI = Math.max(1, walk.days);
+  const maxV = Math.max(1, walk.total);
+  const px = p => X0 + (X1-X0) * (p.i / maxI);
+  const py = p => YB - (YB-YT) * (p.v / maxV);
+  const line = walk.pts.map((p,k)=>`${k?"L":"M"}${px(p).toFixed(1)} ${py(p).toFixed(1)}`).join(" ");
+  const last = walk.pts[walk.pts.length-1];
+  const lx = px(last), ly = py(last);
+  const area = `${line} L${lx.toFixed(1)} ${YB} L${X0} ${YB} Z`;
+  return `<div class="stk-sect">
+    <div class="stk-tt">今 年 の 山 — <b>今年、✓を押した合計回数</b></div>
+    <svg class="stk-mount" width="100%" height="150" viewBox="0 0 380 150" preserveAspectRatio="xMidYMid meet">
+      <defs><linearGradient id="stkMg15" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="rgba(90,168,255,.7)"/><stop offset="100%" stop-color="rgba(90,168,255,.05)"/>
+      </linearGradient></defs>
+      <path d="${area}" fill="url(#stkMg15)"/>
+      <path d="${line}" fill="none" stroke="#5aa8ff" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="4.5" fill="#fff"/>
+      <text x="${Math.min(344, Math.max(44, lx)).toFixed(1)}" y="${Math.max(24, ly-20).toFixed(1)}" text-anchor="middle" font-size="15" font-weight="900" fill="#ffd94a">✓${walk.total}回</text>
+      <text x="${Math.min(344, Math.max(44, lx)).toFixed(1)}" y="${Math.max(37, ly-7).toFixed(1)}" text-anchor="middle" font-size="8.5" fill="rgba(255,255,255,.6)">今年✓した合計</text>
+      <text x="12" y="20" font-size="10" fill="rgba(255,255,255,.55)">✓を押すたび＋1。1日ごとの点で細かく上がる</text>
+    </svg>
+    <div class="stk-ksum">サボった日があっても線は減らない。上るだけ</div>
+  </div>`;
+}
+function renderRecord(){
+  const today = stkToday();
+  const rg = stkRange(stkPeriod, stkGetAnchor());
+  const agg = stkCollect(rg.s, rg.e);
+  const hero = (stkPeriod === "day") ? stkDayPanel(rg, agg) : stkPiePanel(rg, agg);
+  return `<div class="stk">${hero}${stkMountainPanel(today)}</div>`;
+}
+/* 未分類 → まとめてタグ付け。単語帳に1行書くだけで、同名の予定が過去も未来も全部そのタグになる */
+function stkOpenUntagged(){
+  const rg = stkRange(stkPeriod, stkGetAnchor());
+  const agg = stkCollect(rg.s, rg.e);
+  const u = agg.byTag[TAG_NONE];
+  const names = u ? Object.keys(u.names).sort((a,b)=>u.names[b]-u.names[a]) : [];
+  const tags = loadTags();
+  const rows = names.length ? names.map(n=>`<div class="stk-ut-row">
+      <div class="stk-ut-nm">${escHtml(n)}<small>${u.names[n]}回</small></div>
+      <div class="stk-ut-tags">${tags.map(t=>
+        `<button type="button" class="es-tag" data-n="${stkEscAttr(n)}" data-t="${stkEscAttr(t.id)}" onclick="stkTagAllByName(this.dataset.n, this.dataset.t)">${escHtml(t.emoji)} ${escHtml(t.name)}</button>`
+      ).join("")}</div>
+    </div>`).join("") : `<div class="stk-empty">未分類はもう無い</div>`;
+  stkOvKind = null;
+  stkOpenOv("untag", "ま と め て タ グ 付 け", rows,
+    "押すと、<b style='color:#ffd94a'>同じ名前の予定ぜんぶ</b>（過去の分も、これから入れる分も）にそのタグが付く。<br>別のタグを押せば付け替えられる。");
+}
+function stkTagAllByName(name, tagId){
+  if(!name || !tagId) return;
+  const d = loadTagDict();
+  d[name] = tagId;
+  saveTagDict(d);
+  diaryToast("✓ 「"+name+"」を"+tagLabel(tagId)+"に");
+  stkOpenUntagged();   // 残りを出し直す
 }
 // 第12弾: 💡発明・学びのメモ（一等地・record冒頭）
 const IDEAS_KEY = "ideas_v1";
@@ -3990,6 +4628,7 @@ const EV_PALETTE = [
   {name:"黒",   color:"#1d1d1f"},
   {name:"金",   color:"gold",   swatch:"linear-gradient(180deg,#f6dd8f,#c9982f)", isNew:true},
   {name:"銀",   color:"silver", swatch:"linear-gradient(180deg,#e8ecf2,#9aa3b0)", isNew:true},
+  {name:"銅",   color:"bronze", swatch:"linear-gradient(180deg,#e8b088,#9a5a2e)", isNew:true},
 ];
 const HOUR_PX_MIN = 32, HOUR_PX_MAX = 130;
 let HOUR_PX = (function(){
@@ -4161,7 +4800,7 @@ function renderDayView(){
     const top=e.start/60*HOUR_PX;
     const h=Math.max(22,(e.end-e.start)/60*HOUR_PX);
     const col=e.color||DOT_COLORS[e.cat]||'#8e44ad';
-    const isGS = col==='gold'||col==='silver';
+    const isGS = isSpecialColor(col);
     const bgStyle = isGS ? '' : `background:linear-gradient(160deg,${col}cc,${col}7a);`;
     const p=posMap[e.kind+'_'+e.id]||{left:0,width:100};
     const isSel = selectedEv && selectedEv.id===e.id && selectedEv.kind===e.kind;
@@ -4800,6 +5439,8 @@ function openEvent(id, kind, presetStart, presetEnd){
     evCtx.rid = null;
     evCtx.repFreq = 'none';
   }
+  // 第15弾: タグ（自分で付けたタグ。無ければ未選択＝単語帳の推定が点線で出る）
+  evCtx.tag = evCtx.isNew ? null : getEvTagExplicit(s, evCtx.kind, id);
   const colorSwatches = EV_PALETTE.map(c=>`<div class="cbox${c.isNew?' new-color':''} ${c.color===curColor?'sel':''}" style="background:${c.swatch||c.color}" onclick="pickEvColor('${c.color}')" title="${c.name}"></div>`).join('');
   const delLabel = isPreset ? 'この日の予定から外す' : '予定を削除';
   document.getElementById("dsBody").innerHTML=`
@@ -4809,25 +5450,33 @@ function openEvent(id, kind, presetStart, presetEnd){
       <button class="es-savebtn" onclick="evSave()">保存</button>
     </div>
     <div class="es-card">
-      <div class="es-line"><input id="evName" type="text" placeholder="予定名（例：歯医者）" value="${esc(name)}" ${isPreset?'readonly':''}></div>
+      <div class="es-line"><input id="evName" type="text" placeholder="予定名（例：歯医者）" value="${esc(name)}" ${isPreset?'readonly':''} oninput="evRefreshTagRow()"></div>
+    </div>
+    <div class="es-card">
+      <div class="es-line" style="display:block">
+        <span class="es-lbl">タグ</span>
+        <div class="es-tagrow" id="evTagRow">${evTagRowHTML(name)}</div>
+        <div class="es-subnote">グラフの仕分けはこのタグでやる。タグの<b>追加・改名は長押し</b>。</div>
+      </div>
     </div>
     <div class="es-card">
       <div class="es-line"><span class="es-lbl">開始</span><span class="es-val">${currentMonth}月${selDay}日</span><input id="evStart" type="time" value="${min2hm(start)}" onchange="evStartChanged()"></div>
       <div class="es-line"><span class="es-lbl">終了</span><input id="evEnd" type="time" value="${min2hm(end)}" style="margin-left:auto"></div>
     </div>
-    <div class="es-card">
-      <div class="es-line"><span class="es-lbl">色</span><div class="es-colors" id="evColors">${colorSwatches}</div></div>
-    </div>
     ${!isPreset?`<div class="es-card">
       <div class="es-line" style="display:block">
-        <span class="es-lbl">繰り返し</span>
+        <span class="es-lbl">くり返し</span>
         <div class="es-repseg" id="evRepSeg">${repSegHTML(evCtx.repFreq)}</div>
+        <div class="es-subnote">毎週＝この曜日に自動で入り続ける。終了日も選べる。<b>タグと色も全部の回にそのまま付く</b>。</div>
       </div>
       <div class="es-line" id="evRepUntilLine" style="${evCtx.repFreq==='none'?'display:none':''}">
         <span class="es-lbl">繰り返しの終了</span>
         <input id="evRepUntil" type="date" value="">
       </div>
     </div>`:''}
+    <div class="es-card">
+      <div class="es-line"><span class="es-lbl">色</span><div class="es-colors" id="evColors">${colorSwatches}</div></div>
+    </div>
     <div class="es-card">
       <div class="es-line"><span class="es-lbl">✓ 完了</span><button id="evDoneToggle" class="es-toggle ${done?'on':''}" onclick="evToggleDone()"></button></div>
     </div>
@@ -4837,9 +5486,63 @@ function openEvent(id, kind, presetStart, presetEnd){
     <div class="es-card">
       <div class="es-line es-diary-line" onclick="openDiary(${currentMonth},${selDay})">📝 この日の日記を書く</div>
     </div>`;
+  evBindTagRow();
+}
+
+/* ---- 第15弾: シートのタグ列（単一選択・長押しで編集） ---- */
+function evTagRowHTML(nameOverride){
+  const cur = evCtx ? evCtx.tag : null;
+  let nm = nameOverride;
+  if(nm === undefined){
+    const el = document.getElementById('evName');
+    nm = el ? el.value : '';
+  }
+  const guess = cur ? null : guessTagOf(nm);
+  return loadTags().map(t=>{
+    const on = (t.id === cur);
+    const gs = (!cur && t.id === guess);
+    return `<button type="button" class="es-tag${on?' on':''}${gs?' guess':''}" data-tag="${stkEscAttr(t.id)}">${escHtml(t.emoji)} ${escHtml(t.name)}</button>`;
+  }).join('');
+}
+function evRefreshTagRow(){
+  const row = document.getElementById('evTagRow');
+  if(row) row.innerHTML = evTagRowHTML();
+}
+function evPickTag(id){
+  if(!evCtx) return;
+  evCtx.tag = (evCtx.tag === id) ? null : id;   // もう一度押すと未分類に戻せる
+  evRefreshTagRow();
+}
+// 行そのものに1回だけ張る（中身をinnerHTMLで作り直しても生き残る）
+function evBindTagRow(){
+  const row = document.getElementById('evTagRow');
+  if(!row || row._tagBound) return;
+  row._tagBound = true;
+  let timer=null, fired=false, sx=0, sy=0;
+  const clearT=()=>{ if(timer){ clearTimeout(timer); timer=null; } };
+  row.addEventListener('pointerdown', e=>{
+    if(!e.target.closest('.es-tag')) return;
+    fired=false; sx=e.clientX; sy=e.clientY;
+    clearT();
+    timer=setTimeout(()=>{ timer=null; fired=true; tagEditOpen(); }, 450);
+  });
+  // スクロール中に長押しが暴発しないよう、8px動いたら取り消す
+  row.addEventListener('pointermove', e=>{
+    if(!timer) return;
+    if(Math.abs(e.clientX-sx)>8 || Math.abs(e.clientY-sy)>8) clearT();
+  });
+  row.addEventListener('pointerup', clearT);
+  row.addEventListener('pointercancel', ()=>{ clearT(); });
+  row.addEventListener('click', e=>{
+    const b=e.target.closest('.es-tag'); if(!b) return;
+    if(fired){ fired=false; e.preventDefault(); e.stopPropagation(); return; }  // 長押し直後のタップは食う
+    evPickTag(b.dataset.tag);
+  });
 }
 function closeDaySheet(){
   evCtx=null;
+  evSaving=false;          // 第15弾: 保存ロックを必ず外す（次に開いた時に固まらない）
+  evCloseGuard();
   removeGhost();
   document.getElementById("dsBg").classList.remove("show");
   evOpenScrollTop=null;
@@ -4900,7 +5603,7 @@ function evStartChanged(){
   evCtx.prevStart=ns;
 }
 // ===== 繰り返し予定（iPhone式リピート） =====
-const REP_LABELS={none:'なし',daily:'毎日',weekly:'毎週',biweekly:'隔週',monthly:'毎月'};
+const REP_LABELS={none:'しない',daily:'毎日',weekly:'毎週',biweekly:'隔週',monthly:'毎月'};
 function repSegHTML(cur){
   return Object.keys(REP_LABELS).map(f=>`<button class="rep-opt ${f===cur?'sel':''}" data-f="${f}" onclick="pickRepFreq('${f}')">${REP_LABELS[f]}</button>`).join('');
 }
@@ -4953,7 +5656,17 @@ function forEachRidOccurrence(rid, cb){
     s.__custom__.forEach(t=>{ if(t.rid===rid) cb(pd, s, t); });
   });
 }
-function applyEvVals(t,v){ t.label=v.label; t.start=v.start; t.end=v.end; delete t.time; t.color=v.color; }
+function applyEvVals(t,v){
+  t.label=v.label; t.start=v.start; t.end=v.end; delete t.time; t.color=v.color;
+  if(v.tag) t.tag=v.tag; else delete t.tag;   // 第15弾: タグも一緒に付け替える
+}
+// 第15弾: 繰り返し1回ぶんの予定オブジェクト（タグ付き）
+function makeRepeatTask(id, vals, rid, freq){
+  const o={ id:id, label:vals.label, cat:'custom', start:vals.start, end:vals.end, color:vals.color };
+  if(rid){ o.rid=rid; o.freq=freq; }
+  if(vals.tag) o.tag=vals.tag;
+  return o;
+}
 function createRepeatSeries(y,m,d,vals,freq,untilStr,rid,skipFirst){
   rid=rid||('r_'+Date.now());
   const dates=repeatDates(y,m,d,freq,untilStr);
@@ -4961,7 +5674,7 @@ function createRepeatSeries(y,m,d,vals,freq,untilStr,rid,skipFirst){
     if(skipFirst && i===0) return;
     const ds=getDayState(pd.m, pd.d, pd.y);
     if(!ds.__custom__) ds.__custom__=[];
-    ds.__custom__.push({ id:`c_${Date.now()}_${i}`, label:vals.label, cat:'custom', start:vals.start, end:vals.end, color:vals.color, rid:rid, freq:freq });
+    ds.__custom__.push(makeRepeatTask(`c_${Date.now()}_${i}`, vals, rid, freq));
   });
   return rid;
 }
@@ -4985,10 +5698,10 @@ function updateSeriesFrom(rid, from, vals, freq, untilStr, curTask){
   const ds=getDayState(from.m, from.d, from.y);
   if(!ds.__custom__) ds.__custom__=[];
   if(freq==='none'){
-    ds.__custom__.push({ id:'c_'+Date.now(), label:vals.label, cat:'custom', start:vals.start, end:vals.end, color:vals.color });
+    ds.__custom__.push(makeRepeatTask('c_'+Date.now(), vals, null, null));
   } else {
     const nrid='r_'+Date.now();
-    ds.__custom__.push({ id:'c_'+Date.now(), label:vals.label, cat:'custom', start:vals.start, end:vals.end, color:vals.color, rid:nrid, freq:freq });
+    ds.__custom__.push(makeRepeatTask('c_'+Date.now(), vals, nrid, freq));
     createRepeatSeries(from.y, from.m, from.d, vals, freq, untilStr, nrid, true);
   }
 }
@@ -5023,7 +5736,67 @@ function delCustomTaskSilent(m,d,id){
   saveState(state);
 }
 
+/* ===== 第15弾: 保存の入口 = 見張り⚠ → （繰り返しなら範囲を聞く）→ 実保存 ===== */
+let evSaving = false;
+// 単語帳と食い違った時だけ中身を返す。それ以外は null（＝だまって通す）
+function tagGuardCheck(name, tagId){
+  const key = roundName(name);
+  if(!key || !tagId) return null;                 // 名前なし / タグ未選択は通す
+  const remembered = loadTagDict()[key];
+  if(!remembered) return null;                    // 初めて見る単語は通す
+  if(remembered === tagId) return null;           // 合ってる
+  if(!tagById(remembered)) return null;           // 消されたタグの記憶は無視
+  return {key:key, remembered:remembered, chosen:tagId, name:name};
+}
+let evGuardEl = null;
+function evCloseGuard(){ if(evGuardEl){ evGuardEl.remove(); evGuardEl=null; } }
+function evShowGuard(hit){
+  evCloseGuard();
+  const rem = tagById(hit.remembered), cho = tagById(hit.chosen);
+  if(!rem || !cho){ evSaveCommit(hit.chosen); return; }
+  const el = document.createElement('div');
+  el.className = 'tgw-bg';
+  el.innerHTML = `<div class="tgw">
+    <div class="tgw-t">⚠ 名前とタグ、合ってないかも</div>
+    <p>名前：<b>「${escHtml(hit.name)}」</b></p>
+    <p>選んだタグ：<b>${escHtml(cho.emoji+cho.name)}</b></p>
+    <p class="dim">これまでの記憶では${escHtml(rem.emoji+rem.name)}っぽい。どうする？</p>
+    <div class="tgw-btns">
+      <button type="button" class="fix">${escHtml(rem.emoji+rem.name)}に直して保存</button>
+      <button type="button" class="keep">このまま保存</button>
+    </div>
+  </div>`;
+  el.addEventListener('click', e=>{
+    if(e.target === el){ evCloseGuard(); return; }              // 背景タップ＝やめる（何も保存しない）
+    if(e.target.closest('.fix')){
+      evCloseGuard();
+      if(evCtx){ evCtx.tag = hit.remembered; evRefreshTagRow(); }
+      evSaveCommit(hit.remembered);                             // 辞書は書き換えない
+      return;
+    }
+    if(e.target.closest('.keep')){
+      evCloseGuard();
+      const d = loadTagDict(); d[hit.key] = hit.chosen; saveTagDict(d);   // 記憶を上書き＝同じ警告は二度と出ない
+      evSaveCommit(hit.chosen);
+      return;
+    }
+  });
+  document.body.appendChild(el);
+  requestAnimationFrame(()=>el.classList.add('show'));
+  evGuardEl = el;
+}
 function evSave(){
+  if(evSaving || !evCtx) return;                 // 連打で二重に保存しない
+  const nameEl=document.getElementById('evName');
+  const name=String(nameEl ? (nameEl.value||'') : '').trim();
+  if(evCtx.isNew && !name){ diaryToast("予定名を入れてね"); return; }
+  const hit = tagGuardCheck(name, evCtx.tag||null);
+  if(hit){ evShowGuard(hit); return; }
+  evSaveCommit(evCtx.tag||null);
+}
+function evSaveCommit(tagId){
+  if(evSaving || !evCtx) return;
+  evSaving = true;
   const name=(document.getElementById('evName').value||'').trim();
   const start=hm2min(document.getElementById('evStart').value);
   let end=hm2min(document.getElementById('evEnd').value);
@@ -5033,13 +5806,15 @@ function evSave(){
   const freq=evCtx.repFreq||'none';
   const untilEl=document.getElementById('evRepUntil');
   const untilStr=(untilEl&&untilEl.value)?untilEl.value:null;
+  if(tagId) tagDictLearn(name, tagId);           // この名前はこのタグ、と覚える
   if(evCtx.isNew){
-    if(!name){ diaryToast("予定名を入れてね"); return; }
+    if(!name){ evSaving=false; diaryToast("予定名を入れてね"); return; }
+    const vals={label:name, start:min2hm(start), end:min2hm(end), color:col, tag:tagId||null};
     if(freq==='none'){
       if(!s.__custom__) s.__custom__=[];
-      s.__custom__.push({ id:`c_${Date.now()}`, label:name, cat:'custom', start:min2hm(start), end:min2hm(end), color:col });
+      s.__custom__.push(makeRepeatTask(`c_${Date.now()}`, vals, null, null));
     } else {
-      createRepeatSeries(curYear, currentMonth, selDay, {label:name,start:min2hm(start),end:min2hm(end),color:col}, freq, untilStr);
+      createRepeatSeries(curYear, currentMonth, selDay, vals, freq, untilStr);
       saveState(state);
       diaryToast("✓ 繰り返しで保存");
       closeDaySheet();
@@ -5048,8 +5823,9 @@ function evSave(){
   } else if(evCtx.kind==='custom'){
     const t=(s.__custom__||[]).find(t=>t.id===evCtx.id);
     if(t){
-      const vals={label:name||t.label, start:min2hm(start), end:min2hm(end), color:col};
+      const vals={label:name||t.label, start:min2hm(start), end:min2hm(end), color:col, tag:tagId||null};
       if(t.rid){
+        evSaving=false;    // ここから先はもう1回タップを待つので、ロックを外す
         showActSheet('繰り返し予定の変更', [
           {label:'この予定のみ変更', fn:()=>{ applyEvVals(t,vals); saveState(state); diaryToast('✓ 保存'); closeDaySheet(); }},
           {label:'これ以降すべて変更', fn:()=>{ updateSeriesFrom(t.rid, {y:curYear,m:currentMonth,d:selDay}, vals, freq, untilStr, t); saveState(state); diaryToast('✓ 保存'); closeDaySheet(); }}
@@ -5069,6 +5845,7 @@ function evSave(){
     s.__ptime__[evCtx.id]={start, end};
     if(!s.__pcolor__) s.__pcolor__={};
     s.__pcolor__[evCtx.id]=col;
+    setEvTagExplicit(s, 'preset', evCtx.id, tagId);   // プリセットは __ptag__ に持つ
   }
   saveState(state);
   diaryToast("✓ 保存");
