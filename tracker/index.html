@@ -384,7 +384,8 @@ button,.chip,.chip-mini,.dv-week .dw,.month-tabs button,.view-toggle button,.mon
 /* リスト表示中はページ全体（継続日・達成率・円グラフの後ろ）も温泉街の夜にする */
 body.stage-list{background:linear-gradient(180deg,#1a2342 0%,#141b32 44%,#161018 100%) fixed}
 /* 第12弾: 記録表示中はページ全体を発明メモの夜（.runbg）にする */
-body.stage-record{background:linear-gradient(180deg,#0d0f14 0%,#0a0c10 100%) fixed}
+/* 第14弾: 積み上げビューはモックの暗い無地グラデ（#111320系） */
+body.stage-record{background:linear-gradient(180deg,#111320 0%,#0d0f1a 100%) fixed}
 
 /* === 第10弾: リストA案「駅の発車標」スキン（琥珀LED盤面） === */
 .list{background:linear-gradient(180deg,#101216,#0a0c10);border:1px solid #23262e;border-radius:16px;margin:0 8px 24px;padding:10px 8px 18px;box-shadow:inset 0 0 46px rgba(0,0,0,.65),0 4px 20px rgba(0,0,0,.4);position:relative}
@@ -1541,6 +1542,70 @@ body.stage-record{background:linear-gradient(180deg,#0d0f14 0%,#0a0c10 100%) fix
 .mma-gate-error.show{display:block}
 .mma-gate-import-btn{width:100%;margin-top:12px;padding:14px;border:none;border-radius:12px;font-weight:800;font-size:14.5px;letter-spacing:.04em;color:#fff;background:linear-gradient(135deg,#ff5e73,#c81e3a);cursor:pointer;min-height:48px}
 .mma-gate-skip{text-align:center;font-size:12px;font-weight:700;color:rgba(255,255,255,.4);text-decoration:underline;margin-top:16px;min-height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+/* ==================== 第14弾: シンプル積み上げ（p15_test.html 準拠） ==================== */
+/* タブは2つだけ。大きめのピルにする */
+.view-toggle button{padding:10px 22px;font-size:13px;font-weight:800}
+.view-toggle button.jump-today{padding:9px 14px;font-size:12px}
+.view-toggle button.active{background:rgba(255,217,74,.18);border-color:rgba(255,217,74,.55);color:#ffd94a;box-shadow:none}
+
+.stk{padding:2px 0 26px}
+.stk-sect{margin:0 14px 14px;padding:15px 16px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);border-radius:18px}
+.stk-tt{font-size:10px;font-weight:900;letter-spacing:.24em;color:rgba(255,255,255,.55);margin-bottom:13px}
+.stk-tt b{color:#ffd94a}
+/* 1段目: 今週の輪 */
+.stk-rings{display:flex;justify-content:space-between}
+.stk-ring{text-align:center;flex:1 1 0;min-width:0}
+.stk-ring small{display:block;font-size:10px;color:#889;margin-bottom:6px}
+.stk-ring i{display:block;width:38px;height:38px;margin:0 auto;border-radius:50%;border:4px solid #22252e;box-sizing:border-box}
+.stk-ring.done i{border-color:#4dd07e;box-shadow:0 0 10px rgba(77,208,126,.35)}
+.stk-ring.today i{border-color:#ffd94a;border-style:dashed}
+.stk-ring.today.done i{border-color:#4dd07e;border-style:solid;box-shadow:0 0 12px rgba(77,208,126,.5)}
+.stk-ring.future i{border-color:#1b1e26;opacity:.7}
+.stk-rsum{text-align:center;font-size:12px;font-weight:800;color:rgba(255,255,255,.8);margin-top:12px}
+.stk-rsum b{color:#4dd07e;font-size:15px}
+/* 2段目: 今月の草むら */
+.stk-gwd{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;font-size:9px;color:rgba(255,255,255,.4);text-align:center;margin-bottom:5px}
+.stk-grass{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.stk-grass i{aspect-ratio:1;border-radius:5px;background:#191d25;display:block}
+.stk-grass i.pad{background:transparent}
+.stk-grass i.g1{background:#1c3a2a}
+.stk-grass i.g2{background:#256e42}
+.stk-grass i.g3{background:#33a35d}
+.stk-grass i.g4{background:#4dd07e;box-shadow:0 0 6px rgba(77,208,126,.4)}
+.stk-grass i.td{outline:1.5px solid rgba(255,217,74,.75);outline-offset:-1px}
+.stk-gsum{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:center;font-size:11px;font-weight:700;color:rgba(255,255,255,.75);margin-top:12px;padding:8px 6px;border-radius:10px;border:1px dashed rgba(255,255,255,.14);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.stk-gsum:active{background:rgba(255,255,255,.05)}
+.stk-gsum i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:middle}
+.stk-gsum .stk-edit{width:100%;text-align:center;font-size:10px;font-weight:700;color:rgba(255,217,74,.75)}
+/* 3段目: 今年の山 */
+.stk-mount{display:block;width:100%}
+.stk-mount text{font-family:-apple-system,"Hiragino Sans","Yu Gothic UI",sans-serif}
+.stk-ksum{text-align:center;font-size:11px;color:rgba(255,255,255,.5);margin-top:6px;line-height:1.8}
+.stk-ksum b{color:#ffd94a}
+/* 4段目: 今年の塔 */
+.stk-tower{display:flex;flex-direction:column-reverse;align-items:center;gap:3px;padding:4px 0 2px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.stk-tower:active{opacity:.82}
+.stk-tower.flat{flex-direction:column;cursor:default;padding:2px 0 8px}
+.stk-tower.flat:active{opacity:1}
+.stk-trow{display:flex;gap:3px}
+.stk-brick{width:34px;height:15px;border-radius:3px;background:linear-gradient(180deg,#c96f3a,#a04e22);box-shadow:inset 0 1px 1px rgba(255,255,255,.25),0 1px 2px rgba(0,0,0,.5)}
+.stk-brick.new{outline:2px solid #ffd94a;outline-offset:1px}
+.stk-empty{text-align:center;font-size:12px;color:rgba(255,255,255,.45);line-height:1.9;padding:14px 6px}
+/* オーバーレイ（塔の全体表示・色の名前設定） */
+.stk-ov{position:fixed;inset:0;z-index:400;background:rgba(4,5,9,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:flex-end;justify-content:center}
+.stk-ov-card{width:100%;max-width:480px;max-height:86vh;display:flex;flex-direction:column;background:linear-gradient(180deg,#141726 0%,#0e1018 100%);border:1px solid rgba(255,255,255,.14);border-radius:20px 20px 0 0;padding:14px 16px calc(18px + env(safe-area-inset-bottom))}
+.stk-ov-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex:0 0 auto}
+.stk-ov-head h4{font-size:13px;font-weight:900;letter-spacing:.16em;color:#ffd94a}
+.stk-ov-close{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:rgba(255,255,255,.8);font-size:12px;font-weight:800;padding:9px 16px;border-radius:999px;cursor:pointer}
+.stk-ov-body{overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1 1 auto;min-height:0}
+.stk-ov-body .stk-tower{cursor:default}
+.stk-cn-row{display:flex;align-items:center;gap:10px;padding:8px 2px}
+.stk-cn-row .sw{width:24px;height:24px;border-radius:7px;flex:0 0 24px;border:1px solid rgba(255,255,255,.18)}
+.stk-cn-row .cnt{font-size:10.5px;color:rgba(255,255,255,.45);flex:0 0 auto;min-width:44px;text-align:right}
+.stk-cn-row input{flex:1 1 auto;min-width:0;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);border-radius:9px;color:#fff;font:inherit;font-size:13px;font-weight:700;padding:9px 10px}
+.stk-cn-row input:focus{outline:none;border-color:rgba(255,217,74,.6)}
+.stk-ov-note{font-size:10.5px;color:rgba(255,255,255,.45);line-height:1.8;margin-top:10px}
 </style>
 </head>
 <body>
@@ -1557,7 +1622,7 @@ body.stage-record{background:linear-gradient(180deg,#0d0f14 0%,#0a0c10 100%) fix
       <button id="vHoshi" onclick="setView('hoshi')">⭐ 夢の設計図</button>
       <button id="vList" class="active" onclick="setView('list')">リスト</button>
       <button id="vCal2" onclick="setView('cal2')">📆 カレンダー</button>
-      <button id="vRecord" onclick="setView('record')">📋 記録</button>
+      <button id="vRecord" onclick="setView('record')">📈 積み上げ</button>
       <button id="vSleep" onclick="setView('sleep')">😴 睡眠</button>
       <button id="vExp" onclick="setView('exp')">🧪 実験</button>
       <button id="vMma" onclick="setView('mma')">🥊 MMA</button>
@@ -2111,7 +2176,23 @@ let curYear = new Date().getFullYear();
 let currentMonth = new Date().getMonth()+1;
 let currentView = "record";
 
+/* ===== 第14弾: タブの整理 =====
+   ここに書いたビューだけタブ帯から隠す。ボタンのDOM・render関数・localStorageのデータは全部そのまま。
+   復活させたいときは、この配列から名前を1つ消すだけ（例: "note" を消せば📓ノートが戻る）。 */
+const HIDDEN_VIEWS = ["hoshi","list","sleep","exp","mma","note"];
+const VIEW_BTN_ID = {hoshi:"vHoshi", list:"vList", cal2:"vCal2", record:"vRecord", sleep:"vSleep", exp:"vExp", mma:"vMma", note:"vNote"};
+const DEFAULT_VIEW = "cal2"; // 起動時に開くタブ（カレンダー）
+function isHiddenView(v){ return HIDDEN_VIEWS.indexOf(v) >= 0; }
+function applyHiddenViews(){
+  Object.keys(VIEW_BTN_ID).forEach(v=>{
+    const b = document.getElementById(VIEW_BTN_ID[v]);
+    if(b) b.style.display = isHiddenView(v) ? "none" : "";
+  });
+}
+
 function setView(v){
+  // 隠したビューへ飛ばされても壊れない（既定タブへ受け流す）
+  if(isHiddenView(v)) v = DEFAULT_VIEW;
   if(v==="cal2" && currentView!=="cal2") dvWantAutoScroll=true;
   if(currentView==="sleep" && v!=="sleep"){ try{ sleepStopClock(); }catch(e){} }
   currentView = v;
@@ -2252,9 +2333,10 @@ function renderContent(){
   const isMma = currentView==="mma";
   const isHoshi = currentView==="hoshi";
   const isNote = currentView==="note";
+  const isRecord = currentView==="record"; // 第14弾: 積み上げでは旧サマリー/グラフも出さない（データは温存）
   ["streakBanner","carryBanner","summary","charts"].forEach(id=>{
     const node=document.getElementById(id);
-    if(node) node.style.display = (isCal2||isSleep||isExp||isMma||isHoshi||isNote) ? "none" : "";
+    if(node) node.style.display = (isRecord||isCal2||isSleep||isExp||isMma||isHoshi||isNote) ? "none" : "";
   });
   // cal2（日ビュー）中はhtml/bodyの外側スクロールをロックし、二重スクロールを防ぐ
   document.body.classList.toggle('cal2-lock', isCal2);
@@ -3199,7 +3281,10 @@ function renderObservatoryScene(monthForStars){
   </div>`;
 }
 
-function renderRecord(){
+/* 第14弾: 旧・記録ビュー（グラフ／💡発明メモ／疾走パネル／完了ログ／日記／月総括）。
+   画面からは外したが、コードもデータ(localStorage)も一切消していない。
+   renderRecord() の中でこれを呼べばそのまま戻る。 */
+function renderRecordLegacy(){
   const t = tally(currentMonth);
   const pct = t.totalPlan ? Math.round(100*t.totalDone/t.totalPlan) : 0;
   const catDefs=[
@@ -3291,6 +3376,324 @@ function renderRecord(){
   const ideasHTML = renderIdeasPanelHTML();
   const speedHTML = renderSpeedPanelHTML(pct);
   return `<div class="runbg"><div class="record-view">${ideasHTML}${speedHTML}${scene}${walk}${summary}${doneLogSection}${monthReview}<div class="record-section-title">📝 日記（新しい順）</div>${diaryHtml}</div></div>`;
+}
+
+/* ==================== 第14弾: シンプル積み上げ（積み上げタブ本体） ====================
+   データ源はカレンダーの予定と、その完了✓のみ。集計は「✓が付いた予定」だけを数える。
+   localStorageの書き込みは color_names_v1（色の名前）だけ。既存データには一切触れない。 */
+const COLOR_NAMES_KEY = "color_names_v1";
+function loadColorNames(){
+  try{ const v = JSON.parse(localStorage.getItem(COLOR_NAMES_KEY)||"{}"); return (v && typeof v==="object" && !Array.isArray(v)) ? v : {}; }
+  catch(e){ return {}; }
+}
+function saveColorNames(o){ try{ localStorage.setItem(COLOR_NAMES_KEY, JSON.stringify(o)); }catch(e){} }
+
+// 色は必ず #xxx / #xxxxxx / gold / silver に正規化（style属性に直接入れるため）
+function stkNormColor(c){
+  const s = String(c==null?"":c).trim().toLowerCase();
+  if(s==="gold" || s==="silver") return s;
+  if(/^#[0-9a-f]{3}$/.test(s) || /^#[0-9a-f]{6}$/.test(s)) return s;
+  return DOT_COLORS.custom;
+}
+function stkEscAttr(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function stkHex2rgb(h){
+  const s = String(h||"").replace("#","").trim();
+  if(/^[0-9a-f]{3}$/i.test(s)) return [parseInt(s[0]+s[0],16), parseInt(s[1]+s[1],16), parseInt(s[2]+s[2],16)];
+  if(/^[0-9a-f]{6}$/i.test(s)) return [parseInt(s.slice(0,2),16), parseInt(s.slice(2,4),16), parseInt(s.slice(4,6),16)];
+  return null;
+}
+// カテゴリ既定色など、EV_PALETTEに無い色の日本語名
+const STK_COLOR_FALLBACK = {"#5ab4ff":"空色","#a99cff":"藤","#c850dc":"紫","#34c759":"緑","#e6b422":"山吹","#ff85a0":"桃","#8e44ad":"紫"};
+let stkPaletteNameCache = null;
+function stkPaletteNames(){
+  if(stkPaletteNameCache) return stkPaletteNameCache;
+  const m = {};
+  try{ EV_PALETTE.forEach(c=>{ m[stkNormColor(c.color)] = c.name; }); }catch(e){}
+  Object.keys(STK_COLOR_FALLBACK).forEach(k=>{ if(!m[k]) m[k] = STK_COLOR_FALLBACK[k]; });
+  stkPaletteNameCache = m;
+  return m;
+}
+function stkHueName(c){
+  const rgb = stkHex2rgb(c);
+  if(!rgb) return null;
+  const r=rgb[0]/255, g=rgb[1]/255, b=rgb[2]/255;
+  const mx=Math.max(r,g,b), mn=Math.min(r,g,b), d=mx-mn, l=(mx+mn)/2;
+  if(d < .08) return l>.8 ? "白" : (l<.2 ? "黒" : "灰");
+  let h;
+  if(mx===r) h = ((g-b)/d + 6) % 6;
+  else if(mx===g) h = (b-r)/d + 2;
+  else h = (r-g)/d + 4;
+  h *= 60;
+  if(h<15 || h>=345) return "赤";
+  if(h<45) return "橙";
+  if(h<70) return "黄";
+  if(h<160) return "緑";
+  if(h<200) return "水色";
+  if(h<255) return "青";
+  if(h<290) return "紫";
+  return "桃";
+}
+// 表示名: ①自分で付けた名前 → ②パレットの色名 → ③色相から推定 → ④色値そのまま
+function stkColorLabel(c){
+  const names = loadColorNames();
+  if(names[c] && String(names[c]).trim()) return String(names[c]).trim();
+  const p = stkPaletteNames();
+  if(p[c]) return p[c];
+  return stkHueName(c) || c;
+}
+function stkSwatchStyle(c){
+  if(c==="gold") return "background:linear-gradient(180deg,#f6dd8f,#c9982f)";
+  if(c==="silver") return "background:linear-gradient(180deg,#e8ecf2,#9aa3b0)";
+  return "background:"+c;
+}
+function stkBrickStyle(c){
+  if(c==="gold") return "background:linear-gradient(180deg,#f6dd8f,#c9982f)";
+  if(c==="silver") return "background:linear-gradient(180deg,#e8ecf2,#9aa3b0)";
+  const rgb = stkHex2rgb(c);
+  if(!rgb) return "background:"+c;
+  return "background:linear-gradient(180deg,"+c+",rgb("+Math.round(rgb[0]*.56)+","+Math.round(rgb[1]*.56)+","+Math.round(rgb[2]*.56)+"))";
+}
+
+function stkYmdNum(dt){ return dt.getFullYear()*10000 + (dt.getMonth()+1)*100 + dt.getDate(); }
+
+// その月の「✓が付いた予定」だけを {label,color,at} で集めて map["m-d"] に入れる
+function stkScanMonth(y, m, map){
+  let days;
+  try{ days = buildMonth(m, y) || []; }catch(e){ return; }
+  for(let i=0;i<days.length;i++){
+    const x = days[i];
+    const s = state[dayKey(y, m, x.d)];
+    if(!s) continue;
+    const hid = Array.isArray(s.__hidden__) ? s.__hidden__ : [];
+    const items = [];
+    let preset = [];
+    try{ preset = tasksOf(x) || []; }catch(e){ preset = []; }
+    for(let j=0;j<preset.length;j++){
+      const tk = preset[j];
+      if(hid.indexOf(tk.id) >= 0) continue;
+      if(!s[tk.id]) continue;
+      const tm = getPresetTime(s, tk.id);
+      items.push({ label: tk.label,
+        color: stkNormColor((s.__pcolor__ && s.__pcolor__[tk.id]) || DOT_COLORS[tk.cat] || DOT_COLORS.custom),
+        at: tm ? tm.start : 24*60 });
+    }
+    const cus = Array.isArray(s.__custom__) ? s.__custom__ : [];
+    for(let j=0;j<cus.length;j++){
+      const t = cus[j];
+      if(!t || !s[t.id]) continue;
+      const st = hm2min(t.start || t.time);
+      items.push({ label: t.label, color: stkNormColor(t.color || DOT_COLORS.custom), at: (st==null ? 24*60 : st) });
+    }
+    if(!items.length) continue;
+    items.sort((a,b)=>a.at-b.at); // 1日の中は時間順＝✓の並びが自然になる
+    map[m+"-"+x.d] = items;
+  }
+}
+function stkYearMap(y){
+  const map = {};
+  for(let m=1;m<=12;m++) stkScanMonth(y, m, map);
+  return map;
+}
+// 1/1〜uptoを1日ずつ舐めて「週ごとの累積点」と「レンガ列」を1パスで作る
+function stkYearWalk(y, upto){
+  const map = stkYearMap(y);
+  const end = stkYmdNum(upto);
+  const pts = [{i:0, v:0}];
+  const bricks = [];
+  let cum = 0, idx = 0;
+  const cur = new Date(y, 0, 1);
+  let guard = 0;
+  while(stkYmdNum(cur) <= end && guard++ < 400){
+    const items = map[(cur.getMonth()+1)+"-"+cur.getDate()];
+    if(items && items.length){
+      cum += items.length;
+      for(let k=0;k<items.length;k++) bricks.push(items[k].color);
+    }
+    idx++;
+    if(idx % 7 === 0) pts.push({i:idx, v:cum});
+    cur.setDate(cur.getDate()+1);
+  }
+  if(pts[pts.length-1].i !== idx) pts.push({i:idx, v:cum});
+  return {map, pts, bricks, total:cum, days:idx};
+}
+// レンガの行HTML（plain=true は上から新しい順に並べる＝モーダル用）
+function stkTowerRows(list, perRow, markNew, plain){
+  perRow = perRow || 5;
+  const rows = [];
+  for(let i=0; i<list.length; i+=perRow){
+    const chunk = list.slice(i, i+perRow);
+    const isLastChunk = (i + perRow >= list.length);
+    const cells = chunk.map((c,j)=>{
+      const isNewest = markNew && isLastChunk && (j === chunk.length-1);
+      return `<span class="stk-brick${isNewest?' new':''}" style="${stkBrickStyle(c)}"></span>`;
+    }).join("");
+    rows.push(`<div class="stk-trow">${cells}</div>`);
+  }
+  if(plain) rows.reverse();
+  return rows.join("");
+}
+
+function renderRecord(){
+  const today = new Date(); today.setHours(0,0,0,0);
+  const tY = today.getFullYear(), tM = today.getMonth()+1, tD = today.getDate();
+  const walk = stkYearWalk(tY, today);
+  const yearMap = walk.map;
+
+  // 年をまたぐ週（12月末〜1月頭）でも取りこぼさないための遅延スキャン
+  const extra = {};
+  function doneAt(dt){
+    const yy = dt.getFullYear(), mm = dt.getMonth()+1, dd = dt.getDate();
+    if(yy === tY) return yearMap[mm+"-"+dd] || null;
+    const k = yy+"|"+mm;
+    if(!extra[k]){ const mp = {}; stkScanMonth(yy, mm, mp); extra[k] = mp; }
+    return extra[k][mm+"-"+dd] || null;
+  }
+
+  // ---------- 1段目: 今週の輪 ----------
+  const monday = new Date(today);
+  monday.setDate(monday.getDate() - ((today.getDay()===0) ? 6 : today.getDay()-1));
+  const todayNum = stkYmdNum(today);
+  let weekDone = 0, todayDone = false;
+  const rings = ["月","火","水","木","金","土","日"].map((lab,i)=>{
+    const dt = new Date(monday); dt.setDate(monday.getDate()+i);
+    const n = stkYmdNum(dt);
+    const items = doneAt(dt);
+    const done = !!(items && items.length);
+    if(done) weekDone++;
+    if(n === todayNum){ if(done) todayDone = true; }
+    const cls = [done?"done":"", (n===todayNum)?"today":"", (n>todayNum && !done)?"future":""].filter(Boolean).join(" ");
+    return `<div class="stk-ring ${cls}"><small>${lab}</small><i></i></div>`;
+  }).join("");
+  const ringTail = todayDone ? "" : `（あと今日を閉じれば${weekDone+1}）`;
+  const sec1 = `<div class="stk-sect">
+    <div class="stk-tt">今 週 — <b>7つの輪を閉じる</b></div>
+    <div class="stk-rings">${rings}</div>
+    <div class="stk-rsum">今週 <b>${weekDone}日</b> できた${ringTail}</div>
+  </div>`;
+
+  // ---------- 2段目: 今月の草むら ----------
+  let monthMap = yearMap;
+  if(curYear !== tY){ monthMap = {}; stkScanMonth(curYear, currentMonth, monthMap); }
+  const mTotal = daysInMonth(currentMonth, curYear);
+  const lead = new Date(curYear, currentMonth-1, 1).getDay(); // 0=日
+  const colorCount = {};
+  const cells = [];
+  for(let i=0;i<lead;i++) cells.push(`<i class="pad"></i>`);
+  for(let d=1; d<=mTotal; d++){
+    const items = monthMap[currentMonth+"-"+d];
+    const n = items ? items.length : 0;
+    if(items) for(let k=0;k<items.length;k++){ colorCount[items[k].color] = (colorCount[items[k].color]||0) + 1; }
+    const lv = n===0 ? "" : (n===1 ? "g1" : (n===2 ? "g2" : "g4"));
+    const isTd = (curYear===tY && currentMonth===tM && d===tD) ? " td" : "";
+    cells.push(`<i class="${lv}${isTd}" title="${currentMonth}/${d}　✓${n}"></i>`);
+  }
+  const colKeys = Object.keys(colorCount).sort((a,b)=>colorCount[b]-colorCount[a]);
+  const legend = colKeys.length
+    ? colKeys.map(c=>`<span><i style="${stkSwatchStyle(c)}"></i>${escHtml(stkColorLabel(c))} ${colorCount[c]}回</span>`).join("")
+      + `<span class="stk-edit">タップで色の名前を決める</span>`
+    : `<span class="stk-edit">まだ✓なし — カレンダーで✓すると、ここに色別の回数が出る</span>`;
+  const sec2 = `<div class="stk-sect">
+    <div class="stk-tt">${currentMonth} 月 — <b>やった日ほど濃く茂る</b></div>
+    <div class="stk-gwd">${WD_JP.map(w=>`<span>${w}</span>`).join("")}</div>
+    <div class="stk-grass">${cells.join("")}</div>
+    <div class="stk-gsum" onclick="stkOpenColorNames()">${legend}</div>
+  </div>`;
+
+  // ---------- 3段目: 今年の山 ----------
+  const X0 = 14, X1 = 336, YB = 142, YT = 48;
+  const pts = walk.pts;
+  const maxI = Math.max(1, walk.days);
+  const maxV = Math.max(1, walk.total);
+  const px = p => X0 + (X1-X0) * (p.i / maxI);
+  const py = p => YB - (YB-YT) * (p.v / maxV);
+  const line = pts.map((p,k)=>`${k?"L":"M"}${px(p).toFixed(1)} ${py(p).toFixed(1)}`).join(" ");
+  const last = pts[pts.length-1];
+  const lx = px(last), ly = py(last);
+  const area = `${line} L${lx.toFixed(1)} ${YB} L${X0} ${YB} Z`;
+  const sec3 = `<div class="stk-sect">
+    <div class="stk-tt">${tY} 年 — <b>絶対に下がらない山</b></div>
+    <svg class="stk-mount" width="100%" height="150" viewBox="0 0 380 150" preserveAspectRatio="xMidYMid meet">
+      <defs><linearGradient id="stkMg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="rgba(90,168,255,.7)"/><stop offset="100%" stop-color="rgba(90,168,255,.05)"/>
+      </linearGradient></defs>
+      <path d="${area}" fill="url(#stkMg)"/>
+      <path d="${line}" fill="none" stroke="#5aa8ff" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="5" fill="#fff"/>
+      <text x="${Math.min(344, Math.max(40, lx)).toFixed(1)}" y="${Math.max(26, ly-18).toFixed(1)}" text-anchor="middle" font-size="16" font-weight="900" fill="#ffd94a">${walk.total}回</text>
+      <text x="12" y="22" font-size="10" fill="rgba(255,255,255,.55)">1月 → 今日までの積み上げ</text>
+    </svg>
+    <div class="stk-ksum">サボった週があっても線は減らない。上るだけ</div>
+  </div>`;
+
+  // ---------- 4段目: 今年の塔 ----------
+  const shown = walk.bricks.slice(-30);
+  const tower = shown.length
+    ? `<div class="stk-tower" onclick="stkOpenTower()">${stkTowerRows(shown, 5, true, false)}</div>
+       <div class="stk-ksum">塔の高さ＝<b>${walk.bricks.length}個</b>。今日の1個が一番上に光って載る。<br>タップで塔の全体（1月からの全レンガ）を見られる</div>`
+    : `<div class="stk-empty">まだレンガ0個。<br>カレンダーで予定を✓すると、1個目がここに積まれる</div>`;
+  const sec4 = `<div class="stk-sect">
+    <div class="stk-tt">今 年 の 塔 — <b>1回のチェック＝レンガ1個</b></div>
+    ${tower}
+  </div>`;
+
+  return `<div class="stk">${sec1}${sec2}${sec3}${sec4}</div>`;
+}
+
+/* ---- オーバーレイ（塔の全体表示／色の名前設定）。#content の外に出すので再描画で消えない ---- */
+let stkOvKind = null;
+function stkCloseOv(){
+  const kind = stkOvKind;
+  stkOvKind = null;
+  const el = document.getElementById("stkOv");
+  if(el && el.parentNode) el.parentNode.removeChild(el);
+  if(kind === "colors" && currentView === "record") renderContent();
+}
+function stkOpenOv(kind, title, bodyHTML, note){
+  if(stkOvKind === kind) return; // 連打で二重に開かない
+  stkCloseOv();
+  stkOvKind = kind;
+  const d = document.createElement("div");
+  d.id = "stkOv";
+  d.className = "stk-ov";
+  d.innerHTML = `<div class="stk-ov-card">
+    <div class="stk-ov-head"><h4>${title}</h4><button type="button" class="stk-ov-close" onclick="stkCloseOv()">閉じる</button></div>
+    <div class="stk-ov-body">${bodyHTML}</div>
+    ${note ? `<div class="stk-ov-note">${note}</div>` : ""}
+  </div>`;
+  d.addEventListener("click", e=>{ if(e.target === d) stkCloseOv(); });
+  document.body.appendChild(d);
+}
+function stkOpenTower(){
+  const today = new Date(); today.setHours(0,0,0,0);
+  const walk = stkYearWalk(today.getFullYear(), today);
+  const body = walk.bricks.length
+    ? `<div class="stk-tower flat">${stkTowerRows(walk.bricks, 8, true, true)}</div>`
+    : `<div class="stk-empty">まだレンガ0個。<br>カレンダーで予定を✓すると1個積まれる</div>`;
+  stkOpenOv("tower", `今 年 の 塔 — ${walk.bricks.length}個`, body, "一番上が最新の1個（金の枠）。下へ行くほど1月に近づく。");
+}
+function stkOpenColorNames(){
+  const today = new Date(); today.setHours(0,0,0,0);
+  const map = stkYearMap(today.getFullYear());
+  const cnt = {};
+  Object.keys(map).forEach(k=>map[k].forEach(it=>{ cnt[it.color] = (cnt[it.color]||0) + 1; }));
+  if(curYear !== today.getFullYear()){
+    const mp = {}; stkScanMonth(curYear, currentMonth, mp);
+    Object.keys(mp).forEach(k=>mp[k].forEach(it=>{ cnt[it.color] = (cnt[it.color]||0) + 1; }));
+  }
+  const cols = Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a]);
+  const names = loadColorNames();
+  const rows = cols.length ? cols.map(c=>`<div class="stk-cn-row">
+      <span class="sw" style="${stkSwatchStyle(c)}"></span>
+      <input type="text" maxlength="10" value="${stkEscAttr(names[c]||"")}" placeholder="${stkEscAttr(stkColorLabel(c))}" oninput="stkSetColorName('${c}', this.value)">
+      <span class="cnt">${cnt[c]}回</span>
+    </div>`).join("") : `<div class="stk-empty">まだ✓が無いので、色が1つも出ていない</div>`;
+  stkOpenOv("colors", "色 の 名 前", rows, "ここで付けた名前が、今月の内訳にそのまま出る。<br>名前を変えても記録は1つも変わらない（数え直すだけ）。");
+}
+function stkSetColorName(c, v){
+  const names = loadColorNames();
+  const t = String(v==null?"":v).trim();
+  if(t) names[c] = t; else delete names[c];
+  saveColorNames(names);
 }
 // 第12弾: 💡発明・学びのメモ（一等地・record冒頭）
 const IDEAS_KEY = "ideas_v1";
@@ -4786,7 +5189,9 @@ function jumpToToday(){
   const m = today.getMonth()+1;
   const changedMonth = (currentMonth !== m || curYear !== y);
   // cal2にいたら日ビューの今日ジャンプに任せる。それ以外はリストに切替
-  if(currentView === "cal2"){
+  // 第14弾: リストを隠している間は、日ビュー（カレンダー）の今日ジャンプに寄せる
+  if(currentView === "cal2" || isHiddenView("list")){
+    if(currentView !== "cal2") setView("cal2");
     jumpToTodayInDayView();
     return;
   }
@@ -7424,8 +7829,9 @@ function mmaOnShow(){
 mmaInit();
 try{ kaizen2EnsureLoaded(); }catch(e){} // kaizen_v1→v2移行を起動時に一度実行（記録タブの歩みボードが即反映されるように）
 
-// 初期表示を記録タブに（毎回トップは記録）
-setView("record");
+// 第14弾: タブ帯を2つに整理してから、毎回トップはカレンダー
+applyHiddenViews();
+setView(DEFAULT_VIEW);
 render();
 </script>
 
