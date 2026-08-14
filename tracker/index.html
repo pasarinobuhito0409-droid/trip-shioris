@@ -1651,6 +1651,10 @@ body.stage-record{background:linear-gradient(180deg,#111320 0%,#0d0f1a 100%) fix
 .stk-pills{display:flex;gap:6px;justify-content:center;margin-bottom:12px}
 .stk-pill{font:inherit;font-size:12px;font-weight:800;padding:8px 18px;border-radius:99px;border:1px solid rgba(255,255,255,.18);background:transparent;color:rgba(255,255,255,.6);cursor:pointer;min-height:38px;-webkit-tap-highlight-color:transparent}
 .stk-pill.on{border-color:rgba(255,217,74,.6);background:rgba(255,217,74,.16);color:#ffd94a}
+/* 山の拡大ピル（小さめ） */
+.stk-pills.sm{gap:5px;margin:2px 0 10px}
+.stk-pills.sm .stk-pill{font-size:11px;padding:6px 15px;min-height:32px}
+.stk-xlab{text-align:center;font-size:9.5px;color:rgba(255,255,255,.4);margin-top:2px}
 .stk-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:13px;font-weight:800;color:#fff;gap:8px}
 .stk-nav button{width:34px;height:34px;flex:0 0 34px;border-radius:50%;border:none;background:rgba(255,255,255,.1);color:#fff;font:inherit;font-size:14px;font-weight:900;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .stk-nav button:active{background:rgba(255,255,255,.2)}
@@ -1658,11 +1662,12 @@ body.stage-record{background:linear-gradient(180deg,#111320 0%,#0d0f1a 100%) fix
 .stk-pie{display:block;width:100%}
 .stk-pie text{font-family:-apple-system,"Hiragino Sans","Yu Gothic UI",sans-serif}
 /* --- 内訳リスト --- */
-.stk-brow{display:grid;grid-template-columns:14px 1fr 52px 84px;gap:10px;align-items:center;padding:9px 2px;border-bottom:1px dashed rgba(255,255,255,.09)}
+.stk-brow{display:grid;grid-template-columns:14px 1fr 52px 84px;gap:10px;align-items:center;padding:10px 2px;border-bottom:1px dashed rgba(255,255,255,.09)}
 .stk-brow:last-child{border-bottom:none}
-.stk-brow i{width:12px;height:12px;border-radius:4px}
+.stk-brow i{width:12px;height:12px;border-radius:4px;align-self:start;margin-top:4px}
 .stk-brow .nm{font-size:13px;font-weight:800;color:#fff;min-width:0}
-.stk-brow .nm small{display:block;font-size:9.5px;font-weight:600;color:rgba(255,255,255,.45);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* 2行目は予定名を全部出す。折り返して何行になってもよい */
+.stk-brow .nm small{display:block;font-size:10px;font-weight:600;color:rgba(255,255,255,.5);margin-top:4px;line-height:1.7;white-space:normal;word-break:break-word}
 .stk-brow .ct{font-size:14px;font-weight:900;font-style:italic;text-align:right;color:#fff}
 .stk-brow .ct small{font-size:9px;color:rgba(255,255,255,.5);font-style:normal;margin-left:2px}
 .stk-brow .bar{height:7px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
@@ -4125,8 +4130,9 @@ function stkTagRows(agg){
   if(u && u.n) rows.push({id:TAG_NONE, label:"⬜ 未分類", color:TAG_NONE_COLOR, n:u.n, names:u.names, untag:true});
   return rows;
 }
-function stkTop3(names){
-  const ks = Object.keys(names).sort((a,b)=>names[b]-names[a]).slice(0,3);
+// 予定名ごとの回数。多い順に「全部」出す（省略しない・折り返してOK）
+function stkNameBreakdown(names){
+  const ks = Object.keys(names).sort((a,b)=>(names[b]-names[a]) || (a<b?-1:(a>b?1:0)));
   return ks.map(k=>k+" "+names[k]+"回").join(" ・ ");
 }
 function stkPillsHTML(){
@@ -4191,7 +4197,7 @@ function stkPiePanel(rg, agg){
   });
   const maxN = rows.length ? rows[0].n : 1;
   const breakdown = rows.length ? rows.map(r=>{
-    const sub = stkTop3(r.names);
+    const sub = stkNameBreakdown(r.names);
     const w = Math.max(4, Math.round(100*r.n/Math.max(1,maxN)));
     const cls = r.untag ? "stk-brow untag" : "stk-brow";
     const tap = r.untag ? ` onclick="stkOpenUntagged()"` : "";
@@ -4275,32 +4281,83 @@ function stkAssertMonotonic(pts){
   console.log("[STK] 単調非減少チェック "+(ok?"OK":"NG")+" / 点数="+pts.length+" / 合計="+pts[pts.length-1].v);
   return ok;
 }
+/* 山の拡大: 年（全体）／月（今月1日〜今日）／週（直近7日）。
+   累積そのものは1/1からの足し算のまま。窓は「その区間を切り取って拡大」するだけ。 */
+let stkMountWin = "year";
+function stkSetMountWin(w){ if(stkMountWin === w) return; stkMountWin = w; renderContent(); }
+function stkMountWindow(walk, today){
+  const last = walk.pts.length - 1;
+  const jan1 = new Date(today.getFullYear(), 0, 1);
+  let s = 0, note = "", xlab = "";
+  if(stkMountWin === "month"){
+    const mStart = new Date(today.getFullYear(), today.getMonth(), 1);
+    s = Math.max(0, Math.min(last, stkDayDiff(jan1, mStart)));
+  } else if(stkMountWin === "week"){
+    s = Math.max(0, last - 7);
+  }
+  if(last - s < 1) s = Math.max(0, last - 1);          // 線を引くのに最低2点いる
+  if(stkMountWin === "year"){
+    note = "✓を押すたび＋1。1日ごとの点で細かく上がる";
+    xlab = `1/1 → ${today.getMonth()+1}/${today.getDate()}`;
+  } else {
+    const back = last - s;
+    // 左端の点は「その前日の終わり時点」＝基準。窓に入っている日はその翌日から今日まで
+    const st = new Date(today); st.setDate(today.getDate() - back + 1);
+    const base = walk.pts[s].v, gain = walk.pts[last].v - base;
+    note = (stkMountWin === "month" ? "今月の始まりで " : back+"日前で ") + base + "回 ／ ここから +" + gain + "回";
+    xlab = `${st.getMonth()+1}/${st.getDate()} → ${today.getMonth()+1}/${today.getDate()}　（1目盛り＝1日）`;
+  }
+  return {s:s, e:last, note:note, xlab:xlab};
+}
 function stkMountainPanel(today){
   const tY = today.getFullYear();
   const walk = stkYearWalkDaily(tY, today);
   stkAssertMonotonic(walk.pts);
+  const win = stkMountWindow(walk, today);
+  const pts = walk.pts.slice(win.s, win.e + 1);
+  const zoom = (stkMountWin !== "year");
   const X0 = 14, X1 = 336, YB = 132, YT = 46;
-  const maxI = Math.max(1, walk.days);
-  const maxV = Math.max(1, walk.total);
-  const px = p => X0 + (X1-X0) * (p.i / maxI);
-  const py = p => YB - (YB-YT) * (p.v / maxV);
-  const line = walk.pts.map((p,k)=>`${k?"L":"M"}${px(p).toFixed(1)} ${py(p).toFixed(1)}`).join(" ");
-  const last = walk.pts[walk.pts.length-1];
+  const i0 = pts[0].i, i1 = pts[pts.length-1].i;
+  const vLo = pts[0].v;
+  const vHi = Math.max(pts[pts.length-1].v, vLo + 1);   // 窓の中が0回でも潰れない
+  const spanI = Math.max(1, i1 - i0);
+  const spanV = Math.max(1, vHi - vLo);
+  const px = p => X0 + (X1-X0) * ((p.i - i0) / spanI);
+  const py = p => YB - (YB-YT) * ((p.v - vLo) / spanV);
+  // 拡大中は階段で描く（1日ぶんの段差がそのまま見える）。年は承認済みモックの折れ線のまま
+  let line = "";
+  for(let k=0;k<pts.length;k++){
+    const x = px(pts[k]).toFixed(1), y = py(pts[k]).toFixed(1);
+    if(k === 0){ line += `M${x} ${y}`; continue; }
+    if(zoom) line += ` L${x} ${py(pts[k-1]).toFixed(1)} L${x} ${y}`;
+    else line += ` L${x} ${y}`;
+  }
+  const last = pts[pts.length-1];
   const lx = px(last), ly = py(last);
   const area = `${line} L${lx.toFixed(1)} ${YB} L${X0} ${YB} Z`;
+  const dots = (zoom && pts.length <= 40)
+    ? pts.map(p=>`<circle cx="${px(p).toFixed(1)}" cy="${py(p).toFixed(1)}" r="2.2" fill="rgba(255,255,255,.5)"/>`).join("")
+    : "";
+  const lblX = Math.min(344, Math.max(44, lx)).toFixed(1);
+  const wins = [["year","年"],["month","月"],["week","週"]];
   return `<div class="stk-sect">
     <div class="stk-tt">今 年 の 山 — <b>今年、✓を押した合計回数</b></div>
+    <div class="stk-pills sm">${wins.map(w=>
+      `<button type="button" class="stk-pill${stkMountWin===w[0]?' on':''}" onclick="stkSetMountWin('${w[0]}')">${w[1]}</button>`
+    ).join("")}</div>
     <svg class="stk-mount" width="100%" height="150" viewBox="0 0 380 150" preserveAspectRatio="xMidYMid meet">
       <defs><linearGradient id="stkMg15" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%" stop-color="rgba(90,168,255,.7)"/><stop offset="100%" stop-color="rgba(90,168,255,.05)"/>
       </linearGradient></defs>
       <path d="${area}" fill="url(#stkMg15)"/>
       <path d="${line}" fill="none" stroke="#5aa8ff" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+      ${dots}
       <circle cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="4.5" fill="#fff"/>
-      <text x="${Math.min(344, Math.max(44, lx)).toFixed(1)}" y="${Math.max(24, ly-20).toFixed(1)}" text-anchor="middle" font-size="15" font-weight="900" fill="#ffd94a">✓${walk.total}回</text>
-      <text x="${Math.min(344, Math.max(44, lx)).toFixed(1)}" y="${Math.max(37, ly-7).toFixed(1)}" text-anchor="middle" font-size="8.5" fill="rgba(255,255,255,.6)">今年✓した合計</text>
-      <text x="12" y="20" font-size="10" fill="rgba(255,255,255,.55)">✓を押すたび＋1。1日ごとの点で細かく上がる</text>
+      <text x="${lblX}" y="${Math.max(24, ly-20).toFixed(1)}" text-anchor="middle" font-size="15" font-weight="900" fill="#ffd94a">✓${walk.total}回</text>
+      <text x="${lblX}" y="${Math.max(37, ly-7).toFixed(1)}" text-anchor="middle" font-size="8.5" fill="rgba(255,255,255,.6)">今年✓した合計</text>
+      <text x="12" y="20" font-size="10" fill="rgba(255,255,255,.55)">${escHtml(win.note)}</text>
     </svg>
+    <div class="stk-xlab">${escHtml(win.xlab)}</div>
     <div class="stk-ksum">サボった日があっても線は減らない。上るだけ</div>
   </div>`;
 }
