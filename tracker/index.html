@@ -2165,6 +2165,33 @@ const KEY = "tracker2026_v2";
 function loadState(){ try{ return JSON.parse(localStorage.getItem(KEY)||"{}"); }catch(e){return {}} }
 function saveState(s){ localStorage.setItem(KEY, JSON.stringify(s)); }
 let state = loadState();
+
+/* ===== 固定の予定（コードで配る）=====
+   端末のlocalStorageに1回だけ入れる。消したら復活しない（seeded_v1で記憶）。
+   新しい予定を配りたい時は SEED_EVENTS に1行足すだけ。idは必ず新しくする。 */
+const SEED_EVENTS = [
+  {key:"9-12", id:"seed_20260912_saishin", label:"精神科 再診（4mg）", start:"", end:"", color:"#aab3c0", tag:"duty"}
+];
+const SEEDED_KEY = "seeded_v1";
+function applySeedEvents(){
+  let done = {};
+  try{ done = JSON.parse(localStorage.getItem(SEEDED_KEY)||"{}") || {}; }catch(e){ done = {}; }
+  let changed = false;
+  SEED_EVENTS.forEach(function(ev){
+    if(done[ev.id]) return;                 // 一度入れた物は二度と入れない
+    const st = state[ev.key] = state[ev.key] || {};
+    if(!st.__custom__) st.__custom__ = [];
+    if(!st.__custom__.some(function(t){ return t.id===ev.id; })){
+      st.__custom__.push({id:ev.id, label:ev.label, cat:"custom",
+                          start:ev.start, end:ev.end, color:ev.color, tag:ev.tag});
+      changed = true;
+    }
+    done[ev.id] = 1;
+  });
+  if(changed) saveState(state);
+  try{ localStorage.setItem(SEEDED_KEY, JSON.stringify(done)); }catch(e){}
+}
+applySeedEvents();
 // 2026年は既存キー形式`${m}-${d}`のまま（データ移行なし）。2026年以外は`${y}-${m}-${d}`
 function dayKey(y,m,d){ return y===2026 ? `${m}-${d}` : `${y}-${m}-${d}`; }
 function getDayState(m,d,y){
